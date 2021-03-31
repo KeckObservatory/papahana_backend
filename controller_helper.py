@@ -1,13 +1,13 @@
 import pymongo
 
-def create_collection(dbName, collName):
-    dbUrl = 'mongodb://localhost:27017/'
+def create_collection(dbName, collName, port=27017):
+    dbUrl = f'mongodb://localhost:{port}/'
     client = pymongo.MongoClient(dbUrl)
     db = client[dbName]
     coll = db[collName]
     return coll    
 
-def get_semesters(obsName):
+def get_semesters(obsName, coll):
     pipeline = [
         {
             "$match": {
@@ -24,22 +24,22 @@ def get_semesters(obsName):
             }
         }
     ]
-    return semColl.aggregate(pipeline)
+    return coll.aggregate(pipeline)
 
-def find_by_pi(name):
+def find_by_pi(name, coll):
     query = {
         "signature.pi": name
     }
     return coll.find(query)
 
-def find_by_semester_program(semester, program):
+def find_by_semester_program(semester, program, coll):
     query = {
         "signature.semester": semester,
         "signature.program": program
     }
     return coll.find(query)
 
-def find_by_observer(observer):
+def find_by_observer(observer, coll):
     query = {
         "signature.observers": {
             "$in": [observer]
@@ -47,7 +47,7 @@ def find_by_observer(observer):
     }
     return coll.find(query)
 
-def find_by_observer_container(observer, container):
+def find_by_observer_container(observer, container, coll):
     query = {
         "signature.observers": {
             "$in": [observer]

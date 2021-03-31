@@ -1,0 +1,928 @@
+openapi: 3.0.0
+info:
+  title: Papahana 
+  description: WMKO API to the Observation Management System
+  contact:
+    email: observing-support@keck.hawaii.edu
+  license:
+    name: BSD 3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  version: "0.1"
+servers:
+- url: http://localhost:3000/v0
+tags:
+- name: Instrument
+  externalDocs:
+    description: Find out more
+    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+- name: Semesters and Programs
+  externalDocs:
+    description: Manage Semesters and programs
+    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+- name: Containers
+  externalDocs:
+    description: Find out more
+    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+- name: Templates
+  externalDocs:
+    description: Find out more
+    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+- name: Observation Block
+  externalDocs:
+    description: Find out more
+    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+paths:
+  /semesters:
+    summary: Retrieves all the programs (semesters) associated with a PI
+    get:
+      tags:
+      - Semesters and Programs
+      summary: retrieves all the programs associated with a PI
+      operationId: get_semesters
+      parameters:
+      - $ref: '#/components/parameters/obs_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+  /semesters/{sem_id}:
+    summary: retrieve programs of a given semester. 
+    get:
+      tags:
+      - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: get_semester_programs
+      parameters:
+      - $ref: '#/components/parameters/obs_id'
+      - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+  /semesters/observing_blocks/{sem_id}:
+    summary: retrieve programs of a given semester. 
+    get:
+      tags:
+      - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: get_semesters_observing_blocks
+      parameters:
+      - $ref: '#/components/parameters/obs_id'
+      - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+  /semesters/proposal/{sem_id}:
+    get:
+      tags:
+      - Semesters and Programs
+      description: retrieves the proposal associated with the program
+      operationId: semIdsProposalGET
+      parameters:
+      - $ref: '#/components/parameters/obs_id'
+      - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+  /semesters/submit/{sem_id}:
+    post:
+      tags:
+      - Semesters and Programs
+      description: Submits a program (OBs)
+      operationId: postSemIds
+      parameters:
+      - $ref: '#/components/parameters/sem_id'
+      - $ref: '#/components/parameters/obs_id'
+      responses:
+        "201":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+    put:
+      tags:
+      - Semesters and Programs
+      description: updates a program (OBs)
+      operationId: putSemIds
+      parameters:
+      - $ref: '#/components/parameters/obs_id'
+      - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: List of objects added to the program 
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+  /semesters/targets/{sem_id}:
+    get:
+      tags:
+      - Semesters and Programs
+      description: Retrieves all the targets associated with a program
+      operationId: semIdsTargetsGET
+      parameters:
+      - $ref: '#/components/parameters/obs_id'
+      - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: array of targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Target'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+  /semesters/containers:
+    get:
+      tags:
+      - Containers, Semesters and Programs
+      description: Retrieves all containers associated with a program 
+      operationId: semIdContainersGET
+      parameters:
+      - $ref: '#/components/parameters/sem_id'
+      - $ref: '#/components/parameters/obs_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Container'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+  /containers:
+    get:
+      tags:
+      - Containers
+      description: Retrieves a specific container's information
+      operationId: containersGET
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      - $ref: '#/components/parameters/obs_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Container'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+    put:
+      tags:
+      - Containers
+      description: Overwrites a container
+      operationId: containersPUT
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Container'
+        required: true
+      responses:
+        "201":
+          description: OK
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container id not found
+      x-swagger-router-controller: Containers
+    post:
+      tags:
+      - Containers
+      description: Creates a container
+      operationId: containersPOST
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Container'
+        required: true
+      responses:
+        "201":
+          description: OK
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container id not found
+      x-swagger-router-controller: Containers
+    delete:
+      tags:
+      - Containers
+      description: Delete container by id
+      operationId: containersDELETE
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container id not found
+      x-swagger-router-controller: Containers
+  /containers/items:
+    get:
+      tags:
+      - Containers
+      description: Retrieves the ordered list of observing blocks in a container
+      operationId: containersItemsGET
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Container'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+    put:
+      tags:
+      - Containers
+      description: Puts a a list of Observation Blocks into a container
+      operationId: containersItemsPUT
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ObservationBlock'
+        required: true
+      responses:
+        "201":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container id not found
+      x-swagger-router-controller: Containers
+  /containers/append:
+    put:
+      tags:
+      - Containers
+      description: Appends an observation block to a container by id
+      operationId: containersAppendPUT
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ObservationBlock'
+        required: true
+      responses:
+        "201":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+  /containers/executionTimes:
+    get:
+      tags:
+      - Containers
+      description: Calculate the total execution time of a container
+      operationId: containersExecutionTimesGET
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+                description: miliseconds
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+  /containers/items/summary:
+    get:
+      tags:
+      - Containers
+      description: Retrieves a summary of container information
+      operationId: containersItemsSummaryGET
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContainerSummary'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+  /containers/verify:
+    get:
+      tags:
+      - Containers
+      description: Request verification of the elements of a container. Sends container
+        summary as a sucessfull response
+      operationId: containersVerifyGET
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContainerSummary'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+  /containers/scheduleToO:
+    post:
+      tags:
+      - Containers
+      description: Submits a container for Target of Opportunity (ToO) (all the elements)
+      operationId: containersScheduleToOPOST
+      parameters:
+      - $ref: '#/components/parameters/container_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Container'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+  /containers/export:
+    get:
+      tags:
+      - Containers
+      description: Retrieves a specific container information in a file format (default
+        .json)
+      operationId: containersExportGET
+      parameters:
+        - $ref: '#/components/parameters/container_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Container'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+  /instrumentPackages/{instrument}:
+    get:
+      tags:
+      - Instrument
+      description: Retrieves the list of available instrument packages for an instrument
+      operationId: instrumentPackagesInstrumentGET
+      parameters:
+      - $ref: '#/components/parameters/instrument'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstrumentPackage'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Instrument
+  /instrumentPackages/{instrument}/{ip_version}/signatures:
+    get:
+      tags:
+      - Instrument
+      description: List all template signatures that can be attached to OBs using
+        this instrument package
+      operationId: instrumentPackagesInstrumentIp_versionSignaturesGET
+      parameters:
+      - $ref: '#/components/parameters/instrument'
+      - $ref: '#/components/parameters/ip_version'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentPackage'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Instrument
+  /instrumentPackages/{instrument}/{ip_version}/{template_name}:
+    get:
+      tags:
+      - Instrument
+      - Templates
+      description: Retrieves the specified instrument package template signature
+      operationId: instrumentPackagesInstrumentIp_versionTemplate_nameGET
+      parameters:
+      - $ref: '#/components/parameters/instrument'
+      - $ref: '#/components/parameters/ip_version'
+      - name: template_name
+        in: path
+        description: template name description goes here
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: "1"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentPackage'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Instrument
+components:
+  schemas:
+    Semester:
+      type: object
+      properties:
+        semester:
+          type: string
+      example:
+        semester: 2020A
+    Program:
+      type: object
+      properties:
+        semester:
+          type: string
+      example:
+        semester: 2020A
+    Container:
+      type: object
+      properties:
+        container_id:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+      example:
+        container_id: container_id
+        observation_blocks:
+        - observation_blocks
+        - observation_blocks
+    ContainerSummary:
+      type: object
+      properties:
+        container_id:
+          type: string
+      example:
+        container_id: container_id
+    ObservationBlock:
+      type: object
+      properties:
+        sem_id:
+          type: string
+        obs_ids:
+          type: array
+          items:
+            type: string
+        target:
+          type: array
+          items:
+            $ref: '#/components/schemas/Target'
+        acquisition:
+          $ref: '#/components/schemas/Acquisition'
+        observations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Observation'
+        associations:
+          type: array
+          items:
+            type: string
+        observation_type:
+          type: array
+          items:
+            type: string
+    Acquisition:
+      required:
+      - acquisition
+      - acquisition_method
+      - ao_modes
+      - associations
+      - guider_selection
+      - instrumental_setup
+      - observation_type
+      - observations
+      - offset_stars
+      - positiion_angles
+      - slitmasks
+      - target
+      type: object
+      properties:
+        instrumental_setup:
+          type: string
+        acquisition_method:
+          type: string
+        guider_selection:
+          type: string
+        ao_modes:
+          type: array
+          items:
+            type: string
+        offset_stars:
+          type: array
+          items:
+            type: string
+        slitmasks:
+          type: array
+          items:
+            type: string
+        position_angles:
+          type: array
+          items:
+            type: string
+    Observation:
+      required:
+      - associations
+      - exposure_sequences
+      - instrument
+      type: object
+      properties:
+        instrument:
+          type: string
+        exposure_sequences:
+          type: array
+          items:
+            type: string
+        associations:
+          type: array
+          items:
+            type: string
+        template:
+          type: boolean
+    Target:
+      required:
+      - ddec
+      - dec
+      - dec_offset
+      - dra
+      - epoch
+      - equinox
+      - frame
+      - mag
+      - name
+      - obstime
+      - pm_dec
+      - pm_ra
+      - ra
+      - ra_offset
+      type: object
+      properties:
+        name:
+          type: string
+        ra:
+          type: string
+        dec:
+          type: string
+        equinox:
+          type: number
+        frame:
+          type: string
+        ra_offset:
+          type: number
+        dec_offset:
+          type: number
+        pm_ra:
+          type: number
+        pm_dec:
+          type: number
+        epoch:
+          type: number
+        obstime:
+          type: number
+        magnitude:
+          $ref: '#/components/schemas/Magnitude'
+        wrap?:
+          type: string
+        dra:
+          type: number
+        ddec:
+          type: number
+        comment?:
+          type: string
+        template:
+          type: boolean
+      example:
+        template: true
+        dec: dec
+        epoch: 2.3021358869347654518833223846741020679473876953125
+        pm_dec: 5.63737665663332876420099637471139430999755859375
+        pm_ra: 5.962133916683182377482808078639209270477294921875
+        ra: ra
+        ddec: 3.61607674925191080461672754609026014804840087890625
+        ra_offset: 6.02745618307040320615897144307382404804229736328125
+        dra: 9.301444243932575517419536481611430644989013671875
+        obstime: 7.061401241503109105224211816675961017608642578125
+        wrap?: wrap?
+        comment?: comment?
+        name: name
+        magnitude:
+          template: true
+          magnitude: magnitude
+          band: band
+        dec_offset: 1.46581298050294517310021547018550336360931396484375
+        equinox: 0.80082819046101150206595775671303272247314453125
+        frame: frame
+    Magnitude:
+      required:
+      - band
+      - magnitude
+      - template
+      type: object
+      properties:
+        band:
+          type: string
+        magnitude:
+          type: string
+        template:
+          type: boolean
+      example:
+        template: true
+        magnitude: magnitude
+        band: band
+    FindingChart:
+      description: Finding chart description goes here
+    InstrumentPackage:
+      description: Instrument package description goes here
+  parameters:
+    obs_id: 
+      name: obs_id
+      in: query
+      description: observer id
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: Dwane Johnson 
+    ob_id:
+      name: ob_id
+      in: query
+      description: observation block id
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 6042ced0afc6ecd40fe5a3dd
+    sem_id:
+      name: sem_id
+      in: path 
+      description: program id 
+      required: true
+      style: simple
+      explode: true
+      schema:
+        type: string
+      example: 12345asdf 
+    instrument:
+      name: instrument
+      in: path
+      description: instrument used to make observation
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        enum: [KCWI, DEIMOS, ESI, HIRES, LRIS, MOSFIRE, OSIRIS, NIRES, NIRC2, DE, DF, EI, HI, KB, KF, LB, LR, MF, OI, OS, NR, NI, NS, N2, NC]
+      example: kcwi
+    ip_version:
+      name: ip_version
+      in: path
+      description: ip version description here
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+      example: 0
+    index:
+      name: index
+      in: path
+      description: Finding chart index
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+      example: 0
+    template_id:
+      name: template_id
+      in: path
+      description: unique identifier of template
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: "1"
+    template_name:
+      name: template_name
+      in: path
+      description: template name description goes here
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: "1"
+    pi_name:
+      name: pi_name
+      in: query
+      description: name of primary investigator associated with the project
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: Pope Pious IX
+    proposal_id:
+      name: proposal_id
+      in: query
+      description: name of primary investigator associated with the project
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 1848R
+    file_parameter:
+      name: file_parameter
+      in: path
+      description: file paramter description here
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: ex file parameter goes here
+    container_id:
+      name: container_id
+      in: query
+      description: container identifier
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 6042ced0afc6ecd40fe5a3dd
+    file_type:
+      name: file_type
+      in: query
+      description: type of file to return
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: json
+    run_id:
+      name: run_id
+      in: query
+      description: run identifier
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 6042ced0afc6ecd40fe5a3dd
+
