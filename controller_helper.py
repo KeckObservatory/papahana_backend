@@ -59,8 +59,12 @@ def get_semesters_by_pi(piName, coll):
 
 def get_ob_by_semester(semid, coll):
     match = create_signature_match(coll, {'semester': semid})
-    project = project_signature_fields('semester')
     pipeline = [ match, project ]
+    return coll.aggregate(pipeline)
+
+def get_ob_by_semester_observer(semid, observer, coll):
+    match = create_signature_match(coll, {'semester': semid, 'observers': observer})
+    pipeline = [ match ]
     return coll.aggregate(pipeline)
 
 def find_by_pi(name, coll):
