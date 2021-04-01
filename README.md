@@ -7,6 +7,9 @@ OpenAPI spec maps out Papahana backend calls as defined [here](https://keckobser
 # generate_data.ipynb
 This notebook generates randomized dictionary objects representing artificial observation blocks as desribed in [these pages](https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808321035/Change+controlled+documents). 
 
+# generate_gridfs_data.ipynb
+[GridFS](https://docs.mongodb.com/manual/core/gridfs/) stores files that exceed BSON's document size limit of 16MB. Files are encoded as ascii readible characters using [base64](https://docs.python.org/3/library/base64.html). This notebook provides basic read/write functions on a running database running on por
+
 Data is stored on a local MongoDB collection.
 Finally a few function calls are made to query observation blocks.
 
