@@ -199,7 +199,8 @@ paths:
   /semesters/containers:
     get:
       tags:
-      - Containers, Semesters and Programs
+      - Containers
+      - Semesters and Programs
       description: Retrieves all containers associated with a program 
       operationId: semIdContainersGET
       parameters:
@@ -640,14 +641,13 @@ components:
       - associations
       - guider_selection
       - instrumental_setup
-      - observation_type
-      - observations
       - offset_stars
-      - positiion_angles
+      - position_angles
       - slitmasks
-      - target
       type: object
       properties:
+        acquisition:
+          type: string
         instrumental_setup:
           type: string
         acquisition_method:
@@ -655,6 +655,10 @@ components:
         guider_selection:
           type: string
         ao_modes:
+          type: array
+          items:
+            type: string
+        associations:
           type: array
           items:
             type: string
@@ -698,7 +702,7 @@ components:
       - epoch
       - equinox
       - frame
-      - mag
+      - magnitude
       - name
       - obstime
       - pm_dec
