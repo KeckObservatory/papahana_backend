@@ -493,8 +493,6 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-
-#TODO
   /obsBlocks/delete:
     get:
       tags:
