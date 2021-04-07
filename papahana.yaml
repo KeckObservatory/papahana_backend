@@ -548,15 +548,7 @@ paths:
       parameters:
       - $ref: '#/components/parameters/instrument'
       - $ref: '#/components/parameters/ip_version'
-      - name: template_name
-        in: path
-        description: template name description goes here
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-        example: "1"
+      - $ref: '#/components/parameters/template_name'
       responses:
         "200":
           description: OK
