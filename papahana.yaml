@@ -493,29 +493,6 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-  /obsBlocks/delete:
-    get:
-      tags:
-      - Containers
-      description: Retrieves a specific container information in a file format (default
-        .json)
-      operationId: containersExportGET
-      parameters:
-        - $ref: '#/components/parameters/obId'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Container'
-        "400":
-          description: Invalid status value
-        "404":
-          description: Container not found
-      x-swagger-router-controller: Containers
-
-
   /instrumentPackages/{instrument}:
     get:
       tags:
