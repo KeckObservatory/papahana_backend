@@ -17,9 +17,11 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, sem_id: str=None, obs_ids: List[str]=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None):  # noqa: E501
+    def __init__(self, id: str=None, sem_id: str=None, obs_ids: List[str]=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
+        :param id: The id of this ObservationBlock.  # noqa: E501
+        :type id: str
         :param sem_id: The sem_id of this ObservationBlock.  # noqa: E501
         :type sem_id: str
         :param obs_ids: The obs_ids of this ObservationBlock.  # noqa: E501
@@ -34,26 +36,33 @@ class ObservationBlock(Model):
         :type associations: List[str]
         :param observation_type: The observation_type of this ObservationBlock.  # noqa: E501
         :type observation_type: List[str]
+        :param priority: The priority of this ObservationBlock.  # noqa: E501
+        :type priority: float
         """
         self.swagger_types = {
+            'id': str,
             'sem_id': str,
             'obs_ids': List[str],
             'target': List[Target],
             'acquisition': Acquisition,
             'observations': List[Observation],
             'associations': List[str],
-            'observation_type': List[str]
+            'observation_type': List[str],
+            'priority': float
         }
 
         self.attribute_map = {
+            'id': '_id',
             'sem_id': 'sem_id',
             'obs_ids': 'obs_ids',
             'target': 'target',
             'acquisition': 'acquisition',
             'observations': 'observations',
             'associations': 'associations',
-            'observation_type': 'observation_type'
+            'observation_type': 'observation_type',
+            'priority': 'priority'
         }
+        self._id = id
         self._sem_id = sem_id
         self._obs_ids = obs_ids
         self._target = target
@@ -61,6 +70,7 @@ class ObservationBlock(Model):
         self._observations = observations
         self._associations = associations
         self._observation_type = observation_type
+        self._priority = priority
 
     @classmethod
     def from_dict(cls, dikt) -> 'ObservationBlock':
@@ -72,6 +82,27 @@ class ObservationBlock(Model):
         :rtype: ObservationBlock
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def id(self) -> str:
+        """Gets the id of this ObservationBlock.
+
+
+        :return: The id of this ObservationBlock.
+        :rtype: str
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: str):
+        """Sets the id of this ObservationBlock.
+
+
+        :param id: The id of this ObservationBlock.
+        :type id: str
+        """
+
+        self._id = id
 
     @property
     def sem_id(self) -> str:
@@ -219,3 +250,24 @@ class ObservationBlock(Model):
         """
 
         self._observation_type = observation_type
+
+    @property
+    def priority(self) -> float:
+        """Gets the priority of this ObservationBlock.
+
+
+        :return: The priority of this ObservationBlock.
+        :rtype: float
+        """
+        return self._priority
+
+    @priority.setter
+    def priority(self, priority: float):
+        """Sets the priority of this ObservationBlock.
+
+
+        :param priority: The priority of this ObservationBlock.
+        :type priority: float
+        """
+
+        self._priority = priority

@@ -5,14 +5,14 @@ import yaml
 
 def config_collection(mode='dev', config='config.live.yaml'):
     with open('config.live.yaml') as file:
-    # The FullLoader parameter handles the conversion from YAML
-    # scalar values to Python the dictionary format
-    conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
+        conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
     if mode == 'dev':
         coll = create_collection(conf['dbName'], conf['obCollectionName'], conf['port'])
     elif mode == 'demo':
-        coll = create_collection(conf['dbName'], conf['obCollectionName'], remote=True, conf['username'], conf['password'])
-    coll = create_collection('')
+        coll = create_collection(conf['dbName'], conf['obCollectionName'], remote=True, username=conf['username'], password=conf['password'])
+    else:
+        raise ValueError('collection mode not known')
+    return coll
     
 def create_collection(dbName, collName, port=27017, remote=False, username='papahanauser', password=None):
     """create_collection
@@ -139,15 +139,17 @@ def get_ob_by_id(_id, coll):
 
 def insert_observation_block(ob, coll):
     try:
-        coll.insert_one(ob)
+        result = coll.insert_one(ob)
     except Exception as err:
         print(err)
+    return result.inserted_id
         
 def delete_observation_block(_id, coll):
     try:
-        coll.delete_one({'_id': _id})
+        response = coll.delete_one({'_id': _id})
     except Exception as err:
         print(err)
+    return response
         
 def update_observation_block(_id, newValues, coll):
     query = {

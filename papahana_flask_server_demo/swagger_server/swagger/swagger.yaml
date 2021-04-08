@@ -39,7 +39,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObservationBlock'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationBlock'
+                x-content-type: application/json
         "400":
           description: Invalid status value
         "404":
@@ -49,7 +52,7 @@ paths:
     put:
       tags:
       - Observation Block
-      description: Updates the observation block with the new one)
+      description: Updates the observation block with the new one
       operationId: obs_block_put
       parameters:
       - name: ob_id
@@ -105,7 +108,7 @@ paths:
     delete:
       tags:
       - Observation Block
-      description: Removes the observation block)
+      description: Removes the observation block
       operationId: obs_block_delete
       parameters:
       - name: ob_id
@@ -170,6 +173,9 @@ components:
     ObservationBlock:
       type: object
       properties:
+        _id:
+          type: string
+          example: "99"
         sem_id:
           type: string
         obs_ids:
@@ -194,6 +200,9 @@ components:
           type: array
           items:
             type: string
+        priority:
+          type: number
+          example: 99.99
       example:
         sem_id: sem_id
         associations:
@@ -217,6 +226,7 @@ components:
           - exposure_sequences
           - exposure_sequences
           instrument: instrument
+        _id: "99"
         acquisition:
           associations:
           - associations
@@ -237,6 +247,7 @@ components:
           - ao_modes
           acquisition: acquisition
           instrumental_setup: instrumental_setup
+        priority: 99.99
         target:
         - dec: dec
           epoch: 2.3021358869347655

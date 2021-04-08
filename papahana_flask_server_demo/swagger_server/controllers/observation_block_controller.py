@@ -1,8 +1,13 @@
+import pdb
 import connexion
 import six
 
 from swagger_server.models.observation_block import ObservationBlock  # noqa: E501
 from swagger_server import util
+
+from . import controller_helper as helper
+
+coll = helper.config_collection('dev', config='./../../config.live.yaml')
 
 
 def obs_block_delete(ob_id):  # noqa: E501
@@ -15,8 +20,8 @@ def obs_block_delete(ob_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
-
+    response = helper.delete_observation_block(ob_id, coll)
+    return str(response)
 
 def obs_block_duplicate(ob_id, sem_id):  # noqa: E501
     """obs_block_duplicate
@@ -30,7 +35,12 @@ def obs_block_duplicate(ob_id, sem_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    return 'do some magic!'
+    obs = list(helper.get_ob_by_id(ob_id, coll))
+    assert len(docs) == 1, 'not found'
+    ob = obs[0] 
+    del ob['_id']
+    result = helper.insert_observation_block(ob, coll)
+    return str(result) 
 
 
 def obs_block_get(ob_id):  # noqa: E501
@@ -41,10 +51,10 @@ def obs_block_get(ob_id):  # noqa: E501
     :param ob_id: observation block id
     :type ob_id: str
 
-    :rtype: ObservationBlock
+    :rtype: [ObservationBlock]
     """
-    return 'do some magic!'
-
+    ob = list(helper.get_ob_by_id(ob_id, coll))
+    return ob 
 
 def obs_block_post(body):  # noqa: E501
     """obs_block_post
@@ -54,25 +64,31 @@ def obs_block_post(body):  # noqa: E501
     :param body: Observation block to be added.
     :type body: dict | bytes
 
-    :rtype: None
+    :rtype: str. either return or error message
     """
     if connexion.request.is_json:
-        body = ObservationBlock.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        obDict = connexion.request.get_json()
+        body = ObservationBlock.from_dict(connexion.request.get_json())  # verify if formatted properly
+    result = helper.insert_observation_block(obDict, coll)
+    return str(result)
 
 
 def obs_block_put(body, ob_id):  # noqa: E501
     """obs_block_put
 
-    Updates the observation block with the new one) # noqa: E501
+    Updates the observation block with the new one # noqa: E501
 
     :param body: Observation block replacing ob_id.
     :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
 
-    :rtype: ObservationBlock
+    :rtype: result
     """
     if connexion.request.is_json:
-        body = ObservationBlock.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        ob = connexion.request.get_json()
+        body = ObservationBlock.from_dict(connexion.request.get_json())  # verify if formatted properly
+        del ob['_id'] 
+    result = helper.replace_observation_block(ob_id, ob, coll)
+
+    return str(result) 

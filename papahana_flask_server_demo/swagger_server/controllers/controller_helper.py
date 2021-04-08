@@ -1,7 +1,20 @@
 import pymongo
 import urllib
 from getpass import getpass
-def create_collection(dbName, collName, port=27017, remote=False):
+import yaml
+
+def config_collection(mode='dev', config='config.live.yaml'):
+    with open('config.live.yaml') as file:
+        conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
+    if mode == 'dev':
+        coll = create_collection(conf['dbName'], conf['obCollectionName'], conf['port'])
+    elif mode == 'demo':
+        coll = create_collection(conf['dbName'], conf['obCollectionName'], remote=True, username=conf['username'], password=conf['password'])
+    else:
+        raise ValueError('collection mode not known')
+    return coll
+    
+def create_collection(dbName, collName, port=27017, remote=False, username='papahanauser', password=None):
     """create_collection
     
     Creates and returns a mongodb collection object
@@ -18,9 +31,9 @@ def create_collection(dbName, collName, port=27017, remote=False):
     :rtype: pymongo.collection.Collection
     """
     if remote:
-        user = 'papahanauser'
-        pw = getpass()
-        dbURL = f'mongodb+srv://{urllib.parse.quote(user)}:{urllib.parse.quote(pw)}@cluster0.gw51m.mongodb.net/{dbName}'
+        if not password:
+            password = getpass()
+        dbURL = f'mongodb+srv://{urllib.parse.quote(username)}:{urllib.parse.quote(password)}@cluster0.gw51m.mongodb.net/{dbName}'
     else:
         dbURL = f'mongodb://localhost:{port}/'
     client = pymongo.MongoClient(dbURL)
@@ -126,15 +139,24 @@ def get_ob_by_id(_id, coll):
 
 def insert_observation_block(ob, coll):
     try:
-        coll.insert_one(ob)
+        result = coll.insert_one(ob)
     except Exception as err:
-        print(err)
+        return err
+    return result
         
 def delete_observation_block(_id, coll):
     try:
         coll.delete_one({'_id': _id})
     except Exception as err:
         print(err)
+
+def replace_observation_block(_id, ob, coll):
+    try:
+        query = {'_id': _id}
+        result = coll.replace_one(query, ob)
+    except Exception as err:
+        print(err)
+    return result
         
 def update_observation_block(_id, newValues, coll):
     query = {
