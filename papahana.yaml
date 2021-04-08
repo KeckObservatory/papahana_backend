@@ -1111,6 +1111,10 @@ components:
           type: array
           items:
             type: string
+        priority:
+          type: number
+          example:
+            99.99
     Acquisition:
       required:
       - acquisition
@@ -1169,8 +1173,6 @@ components:
           type: array
           items:
             type: string
-        template:
-          type: boolean
     Target:
       required:
       - ddec
