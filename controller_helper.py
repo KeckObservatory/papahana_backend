@@ -1,7 +1,20 @@
 import pymongo
 import urllib
 from getpass import getpass
-def create_collection(dbName, collName, port=27017, remote=False):
+import yaml
+
+def config_collection(mode='dev', config='config.live.yaml'):
+    with open('config.live.yaml') as file:
+    # The FullLoader parameter handles the conversion from YAML
+    # scalar values to Python the dictionary format
+    conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
+    if mode == 'dev':
+        coll = create_collection(conf['dbName'], conf['obCollectionName'], conf['port'])
+    elif mode == 'demo':
+        coll = create_collection(conf['dbName'], conf['obCollectionName'], remote=True, conf['username'], conf['password'])
+    coll = create_collection('')
+    
+def create_collection(dbName, collName, port=27017, remote=False, username='papahanauser', password=None):
     """create_collection
     
     Creates and returns a mongodb collection object
@@ -18,9 +31,9 @@ def create_collection(dbName, collName, port=27017, remote=False):
     :rtype: pymongo.collection.Collection
     """
     if remote:
-        user = 'papahanauser'
-        pw = getpass()
-        dbURL = f'mongodb+srv://{urllib.parse.quote(user)}:{urllib.parse.quote(pw)}@cluster0.gw51m.mongodb.net/{dbName}'
+        if not password:
+            password = getpass()
+        dbURL = f'mongodb+srv://{urllib.parse.quote(username)}:{urllib.parse.quote(password)}@cluster0.gw51m.mongodb.net/{dbName}'
     else:
         dbURL = f'mongodb://localhost:{port}/'
     client = pymongo.MongoClient(dbURL)

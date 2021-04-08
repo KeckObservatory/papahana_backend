@@ -587,13 +587,16 @@ paths:
         - Observation Block
       description: Inserts an observation block.
       operationId: obsBlockPost
+      requestBody:
+        description: Observation block to be added.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observation'
       responses:
         "200":
           description: On a success inserts new OB.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Observation'
         "400":
           description: Invalid status value
         "404":
@@ -606,6 +609,13 @@ paths:
       operationId: obsBlockPut
       parameters:
         - $ref: '#/components/parameters/ob_id'
+      requestBody:
+        description: Observation block replacing ob_id.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observation'
       responses:
         "200":
           description: On a success replaces the given OB with the updated OB.
@@ -628,10 +638,6 @@ paths:
       responses:
         "200":
           description: On a success removes given OB from the database.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Observation'
         "400":
           description: Invalid status value
         "404":

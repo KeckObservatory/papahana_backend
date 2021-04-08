@@ -2,6 +2,9 @@
 *copy.*
 *~
 
+# config files that may contain passwords
+config.live.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
