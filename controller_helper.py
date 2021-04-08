@@ -1,6 +1,7 @@
 import pymongo
-
-def create_collection(dbName, collName, port=27017, dbURL=None):
+import urllib
+from getpass import getpass
+def create_collection(dbName, collName, port=27017, remote=False):
     """create_collection
     
     Creates and returns a mongodb collection object
@@ -16,7 +17,11 @@ def create_collection(dbName, collName, port=27017, dbURL=None):
 
     :rtype: pymongo.collection.Collection
     """
-    if not dbURL:
+    if remote:
+        user = 'papahanauser'
+        pw = getpass()
+        dbURL = f'mongodb+srv://{urllib.parse.quote(user)}:{urllib.parse.quote(pw)}@cluster0.gw51m.mongodb.net/{dbName}'
+    else:
         dbURL = f'mongodb://localhost:{port}/'
     client = pymongo.MongoClient(dbURL)
     db = client[dbName]
