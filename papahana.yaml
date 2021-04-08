@@ -1223,10 +1223,7 @@ components:
           type: number
         comment?:
           type: string
-        template:
-          type: boolean
       example:
-        template: true
         dec: dec
         epoch: 2.3021358869347654518833223846741020679473876953125
         pm_dec: 5.63737665663332876420099637471139430999755859375
@@ -1240,7 +1237,6 @@ components:
         comment?: comment?
         name: name
         magnitude:
-          template: true
           magnitude: magnitude
           band: band
         dec_offset: 1.46581298050294517310021547018550336360931396484375
@@ -1250,17 +1246,13 @@ components:
       required:
       - band
       - magnitude
-      - template
       type: object
       properties:
         band:
           type: string
         magnitude:
           type: string
-        template:
-          type: boolean
       example:
-        template: true
         magnitude: magnitude
         band: band
     FindingChart:
