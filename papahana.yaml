@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Papahana 
+  title: Papahana
   description: WMKO API to the Observation Management System
   contact:
     email: observing-support@keck.hawaii.edu
@@ -549,6 +549,7 @@ paths:
       - $ref: '#/components/parameters/instrument'
       - $ref: '#/components/parameters/ip_version'
       - $ref: '#/components/parameters/template_name'
+
       responses:
         "200":
           description: OK
@@ -571,7 +572,7 @@ paths:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: On a success inserts new OB.
+          description: On a success gets a new OB.
           content:
             application/json:
               schema:
@@ -584,10 +585,8 @@ paths:
     post:
       tags:
         - Observation Block
-      description: Inserts/Retrieves/Updates/Removes the general parameters of an OB (target, exec time, other as needed)
+      description: Inserts an observation block.
       operationId: obsBlockPost
-      parameters:
-        - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
           description: On a success inserts new OB.
@@ -603,7 +602,7 @@ paths:
     put:
       tags:
         - Observation Block
-      description: Updates the general parameters of an OB (target, exec time, other as needed)
+      description: Updates the observation block with the new one)
       operationId: obsBlockPut
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -622,7 +621,7 @@ paths:
     delete:
       tags:
         - Observation Block
-      description: Removes the general parameters of an OB (target, exec time, other as needed)
+      description: Removes the observation block)
       operationId: obsBlockDelete
       parameters:
         - $ref: '#/components/parameters/ob_id'

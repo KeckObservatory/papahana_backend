@@ -1,8 +1,24 @@
 import pymongo
 
-def create_collection(dbName, collName, port=27017):
-    dbUrl = f'mongodb://localhost:{port}/'
-    client = pymongo.MongoClient(dbUrl)
+def create_collection(dbName, collName, port=27017, dbURL=None):
+    """create_collection
+    
+    Creates and returns a mongodb collection object
+    
+    :param dbName: database name
+    :type dbName: str
+    :param collName: collection name
+    :type collName: str
+    :port: port name
+    :type port: int
+    :dbURL: url of database (use for databases)
+    :dbURL: str
+
+    :rtype: pymongo.collection.Collection
+    """
+    if not dbURL:
+        dbURL = f'mongodb://localhost:{port}/'
+    client = pymongo.MongoClient(dbURL)
     db = client[dbName]
     coll = db[collName]
     return coll
@@ -59,7 +75,7 @@ def get_semesters_by_pi(piName, coll):
 
 def get_ob_by_semester(semid, coll):
     match = create_signature_match(coll, {'semester': semid})
-    pipeline = [ match, project ]
+    pipeline = [ match ]
     return coll.aggregate(pipeline)
 
 def get_ob_by_semester_observer(semid, observer, coll):
@@ -96,3 +112,27 @@ def find_by_observer_container(observer, container, coll):
         "signature.container": container
     }
     return coll.find(query)
+
+def get_ob_by_id(_id, coll):
+    query = {
+        "_id": _id
+    }
+    return coll.find(query)
+
+def insert_observation_block(ob, coll):
+    try:
+        coll.insert_one(ob)
+    except Exception as err:
+        print(err)
+        
+def delete_observation_block(_id, coll):
+    try:
+        coll.delete_one({'_id': _id})
+    except Exception as err:
+        print(err)
+        
+def update_observation_block(_id, newValues, coll):
+    query = {
+        "_id": _id
+    }
+    coll.update_one(query, newValues)
