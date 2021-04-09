@@ -87,7 +87,7 @@ def obs_block_put(body, ob_id):  # noqa: E501
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
         ob = ObservationBlock.from_dict(obDict).to_dict()  # verify if formatted properly
-        obDict.pop('id') # mongodb uses _id
+        obDict.pop('_id') # mongodb uses _id
     result = helper.replace_observation_block(ob_id, obDict, coll)
 
     return str(result) 

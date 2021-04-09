@@ -7,6 +7,10 @@
 # As an example, the C# client generator defines ApiClient.cs.
 # You can make changes and tell Swagger Codgen to ignore just this file by uncommenting the following line:
 #ApiClient.cs
+config.py
+/swagger_server/controllers/controller_helper.py
+
+/swagger_server/controllers/observation_block_controller.py
 
 # You can match any string of characters against a directory, file or extension with a single asterisk (*):
 #foo/*/qux
