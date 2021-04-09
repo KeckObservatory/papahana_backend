@@ -69,9 +69,8 @@ def obs_block_post(body):  # noqa: E501
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
         ob = ObservationBlock.from_dict(obDict).to_dict()  # verify if formatted properly
-        ob['_id'] = ob.pop('id') # mongodb uses _id
 
-    result = helper.insert_observation_block(ob, coll)
+    result = helper.insert_observation_block(obDict, coll)
     return str(result)
 
 
@@ -90,7 +89,7 @@ def obs_block_put(body, ob_id):  # noqa: E501
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
         ob = ObservationBlock.from_dict(obDict).to_dict()  # verify if formatted properly
-        ob.pop('id') # mongodb uses _id
-    result = helper.replace_observation_block(ob_id, ob, coll)
+        obDict.pop('id') # mongodb uses _id
+    result = helper.replace_observation_block(ob_id, obDict, coll)
 
     return str(result) 
