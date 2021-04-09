@@ -38,7 +38,7 @@ def obs_block_duplicate(ob_id, sem_id):  # noqa: E501
     obs = list(helper.get_ob_by_id(ob_id, coll))
     assert len(docs) == 1, 'not found'
     ob = obs[0] 
-    del ob['_id']
+    ob.pop('_id')
     result = helper.insert_observation_block(ob, coll)
     return str(result) 
 
@@ -68,8 +68,10 @@ def obs_block_post(body):  # noqa: E501
     """
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
-        body = ObservationBlock.from_dict(connexion.request.get_json())  # verify if formatted properly
-    result = helper.insert_observation_block(obDict, coll)
+        ob = ObservationBlock.from_dict(obDict).to_dict()  # verify if formatted properly
+        ob['_id'] = ob.pop('id') # mongodb uses _id
+
+    result = helper.insert_observation_block(ob, coll)
     return str(result)
 
 
@@ -86,9 +88,9 @@ def obs_block_put(body, ob_id):  # noqa: E501
     :rtype: result
     """
     if connexion.request.is_json:
-        ob = connexion.request.get_json()
-        body = ObservationBlock.from_dict(connexion.request.get_json())  # verify if formatted properly
-        del ob['_id'] 
+        obDict = connexion.request.get_json()
+        ob = ObservationBlock.from_dict(obDict).to_dict()  # verify if formatted properly
+        ob.pop('id') # mongodb uses _id
     result = helper.replace_observation_block(ob_id, ob, coll)
 
     return str(result) 
