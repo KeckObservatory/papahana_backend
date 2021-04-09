@@ -4,10 +4,8 @@ import six
 
 from swagger_server.models.observation_block import ObservationBlock  # noqa: E501
 from swagger_server import util
-
+from config import coll 
 from . import controller_helper as helper
-
-coll = helper.config_collection('dev', config='./../../config.live.yaml')
 
 
 def obs_block_delete(ob_id):  # noqa: E501
