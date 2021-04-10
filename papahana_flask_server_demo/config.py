@@ -35,7 +35,7 @@ def create_collection(dbName, collName, port=27017, remote=False, username='papa
             password = getpass()
         dbURL = f'mongodb+srv://{urllib.parse.quote(username)}:{urllib.parse.quote(password)}@cluster0.gw51m.mongodb.net/{dbName}'
     else:
-        dbURL = f'mongodb://localhost:{port}/'
+        dbURL = f'mongodb://0.0.0.0:{port}/'
     client = pymongo.MongoClient(dbURL)
     db = client[dbName]
     coll = db[collName]
