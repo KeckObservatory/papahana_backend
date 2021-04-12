@@ -4,7 +4,7 @@ services:
     build: . #specify the directory of the Dockerfile
     restart: "no" 
     ports: 
-    - '8080:8080' # specify port forwarding
+    - '50000:50000' # specify port forwarding
     environment:
       - DOCKER_DATABASE_CONNECTION=1
     depends_on:
