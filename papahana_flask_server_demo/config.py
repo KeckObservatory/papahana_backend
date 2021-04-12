@@ -35,7 +35,7 @@ def create_collection(dbName, collName, port=27017, remote=False, username='papa
         if not password:
             password = getpass()
         dbURL = f'mongodb+srv://{urllib.parse.quote(username)}:{urllib.parse.quote(password)}@cluster0.gw51m.mongodb.net/{dbName}'
-    elif os.environ['DOCKER_DATABASE_CONNECTION']:
+    elif os.environ.get('DOCKER_DATABASE_CONNECTION', False):
         dbURL = f'mongodb://database:{port}'
     else:
         dbURL = f'mongodb://127.0.0.1:{port}'
