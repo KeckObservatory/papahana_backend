@@ -12,6 +12,8 @@ config.py
 
 /swagger_server/controllers/observation_block_controller.py
 
+/swagger_server/util.py #  patch for typing module not having a GenericMeta class
+
 # You can match any string of characters against a directory, file or extension with a single asterisk (*):
 #foo/*/qux
 # The above matches foo/bar/qux and foo/baz/qux, but not foo/bar/baz/qux
