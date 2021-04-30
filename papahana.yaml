@@ -205,7 +205,7 @@ paths:
       operationId: semIdContainersGET
       parameters:
       - $ref: '#/components/parameters/sem_id'
-      - $ref: '#/components/parameters/obs_id'
+      - $ref: '#/components/parameters/prog_id'
       responses:
         "200":
           description: OK
@@ -230,7 +230,6 @@ paths:
       operationId: containersGET
       parameters:
       - $ref: '#/components/parameters/container_id'
-      - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -272,7 +271,6 @@ paths:
       description: Creates a container
       operationId: containersPOST
       parameters:
-      - $ref: '#/components/parameters/container_id'
       requestBody:
         content:
           application/json:
@@ -452,9 +450,8 @@ paths:
       tags:
       - Containers
       description: Submits a container for Target of Opportunity (ToO) (all the elements)
-      operationId: containersScheduleToOPOST
+      operationId: containersScheduleTooPOST
       parameters:
-      - $ref: '#/components/parameters/container_id'
       requestBody:
         content:
           application/json:
@@ -1072,6 +1069,10 @@ components:
           type: array
           items:
             type: string
+        semester:
+          type: string
+        prog_id:
+          type: string
       example:
         container_id: container_id
         observation_blocks:
@@ -1081,6 +1082,13 @@ components:
       type: object
       properties:
         container_id:
+          type: string
+        observation_blocks:
+          type: array
+          items: string
+        semester:
+          type: string
+        prog_id:
           type: string
       example:
         container_id: container_id
@@ -1283,13 +1291,23 @@ components:
     sem_id:
       name: sem_id
       in: path 
-      description: program id 
+      description: semester id
       required: true
       style: simple
       explode: true
       schema:
         type: string
-      example: 12345asdf 
+      example: 2021A
+    prog_id:
+      name: prog_id
+      in: path
+      description: program id
+      required: true
+      style: simple
+      explode: true
+      schema:
+        type: string
+      example: U333
     instrument:
       name: instrument
       in: path
