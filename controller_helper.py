@@ -122,12 +122,12 @@ def find_by_observer(observer, coll):
     }
     return coll.find(query)
 
-def find_by_observer_container(observer, container, coll):
+def find_by_observer_group(observer, group, coll):
     query = {
         "signature.observers": {
             "$in": [observer]
         },
-        "signature.container": container
+        "signature.group": group
     }
     return coll.find(query)
 
