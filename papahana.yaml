@@ -1060,7 +1060,11 @@ components:
     Group:
       type: object
       properties:
+        id:
+          type: ObjectID
         name:
+          type: string
+        semester:
           type: string
         group_id:
           type: string
@@ -1068,8 +1072,6 @@ components:
           type: array
           items:
             type: string
-        semester:
-          type: string
         comment:
           type: string
       example:
@@ -1080,16 +1082,18 @@ components:
     GroupSummary:
       type: object
       properties:
+        id:
+          type: ObjectID
         name:
           type: string
         group_id:
+          type: string
+        semester:
           type: string
         observation_blocks:
           type: array
           items: 
             type: string
-        semester:
-          type: string
         comment:
           type: string
       example:
