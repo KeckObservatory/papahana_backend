@@ -1061,7 +1061,7 @@ components:
       type: object
       properties:
         id:
-          type: ObjectID
+          type: string
         name:
           type: string
         semester:
@@ -1083,7 +1083,7 @@ components:
       type: object
       properties:
         id:
-          type: ObjectID
+          type: string
         name:
           type: string
         group_id:
