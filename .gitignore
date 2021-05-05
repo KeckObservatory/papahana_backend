@@ -2,6 +2,9 @@
 *copy.*
 *~
 
+
+node_modules
+
 # config files that may contain passwords
 config.live.yaml
 
