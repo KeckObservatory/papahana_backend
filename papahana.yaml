@@ -203,9 +203,6 @@ paths:
       - Semesters and Programs
       description: Retrieves all groups associated with a program
       operationId: semIdGroupsGET
-      parameters:
-      - $ref: '#/components/parameters/sem_id'
-      - $ref: '#/components/parameters/prog_id'
       responses:
         "200":
           description: OK
@@ -270,7 +267,6 @@ paths:
       - Groups
       description: Creates a group
       operationId: groupsPOST
-      parameters:
       requestBody:
         content:
           application/json:
@@ -451,7 +447,6 @@ paths:
       - Groups
       description: Submits a group for Target of Opportunity (ToO) (all the elements)
       operationId: groupsScheduleTooPOST
-      parameters:
       requestBody:
         content:
           application/json:
@@ -1085,7 +1080,8 @@ components:
           type: string
         observation_blocks:
           type: array
-          items: string
+          items: 
+            type: string
         semester:
           type: string
         prog_id:
@@ -1095,12 +1091,10 @@ components:
     ObservationBlock:
       type: object
       properties:
-        sem_id:
+        id:
           type: string
-        obs_ids:
-          type: array
-          items:
-            type: string
+        signature:
+          $ref: '#/components/schemas/Signature'
         target:
           type: array
           items:
@@ -1123,6 +1117,27 @@ components:
           type: number
           example:
             99.99
+    Signature:
+      type: object
+      properties:
+        pi:
+          type: string
+        semester:
+          type: string
+        observers:
+          type: array
+          items:
+            type: string
+        programs:
+          type: array
+          items: 
+              type: string
+        group:
+          type: array
+          items:
+              type: string
+        comment:
+          type: string
     Acquisition:
       required:
       - acquisition
@@ -1428,4 +1443,3 @@ components:
       explode: false
       schema:
         type: boolean
-
