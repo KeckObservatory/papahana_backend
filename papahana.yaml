@@ -205,7 +205,6 @@ paths:
       operationId: semIdGroupsGET
       parameters:
       - $ref: '#/components/parameters/sem_id'
-      - $ref: '#/components/parameters/prog_id'
       responses:
         "200":
           description: OK
@@ -1063,6 +1062,8 @@ components:
     Group:
       type: object
       properties:
+        name:
+          type: string
         group_id:
           type: string
         observation_blocks:
@@ -1071,7 +1072,7 @@ components:
             type: string
         semester:
           type: string
-        prog_id:
+        comment:
           type: string
       example:
         group_id: group_id
@@ -1081,6 +1082,8 @@ components:
     GroupSummary:
       type: object
       properties:
+        name:
+          type: string
         group_id:
           type: string
         observation_blocks:
@@ -1088,7 +1091,7 @@ components:
           items: string
         semester:
           type: string
-        prog_id:
+        comment:
           type: string
       example:
         group_id: group_id
