@@ -138,6 +138,8 @@ def groups_execution_times_get(group_id):  # noqa: E501
 
     :rtype: float
     """
+    #TODO with the ob_id - should be able to query db for execution times.
+
     return 'do some magic!'
 
 
@@ -165,6 +167,7 @@ def groups_items_get(group_id):  # noqa: E501
     :rtype: List[Group]
     """
     #TODO get ob_blocks from the ob_block
+    #TODO with the ob_id - should be able to query db for the ob from ids.
 
     return 'do some magic!'
 
