@@ -497,7 +497,7 @@ components:
             type: string
         semester:
           type: string
-        prog_id:
+        program_id:
           type: string
         comment:
           type: string

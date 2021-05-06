@@ -8,6 +8,7 @@ from typing import List, Dict  # noqa: F401
 from swagger_server.models.base_model_ import Model
 from swagger_server.models.acquisition import Acquisition  # noqa: F401,E501
 from swagger_server.models.observation import Observation  # noqa: F401,E501
+from swagger_server.models.signature import Signature  # noqa: F401,E501
 from swagger_server.models.target import Target  # noqa: F401,E501
 from swagger_server import util
 
@@ -17,15 +18,13 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, sem_id: str=None, obs_ids: List[str]=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None):  # noqa: E501
+    def __init__(self, id: str=None, signature: Signature=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param id: The id of this ObservationBlock.  # noqa: E501
         :type id: str
-        :param sem_id: The sem_id of this ObservationBlock.  # noqa: E501
-        :type sem_id: str
-        :param obs_ids: The obs_ids of this ObservationBlock.  # noqa: E501
-        :type obs_ids: List[str]
+        :param signature: The signature of this ObservationBlock.  # noqa: E501
+        :type signature: Signature
         :param target: The target of this ObservationBlock.  # noqa: E501
         :type target: List[Target]
         :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
@@ -38,39 +37,41 @@ class ObservationBlock(Model):
         :type observation_type: List[str]
         :param priority: The priority of this ObservationBlock.  # noqa: E501
         :type priority: float
+        :param comment: The comment of this ObservationBlock.  # noqa: E501
+        :type comment: str
         """
         self.swagger_types = {
             'id': str,
-            'sem_id': str,
-            'obs_ids': List[str],
+            'signature': Signature,
             'target': List[Target],
             'acquisition': Acquisition,
             'observations': List[Observation],
             'associations': List[str],
             'observation_type': List[str],
-            'priority': float
+            'priority': float,
+            'comment': str
         }
 
         self.attribute_map = {
-            'id': '_id',
-            'sem_id': 'sem_id',
-            'obs_ids': 'obs_ids',
+            'id': 'id',
+            'signature': 'signature',
             'target': 'target',
             'acquisition': 'acquisition',
             'observations': 'observations',
             'associations': 'associations',
             'observation_type': 'observation_type',
-            'priority': 'priority'
+            'priority': 'priority',
+            'comment': 'comment'
         }
         self._id = id
-        self._sem_id = sem_id
-        self._obs_ids = obs_ids
+        self._signature = signature
         self._target = target
         self._acquisition = acquisition
         self._observations = observations
         self._associations = associations
         self._observation_type = observation_type
         self._priority = priority
+        self._comment = comment
 
     @classmethod
     def from_dict(cls, dikt) -> 'ObservationBlock':
@@ -105,46 +106,25 @@ class ObservationBlock(Model):
         self._id = id
 
     @property
-    def sem_id(self) -> str:
-        """Gets the sem_id of this ObservationBlock.
+    def signature(self) -> Signature:
+        """Gets the signature of this ObservationBlock.
 
 
-        :return: The sem_id of this ObservationBlock.
-        :rtype: str
+        :return: The signature of this ObservationBlock.
+        :rtype: Signature
         """
-        return self._sem_id
+        return self._signature
 
-    @sem_id.setter
-    def sem_id(self, sem_id: str):
-        """Sets the sem_id of this ObservationBlock.
-
-
-        :param sem_id: The sem_id of this ObservationBlock.
-        :type sem_id: str
-        """
-
-        self._sem_id = sem_id
-
-    @property
-    def obs_ids(self) -> List[str]:
-        """Gets the obs_ids of this ObservationBlock.
+    @signature.setter
+    def signature(self, signature: Signature):
+        """Sets the signature of this ObservationBlock.
 
 
-        :return: The obs_ids of this ObservationBlock.
-        :rtype: List[str]
-        """
-        return self._obs_ids
-
-    @obs_ids.setter
-    def obs_ids(self, obs_ids: List[str]):
-        """Sets the obs_ids of this ObservationBlock.
-
-
-        :param obs_ids: The obs_ids of this ObservationBlock.
-        :type obs_ids: List[str]
+        :param signature: The signature of this ObservationBlock.
+        :type signature: Signature
         """
 
-        self._obs_ids = obs_ids
+        self._signature = signature
 
     @property
     def target(self) -> List[Target]:
@@ -271,3 +251,24 @@ class ObservationBlock(Model):
         """
 
         self._priority = priority
+
+    @property
+    def comment(self) -> str:
+        """Gets the comment of this ObservationBlock.
+
+
+        :return: The comment of this ObservationBlock.
+        :rtype: str
+        """
+        return self._comment
+
+    @comment.setter
+    def comment(self, comment: str):
+        """Sets the comment of this ObservationBlock.
+
+
+        :param comment: The comment of this ObservationBlock.
+        :type comment: str
+        """
+
+        self._comment = comment

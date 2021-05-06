@@ -160,6 +160,7 @@ def generate_semester(sem, nLen, maxLen=6):
 def generate_semesters(nSem, nLen=5, maxLen=6):
     return [ generate_semester(sem, nLen, maxLen) for sem in semesters[0:nSem] ]
 
+@remove_none_values_in_dict
 def generate_mag(nLen=2):
     return {'band': randString(nLen), 'mag': randFloat(nLen), 'comment': optionalRandComment()}
 
@@ -281,7 +282,7 @@ def generate_target():
     return schema
 
 @remove_none_values_in_dict
-def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
+def generate_observation_block(nLen, maxArr, _id=None, inst='KCWI'):
     schema = {
         'signature': generate_signature(maxArr),
         'version': "0.1",
@@ -293,8 +294,8 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         'status': randStatus(),
         'comment': optionalRandComment()
     }
-    if _id:
-        schema['_id'] = _id
+
+    schema['_id'] = _id if _id else None
     return schema
 
 if __name__=='__main__':
@@ -305,6 +306,7 @@ if __name__=='__main__':
     remote=True # run on remote server (n)
     coll = create_collection(dbName, collName, port=27017, remote=False)
     coll.drop()
+    pdb.set_trace()
     coll.create_index([('signature.pi', pymongo.DESCENDING)])
     coll.create_index([('signature.semester', pymongo.DESCENDING)])
     coll.create_index([('signature.program', pymongo.DESCENDING)])

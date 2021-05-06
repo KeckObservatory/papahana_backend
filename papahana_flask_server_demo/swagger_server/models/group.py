@@ -14,44 +14,38 @@ class Group(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, name: str=None, semester: str=None, group_id: str=None, observation_blocks: List[str]=None, comment: str=None):  # noqa: E501
+    def __init__(self, group_id: str=None, observation_blocks: List[str]=None, semester: str=None, program_id: str=None, comment: str=None):  # noqa: E501
         """Group - a model defined in Swagger
-
-        :param id: The id of this Group.  # noqa: E501
-        :type id: str
-        :param name: The name of this Group.  # noqa: E501
-        :type name: str
-        :param semester: The semester of this Group.  # noqa: E501
-        :type semester: str
         :param group_id: The group_id of this Group.  # noqa: E501
         :type group_id: str
         :param observation_blocks: The observation_blocks of this Group.  # noqa: E501
         :type observation_blocks: List[str]
+        :param semester: The semester of this Group.  # noqa: E501
+        :type semester: str
+        :param program_id: The program_id of this Group.  # noqa: E501
+        :type program_id: str
         :param comment: The comment of this Group.  # noqa: E501
         :type comment: str
         """
         self.swagger_types = {
-            'id': str,
-            'name': str,
-            'semester': str,
             'group_id': str,
             'observation_blocks': List[str],
+            'semester': str,
+            'program_id': str,
             'comment': str
         }
 
         self.attribute_map = {
-            'id': 'id',
-            'name': 'name',
-            'semester': 'semester',
             'group_id': 'group_id',
             'observation_blocks': 'observation_blocks',
+            'semester': 'semester',
+            'program_id': 'program_id',
             'comment': 'comment'
         }
-        self._id = id
-        self._name = name
-        self._semester = semester
         self._group_id = group_id
         self._observation_blocks = observation_blocks
+        self._semester = semester
+        self._program_id = program_id
         self._comment = comment
 
     @classmethod
@@ -64,69 +58,6 @@ class Group(Model):
         :rtype: Group
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def id(self) -> str:
-        """Gets the id of this Group.
-
-
-        :return: The id of this Group.
-        :rtype: str
-        """
-        return self._id
-
-    @id.setter
-    def id(self, id: str):
-        """Sets the id of this Group.
-
-
-        :param id: The id of this Group.
-        :type id: str
-        """
-
-        self._id = id
-
-    @property
-    def name(self) -> str:
-        """Gets the name of this Group.
-
-
-        :return: The name of this Group.
-        :rtype: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, name: str):
-        """Sets the name of this Group.
-
-
-        :param name: The name of this Group.
-        :type name: str
-        """
-
-        self._name = name
-
-    @property
-    def semester(self) -> str:
-        """Gets the semester of this Group.
-
-
-        :return: The semester of this Group.
-        :rtype: str
-        """
-        return self._semester
-
-    @semester.setter
-    def semester(self, semester: str):
-        """Sets the semester of this Group.
-
-
-        :param semester: The semester of this Group.
-        :type semester: str
-        """
-
-        self._semester = semester
 
     @property
     def group_id(self) -> str:
@@ -146,6 +77,8 @@ class Group(Model):
         :param group_id: The group_id of this Group.
         :type group_id: str
         """
+        if group_id is None:
+            raise ValueError("Invalid value for `group_id`, must not be `None`")  # noqa: E501
 
         self._group_id = group_id
 
@@ -167,8 +100,55 @@ class Group(Model):
         :param observation_blocks: The observation_blocks of this Group.
         :type observation_blocks: List[str]
         """
+        if observation_blocks is None:
+            raise ValueError("Invalid value for `observation_blocks`, must not be `None`")  # noqa: E501
 
         self._observation_blocks = observation_blocks
+    @property
+    def semester(self) -> str:
+        """Gets the semester of this Group.
+
+
+        :return: The semester of this Group.
+        :rtype: str
+        """
+        return self._semester
+
+    @semester.setter
+    def semester(self, semester: str):
+        """Sets the semester of this Group.
+
+
+        :param semester: The semester of this Group.
+        :type semester: str
+        """
+        if semester is None:
+            raise ValueError("Invalid value for `semester`, must not be `None`")  # noqa: E501
+
+        self._semester = semester
+
+    @property
+    def program_id(self) -> str:
+        """Gets the program_id of this Group.
+
+
+        :return: The program_id of this Group.
+        :rtype: str
+        """
+        return self._program_id
+
+    @program_id.setter
+    def program_id(self, program_id: str):
+        """Sets the program_id of this Group.
+
+
+        :param program_id: The program_id of this Group.
+        :type program_id: str
+        """
+        if program_id is None:
+            raise ValueError("Invalid value for `program_id`, must not be `None`")  # noqa: E501
+
+        self._program_id = program_id
 
     @property
     def comment(self) -> str:
