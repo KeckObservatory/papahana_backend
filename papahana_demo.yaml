@@ -466,6 +466,47 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
 components:
   schemas:
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        semester:
+          type: string
+        group_id:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+      example:
+        group_id: group_id
+        observation_blocks:
+          - observation_blocks
+          - observation_blocks
+    GroupSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        group_id:
+          type: string
+        semester:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+      example:
+        group_id: group_id
     ObservationBlock:
       type: object
       properties:
@@ -695,32 +736,6 @@ components:
         template: true
         magnitude: magnitude
         band: band
-    Group:
-      required:
-        - group_id
-        - observation_blocks
-        - semester
-        - program_id
-      type: object
-      properties:
-        group_id:
-          type: string
-        observation_blocks:
-          type: array
-          items:
-            type: string
-        semester:
-          type: string
-        program_id:
-          type: string
-        comment:
-          type: string
-      example:
-        group_id: group_id
-        observation_blocks:
-        - observation_blocks
-        - observation_blocks
-
   parameters:
     obs_id:
       name: obs_id
