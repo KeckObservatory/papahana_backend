@@ -4,19 +4,24 @@ from getpass import getpass
 import yaml
 import os
 
-def config_collection(mode='dev', config='config.live.yaml'):
-    with open('config.live.yaml') as file:
+
+def config_collection(collection, mode='dev', config='config.live.yaml'):
+    with open(config) as file:
         conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
     if mode == 'dev':
-        coll = create_collection(conf['dbName'], conf['obCollectionName'], conf['port'])
+        coll = create_collection(conf['dbName'], conf[collection], conf['port'],
+                                 password=conf['password'])
     elif mode == 'demo':
-        coll = create_collection(conf['dbName'], conf['obCollectionName'], remote=True, username=conf['username'], password=conf['password'])
+        coll = create_collection(conf['dbName'], conf[collection], remote=True,
+                                 username=conf['username'], password=conf['password'])
     else:
         raise ValueError('collection mode not known')
     return coll
-    
-def create_collection(dbName, collName, port=27017, remote=False, username='papahanauser', password=None):
-    """create_collection
+
+
+def create_collection(dbName, collName, port=27017, remote=False,
+                      username='papahanauser', password=None):
+    """ create_collection
     
     Creates and returns a mongodb collection object
     
@@ -34,14 +39,19 @@ def create_collection(dbName, collName, port=27017, remote=False, username='papa
     if remote:
         if not password:
             password = getpass()
-        dbURL = f'mongodb+srv://{urllib.parse.quote(username)}:{urllib.parse.quote(password)}@cluster0.gw51m.mongodb.net/{dbName}'
+        dbURL = f'mongodb+srv://{urllib.parse.quote(username)}:' \
+                f'{urllib.parse.quote(password)}@cluster0.gw51m.mongodb.net/' \
+                f'{dbName}'
     elif os.environ.get('DOCKER_DATABASE_CONNECTION', False):
         dbURL = f'mongodb://database:{port}'
     else:
         dbURL = f'mongodb://127.0.0.1:{port}'
+
     client = pymongo.MongoClient(dbURL)
     db = client[dbName]
     coll = db[collName]
+
     return coll
 
-coll = config_collection('dev', config='./config.live.yaml')
+
+coll = config_collection('obCollectionName', 'dev', config='./config.live.yaml')
