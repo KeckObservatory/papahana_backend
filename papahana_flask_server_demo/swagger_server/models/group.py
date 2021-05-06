@@ -16,7 +16,6 @@ class Group(Model):
     """
     def __init__(self, group_id: str=None, observation_blocks: List[str]=None, semester: str=None, program_id: str=None, comment: str=None):  # noqa: E501
         """Group - a model defined in Swagger
-
         :param group_id: The group_id of this Group.  # noqa: E501
         :type group_id: str
         :param observation_blocks: The observation_blocks of this Group.  # noqa: E501
@@ -105,7 +104,6 @@ class Group(Model):
             raise ValueError("Invalid value for `observation_blocks`, must not be `None`")  # noqa: E501
 
         self._observation_blocks = observation_blocks
-
     @property
     def semester(self) -> str:
         """Gets the semester of this Group.

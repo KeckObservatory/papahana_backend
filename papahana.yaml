@@ -203,6 +203,8 @@ paths:
       - Semesters and Programs
       description: Retrieves all groups associated with a program
       operationId: semIdGroupsGET
+      parameters:
+      - $ref: '#/components/parameters/sem_id'
       responses:
         "200":
           description: OK
@@ -360,7 +362,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/ObservationBlock'
+                type: string
         required: true
       responses:
         "201":
@@ -1058,15 +1060,19 @@ components:
     Group:
       type: object
       properties:
+        id:
+          type: string
+        name:
+          type: string
+        semester:
+          type: string
         group_id:
           type: string
         observation_blocks:
           type: array
           items:
             type: string
-        semester:
-          type: string
-        prog_id:
+        comment:
           type: string
       example:
         group_id: group_id
@@ -1076,15 +1082,19 @@ components:
     GroupSummary:
       type: object
       properties:
+        id:
+          type: string
+        name:
+          type: string
         group_id:
+          type: string
+        semester:
           type: string
         observation_blocks:
           type: array
           items: 
             type: string
-        semester:
-          type: string
-        prog_id:
+        comment:
           type: string
       example:
         group_id: group_id
