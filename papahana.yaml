@@ -360,7 +360,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              type: array
+              items:
+                type: string
         required: true
       responses:
         "201":
