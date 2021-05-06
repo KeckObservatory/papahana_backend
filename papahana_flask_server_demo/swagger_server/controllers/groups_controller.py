@@ -89,7 +89,6 @@ def groups_put(body, group_id):  # noqa: E501
 
     coll.update_one({"group_id": int_id(group_id)}, {"$set": new_vals})
 
-
 def groups_delete(group_id):  # noqa: E501
     """groups_delete
 
@@ -100,6 +99,7 @@ def groups_delete(group_id):  # noqa: E501
 
     :rtype: None
     """
+
     coll = config_collection('groupCollect', 'dev', config='./config.live.yaml')
 
     group_id = int_id(group_id)
@@ -152,7 +152,6 @@ def groups_export_get(group_id):  # noqa: E501
     :rtype: Group
     """
     return 'do some magic!'
-
 
 def groups_items_get(group_id):  # noqa: E501
     """groups_items_get

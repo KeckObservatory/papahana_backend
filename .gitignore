@@ -2,6 +2,9 @@
 *copy.*
 *~
 
+*/data
+/out
+/out_swagger
 
 node_modules
 
