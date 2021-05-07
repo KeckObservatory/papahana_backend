@@ -1,0 +1,272 @@
+    Group:
+      type: object
+      properties:
+        id:
+          type: object
+        name:
+          type: string
+        semester:
+          type: string
+        group_id:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+      example:
+        group_id: group_id
+        observation_blocks:
+          - observation_blocks
+          - observation_blocks
+    GroupSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        group_id:
+          type: string
+       semesters:
+          type: array
+          items:
+            type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+      example:
+        group_id: group_id
+    ObservationBlock:
+      type: object
+      properties:
+        id:
+          type: string
+        signature:
+          $ref: '#/Signature'
+        target:
+          type: array
+          items:
+            $ref: '#/Target'
+        acquisition:
+          $ref: '#/Acquisition'
+        observations:
+          type: array
+          items:
+            $ref: '#/Observation'
+        associations:
+          type: array
+          items:
+            type: string
+        observation_type:
+          type: array
+          items:
+            type: string
+        priority:
+          type: number
+          example:
+            99.99
+        comment:
+          type: string
+          example:
+            this is a nice ob block.
+    Signature:
+      type: object
+      properties:
+        pi:
+          type: string
+        semester:
+          type: string
+        observers:
+          type: array
+          items:
+            type: string
+        programs:
+          type: array
+          items:
+              type: string
+        group:
+          type: array
+          items:
+              type: string
+        comment:
+          type: string
+    Acquisition:
+      required:
+      - acquisition
+      - acquisition_method
+      - ao_modes
+      - associations
+      - guider_selection
+      - instrumental_setup
+      - offset_stars
+      - position_angles
+      - slitmasks
+      type: object
+      properties:
+        acquisition:
+          type: string
+        instrumental_setup:
+          type: string
+        acquisition_method:
+          type: string
+        guider_selection:
+          type: string
+        ao_modes:
+          type: array
+          items:
+            type: string
+        associations:
+          type: array
+          items:
+            type: string
+        offset_stars:
+          type: array
+          items:
+            type: string
+        slitmasks:
+          type: array
+          items:
+            type: string
+        position_angles:
+          type: array
+          items:
+            type: string
+      example:
+        associations:
+        - associations
+        - associations
+        offset_stars:
+        - offset_stars
+        - offset_stars
+        position_angles:
+        - position_angles
+        - position_angles
+        acquisition_method: acquisition_method
+        guider_selection: guider_selection
+        slitmasks:
+        - slitmasks
+        - slitmasks
+        ao_modes:
+        - ao_modes
+        - ao_modes
+        acquisition: acquisition
+        instrumental_setup: instrumental_setup
+    Observation:
+      required:
+      - associations
+      - exposure_sequences
+      - instrument
+      type: object
+      properties:
+        instrument:
+          type: string
+        exposure_sequences:
+          type: array
+          items:
+            type: string
+        associations:
+          type: array
+          items:
+            type: string
+      example:
+        associations:
+        - associations
+        - associations
+        exposure_sequences:
+        - exposure_sequences
+        - exposure_sequences
+        instrument: instrument
+    Target:
+      required:
+      - ddec
+      - dec
+      - dec_offset
+      - dra
+      - epoch
+      - equinox
+      - frame
+      - magnitude
+      - name
+      - obstime
+      - pm_dec
+      - pm_ra
+      - ra
+      - ra_offset
+      type: object
+      properties:
+        name:
+          type: string
+        ra:
+          type: string
+        dec:
+          type: string
+        equinox:
+          type: number
+        frame:
+          type: string
+        ra_offset:
+          type: number
+        dec_offset:
+          type: number
+        pm_ra:
+          type: number
+        pm_dec:
+          type: number
+        epoch:
+          type: number
+        obstime:
+          type: number
+        magnitude:
+          $ref: '#/Magnitude'
+        wrap?:
+          type: string
+        dra:
+          type: number
+        ddec:
+          type: number
+        comment?:
+          type: string
+        template:
+          type: boolean
+      example:
+        dec: dec
+        epoch: 2.3021358869347655
+        pm_dec: 5.637376656633329
+        pm_ra: 5.962133916683182
+        ra: ra
+        ddec: 3.616076749251911
+        ra_offset: 6.027456183070403
+        dra: 9.301444243932576
+        obstime: 7.061401241503109
+        wrap?: wrap?
+        comment?: comment?
+        name: name
+        magnitude:
+          template: true
+          magnitude: magnitude
+          band: band
+        dec_offset: 1.4658129805029452
+        equinox: 0.8008281904610115
+        frame: frame
+    Magnitude:
+      required:
+      - band
+      - magnitude
+      - template
+      type: object
+      properties:
+        band:
+          type: string
+        magnitude:
+          type: string
+        template:
+          type: boolean
+      example:
+        template: true
+        magnitude: magnitude
+        band: band

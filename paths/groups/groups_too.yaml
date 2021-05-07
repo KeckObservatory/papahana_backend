@@ -1,0 +1,28 @@
+    post:
+      tags:
+      - Groups
+      description: Submits a group for Target of Opportunity (ToO) (all the elements)
+      operationId: groups_schedule_too_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+
+components:
+  schemas:
+    $ref: "../schemas/_index.yaml"
