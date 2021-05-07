@@ -571,8 +571,10 @@ components:
       properties:
         pi:
           type: string
-        semester:
-          type: string
+        semesters:
+          type: array
+          items: 
+            type: string
         observers:
           type: array
           items:
