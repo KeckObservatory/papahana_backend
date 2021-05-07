@@ -1,5 +1,5 @@
 import numpy as np
-from controller_helper import *
+import os
 import pymongo
 import random
 import string
@@ -88,7 +88,6 @@ comments = [
 
 status = [
     "undefined", 
-    "its complicated",
     "completed", 
     "broken",
     "invalid",
@@ -96,17 +95,9 @@ status = [
     "inqueue",
 ]
 
-groups = ['Army', 
-          'The Alliance of Magicians', 
-          'Tantamount Studios', 
-          'Orange County Prison', 
-          'Milford School', 
-          'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution'
-]
-
-
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
-semesters = [str(x)+y for x, y in product(range(2000,2004), ['A', 'B'])]
+
+semesters = [str(x)+y for x, y in product(range(2000,2030), ['A', 'B'])]
 letters = string.ascii_lowercase
 
 # random generators 
@@ -125,6 +116,7 @@ randPIList = lambda x=1: lambda x=1: list(np.random.choice(pis, size=random.rand
 randObserverList = lambda x=1: list(np.random.choice(observers, size=random.randint(1, x), replace=False))
 randComment = lambda: random.choice(comments)
 optionalRandComment = lambda: random.choice([None, randComment()])
+randSemesterList = lambda x=3: list(np.random.choice(semesters, size=random.randint(0, x), replace=False))
 randStatus = lambda: random.choice(status)
 rand_kcwi_science = lambda: random.choice(status)
 z_fill_number = lambda x, zf=2: str(x).zfill(2)
@@ -134,9 +126,6 @@ arcSeconds = z_fill_number(randInt(0, 60))
 
 decDeg = z_fill_number(randInt(0, 90))
 elevation = random.choice(['+', '-'])
-randGroupName = lambda: random.choice(groups)
-randOBIds = lambda x=5: [int(x) for x in list(np.random.choice( range(0,nOb+1), size=random.randint(0, x), replace=False))]
-
 def generate_group(_id=None):
     schema = {
         "semester": randSemester(),
@@ -182,7 +171,6 @@ def generate_semester(sem, nLen, maxLen=6):
 def generate_semesters(nSem, nLen=5, maxLen=6):
     return [ generate_semester(sem, nLen, maxLen) for sem in semesters[0:nSem] ]
 
-@remove_none_values_in_dict
 def generate_mag(nLen=2):
     return {'band': randString(nLen), 'mag': randFloat(nLen), 'comment': optionalRandComment()}
 
@@ -204,10 +192,9 @@ def generate_observation(nLen, maxArr):
 def generate_signature(maxArr):
     schema = {
         'pi': randPI(),
-        'semester': randSemester(),
+        'semesters': randSemesterList(3),
         'program': random.randint(0, 10),
         'observers': randObserverList(maxArr),
-        'group': random.randint(0,3),
         'comment': optionalRandComment()
     }
     return schema
@@ -304,7 +291,7 @@ def generate_target():
     return schema
 
 @remove_none_values_in_dict
-def generate_observation_block(nLen, maxArr, _id=None, inst='KCWI'):
+def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     schema = {
         'signature': generate_signature(maxArr),
         'version': "0.1",
@@ -316,9 +303,30 @@ def generate_observation_block(nLen, maxArr, _id=None, inst='KCWI'):
         'status': randStatus(),
         'comment': optionalRandComment()
     }
-
-    schema['_id'] = _id if _id else None
+    if _id:
+        schema['_id'] = _id
     return schema
+
+def create_collection(dbName, collName, port=27017):
+    """ create_collection
+    Creates and returns a mongodb collection object
+    
+    :param dbName: database name
+    :type dbName: str
+    :param collName: collection name
+    :type collName: str
+    :port: port name
+    :type port: int
+    :rtype: pymongo.collection.Collection
+    """
+    if os.environ.get('DOCKER_DATABASE_CONNECTION', False):
+        dbURL = f'mongodb://database:{port}'
+    else:
+        dbURL = f'mongodb://127.0.0.1:{port}'
+    client = pymongo.MongoClient(dbURL)
+    db = client[dbName]
+    coll = db[collName]
+    return coll
 
 if __name__=='__main__':
     seed = 1984739

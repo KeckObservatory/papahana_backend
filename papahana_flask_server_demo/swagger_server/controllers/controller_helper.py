@@ -35,7 +35,7 @@ def project_signature_fields(*signatureKeys):
     
 def get_distinct_semesters(obsName, coll):
     match = create_signature_match(coll, {'observers': obsName})
-    group = group_distinct_signature('semester')
+    group = group_distinct_signature('semesters')
     pipeline = [
         match,
         group
@@ -44,17 +44,17 @@ def get_distinct_semesters(obsName, coll):
 
 def get_semesters_by_pi(piName, coll):
     match = create_signature_match(coll, {'pi': piName})
-    project = project_signature_fields('semester')
+    project = project_signature_fields('semesters')
     pipeline = [ match, project ]
     return coll.aggregate(pipeline)
 
 def get_ob_by_semester(semid, coll):
-    match = create_signature_match(coll, {'semester': semid})
+    match = create_signature_match(coll, {'semesters': semid})
     pipeline = [ match ]
     return coll.aggregate(pipeline)
 
 def get_ob_by_semester_observer(semid, observer, coll):
-    match = create_signature_match(coll, {'semester': semid, 'observers': observer})
+    match = create_signature_match(coll, {'semesters': semid, 'observers': observer})
     pipeline = [ match ]
     return coll.aggregate(pipeline)
 
@@ -66,7 +66,9 @@ def find_by_pi(name, coll):
 
 def find_by_semester_program(semester, program, coll):
     query = {
-        "signature.semester": semester,
+        "signature.semesters": {
+            "$in": [semester]
+        },
         "signature.program": program
     }
     return coll.find(query)
@@ -79,12 +81,14 @@ def find_by_observer(observer, coll):
     }
     return coll.find(query)
 
-def find_by_observer_container(observer, container, coll):
+def find_by_observer_semester(observer, semester, coll):
     query = {
         "signature.observers": {
             "$in": [observer]
         },
-        "signature.container": container
+        "signature.semesters": {
+            "$in": [semester]
+        },
     }
     return coll.find(query)
 
