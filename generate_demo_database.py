@@ -88,6 +88,7 @@ comments = [
 
 status = [
     "undefined", 
+    "its complicated",
     "completed", 
     "broken",
     "invalid",
@@ -95,8 +96,16 @@ status = [
     "inqueue",
 ]
 
-kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
+groups = ['Army', 
+          'The Alliance of Magicians', 
+          'Tantamount Studios', 
+          'Orange County Prison', 
+          'Milford School', 
+          'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution'
+]
 
+
+kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 semesters = [str(x)+y for x, y in product(range(2000,2004), ['A', 'B'])]
 letters = string.ascii_lowercase
 
@@ -125,6 +134,19 @@ arcSeconds = z_fill_number(randInt(0, 60))
 
 decDeg = z_fill_number(randInt(0, 90))
 elevation = random.choice(['+', '-'])
+randGroupName = lambda: random.choice(groups)
+randOBIds = lambda x=5: [int(x) for x in list(np.random.choice( range(0,nOb+1), size=random.randint(0, x), replace=False))]
+
+def generate_group(_id=None):
+    schema = {
+        "semester": randSemester(),
+        "name": randGroupName(),
+        "comment": randComment(),
+        "observation_blocks": randOBIds()
+    }
+    if _id:
+        schema['_id'] = _id
+    return schema
 
 def generate_ra():
     raDeg = z_fill_number(randInt(0, 360))
@@ -302,18 +324,29 @@ if __name__=='__main__':
     seed = 1984739
     random.seed(seed)
     dbName = 'papahana'
+    
+    # Create ob_block collection
     collName = 'ob_block'
     remote=True # run on remote server (n)
     coll = create_collection(dbName, collName, port=27017, remote=False)
     coll.drop()
-    pdb.set_trace()
     coll.create_index([('signature.pi', pymongo.DESCENDING)])
     coll.create_index([('signature.semester', pymongo.DESCENDING)])
     coll.create_index([('signature.program', pymongo.DESCENDING)])
-    
     nLen = 5
     maxArr = 5
     nOb = 100
     for idx in range(nOb):
         doc = generate_observation_block(nLen, maxArr, str(idx))
         result = coll.insert_one(doc)
+        assert result.inserted_id == str(idx), 'check that idx was sed properly'
+    # Create groups collection
+    collName = 'groups'
+    remote=True # run on remote server (n)
+    coll = create_collection(dbName, collName, port=27017, remote=False)
+    coll.drop()
+    nGroups = 20
+    for idx in range(nGroups):
+        doc = generate_group(str(idx))
+        result = coll.insert_one(doc)
+        assert result.inserted_id == str(idx), 'check that idx was sed properly'
