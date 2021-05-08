@@ -97,6 +97,12 @@ status = [
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
+groups = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
+NOBS = 100 # number of observation blocks
+randGroupName = lambda: random.choice(groups)
+randOBIds = lambda x=5: [int(x) for x in list(np.random.choice( range(0,NOBS+1), size=random.randint(0, x), replace=False))]
+
+
 semesters = [str(x)+y for x, y in product(range(2000,2030), ['A', 'B'])]
 letters = string.ascii_lowercase
 
@@ -221,14 +227,14 @@ def generate_kcwi_science(nLen, maxArr):
         "det1_exptime": random.randint(0,3600),
         "det1_nexp": random.randint(0,99),
         "det2_exptime": random.randint(0,3600),
-        "det2_next": random.randint(0,99),
+        "det2_nexp": random.randint(0,99),
         "cfg_cam_grating": random.choice([ "BL","BM","BH1","BH2", "RL","RM","RH1","RH2" ]),
         "cfg_cam_cwave": random.randint(6500,10000),
         "cfg_slicer": random.choice(["Small", "Medium", "Large"])
     }
     if 'dither' in name:
-        schema["SEQ.DITARRAY"] = generate_dither()
-        schema["SEQ.NDITHER"] = random.randint(0,99)
+        schema["seq_ditarray"] = generate_dither()
+        schema["seq_ndither"] = random.randint(0,99)
     return schema
 
 
@@ -336,22 +342,22 @@ if __name__=='__main__':
     # Create ob_block collection
     collName = 'ob_block'
     remote=True # run on remote server (n)
-    coll = create_collection(dbName, collName, port=27017, remote=False)
+    coll = create_collection(dbName, collName, port=27017)
     coll.drop()
     coll.create_index([('signature.pi', pymongo.DESCENDING)])
     coll.create_index([('signature.semester', pymongo.DESCENDING)])
     coll.create_index([('signature.program', pymongo.DESCENDING)])
     nLen = 5
     maxArr = 5
-    nOb = 100
-    for idx in range(nOb):
-        doc = generate_observation_block(nLen, maxArr, str(idx))
+    inst = 'KCWI'
+    for idx in range(NOBS):
+        doc = generate_observation_block(nLen, maxArr, inst, str(idx))
         result = coll.insert_one(doc)
         assert result.inserted_id == str(idx), 'check that idx was sed properly'
     # Create groups collection
     collName = 'groups'
     remote=True # run on remote server (n)
-    coll = create_collection(dbName, collName, port=27017, remote=False)
+    coll = create_collection(dbName, collName, port=27017)
     coll.drop()
     nGroups = 20
     for idx in range(nGroups):
