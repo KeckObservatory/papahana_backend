@@ -43,8 +43,8 @@ def create_collection(dbName, collName, mode='dev', port=27017, remote=False,
                 f'{dbName}'
     elif os.environ.get('DOCKER_DATABASE_CONNECTION', False):
         dbURL = f'mongodb://database:{port}'
-    # elif mode == 'dev':
-    #     dbURL = f'mongodb://10.96.0.228:{port}'
+    elif mode == 'dev':
+        dbURL = f'mongodb://10.96.0.228:{port}'
     else:
         dbURL = f'mongodb://127.0.0.1:{port}'
 
