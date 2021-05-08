@@ -9,7 +9,8 @@ def config_collection(collection, mode='dev', config='config.live.yaml'):
     with open(config) as file:
         conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
     if mode == 'dev':
-        coll = create_collection(conf['dbName'], conf[collection], mode)
+        coll = create_collection(conf['dbName'], conf[collection], conf['port'],
+                                 password=conf['password'])
     elif mode == 'demo':
         coll = create_collection(conf['dbName'], conf[collection], remote=True,
                                  username=conf['username'], password=conf['password'])
@@ -18,7 +19,7 @@ def config_collection(collection, mode='dev', config='config.live.yaml'):
     return coll
 
 
-def create_collection(dbName, collName, mode='dev', port=27017, remote=False,
+def create_collection(dbName, collName, port=27017, remote=False,
                       username='papahanauser', password=None):
     """ create_collection
     
@@ -43,8 +44,6 @@ def create_collection(dbName, collName, mode='dev', port=27017, remote=False,
                 f'{dbName}'
     elif os.environ.get('DOCKER_DATABASE_CONNECTION', False):
         dbURL = f'mongodb://database:{port}'
-    elif mode == 'dev':
-        dbURL = f'mongodb://10.96.0.228:{port}'
     else:
         dbURL = f'mongodb://127.0.0.1:{port}'
 

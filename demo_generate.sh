@@ -5,7 +5,7 @@
     #-v
 
 docker run --rm -v ${PWD}:/local swaggerapi/swagger-codegen-cli-v3 generate \
-    -i /local/papahana_demo.yaml \
+    -i /local/papahana_demo_2.yaml \
     -l python-flask \
     -o /local/papahana_flask_server_demo \
     -v
