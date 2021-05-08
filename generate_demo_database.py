@@ -313,7 +313,7 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         schema['_id'] = _id
     return schema
 
-def create_collection(dbName, collName, port=27017):
+def create_collection(dbName, collName, port=27017, mode='prod'):
     """ create_collection
     Creates and returns a mongodb collection object
     
@@ -327,6 +327,8 @@ def create_collection(dbName, collName, port=27017):
     """
     if os.environ.get('DOCKER_DATABASE_CONNECTION', False):
         dbURL = f'mongodb://database:{port}'
+    elif mode is 'prod':
+        dbURL = f'mongodb://10.96.0.228:{port}'
     else:
         dbURL = f'mongodb://127.0.0.1:{port}'
     client = pymongo.MongoClient(dbURL)
