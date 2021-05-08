@@ -1,0 +1,952 @@
+openapi: 3.0.0
+info:
+  title: Papahana_demo
+  description: WMKO API to the Observation Management System
+  contact:
+    email: observing-support@keck.hawaii.edu
+  license:
+    name: BSD 3-Clause
+    url: https://opensource.org/licenses/BSD-3-Clause
+  version: "0.1"
+servers:
+- url: http://localhost:8080/v0
+tags:
+- name: Observation Block
+  externalDocs:
+    description: Find out more
+    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+- name: Group
+  externalDocs:
+    description: Find out more
+    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+paths:
+  /groups:
+    get:
+      tags:
+        - Groups
+      description: Retrieves a specific group's information
+      operationId: groups_get
+      parameters:
+        - name: group_id
+          in: query
+          description: group identifier
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+    put:
+      tags:
+        - Groups
+      description: Overwrites a group
+      operationId: groups_put
+      parameters:
+        - name: group_id
+          in: query
+          description: group identifier
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: 6042ced0afc6ecd40fe5a3dd
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+        required: true
+      responses:
+        "201":
+          description: OK
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group id not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+    post:
+      tags:
+        - Groups
+      description: Creates a group
+      operationId: groups_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+        required: true
+      responses:
+        "201":
+          description: OK
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group id not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+    delete:
+      tags:
+        - Groups
+      description: Delete group by id
+      operationId: groups_delete
+      parameters:
+        - name: group_id
+          in: query
+          description: group identifier
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+          example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group id not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/append:
+    put:
+      tags:
+      - Groups
+      description: Appends an observation block to a group by id
+      operationId: groups_append_put
+      parameters:
+      - name: group_id
+        in: query
+        description: group identifier
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        "201":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/executionTimes:
+    get:
+      tags:
+      - Groups
+      description: Calculate the total execution time of a group
+      operationId: groups_execution_times_get
+      parameters:
+      - name: group_id
+        in: query
+        description: group identifier
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+                description: miliseconds
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/items:
+    get:
+      tags:
+      - Groups
+      description: Retrieves the ordered list of observing blocks in a group
+      operationId: groups_items_get
+      parameters:
+      - $ref: '#/components/parameters/group_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/items/summary:
+    get:
+      tags:
+      - Groups
+      description: Retrieves a summary of group information
+      operationId: groups_items_summary_get
+      parameters:
+      - name: group_id
+        in: query
+        description: group identifier
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSummary'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/verify:
+    get:
+      tags:
+      - Groups
+      description: Request verification of the elements of a group. Sends group summary
+        as a sucessfull response
+      operationId: groups_verify_get
+      parameters:
+      - name: group_id
+        in: query
+        description: group identifier
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSummary'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/scheduleToO:
+    post:
+      tags:
+      - Groups
+      description: Submits a group for Target of Opportunity (ToO) (all the elements)
+      operationId: groups_schedule_too_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/export:
+    get:
+      tags:
+      - Groups
+      description: Retrieves a specific group information in a file format (default
+        .json)
+      operationId: groups_export_get
+      parameters:
+      - name: group_id
+        in: query
+        description: group identifier
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+
+  /obsBlocks/:
+    get:
+      tags:
+      - Observation Block
+      description: "Retrieves the general parameters of an OB (target, exec time,\
+        \ other as needed)"
+      operationId: obs_block_get
+      parameters:
+      - name: ob_id
+        in: query
+        description: observation block id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: On a success gets a new OB.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationBlock'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    put:
+      tags:
+      - Observation Block
+      description: Updates the observation block with the new one
+      operationId: obs_block_put
+      parameters:
+      - name: ob_id
+        in: query
+        description: observation block id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      requestBody:
+        description: Observation block replacing ob_id.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationBlock'
+        required: true
+      responses:
+        "200":
+          description: On a success replaces the given OB with the updated OB.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationBlock'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    post:
+      tags:
+      - Observation Block
+      description: Inserts an observation block.
+      operationId: obs_block_post
+      requestBody:
+        description: Observation block to be added.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationBlock'
+        required: true
+      responses:
+        "200":
+          description: On a success inserts new OB.
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    delete:
+      tags:
+      - Observation Block
+      description: Removes the observation block
+      operationId: obs_block_delete
+      parameters:
+      - name: ob_id
+        in: query
+        description: observation block id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: On a success removes given OB from the database.
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/duplicate/{sem_id}:
+    post:
+      tags:
+      - Observation Block
+      description: "Duplicate the OB, default is current semId."
+      operationId: obs_block_duplicate
+      parameters:
+      - name: ob_id
+        in: query
+        description: observation block id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      - name: sem_id
+        in: path
+        description: program id
+        required: true
+        style: simple
+        explode: true
+        schema:
+          type: string
+        example: 12345asdf
+      responses:
+        "200":
+          description: "On success a new OB is generated, with a new unique ID. If\
+            \ needed the OB is associated with a new semester."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationBlock'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+components:
+  schemas:
+    Group:
+      type: object
+      properties:
+        id:
+          type: object
+        name:
+          type: string
+        semester:
+          type: string
+        group_id:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+      example:
+        group_id: group_id
+        observation_blocks:
+          - observation_blocks
+          - observation_blocks
+    GroupSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        group_id:
+          type: string
+        semester:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+      example:
+        group_id: group_id
+    ObservationBlock:
+      type: object
+      properties:
+        id:
+          type: string
+        signature:
+          $ref: '#/components/schemas/Signature'
+        target:
+          type: array
+          items:
+            $ref: '#/components/schemas/Target'
+        acquisition:
+          $ref: '#/components/schemas/Acquisition'
+        observations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Observation'
+        associations:
+          type: array
+          items:
+            type: string
+        observation_type:
+          type: array
+          items:
+            type: string
+        priority:
+          type: number
+          example:
+            99.99
+        comment: 
+          type: string
+          example:
+            this is a nice ob block.
+    Signature:
+      type: object
+      properties:
+        pi:
+          type: string
+        semesters:
+          type: array
+          items: 
+            type: string
+        observers:
+          type: array
+          items:
+            type: string
+        programs:
+          type: array
+          items: 
+              type: string
+        group:
+          type: array
+          items:
+              type: string
+        comment:
+          type: string
+    Acquisition:
+      required:
+      - acquisition
+      - acquisition_method
+      - ao_modes
+      - associations
+      - guider_selection
+      - instrumental_setup
+      - offset_stars
+      - position_angles
+      - slitmasks
+      type: object
+      properties:
+        acquisition:
+          type: string
+        instrumental_setup:
+          type: string
+        acquisition_method:
+          type: string
+        guider_selection:
+          type: string
+        ao_modes:
+          type: array
+          items:
+            type: string
+        associations:
+          type: array
+          items:
+            type: string
+        offset_stars:
+          type: array
+          items:
+            type: string
+        slitmasks:
+          type: array
+          items:
+            type: string
+        position_angles:
+          type: array
+          items:
+            type: string
+      example:
+        associations:
+        - associations
+        - associations
+        offset_stars:
+        - offset_stars
+        - offset_stars
+        position_angles:
+        - position_angles
+        - position_angles
+        acquisition_method: acquisition_method
+        guider_selection: guider_selection
+        slitmasks:
+        - slitmasks
+        - slitmasks
+        ao_modes:
+        - ao_modes
+        - ao_modes
+        acquisition: acquisition
+        instrumental_setup: instrumental_setup
+    Observation:
+      required:
+      - associations
+      - exposure_sequences
+      - instrument
+      type: object
+      properties:
+        instrument:
+          type: string
+        exposure_sequences:
+          type: array
+          items:
+            type: string
+        associations:
+          type: array
+          items:
+            type: string
+      example:
+        associations:
+        - associations
+        - associations
+        exposure_sequences:
+        - exposure_sequences
+        - exposure_sequences
+        instrument: instrument
+    Target:
+      required:
+      - ddec
+      - dec
+      - dec_offset
+      - dra
+      - epoch
+      - equinox
+      - frame
+      - magnitude
+      - name
+      - obstime
+      - pm_dec
+      - pm_ra
+      - ra
+      - ra_offset
+      type: object
+      properties:
+        name:
+          type: string
+        ra:
+          type: string
+        dec:
+          type: string
+        equinox:
+          type: number
+        frame:
+          type: string
+        ra_offset:
+          type: number
+        dec_offset:
+          type: number
+        pm_ra:
+          type: number
+        pm_dec:
+          type: number
+        epoch:
+          type: number
+        obstime:
+          type: number
+        magnitude:
+          $ref: '#/components/schemas/Magnitude'
+        wrap?:
+          type: string
+        dra:
+          type: number
+        ddec:
+          type: number
+        comment?:
+          type: string
+        template:
+          type: boolean
+      example:
+        dec: dec
+        epoch: 2.3021358869347655
+        pm_dec: 5.637376656633329
+        pm_ra: 5.962133916683182
+        ra: ra
+        ddec: 3.616076749251911
+        ra_offset: 6.027456183070403
+        dra: 9.301444243932576
+        obstime: 7.061401241503109
+        wrap?: wrap?
+        comment?: comment?
+        name: name
+        magnitude:
+          template: true
+          magnitude: magnitude
+          band: band
+        dec_offset: 1.4658129805029452
+        equinox: 0.8008281904610115
+        frame: frame
+    Magnitude:
+      required:
+      - band
+      - magnitude
+      - template
+      type: object
+      properties:
+        band:
+          type: string
+        magnitude:
+          type: string
+        template:
+          type: boolean
+      example:
+        template: true
+        magnitude: magnitude
+        band: band
+  parameters:
+    obs_id:
+      name: obs_id
+      in: query
+      description: observer id
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: Dwane Johnson
+    ob_id:
+      name: ob_id
+      in: query
+      description: observation block id
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 6042ced0afc6ecd40fe5a3dd
+    sem_id:
+      name: sem_id
+      in: path
+      description: program id
+      required: true
+      style: simple
+      explode: true
+      schema:
+        type: string
+      example: 12345asdf
+    instrument:
+      name: instrument
+      in: path
+      description: instrument used to make observation
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        enum:
+        - KCWI
+        - DEIMOS
+        - ESI
+        - HIRES
+        - LRIS
+        - MOSFIRE
+        - OSIRIS
+        - NIRES
+        - NIRC2
+        - DE
+        - DF
+        - EI
+        - HI
+        - KB
+        - KF
+        - LB
+        - LR
+        - MF
+        - OI
+        - OS
+        - NR
+        - NI
+        - NS
+        - N2
+        - NC
+      example: kcwi
+    ip_version:
+      name: ip_version
+      in: path
+      description: ip version description here
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+      example: 0
+    index:
+      name: index
+      in: path
+      description: Finding chart index
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+      example: 0
+    template_id:
+      name: template_id
+      in: path
+      description: unique identifier of template
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: "1"
+    template_name:
+      name: template_name
+      in: path
+      description: template name description goes here
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: "1"
+    pi_name:
+      name: pi_name
+      in: query
+      description: name of primary investigator associated with the project
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: Pope Pious IX
+    proposal_id:
+      name: proposal_id
+      in: query
+      description: name of primary investigator associated with the project
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 1848R
+    file_parameter:
+      name: file_parameter
+      in: path
+      description: file paramter description here
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: ex file parameter goes here
+    container_id:
+      name: container_id
+      in: query
+      description: container identifier
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 6042ced0afc6ecd40fe5a3dd
+    file_type:
+      name: file_type
+      in: query
+      description: type of file to return
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: json
+    run_id:
+      name: run_id
+      in: query
+      description: run identifier
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 6042ced0afc6ecd40fe5a3dd
+    sidereal:
+      name: sidereal
+      in: query
+      description: tracking rate
+      required: true
+      style: form
+      explode: false
+      schema:
+        type: boolean
+    group_id:
+      name: group_id
+      in: query
+      description: group identifier
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 6042ced0afc6ecd40fe5a3dd
