@@ -9,8 +9,7 @@ def config_collection(collection, mode='dev', config='config.live.yaml'):
     with open(config) as file:
         conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
     if mode == 'dev':
-        coll = create_collection(conf['dbName'], conf[collection], conf['port'],
-                                 password=conf['password'])
+        coll = create_collection(conf['dbName'], conf[collection], port=conf['port'])
     elif mode == 'demo':
         coll = create_collection(conf['dbName'], conf[collection], remote=True,
                                  username=conf['username'], password=conf['password'])
