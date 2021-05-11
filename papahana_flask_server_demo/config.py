@@ -5,7 +5,16 @@ import yaml
 import os
 
 
-def config_collection(collection, mode='dev', config='config.live.yaml'):
+def read_mode(config='config.live.yaml'):
+    with open(config) as file:
+        mode = yaml.load(file, Loader=yaml.FullLoader)['mode']
+
+    return mode['config']
+
+
+def config_collection(collection, config='config.live.yaml'):
+    mode = read_mode()
+
     with open(config) as file:
         conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
     if mode == 'dev':
@@ -19,7 +28,7 @@ def config_collection(collection, mode='dev', config='config.live.yaml'):
     return coll
 
 
-def create_collection(dbName, collName, port=27017, remote=False,
+def create_collection(dbName, collName, port=27017, remote=False, mode='dev',
                       username='papahanauser', password=None):
     """ create_collection
     
@@ -44,8 +53,8 @@ def create_collection(dbName, collName, port=27017, remote=False,
                 f'{dbName}'
     elif os.environ.get('DOCKER_DATABASE_CONNECTION', False):
         dbURL = f'mongodb://database:{port}'
-    # elif mode == 'dev':
-    #     dbURL = f'mongodb://10.96.0.228:{port}'
+    elif mode == 'dev':
+        dbURL = f'mongodb://10.96.0.228:{port}'
     else:
         dbURL = f'mongodb://127.0.0.1:{port}'
 
@@ -56,4 +65,4 @@ def create_collection(dbName, collName, port=27017, remote=False,
     return coll
 
 
-coll = config_collection('obCollectionName', 'dev', config='./config.live.yaml')
+# coll = config_collection('obCollectionName', 'dev', config='./config.live.yaml')
