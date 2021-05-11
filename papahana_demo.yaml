@@ -350,7 +350,7 @@ paths:
       x-swagger-router-controller: Groups
       x-openapi-router-controller: swagger_server.controllers.groups_controller
 
-  /obsBlocks/:
+  /obsBlocks:
     get:
       tags:
       - Observation Block
@@ -615,7 +615,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/template/duplicate/:
+  /obsBlocks/template/duplicate:
     post:
       tags:
         - Observation Block
@@ -637,7 +637,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/completelyFilledIn/:
+  /obsBlocks/completelyFilledIn:
     get:
       tags:
         - Observation Block
@@ -659,7 +659,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/supplementFiles/:
+  /obsBlocks/supplementFiles:
     get:
       tags:
         - Observation Block
@@ -683,7 +683,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/timeConstraints/:
+  /obsBlocks/timeConstraints:
     get:
       tags:
         - Observation Block
@@ -725,7 +725,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/schedule/:
+  /obsBlocks/schedule:
     get:
       tags:
         - Observation Block
@@ -765,7 +765,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/executions/:
+  /obsBlocks/executions:
     get:
       tags:
         - Observation Block
@@ -789,7 +789,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/executionTime/:
+  /obsBlocks/executionTime:
     get:
       tags:
         - Observation Block
@@ -834,7 +834,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/upgrade/:
+  /obsBlocks/upgrade:
     post:
       tags:
         - Observation Block
@@ -855,7 +855,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/export/:
+  /obsBlocks/export:
     get:
       tags:
         - Observation Block
