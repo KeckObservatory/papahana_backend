@@ -670,12 +670,13 @@ paths:
       responses:
         "200":
           description: On success gets list of files associated with the OB.
-          application/json:
-          schema:
-            type: array
-            items:
-              type: string
-            x-content-type: application/json
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
         "400":
           description: Invalid status value
         "404":
@@ -694,12 +695,13 @@ paths:
       responses:
         "200":
           description: On success retrieves a list of existing time constraint(s) of an OB.
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-              x-content-type: application/json
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
         "400":
           description: Invalid status value
         "404":
@@ -885,8 +887,6 @@ components:
           type: string
         semester:
           type: string
-        group_id:
-          type: string
         observation_blocks:
           type: array
           items:
@@ -894,7 +894,6 @@ components:
         comment:
           type: string
       example:
-        group_id: group_id
         observation_blocks:
           - observation_blocks
           - observation_blocks
@@ -904,8 +903,6 @@ components:
         id:
           type: string
         name:
-          type: string
-        group_id:
           type: string
         semester:
           type: string
