@@ -14,15 +14,13 @@ class GroupSummary(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, name: str=None, group_id: str=None, semester: str=None, observation_blocks: List[str]=None, comment: str=None):  # noqa: E501
+    def __init__(self, id: str=None, name: str=None, semester: str=None, observation_blocks: List[str]=None, comment: str=None):  # noqa: E501
         """GroupSummary - a model defined in Swagger
 
         :param id: The id of this GroupSummary.  # noqa: E501
         :type id: str
         :param name: The name of this GroupSummary.  # noqa: E501
         :type name: str
-        :param group_id: The group_id of this GroupSummary.  # noqa: E501
-        :type group_id: str
         :param semester: The semester of this GroupSummary.  # noqa: E501
         :type semester: str
         :param observation_blocks: The observation_blocks of this GroupSummary.  # noqa: E501
@@ -33,7 +31,6 @@ class GroupSummary(Model):
         self.swagger_types = {
             'id': str,
             'name': str,
-            'group_id': str,
             'semester': str,
             'observation_blocks': List[str],
             'comment': str
@@ -42,14 +39,12 @@ class GroupSummary(Model):
         self.attribute_map = {
             'id': 'id',
             'name': 'name',
-            'group_id': 'group_id',
             'semester': 'semester',
             'observation_blocks': 'observation_blocks',
             'comment': 'comment'
         }
         self._id = id
         self._name = name
-        self._group_id = group_id
         self._semester = semester
         self._observation_blocks = observation_blocks
         self._comment = comment
@@ -106,27 +101,6 @@ class GroupSummary(Model):
         """
 
         self._name = name
-
-    @property
-    def group_id(self) -> str:
-        """Gets the group_id of this GroupSummary.
-
-
-        :return: The group_id of this GroupSummary.
-        :rtype: str
-        """
-        return self._group_id
-
-    @group_id.setter
-    def group_id(self, group_id: str):
-        """Sets the group_id of this GroupSummary.
-
-
-        :param group_id: The group_id of this GroupSummary.
-        :type group_id: str
-        """
-
-        self._group_id = group_id
 
     @property
     def semester(self) -> str:

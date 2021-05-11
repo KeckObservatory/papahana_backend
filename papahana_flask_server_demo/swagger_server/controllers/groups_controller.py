@@ -5,40 +5,45 @@ import pymongo
 from swagger_server.models.group import Group  # noqa: E501
 from swagger_server.models.group_summary import GroupSummary  # noqa: E501
 from swagger_server.models.observation_block import ObservationBlock  # noqa: E501
-from swagger_server import util
+from swagger_server.controllers import observation_block_controller as ob_control
+from swagger_server.controllers import controller_helper as utils
+
+# from swagger_server import util
 from config import config_collection
 from bson.objectid import ObjectId
 
 
 def groups_get(group_id):  # noqa: E501
-    """groups_get
+    """
+    Retrieves a specific group's information # noqa: E501
 
-    Retrieves a specific group&#x27;s information # noqa: E501
+    error:
+    http://vm-webtools.keck.hawaii.edu:50001/v0/groups?group_id=09ad6fc4062bf346f1b0437
+    result:
+    http://vm-webtools.keck.hawaii.edu:50001/v0/groups?group_id=609ad6fc4062bf346f1b0437
 
     :param group_id: group identifier
     :type group_id: str
 
     :rtype: Group
     """
-    coll = config_collection('groupCollect', 'dev', config='./config.live.yaml')
+    result = utils.get_by_id(group_id, 'groupCollect', object_id=True)
 
-    query = query_by_id(group_id)
-    curse = coll.find(query)
+    if result:
+        result = str(result[0])
+    else:
+        result = ""
 
-    results = ""
-    for result in curse:
-        results += str(result)
-
-    return results
+    return result
 
 
 def groups_post(body):  # noqa: E501
-    """groups_post
+    """
+    Creates a group # noqa: E501
 
     test:
-    curl -v -H "Content-Type: application/json" -X POST -d '{"semester":"2020A"}' http://vm-webtools.keck:50001/v0/groups
-
-    Creates a group # noqa: E501
+    curl -v -H "Content-Type: application/json" -X POST -d '{"semester":"2030A"}' http://vm-webtools.keck:50001/v0/groups
+        db.groups.find({"semester": "2030A"})
 
     :param body:
     :type body: dict | bytes
@@ -48,12 +53,10 @@ def groups_post(body):  # noqa: E501
     if connexion.request.is_json:
         body = Group.from_dict(connexion.request.get_json())  # noqa: E501
 
-    coll = config_collection('groupCollect', 'dev', config='./config.live.yaml')
-
     new_doc = {"name": body.name, "semester": body.semester,
                "ob_blocks": body.observation_blocks, "comment": body.comment}
 
-    result = coll.insert_one(new_doc)
+    result = utils.insert_into_collection(new_doc, 'groupCollect')
 
     return str(result.inserted_id)
 
@@ -62,8 +65,7 @@ def groups_put(body, group_id):  # noqa: E501
     """groups_put
 
     test :
-    curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2020A"}' 'http://vm-webtools.keck:50001/v0/groups?group_id=1'
-    curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2024A","observation_blocks":["2","3"]}' 'http://vm-webtools.keck:50001/v0/groups?group_id=19'
+    curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2024A","observation_blocks":["2","3"]}' 'http://vm-webtools.keck:50001/v0/groups?group_id=609ad6fc4062bf346f1b0437'
 
     Overwrites a group # noqa: E501
 
@@ -79,15 +81,14 @@ def groups_put(body, group_id):  # noqa: E501
 
     group_dict = body.to_dict()
 
-    coll = config_collection('groupCollect', 'dev', config='./config.live.yaml')
-
     new_vals = {}
     for key, val in group_dict.items():
         if val and key != 'group_id':
             new_vals[key] = val
-    query = query_by_id(group_id)
 
-    coll.update_one(query, {"$set": new_vals})
+    query = utils.query_by_id(group_id)
+    utils.update_doc(query, new_vals, 'groupCollect')
+
 
 def groups_delete(group_id):  # noqa: E501
     """groups_delete
@@ -99,11 +100,8 @@ def groups_delete(group_id):  # noqa: E501
 
     :rtype: None
     """
-
-    coll = config_collection('groupCollect', 'dev', config='./config.live.yaml')
-
-    query = query_by_id(group_id)
-    coll.delete_one(query)
+    query = utils.query_by_id(group_id, object_id=True)
+    utils.delete_from_collection(query, 'groupCollect')
 
 
 def groups_append_put(body, group_id):  # noqa: E501
@@ -121,55 +119,46 @@ def groups_append_put(body, group_id):  # noqa: E501
 
     :rtype: None
     """
-    grps = config_collection('groupCollect', 'dev', config='./config.live.yaml')
-    ob_list = get_ob_list(grps, group_id)
-
-    # update OB -> signature -> group
-    ob_blocks = config_collection('obCollectionName', 'dev',
-                                  config='./config.live.yaml')
-
-    # update the ob_block with the group id
-    for ob_id in body:
-        if not add_id_to_ob(ob_blocks, ob_id, group_id):
-            ob_list.remove(ob_id)
-            #TODO report ob_block doesn't exist
+    ob_list = utils.get_ob_list(group_id)
 
     # update the group collection with new values
     unique_obs = list(set(ob_list + body))
     if not unique_obs:
         return
 
-    grps.update(query_by_id(group_id),
-                {"$set": {"observation_blocks": unique_obs}})
+    new_vals = {"observation_blocks": unique_obs}
+    utils.update_doc(utils.query_by_id(group_id), new_vals, 'groupCollect')
 
 
 def groups_execution_times_get(group_id):  # noqa: E501
-    """groups_execution_times_get
+    """
+    Calculate the total execution time of a group
 
-    Calculate the total execution time of a group # noqa: E501
+    http://vm-webtools.keck.hawaii.edu:50001/v0/groups/executionTimes?group_id=609306745ec7a7825e28af85
 
     :param group_id: group identifier
     :type group_id: str
 
     :rtype: float
     """
-    #TODO execution times not yet in ob_block.
-    query = query_by_id(group_id)
+    ob_list = utils.get_ob_list(group_id)
+    total_time = 0
+    for ob in ob_list:
+        total_time += ob_control.ob_execution_time(str(ob))
 
-    return 'do some magic!'
+    return total_time
 
 
 def groups_export_get(group_id):  # noqa: E501
-    """groups_export_get
-
-    Retrieves a specific group information in a file format (default .json) # noqa: E501
+    """
+    Retrieves a specific group information in a file format (default .json)
 
     :param group_id: group identifier
     :type group_id: str
 
     :rtype: Group
     """
-    query = query_by_id(group_id)
+    query = utils.query_by_id(group_id)
 
     return 'do some magic!'
 
@@ -184,16 +173,15 @@ def groups_items_get(group_id):  # noqa: E501
 
     :rtype: List[Group]
     """
-    grps = config_collection('groupCollect', 'dev', config='./config.live.yaml')
-    ob_list = get_ob_list(grps, group_id)
+    ob_list = utils.get_ob_list(group_id)
     ob_list.sort()
 
     return str(ob_list)
 
 
+# TODO this seems like it is the same as /groups_get
 def groups_items_summary_get(group_id):  # noqa: E501
-    """groups_items_summary_get
-
+    """
     Retrieves a summary of group information # noqa: E501
 
     :param group_id: group identifier
@@ -206,8 +194,7 @@ def groups_items_summary_get(group_id):  # noqa: E501
 
 
 def groups_schedule_too_post(body):  # noqa: E501
-    """groups_schedule_too_post
-
+    """
     Submits a group for Target of Opportunity (ToO) (all the elements)
 
     :param body: 
@@ -221,8 +208,7 @@ def groups_schedule_too_post(body):  # noqa: E501
 
 
 def groups_verify_get(group_id):  # noqa: E501
-    """groups_verify_get
-
+    """
     Request verification of the elements of a group. Sends group summary
     as a successful response
 
@@ -250,58 +236,3 @@ def sem_id_groups_get(sem_id):  # noqa: E501
     #TODO get sem_id from the ob_block
     return 'do some magic!'
 
-
-#helpers
-def query_by_id(group_id):
-    """
-    query by string group_id
-
-    :param group_id: group identifier
-    :type group_id: str
-
-    :rtype: Dict{Query}
-    """
-    obj_id = ObjectId(group_id)
-    return {"_id": obj_id}
-
-
-def add_id_to_ob(coll, ob_id, group_id):
-    """
-    Add the group id to the ob_block
-
-    :param coll: database cursor
-    :param ob_id: The id of the ob_block
-    :type group_id: str
-    :param group_id: group identifier
-    :type group_id: str
-
-    :rtype: int - 1 on success, 0 when ob_block not found.
-    """
-    query = {"_id": ob_id}
-    results = list(coll.find(query))
-    if not results:
-        return 0
-
-    groups = results[0]['signature']['group']
-    if not groups:
-        groups = []
-    elif type(groups) != list:
-        groups = [groups]
-
-    groups.append(group_id)
-    unique_grps = list(set(groups))
-
-    coll.update(query, {"$set": {"signature.group": unique_grps}})
-
-    return 1
-
-
-def get_ob_list(coll, group_id):
-    query = query_by_id(group_id)
-    results = list(coll.find(query))
-    if results:
-        ob_list = results[0]['observation_blocks']
-    else:
-        ob_list = []
-
-    return ob_list
