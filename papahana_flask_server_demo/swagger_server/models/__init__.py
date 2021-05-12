@@ -5,6 +5,7 @@ from __future__ import absolute_import
 # import models into model package
 from swagger_server.models.acquisition import Acquisition
 from swagger_server.models.group import Group
+from swagger_server.models.group_summary import GroupSummary
 from swagger_server.models.magnitude import Magnitude
 from swagger_server.models.observation import Observation
 from swagger_server.models.observation_block import ObservationBlock

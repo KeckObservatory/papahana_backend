@@ -8,7 +8,6 @@ import os
 def read_mode(config='config.live.yaml'):
     with open(config) as file:
         mode = yaml.load(file, Loader=yaml.FullLoader)['mode']
-
     return mode['config']
 
 
@@ -17,13 +16,11 @@ def config_collection(collection, config='config.live.yaml'):
 
     with open(config) as file:
         conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
-    if mode == 'dev':
-        coll = create_collection(conf['dbName'], conf[collection], port=conf['port'])
-    elif mode == 'demo':
+    if mode == 'demo':
         coll = create_collection(conf['dbName'], conf[collection], remote=True,
                                  username=conf['username'], password=conf['password'])
     else:
-        raise ValueError('collection mode not known')
+        coll = create_collection(conf['dbName'], conf[collection], port=conf['port'], mode=mode)
     return coll
 
 

@@ -26,7 +26,6 @@ def ob_get(ob_id):  # noqa: E501
 
     return ob
 
-
 def ob_post(body):  # noqa: E501
     """ob_post
 
