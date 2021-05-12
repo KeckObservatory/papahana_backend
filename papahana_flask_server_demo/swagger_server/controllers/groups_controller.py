@@ -18,16 +18,16 @@ def groups_get(group_id):  # noqa: E501
     Retrieves a specific group's information # noqa: E501
 
     error:
-    http://vm-webtools.keck.hawaii.edu:50001/v0/groups?group_id=09ad6fc4062bf346f1b0437
+    http://vm-webtools.keck.hawaii.edu:50000/v0/groups?group_id=09ad6fc4062bf346f1b0437
     result:
-    http://vm-webtools.keck.hawaii.edu:50001/v0/groups?group_id=609ad6fc4062bf346f1b0437
+    http://vm-webtools.keck.hawaii.edu:50000/v0/groups?group_id=609ad6fc4062bf346f1b0437
 
     :param group_id: group identifier
     :type group_id: str
 
     :rtype: Group
     """
-    result = utils.get_by_id(group_id, 'groupCollect', object_id=True)
+    result = utils.get_by_id(group_id, 'groupCollect')
 
     if result:
         result = str(result[0])
@@ -42,7 +42,7 @@ def groups_post(body):  # noqa: E501
     Creates a group # noqa: E501
 
     test:
-    curl -v -H "Content-Type: application/json" -X POST -d '{"semester":"2030A"}' http://vm-webtools.keck:50001/v0/groups
+    curl -v -H "Content-Type: application/json" -X POST -d '{"semester":"2030A"}' http://vm-webtools.keck:50000/v0/groups
         db.groups.find({"semester": "2030A"})
 
     :param body:
@@ -65,7 +65,7 @@ def groups_put(body, group_id):  # noqa: E501
     """groups_put
 
     test :
-    curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2024A","observation_blocks":["2","3"]}' 'http://vm-webtools.keck:50001/v0/groups?group_id=609ad6fc4062bf346f1b0437'
+    curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2024A","observation_blocks":["2","3"]}' 'http://vm-webtools.keck:50000/v0/groups?group_id=609ad6fc4062bf346f1b0437'
 
     Overwrites a group # noqa: E501
 
@@ -100,7 +100,7 @@ def groups_delete(group_id):  # noqa: E501
 
     :rtype: None
     """
-    query = utils.query_by_id(group_id, object_id=True)
+    query = utils.query_by_id(group_id)
     utils.delete_from_collection(query, 'groupCollect')
 
 
@@ -110,7 +110,7 @@ def groups_append_put(body, group_id):  # noqa: E501
     Appends a list of observation blocks to a group by id.
 
     test (appends ob_id=9 to group_id=609306745ec7a7825e28af85):
-    curl -v -H "Content-Type: application/json" -X PUT -d '["9"]' 'http://vm-webtools.keck:50001/v0/groups/append?group_id=609306745ec7a7825e28af85'
+    curl -v -H "Content-Type: application/json" -X PUT -d '["9"]' 'http://vm-webtools.keck:50000/v0/groups/append?group_id=609306745ec7a7825e28af85'
 
     :param body:
     :type body: list | bytes
@@ -134,7 +134,7 @@ def groups_execution_times_get(group_id):  # noqa: E501
     """
     Calculate the total execution time of a group
 
-    http://vm-webtools.keck.hawaii.edu:50001/v0/groups/executionTimes?group_id=609306745ec7a7825e28af85
+    http://vm-webtools.keck.hawaii.edu:50000/v0/groups/executionTimes?group_id=609306745ec7a7825e28af85
 
     :param group_id: group identifier
     :type group_id: str

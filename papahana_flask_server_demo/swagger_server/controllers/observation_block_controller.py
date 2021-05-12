@@ -1,8 +1,5 @@
-import pdb
 import connexion
-import six
-import pprint
-import json
+from bson.objectid import ObjectId
 
 from swagger_server.models.observation_block import ObservationBlock  # noqa: E501
 from swagger_server.models.observation import Observation
@@ -11,20 +8,22 @@ from swagger_server.controllers import controller_helper as utils
 from swagger_server import util
 
 
-
 def ob_get(ob_id):  # noqa: E501
     """ob_get
 
-    Retrieves the general parameters of an OB (target, exec time, other as needed) # noqa: E501
+    Retrieves the general parameters of an OB.
 
     :param ob_id: observation block id
     :type ob_id: str
 
-    :rtype: List[ObservationBlock]
+    :rtype: ObservationBlock
     """
     ob = utils.get_by_id(ob_id, 'obCollect')
 
-    return ob
+    if ob:
+        return utils.JSONEncoder().encode(ob[0])
+
+    return ""
 
 def ob_post(body):  # noqa: E501
     """ob_post
@@ -38,9 +37,9 @@ def ob_post(body):  # noqa: E501
     """
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
-        ob = ObservationBlock.from_dict(obDict).to_dict()  # verify if formatted properly
 
-    result = utils.insert_observation_block(obDict, coll)
+    result = utils.insert_into_collection(obDict, 'obCollect')
+
     return str(result)
 
 
@@ -52,18 +51,15 @@ def ob_put(body, ob_id):  # noqa: E501
     :param body: Observation block replacing ob_id.
     :type body: dict | bytes
     :param ob_id: observation block id
-    :type ob_id: str
+    :type ob_id: ObjectId
 
     :rtype: None
     """
     if connexion.request.is_json:
-        obDict = connexion.request.get_json()
-        ob = ObservationBlock.from_dict(obDict).to_dict()  # verify if formatted properly
-        obDict.pop('_id')
+        body = connexion.request.get_json()
 
-    result = utils.replace_doc(ob_id, obDict, 'obCollect')
+    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
-    return
 
 
 def ob_duplicate(ob_id, sem_id):  # noqa: E501
@@ -202,9 +198,11 @@ def ob_export(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')[0]
+    ob = utils.get_by_id(ob_id, 'obCollect')
+    if ob:
+        return ob[0]
 
-    return ob
+    return "No result"
 
 
 def ob_schedule_get(ob_id):  # noqa: E501
@@ -221,10 +219,9 @@ def ob_schedule_get(ob_id):  # noqa: E501
     return 'Need schedule information in db'
 
 
-def ob_template_duplicate(ob_id, template_id):  # noqa: E501
-    """ob_template_duplicate
-
-    Generate a new copy of the template # noqa: E501
+def ob_template_duplicate(ob_id, template_id):
+    """
+    Generate a new copy of the template
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -233,6 +230,7 @@ def ob_template_duplicate(ob_id, template_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
+
     return 'do some magic!'
 
 

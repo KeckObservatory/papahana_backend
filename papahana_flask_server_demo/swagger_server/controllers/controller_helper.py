@@ -1,143 +1,10 @@
 from config import config_collection
-# from bson.objectid import ObjectId
 import bson
+import json
 
-
-# def create_match(key, item):
-#     if key == 'observers':
-#         mItem = {
-#             f"signature.observers": {
-#             "$exists": "true", "$in": [ f"{item}"]
-#         }}
-#     else:
-#         mItem = {
-#             f"signature.{key}": item
-#         }
-#     return mItem
-#
-# def create_signature_match(coll, qdict):
-#     '''note matching flattens nested fields'''
-#     matchItems = [ create_match(key, item) for key, item in qdict.items() ]
-#     return {
-#         "$match": {
-#             "$and": matchItems
-#         }
-#     }
-#
-# def group_distinct_signature(key):
-#     '''group by one field in aggreate pipeline'''
-#     return {
-#             "$group":{
-#                 "_id": { key: f"$signature.{key}" }
-#             }
-#         }
-#
-# def project_fields(*signatureKeys):
-#     return {"$project": { f"{key}": 1 for key in signatureKeys } }
-#
-# def project_signature_fields(*signatureKeys):
-#     return {"$project": { f"signature.{key}": 1 for key in signatureKeys } }
-#
-# def get_distinct_semesters(obsName, coll):
-#     match = create_signature_match(coll, {'observers': obsName})
-#     group = group_distinct_signature('semesters')
-#     pipeline = [
-#         match,
-#         group
-#     ]
-#     return coll.aggregate(pipeline)
-#
-# def get_semesters_by_pi(piName, coll):
-#     match = create_signature_match(coll, {'pi': piName})
-#     project = project_signature_fields('semesters')
-#     pipeline = [ match, project ]
-#     return coll.aggregate(pipeline)
-#
-# def get_ob_by_semester(semid, coll):
-#     match = create_signature_match(coll, {'semesters': semid})
-#     pipeline = [ match ]
-#     return coll.aggregate(pipeline)
-#
-# def get_ob_by_semester_observer(semid, observer, coll):
-#     match = create_signature_match(coll, {'semesters': semid, 'observers': observer})
-#     pipeline = [ match ]
-#     return coll.aggregate(pipeline)
-#
-# def find_by_pi(name, coll):
-#     query = {
-#         "signature.pi": name
-#     }
-#     return coll.find(query)
-#
-# def find_by_semester_program(semester, program, coll):
-#     query = {
-#         "signature.semesters": {
-#             "$in": [semester]
-#         },
-#         "signature.program": program
-#     }
-#     return coll.find(query)
-#
-# def find_by_observer(observer, coll):
-#     query = {
-#         "signature.observers": {
-#             "$in": [observer]
-#         }
-#     }
-#     return coll.find(query)
-#
-# def find_by_observer_semester(observer, semester, coll):
-#     query = {
-#         "signature.observers": {
-#             "$in": [observer]
-#         },
-#         "signature.semesters": {
-#             "$in": [semester]
-#         },
-#     }
-#     return coll.find(query)
-#
-#
-# def get_ob_by_id(_id, coll):
-#     coll = config_collection('obCollect', 'dev')
-#
-#     query = {
-#         "_id": _id
-#     }
-#     return coll.find(query)
-#
-#
-# def insert_observation_block(ob, coll):
-#     try:
-#         result = coll.insert_one(ob)
-#     except Exception as err:
-#         return err
-#     return result
-#
-# def delete_observation_block(_id, coll):
-#     try:
-#         coll.delete_one({'_id': _id})
-#     except Exception as err:
-#         print(err)
-#
-# def replace_observation_block(_id, ob, coll):
-#     try:
-#         query = {'_id': _id}
-#         result = coll.replace_one(query, ob)
-#     except Exception as err:
-#         print(err)
-#     return result
-#
-# def update_observation_block(_id, newValues, coll):
-#     query = {
-#         "_id": _id
-#     }
-#     coll.update_one(query, newValues)
 
 # Generalized
-
-
-def get_by_id(id, collect_name, object_id=False):
+def get_by_id(id, collect_name):
     """
     query by string group_id
 
@@ -146,22 +13,25 @@ def get_by_id(id, collect_name, object_id=False):
 
     :rtype: Dict{Query}
     """
-    coll = config_collection(collect_name)
-
-    if object_id:
-        try:
-            id = get_object_id(id)
-        except ValueError as msg:
-            return [msg]
+    try:
+        id = get_object_id(id)
+    except ValueError as msg:
+        return [msg]
 
     query = {"_id": id}
+    coll = config_collection(collect_name)
 
     return list(coll.find(query))
 
 
 def insert_into_collection(doc, collect_name):
     """
-    body
+    Add a new document to a collection.
+
+    :param doc: the document to insert
+    :type doc: dict
+    :param collect_name: the database collection to update.
+    :type collect_name: str
 
     rtype: A document containing:
             A boolean acknowledged as true if the operation ran with
@@ -179,7 +49,7 @@ def insert_into_collection(doc, collect_name):
     return result
 
 
-def delete_by_id(id, collect_name, object_id=False):
+def delete_by_id(id, collect_name):
     """
     Delete a document in a database collection.
 
@@ -187,18 +57,15 @@ def delete_by_id(id, collect_name, object_id=False):
     :type query: str / ObjectId
     :param collect_name: the database collection to update.
     :type collect_name: str
-    :param object_id: True if the id is an ObjectId
-    :type object_id: bool
 
     :rtype (int) 1 on error,  0 on success
     """
-    coll = config_collection(collect_name)
+    try:
+        id = get_object_id(id)
+    except ValueError:
+        return 1
 
-    if object_id:
-        try:
-            id = get_object_id(id)
-        except ValueError:
-            return 1
+    coll = config_collection(collect_name)
 
     try:
         coll.delete_one({'_id': id})
@@ -208,7 +75,7 @@ def delete_by_id(id, collect_name, object_id=False):
         return 1
 
 #TODO check the type.
-def replace_doc(id, doc, collect_name, object_id=False):
+def replace_doc(id, doc, collect_name):
     """
     Replace a document in a database collection.
 
@@ -218,22 +85,18 @@ def replace_doc(id, doc, collect_name, object_id=False):
     :type doc: dict
     :param collect_name: the database collection to update.
     :type collect_name: str
-    :param object_id: True if the id is an ObjectId
-    :type object_id: bool
 
     :rtype
     """
+    try:
+        id = get_object_id(id)
+    except ValueError as err:
+        return err
+
     coll = config_collection(collect_name)
 
-    if object_id:
-        try:
-            id = get_object_id(id)
-        except ValueError as err:
-            return err
-
     try:
-        query = {'_id': id}
-        result = coll.replace_one(query, doc)
+        result = coll.replace_one({'_id': id}, doc)
     except Exception as err:
         return err
 
@@ -274,7 +137,7 @@ def delete_from_collection(query, collect_name):
         return 1
 
 
-def query_by_id(id, object_id=True):
+def query_by_id(id):
     """
     query by string group_id
 
@@ -283,11 +146,10 @@ def query_by_id(id, object_id=True):
 
     :rtype: Dict{Query}
     """
-    if object_id:
-        try:
-            id = get_object_id(id)
-        except ValueError as err:
-            return {"_id": None}
+    try:
+        id = get_object_id(id)
+    except ValueError as err:
+        return {"_id": None}
 
     return {"_id": id}
 
@@ -303,14 +165,17 @@ def get_object_id(obj_id):
     return id
 
 
+class JSONEncoder(json.JSONEncoder):
+    def default(self, val):
+        if isinstance(val, bson.objectid.ObjectId):
+            return str(val)
+        return json.JSONEncoder.default(self, val)
+
+
 # Group specific helpers
 def get_ob_list(group_id):
-    # grps = config_collection('groupCollect')
-    print(group_id)
-    results = get_by_id(group_id, 'groupCollect', object_id=True)
-    # query = query_by_id(group_id)
-    # results = list(grps.find(query))
-    print("res", results)
+    results = get_by_id(group_id, 'groupCollect')
+
     if results:
         ob_list = results[0]['observation_blocks']
     else:
