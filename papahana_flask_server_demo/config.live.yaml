@@ -1,0 +1,15 @@
+mode:
+  config: dev
+
+demo:
+  dbName: papahana 
+  obCollect: ob_block
+  groupCollect: group
+  password: ...
+  username: ...
+dev:
+  dbName: papahana
+  obCollect: ob_block
+  groupCollect: groups
+  sequenceCollect: sequences
+  port: 27017
