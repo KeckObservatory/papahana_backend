@@ -45,9 +45,10 @@ def ob_post(body):  # noqa: E501
 
 
 def ob_put(body, ob_id):  # noqa: E501
-    """ob_put
+    """
+    Updates the observation block with the new one
 
-    Updates the observation block with the new one # noqa: E501
+    [webdev@vm-webtools ~]$ curl -v -H "Content-Type: application/json" -X PUT -d '{"instrument": "KCWI-test"}' "http://vm-webtools.keck.hawaii.edu:50000/v0/obsBlocks?ob_id=609b1b034e77c5f3d11bf183"
 
     :param body: Observation block replacing ob_id.
     :type body: dict | bytes
@@ -62,26 +63,27 @@ def ob_put(body, ob_id):  # noqa: E501
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
 
-
-def ob_duplicate(ob_id, sem_id):  # noqa: E501
-    """ob_duplicate
-
-    Duplicate the OB, default is current semId. # noqa: E501
+def ob_duplicate(ob_id, sem_id=None):
+    """
+    Duplicate the OB, default is current semId. ]
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param sem_id: program id
+    :param sem_id: program id including semester
     :type sem_id: str
 
     :rtype: str
     """
-    obs = utils.get_by_id(ob_id, 'obCollect')
+    print("huh", ob_id, sem_id)
+    ob = utils.get_by_id(ob_id, 'obCollect')
 
-    assert len(obs) == 1, 'not found'
+    if not ob:
+        return f'No observing block with id {ob_id}'
 
-    ob = obs[0]
-    ob.pop('_id')
-    result = utils.insert_into_collection(ob, 'obCollect')
+    ob = ob[0]
+    del ob['_id']
+    print(ob)
+    # result = utils.insert_into_collection(ob, 'obCollect')
 
     return str(result)
 

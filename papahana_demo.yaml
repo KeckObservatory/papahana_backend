@@ -785,7 +785,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/duplicate/{sem_id}:
+  /obsBlocks/duplicate:
     post:
       tags:
         - Observation Block
@@ -1141,15 +1141,16 @@ components:
         type: string
       example: 6042ced0afc6ecd40fe5a3dd
     sem_id:
+      in: query
       name: sem_id
-      in: path
-      description: program id
-      required: true
-      style: simple
+      description: program id including semester
+      style: form
       explode: true
       schema:
         type: string
-      example: 12345asdf
+        default: ""
+      required: false
+      example: 2021A_U456
     instrument:
       name: instrument
       in: path

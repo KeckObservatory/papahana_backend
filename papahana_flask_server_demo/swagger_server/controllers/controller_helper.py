@@ -1,4 +1,5 @@
 from config import config_collection
+import pymongo
 import bson
 import json
 
@@ -46,6 +47,9 @@ def insert_into_collection(doc, collect_name):
     except Exception as err:
         return err
 
+    if isinstance(result, pymongo.results.InsertOneResult):
+        return result.inserted_id
+
     return result
 
 
@@ -73,6 +77,8 @@ def delete_by_id(id, collect_name):
     except Exception as err:
         print(err)
         return 1
+
+
 
 #TODO check the type.
 def replace_doc(id, doc, collect_name):
