@@ -21,7 +21,8 @@ def ob_get(ob_id):  # noqa: E501
     ob = utils.get_by_id(ob_id, 'obCollect')
 
     if ob:
-        return utils.JSONEncoder().encode(ob[0])
+        ob[0]['_id'] = str(ob[0]['_id'])
+        return ob[0]
 
     return ""
 
@@ -48,7 +49,7 @@ def ob_put(body, ob_id):  # noqa: E501
     """
     Updates the observation block with the new one
 
-    [webdev@vm-webtools ~]$ curl -v -H "Content-Type: application/json" -X PUT -d '{"instrument": "KCWI-test"}' "http://vm-webtools.keck.hawaii.edu:50000/v0/obsBlocks?ob_id=609b1b034e77c5f3d11bf183"
+    [webdev@vm-webtools ~]$ curl -v -H "Content-Type: application/json" -X PUT -d '{"signature.instrument": "KCWI-test"}' "http://vm-webtools.keck.hawaii.edu:50000/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
 
     :param body: Observation block replacing ob_id.
     :type body: dict | bytes
@@ -63,35 +64,12 @@ def ob_put(body, ob_id):  # noqa: E501
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
 
-def ob_duplicate(ob_id, sem_id=None):
-    """
-    Duplicate the OB, default is current semId. ]
-
-    :param ob_id: observation block id
-    :type ob_id: str
-    :param sem_id: program id including semester
-    :type sem_id: str
-
-    :rtype: str
-    """
-    print("huh", ob_id, sem_id)
-    ob = utils.get_by_id(ob_id, 'obCollect')
-
-    if not ob:
-        return f'No observing block with id {ob_id}'
-
-    ob = ob[0]
-    del ob['_id']
-    print(ob)
-    # result = utils.insert_into_collection(ob, 'obCollect')
-
-    return str(result)
-
-
 def ob_delete(ob_id):  # noqa: E501
     """ob_delete
 
     Removes the observation block # noqa: E501
+
+    curl -v -H "Content-Type: application/json" -X DELETE "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -102,11 +80,40 @@ def ob_delete(ob_id):  # noqa: E501
     return str(response)
 
 
-#TODO starting from here
+def ob_duplicate(ob_id, sem_id=None):
+    """
+    Duplicate the OB, default is current semId. ]
+
+    curl -v -H "Content-Type: application/json" -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/duplicate?ob_id=609c27515ef7b19168a7f646"
+
+    :param ob_id: observation block id
+    :type ob_id: str
+    :param sem_id: program id including semester
+    :type sem_id: str
+
+    :rtype: str
+    """
+    ob = utils.get_by_id(ob_id, 'obCollect')
+
+    if not ob:
+        return f'No observing block with id {ob_id}'
+
+    ob = ob[0]
+    del ob['_id']
+
+    if sem_id:
+         ob['signature']['sem_id'] = sem_id
+
+    result = utils.insert_into_collection(ob, 'obCollect')
+
+    return str(result)
+
+
 def ob_executions(ob_id):  # noqa: E501
     """ob_executions
 
-    Retrieves the list of execution attempts for a specific OB (for a specific night). # noqa: E501
+    Retrieves the list of execution attempts for a specific OB
+    (for a specific night).
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -121,7 +128,7 @@ def ob_executions(ob_id):  # noqa: E501
 def ob_schedule_put(ob_id):  # noqa: E501
     """ob_schedule_put
 
-    On success updates an existing ob schedule. # noqa: E501
+    On success updates an existing ob schedule.
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -132,29 +139,6 @@ def ob_schedule_put(ob_id):  # noqa: E501
     #TODO need schedule constraints in db
 
     return 'do some magic!'
-
-
-def ob_duplicate(ob_id, sem_id):  # noqa: E501
-    """ob_duplicate
-
-    Duplicate the OB, default is current semId. # noqa: E501
-
-    :param ob_id: observation block id
-    :type ob_id: str
-    :param sem_id: program id
-    :type sem_id: str
-
-    :rtype: str
-    """
-    ob = utils.get_by_id(ob_id, 'obCollect')[0]
-    if sem_id:
-        query = {'_id': id}
-        new_vals = {'signature.semid': sem_id}
-        utils.update_doc(query, new_vals, 'obCollect')
-
-    result = utils.insert_into_collection(ob, 'obCollect')
-
-    return result
 
 
 def ob_execution_time(ob_id):  # noqa: E501
