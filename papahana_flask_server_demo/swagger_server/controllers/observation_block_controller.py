@@ -120,9 +120,12 @@ def ob_executions(ob_id):  # noqa: E501
 
     :rtype: List[str]
     """
-    #TODO data not in db yet
+    ob = utils.get_by_id(ob_id, 'obCollect')
 
-    return 'do some magic!'
+    if not ob or "status" not in ob[0] or "executions" not in ob[0]["status"]:
+        return []
+
+    return ob[0]["status"]["executions"]
 
 
 def ob_schedule_put(ob_id):  # noqa: E501
@@ -141,6 +144,7 @@ def ob_schedule_put(ob_id):  # noqa: E501
     return 'do some magic!'
 
 
+#TODO should this only be the remaining execution time
 def ob_execution_time(ob_id):  # noqa: E501
     """ob_execution_time
 
