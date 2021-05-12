@@ -14,13 +14,13 @@ class Signature(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, pi: str=None, semester: str=None, observers: List[str]=None, programs: List[str]=None, group: List[str]=None, comment: str=None):  # noqa: E501
+    def __init__(self, pi: str=None, semesters: List[str]=None, observers: List[str]=None, programs: List[str]=None, group: List[str]=None, comment: str=None):  # noqa: E501
         """Signature - a model defined in Swagger
 
         :param pi: The pi of this Signature.  # noqa: E501
         :type pi: str
-        :param semester: The semester of this Signature.  # noqa: E501
-        :type semester: str
+        :param semesters: The semesters of this Signature.  # noqa: E501
+        :type semesters: List[str]
         :param observers: The observers of this Signature.  # noqa: E501
         :type observers: List[str]
         :param programs: The programs of this Signature.  # noqa: E501
@@ -32,7 +32,7 @@ class Signature(Model):
         """
         self.swagger_types = {
             'pi': str,
-            'semester': str,
+            'semesters': List[str],
             'observers': List[str],
             'programs': List[str],
             'group': List[str],
@@ -41,14 +41,14 @@ class Signature(Model):
 
         self.attribute_map = {
             'pi': 'pi',
-            'semester': 'semester',
+            'semesters': 'semesters',
             'observers': 'observers',
             'programs': 'programs',
             'group': 'group',
             'comment': 'comment'
         }
         self._pi = pi
-        self._semester = semester
+        self._semesters = semesters
         self._observers = observers
         self._programs = programs
         self._group = group
@@ -87,25 +87,25 @@ class Signature(Model):
         self._pi = pi
 
     @property
-    def semester(self) -> str:
-        """Gets the semester of this Signature.
+    def semesters(self) -> List[str]:
+        """Gets the semesters of this Signature.
 
 
-        :return: The semester of this Signature.
-        :rtype: str
+        :return: The semesters of this Signature.
+        :rtype: List[str]
         """
-        return self._semester
+        return self._semesters
 
-    @semester.setter
-    def semester(self, semester: str):
-        """Sets the semester of this Signature.
+    @semesters.setter
+    def semesters(self, semesters: List[str]):
+        """Sets the semesters of this Signature.
 
 
-        :param semester: The semester of this Signature.
-        :type semester: str
+        :param semesters: The semesters of this Signature.
+        :type semesters: List[str]
         """
 
-        self._semester = semester
+        self._semesters = semesters
 
     @property
     def observers(self) -> List[str]:

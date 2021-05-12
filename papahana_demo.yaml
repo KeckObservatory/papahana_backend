@@ -358,24 +358,14 @@ paths:
         \ other as needed)"
       operationId: ob_get
       parameters:
-      - name: ob_id
-        in: query
-        description: observation block id
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
           description: On a success gets a new OB.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ObservationBlock'
+                $ref: '#/components/schemas/ObservationBlock'
                 x-content-type: application/json
         "400":
           description: Invalid status value
@@ -389,15 +379,7 @@ paths:
       description: Updates the observation block with the new one
       operationId: ob_put
       parameters:
-      - name: ob_id
-        in: query
-        description: observation block id
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/ob_id'
       requestBody:
         description: Observation block replacing ob_id.
         content:
@@ -447,15 +429,7 @@ paths:
       description: Removes the observation block
       operationId: ob_delete
       parameters:
-      - name: ob_id
-        in: query
-        description: observation block id
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
           description: On a success removes given OB from the database.
@@ -1154,8 +1128,8 @@ components:
       style: form
       explode: true
       schema:
-        type: string
-      example: Dwane Johnson
+        type: object
+      example: 609b10d6fd85ea78eb0ddddb
     ob_id:
       name: ob_id
       in: query
