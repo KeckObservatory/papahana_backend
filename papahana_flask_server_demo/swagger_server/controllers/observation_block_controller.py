@@ -57,13 +57,10 @@ def ob_put(body, ob_id):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        obDict = connexion.request.get_json()
-        # ob = ObservationBlock.from_dict(obDict).to_dict()
-        # obDict.pop('_id')
+        body = connexion.request.get_json()
 
-    result = utils.replace_doc(ob_id, obDict, 'obCollect')
+    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
-    return
 
 
 def ob_duplicate(ob_id, sem_id):  # noqa: E501
