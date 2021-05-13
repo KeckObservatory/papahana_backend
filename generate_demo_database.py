@@ -240,7 +240,7 @@ def generate_dither():
     schema = {
         'min': dmin,
         'max': dmax,
-        'letter': random.choice(string.lower_case).upper(),
+        'letter': random.choice(string.ascii_lowercase).upper(),
         'guide': 'Guided'
     }
     return schema
@@ -381,11 +381,12 @@ if __name__=='__main__':
     seed = 1984739
     random.seed(seed)
     dbName = 'papahana'
+    mode='local'
     
     # Create ob_blocks collection
     collName = 'ob_blocks'
     remote = True # run on remote server (n)
-    coll = create_collection(dbName, collName, port=27017)
+    coll = create_collection(dbName, collName, port=27017, mode=mode)
     coll.drop()
     coll.create_index([('signature.pi', pymongo.DESCENDING)])
     coll.create_index([('signature.semester', pymongo.DESCENDING)])
@@ -400,7 +401,7 @@ if __name__=='__main__':
     # Create groups collection
     collName = 'groups'
     remote = True # run on remote server (n)
-    coll = create_collection(dbName, collName, port=27017)
+    coll = create_collection(dbName, collName, port=27017, mode=mode)
     coll.drop()
     nGroups = 20
     for idx in range(nGroups):

@@ -6,7 +6,7 @@ from swagger_server.models.observation import Observation
 from swagger_server.controllers import controller_helper as utils
 
 from swagger_server import util
-
+import pdb
 
 def ob_get(ob_id):  # noqa: E501
     """ob_get
@@ -19,7 +19,6 @@ def ob_get(ob_id):  # noqa: E501
     :rtype: ObservationBlock
     """
     ob = utils.get_by_id(ob_id, 'obCollect')
-
     if ob:
         ob[0]['_id'] = str(ob[0]['_id'])
         return ob[0]
@@ -29,26 +28,20 @@ def ob_get(ob_id):  # noqa: E501
 
 def ob_post(body):  # noqa: E501
     """ob_post
-
     Inserts an observation block. # noqa: E501
-
     :param body: Observation block to be added.
     :type body: dict | bytes
-
     :rtype: str
     """
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
-
     result = utils.insert_into_collection(obDict, 'obCollect')
-
     return str(result)
 
 
 def ob_put(body, ob_id):  # noqa: E501
     """
     Updates the observation block with the new one
-
     [webdev@vm-webtools ~]$ curl -v -H "Content-Type: application/json" -X PUT -d '{"signature.instrument": "KCWI-test"}' "http://vm-webtools.keck.hawaii.edu:50000/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
 
     :param body: Observation block replacing ob_id.
@@ -58,6 +51,7 @@ def ob_put(body, ob_id):  # noqa: E501
 
     :rtype: None
     """
+    pdb.set_trace()
     if connexion.request.is_json:
         body = connexion.request.get_json()
 
