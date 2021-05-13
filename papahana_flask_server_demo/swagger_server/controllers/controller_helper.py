@@ -100,6 +100,7 @@ def replace_doc(id, doc, collect_name):
         return err
 
     coll = config_collection(collect_name)
+    
 
     try:
         result = coll.replace_one({'_id': id}, doc)
@@ -121,6 +122,8 @@ def update_doc(query, new_vals, collect_name):
     :type collect_name: str
     """
     coll = config_collection(collect_name)
+    if '_id' in new_vals.keys(): # _id is immutable
+    	del new_vals['_id']
     coll.update_one(query, {"$set": new_vals})
 
 

@@ -51,7 +51,6 @@ def ob_put(body, ob_id):  # noqa: E501
 
     :rtype: None
     """
-    pdb.set_trace()
     if connexion.request.is_json:
         body = connexion.request.get_json()
 
