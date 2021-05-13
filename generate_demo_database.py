@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: latin-1 -*-
 import numpy as np
 import os
 import pymongo
@@ -11,6 +13,7 @@ import urllib
 from getpass import getpass
 seed = 1984739
 random.seed(seed)
+import datetime
 
 INST_MAPPING = { 
                  'DEIMOS': {'DE', 'DF'},
@@ -24,17 +27,19 @@ INST_MAPPING = {
                  'NIRC2': {'N2', 'NC'},
                 }
 
-pis = [
-"Michael Bluth",
-"Lindsay Bluth-Fünke",
-"Gob Bluth",
-"George Michael Bluth",
-"Maeby Fünke",
-"Buster Bluth",
-"Tobias Fünke",
-"George Bluth Sr.",
-"Lucille Bluth",
-]
+
+
+pis = {
+"Michael Bluth": 55,
+"Lindsay Bluth-F�nke": 66,
+"Gob Bluth": 88,
+"George Michael Bluth": 99,
+"Maeby F�nke": 77,
+"Buster Bluth": 86,
+"Tobias F�nke": 98,
+"George Bluth Sr.": 11,
+"Lucille Bluth": 76,
+}
 
 observers = [
 "Narrator",
@@ -72,18 +77,18 @@ observers = [
 "Argyle Austero",
 "Paul 'P-Hound' Huan",
 "Mark Cherry",
-"Murphy Brown Fünke",
+"Murphy Brown F�nke",
 "Lottie Dottie Da",
 "Dusty Radler"
 ]
 
 comments = [
-"Here’s some money. Go see a star war.",
-"I don’t understand the question and I won’t respond to it.",
+"Here?s some money. Go see a star war.",
+"I don?t understand the question and I won?t respond to it.",
 "I am one of the few honest people I have ever known.",
-"I’m a scholar. I enjoy scholarly pursuits.",
-"I’ve made a huge tiny mistake.",
-"I hear the jury’s still out on science.",
+"I?m a scholar. I enjoy scholarly pursuits.",
+"I?ve made a huge tiny mistake.",
+"I hear the jury?s still out on science.",
 ]
 
 status = [
@@ -95,9 +100,10 @@ status = [
     "inqueue",
 ]
 
+
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
-groups = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
+groups = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. F�nke\'s 100% Natural Good-Time Family-Band Solution']
 NOBS = 100 # number of observation blocks
 randGroupName = lambda: random.choice(groups)
 randOBIds = lambda x=5: [int(x) for x in list(np.random.choice( range(0,NOBS+1), size=random.randint(0, x), replace=False))]
@@ -115,15 +121,15 @@ randArrStr = lambda x=1, y=1: [randString(x) for _ in range(random.randint(1, y)
 optionalRandString = lambda x=4: random.choice([None, randString(x)])
 optionalRandArrString = lambda x, y=1: random.choice([None, randArrStr(x, y)])
 sampleInst = lambda: random.choice(list(INST_MAPPING.keys()))
-randPI = lambda: random.choice(pis)
+randPI = lambda: random.choice(list(pis))
 randObserver = lambda: random.choice(observers)
 randSemester = lambda: random.choice(semesters)
-randPIList = lambda x=1: lambda x=1: list(np.random.choice(pis, size=random.randint(1, x), replace=False))
+randPIList = lambda x=1: lambda x=1: list(np.random.choice(list(pis), size=random.randint(1, x), replace=False))
 randObserverList = lambda x=1: list(np.random.choice(observers, size=random.randint(1, x), replace=False))
 randComment = lambda: random.choice(comments)
 optionalRandComment = lambda: random.choice([None, randComment()])
 randSemesterList = lambda x=3: list(np.random.choice(semesters, size=random.randint(0, x), replace=False))
-randStatus = lambda: random.choice(status)
+# randStatus = lambda: random.choice(status)
 rand_kcwi_science = lambda: random.choice(status)
 z_fill_number = lambda x, zf=2: str(x).zfill(2)
 raDeg = z_fill_number(randInt(0, 360))
@@ -132,6 +138,16 @@ arcSeconds = z_fill_number(randInt(0, 60))
 
 decDeg = z_fill_number(randInt(0, 90))
 elevation = random.choice(['+', '-'])
+
+def randStatus():
+    rstat = random.choice(status)
+    executions = []
+    for x in range(0, randInt(0,6)):
+        executions.append(generate_random_executions())
+
+    schema = {'state': rstat, 'executions': executions}
+    return schema
+
 def generate_group(_id=None):
     schema = {
         "semester": randSemester(),
@@ -142,6 +158,19 @@ def generate_group(_id=None):
     if _id:
         schema['_id'] = _id
     return schema
+
+
+def random_dates():
+    start_date = datetime.date(2018, 1, 1)
+    end_date = datetime.date(2021, 2, 1)
+
+    time_between_dates = end_date - start_date
+    days_between_dates = time_between_dates.days
+    random_number_of_days = random.randrange(days_between_dates)
+    random_date = start_date + datetime.timedelta(days=random_number_of_days)
+
+    return random_date
+
 
 def generate_ra():
     raDeg = z_fill_number(randInt(0, 360))
@@ -178,7 +207,7 @@ def generate_semesters(nSem, nLen=5, maxLen=6):
     return [ generate_semester(sem, nLen, maxLen) for sem in semesters[0:nSem] ]
 
 def generate_mag(nLen=2):
-    return {'band': randString(nLen), 'mag': randFloat(nLen), 'comment': optionalRandComment()}
+    return {'band': randString(nLen), 'mag': randFloat(nLen)}
 
 def generate_mags(maxMags=2):
     return [ generate_mag() for _ in range( random.randint( 1, maxMags ) ) ]
@@ -196,11 +225,12 @@ def generate_observation(nLen, maxArr):
 
 @remove_none_values_in_dict
 def generate_signature(maxArr):
+    pi_name = randPI()
     schema = {
-        'pi': randPI(),
-        'semesters': randSemesterList(3),
-        'program': random.randint(0, 10),
-        'observers': randObserverList(maxArr),
+        'name': 'standard stars #' + str(random.randint(0, 9)),
+        'pi_id': pis[pi_name],
+        'sem_id': '2021A_K000' + str(random.randint(0, 9)),
+        'instrument': 'KCWI',
         'comment': optionalRandComment()
     }
     return schema
@@ -273,6 +303,17 @@ def generate_acquisition(nLen, maxArr, inst='KCWI'):
         }
     return schema
 
+
+def generate_random_executions():
+    rdate = random_dates()
+    random_time = datetime.datetime.now().replace(hour=random.randint(0, 23),
+                                                  minute=random.randint(0, 59))
+
+    random_date = f'{(rdate)} {random_time.strftime("%H:%M:%S")}'
+
+    return random_date
+
+
 @remove_none_values_in_dict
 def generate_target():
     schema = {
@@ -328,7 +369,7 @@ def create_collection(dbName, collName, port=27017, mode='prod'):
     if os.environ.get('DOCKER_DATABASE_CONNECTION', False):
         dbURL = f'mongodb://database:{port}'
     elif mode is 'prod':
-        dbURL = f'mongodb://10.96.0.228:{port}'
+        dbURL = 'mongodb://10.96.0.228:27017'
     else:
         dbURL = f'mongodb://127.0.0.1:{port}'
     client = pymongo.MongoClient(dbURL)
@@ -341,9 +382,9 @@ if __name__=='__main__':
     random.seed(seed)
     dbName = 'papahana'
     
-    # Create ob_block collection
-    collName = 'ob_block'
-    remote=True # run on remote server (n)
+    # Create ob_blocks collection
+    collName = 'ob_blocks'
+    remote = True # run on remote server (n)
     coll = create_collection(dbName, collName, port=27017)
     coll.drop()
     coll.create_index([('signature.pi', pymongo.DESCENDING)])
@@ -353,16 +394,16 @@ if __name__=='__main__':
     maxArr = 5
     inst = 'KCWI'
     for idx in range(NOBS):
-        doc = generate_observation_block(nLen, maxArr, inst, str(idx))
+        doc = generate_observation_block(nLen, maxArr, inst)
         result = coll.insert_one(doc)
-        assert result.inserted_id == str(idx), 'check that idx was sed properly'
+        # assert result.inserted_id == str(idx), 'check that idx was sed properly'
     # Create groups collection
     collName = 'groups'
-    remote=True # run on remote server (n)
+    remote = True # run on remote server (n)
     coll = create_collection(dbName, collName, port=27017)
     coll.drop()
     nGroups = 20
     for idx in range(nGroups):
-        doc = generate_group(str(idx))
+        doc = generate_group()
         result = coll.insert_one(doc)
-        assert result.inserted_id == str(idx), 'check that idx was sed properly'
+        # assert result.inserted_id == str(idx), 'check that idx was sed properly'
