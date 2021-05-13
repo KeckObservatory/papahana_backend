@@ -109,7 +109,7 @@ randGroupName = lambda: random.choice(groups)
 randOBIds = lambda x=5: [int(x) for x in list(np.random.choice( range(0,NOBS+1), size=random.randint(0, x), replace=False))]
 
 
-semesters = [str(x)+y for x, y in product(range(2000,2030), ['A', 'B'])]
+semesters = [str(x)+y for x, y in product(range(2019,2022), ['A', 'B'])]
 letters = string.ascii_lowercase
 
 # random generators 
@@ -228,8 +228,8 @@ def generate_signature(maxArr):
     pi_name = randPI()
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
-        'pi_id': pis[pi_name],
-        'sem_id': '2021A_K000' + str(random.randint(0, 9)),
+        'pi_id': str(pis[pi_name]),
+        'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
         'instrument': 'KCWI',
         'comment': optionalRandComment()
     }

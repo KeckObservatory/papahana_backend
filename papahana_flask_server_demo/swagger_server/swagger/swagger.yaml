@@ -59,7 +59,7 @@ paths:
           description: Semester Id not found
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/{sem_id}:
+  /semesters/programs:
     summary: retrieve programs of a given semester.
     get:
       tags:
@@ -68,7 +68,7 @@ paths:
       operationId: semester_programs_get
       parameters:
         - $ref: '#/components/parameters/obs_id'
-        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/semester'
       responses:
         "200":
           description: OK
@@ -83,7 +83,7 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Semester Id not found
+          description: Observation ID not found
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
   /semesters/observing_blocks/{sem_id}:
@@ -1070,14 +1070,16 @@ components:
     Program:
       type: object
       properties:
-        semester:
+        name:
+          type: string
+        sem_id:
           type: string
         observation_blocks:
           type: array
           items:
             type: string
       example:
-        semester: 2020A
+        sem_id: 2020A_H777
         observation_blocks: [5, 77, 8]
     Group:
       type: object
@@ -1345,6 +1347,7 @@ components:
         template: true
         magnitude: magnitude
         band: band
+
   parameters:
     obs_id:
       name: obs_id
@@ -1354,7 +1357,7 @@ components:
       style: form
       explode: true
       schema:
-        type: object
+        type: string
       example: 609b10d6fd85ea78eb0ddddb
     ob_id:
       name: ob_id
@@ -1366,6 +1369,17 @@ components:
       schema:
         type: string
       example: 6042ced0afc6ecd40fe5a3dd
+    semester:
+      in: query
+      name: semester
+      description: semester
+      style: form
+      explode: true
+      schema:
+        type: string
+        default: ""
+      required: false
+      example: 2021A
     sem_id:
       name: sem_id
       in: path

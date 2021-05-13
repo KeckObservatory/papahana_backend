@@ -25,6 +25,12 @@ def get_by_id(id, collect_name):
     return list(coll.find(query))
 
 
+def get_by_query(query, collect_name):
+    coll = config_collection(collect_name)
+
+    return list(coll.find(query))
+
+
 def insert_into_collection(doc, collect_name):
     """
     Add a new document to a collection.
@@ -172,13 +178,6 @@ def get_object_id(obj_id):
         raise ValueError(err)
 
     return id
-
-
-class JSONEncoder(json.JSONEncoder):
-    def default(self, val):
-        if isinstance(val, bson.objectid.ObjectId):
-            return str(val)
-        return json.JSONEncoder.default(self, val)
 
 
 # Group specific helpers

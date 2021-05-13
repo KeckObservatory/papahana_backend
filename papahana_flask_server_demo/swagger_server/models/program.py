@@ -14,24 +14,29 @@ class Program(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, semester: str=None, observation_blocks: List[str]=None):  # noqa: E501
+    def __init__(self, name: str=None, sem_id: str=None, observation_blocks: List[str]=None):  # noqa: E501
         """Program - a model defined in Swagger
 
-        :param semester: The semester of this Program.  # noqa: E501
-        :type semester: str
+        :param name: The name of this Program.  # noqa: E501
+        :type name: str
+        :param sem_id: The sem_id of this Program.  # noqa: E501
+        :type sem_id: str
         :param observation_blocks: The observation_blocks of this Program.  # noqa: E501
         :type observation_blocks: List[str]
         """
         self.swagger_types = {
-            'semester': str,
+            'name': str,
+            'sem_id': str,
             'observation_blocks': List[str]
         }
 
         self.attribute_map = {
-            'semester': 'semester',
+            'name': 'name',
+            'sem_id': 'sem_id',
             'observation_blocks': 'observation_blocks'
         }
-        self._semester = semester
+        self._name = name
+        self._sem_id = sem_id
         self._observation_blocks = observation_blocks
 
     @classmethod
@@ -46,25 +51,46 @@ class Program(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def semester(self) -> str:
-        """Gets the semester of this Program.
+    def name(self) -> str:
+        """Gets the name of this Program.
 
 
-        :return: The semester of this Program.
+        :return: The name of this Program.
         :rtype: str
         """
-        return self._semester
+        return self._name
 
-    @semester.setter
-    def semester(self, semester: str):
-        """Sets the semester of this Program.
+    @name.setter
+    def name(self, name: str):
+        """Sets the name of this Program.
 
 
-        :param semester: The semester of this Program.
-        :type semester: str
+        :param name: The name of this Program.
+        :type name: str
         """
 
-        self._semester = semester
+        self._name = name
+
+    @property
+    def sem_id(self) -> str:
+        """Gets the sem_id of this Program.
+
+
+        :return: The sem_id of this Program.
+        :rtype: str
+        """
+        return self._sem_id
+
+    @sem_id.setter
+    def sem_id(self, sem_id: str):
+        """Sets the sem_id of this Program.
+
+
+        :param sem_id: The sem_id of this Program.
+        :type sem_id: str
+        """
+
+        self._sem_id = sem_id
 
     @property
     def observation_blocks(self) -> List[str]:
