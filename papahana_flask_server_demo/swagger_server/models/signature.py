@@ -14,9 +14,11 @@ class Signature(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, pi_id: str=None, sem_id: str=None, instrument: str=None):  # noqa: E501
+    def __init__(self, name: str=None, pi_id: str=None, sem_id: str=None, instrument: str=None):  # noqa: E501
         """Signature - a model defined in Swagger
 
+        :param name: The name of this Signature.  # noqa: E501
+        :type name: str
         :param pi_id: The pi_id of this Signature.  # noqa: E501
         :type pi_id: str
         :param sem_id: The sem_id of this Signature.  # noqa: E501
@@ -25,16 +27,19 @@ class Signature(Model):
         :type instrument: str
         """
         self.swagger_types = {
+            'name': str,
             'pi_id': str,
             'sem_id': str,
             'instrument': str
         }
 
         self.attribute_map = {
+            'name': 'name',
             'pi_id': 'pi_id',
             'sem_id': 'sem_id',
             'instrument': 'instrument'
         }
+        self._name = name
         self._pi_id = pi_id
         self._sem_id = sem_id
         self._instrument = instrument
@@ -49,6 +54,27 @@ class Signature(Model):
         :rtype: Signature
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def name(self) -> str:
+        """Gets the name of this Signature.
+
+
+        :return: The name of this Signature.
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name: str):
+        """Sets the name of this Signature.
+
+
+        :param name: The name of this Signature.
+        :type name: str
+        """
+
+        self._name = name
 
     @property
     def pi_id(self) -> str:

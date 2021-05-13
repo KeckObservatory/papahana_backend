@@ -14,20 +14,25 @@ class Program(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, semester: str=None):  # noqa: E501
+    def __init__(self, semester: str=None, observation_blocks: List[str]=None):  # noqa: E501
         """Program - a model defined in Swagger
 
         :param semester: The semester of this Program.  # noqa: E501
         :type semester: str
+        :param observation_blocks: The observation_blocks of this Program.  # noqa: E501
+        :type observation_blocks: List[str]
         """
         self.swagger_types = {
-            'semester': str
+            'semester': str,
+            'observation_blocks': List[str]
         }
 
         self.attribute_map = {
-            'semester': 'semester'
+            'semester': 'semester',
+            'observation_blocks': 'observation_blocks'
         }
         self._semester = semester
+        self._observation_blocks = observation_blocks
 
     @classmethod
     def from_dict(cls, dikt) -> 'Program':
@@ -60,3 +65,24 @@ class Program(Model):
         """
 
         self._semester = semester
+
+    @property
+    def observation_blocks(self) -> List[str]:
+        """Gets the observation_blocks of this Program.
+
+
+        :return: The observation_blocks of this Program.
+        :rtype: List[str]
+        """
+        return self._observation_blocks
+
+    @observation_blocks.setter
+    def observation_blocks(self, observation_blocks: List[str]):
+        """Sets the observation_blocks of this Program.
+
+
+        :param observation_blocks: The observation_blocks of this Program.
+        :type observation_blocks: List[str]
+        """
+
+        self._observation_blocks = observation_blocks

@@ -8,6 +8,7 @@ from typing import List, Dict  # noqa: F401
 from swagger_server.models.base_model_ import Model
 from swagger_server.models.acquisition import Acquisition  # noqa: F401,E501
 from swagger_server.models.observation import Observation  # noqa: F401,E501
+from swagger_server.models.signature import Signature  # noqa: F401,E501
 from swagger_server.models.status import Status  # noqa: F401,E501
 from swagger_server.models.target import Target  # noqa: F401,E501
 from swagger_server import util
@@ -18,11 +19,13 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
+    def __init__(self, id: str=None, signature: Signature=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param id: The id of this ObservationBlock.  # noqa: E501
         :type id: str
+        :param signature: The signature of this ObservationBlock.  # noqa: E501
+        :type signature: Signature
         :param target: The target of this ObservationBlock.  # noqa: E501
         :type target: List[Target]
         :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
@@ -42,6 +45,7 @@ class ObservationBlock(Model):
         """
         self.swagger_types = {
             'id': str,
+            'signature': Signature,
             'target': List[Target],
             'acquisition': Acquisition,
             'observations': List[Observation],
@@ -54,6 +58,7 @@ class ObservationBlock(Model):
 
         self.attribute_map = {
             'id': 'id',
+            'signature': 'signature',
             'target': 'target',
             'acquisition': 'acquisition',
             'observations': 'observations',
@@ -64,6 +69,7 @@ class ObservationBlock(Model):
             'comment': 'comment'
         }
         self._id = id
+        self._signature = signature
         self._target = target
         self._acquisition = acquisition
         self._observations = observations
@@ -104,6 +110,27 @@ class ObservationBlock(Model):
         """
 
         self._id = id
+
+    @property
+    def signature(self) -> Signature:
+        """Gets the signature of this ObservationBlock.
+
+
+        :return: The signature of this ObservationBlock.
+        :rtype: Signature
+        """
+        return self._signature
+
+    @signature.setter
+    def signature(self, signature: Signature):
+        """Sets the signature of this ObservationBlock.
+
+
+        :param signature: The signature of this ObservationBlock.
+        :type signature: Signature
+        """
+
+        self._signature = signature
 
     @property
     def target(self) -> List[Target]:
