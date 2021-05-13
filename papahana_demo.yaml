@@ -209,7 +209,7 @@ paths:
         - Groups
         - Semesters and Programs
       description: Retrieves all groups associated with a program
-      operationId: sem_id_groups_get
+      operationId: semesters_groups_get
       parameters:
         - $ref: '#/components/parameters/sem_id_in_query'
       responses:

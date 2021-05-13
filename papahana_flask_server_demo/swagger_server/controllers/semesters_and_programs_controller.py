@@ -7,19 +7,6 @@ from swagger_server.models.target import Target  # noqa: E501
 from swagger_server import util
 
 
-def sem_id_groups_get(sem_id):  # noqa: E501
-    """sem_id_groups_get
-
-    Retrieves all groups associated with a program # noqa: E501
-
-    :param sem_id: semester id
-    :type sem_id: str
-
-    :rtype: List[Group]
-    """
-    return 'do some magic!'
-
-
 def semester_programs_get(obs_id, sem_id):  # noqa: E501
     """retrieves all the programs associated with an observer
 
@@ -49,6 +36,19 @@ def semesters_get(obs_id):  # noqa: E501
     """
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def semesters_groups_get(sem_id):  # noqa: E501
+    """semesters_groups_get
+
+    Retrieves all groups associated with a program # noqa: E501
+
+    :param sem_id: semester id
+    :type sem_id: str
+
+    :rtype: List[Group]
+    """
     return 'do some magic!'
 
 
