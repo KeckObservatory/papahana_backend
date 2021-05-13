@@ -63,5 +63,3 @@ def create_collection(dbName, collName, port=27017, remote=False, mode='dev',
 
     return coll
 
-
-# coll = config_collection('obCollectionName', 'dev', config='./config.live.yaml')
