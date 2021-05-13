@@ -1,10 +1,20 @@
 mode:
-  config: dev
+  config: dev 
 
+local:
+  dbName: papahana 
+  obCollect: ob_blocks
+  groupCollect: groups
+  sequenceCollect: sequences
+  port: 27017
+  password: ...
+  username: ...
 demo:
   dbName: papahana 
-  obCollect: ob_block
-  groupCollect: group
+  obCollect: ob_blocks
+  groupCollect: groups
+  sequenceCollect: sequences
+  port: 27017
   password: ...
   username: ...
 dev:
