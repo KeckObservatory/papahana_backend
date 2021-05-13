@@ -22,7 +22,7 @@ def config_collection(collection, config='config.live.yaml'):
     elif mode == 'demo':
         coll = create_collection(conf['dbName'], conf[collection], mode, remote=True,
                                  username=conf['username'], password=conf['password'])
-    if mode == 'local':
+    elif mode == 'local':
         coll = create_collection(conf['dbName'], conf[collection], mode, port=conf['port'])
     else:
         raise ValueError('collection mode not known')

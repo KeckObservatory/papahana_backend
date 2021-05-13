@@ -19,7 +19,7 @@ demo:
   username: ...
 dev:
   dbName: papahana
-  obCollect: ob_block
+  obCollect: ob_blocks
   groupCollect: groups
   sequenceCollect: sequences
   port: 27017
