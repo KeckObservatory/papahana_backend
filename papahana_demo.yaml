@@ -1125,9 +1125,11 @@ components:
         signature:
           $ref: '#/components/schemas/Signature'
         target:
-          $ref: '#/components/schemas/Target'
+          type: array
+          items:
+            $ref: '#/components/schemas/Target'
         acquisition:
-            $ref: '#/components/schemas/Acquisition'
+          $ref: '#/components/schemas/Acquisition'
         observations:
           type: array
           items:
@@ -1153,26 +1155,7 @@ components:
     Signature:
       type: object
       properties:
-<<<<<<< Updated upstream
         name:
-=======
-<<<<<<< Updated upstream
-        pi:
-=======
-        name:
-          type: string
-        pi_id:
-          type: number 
-        sem_id:
-          type: string
-        instrument:
-          type: string
-    Status:
-      type: object
-      properties:
-        state:
->>>>>>> Stashed changes
->>>>>>> Stashed changes
           type: string
         pi_id:
           type: string
@@ -1190,37 +1173,8 @@ components:
           items:
             type: string
     Acquisition:
-      type: object
-      oneOf:
-      - $ref: '#/components/schemas/KCWIAcquisition'
-      - $ref: '#/components/schemas/DefaultAcquisition'
-    KCWIAcquisition:
       required:
-      - name
-      - version
-      - script
-      - guider_po
-      - guider_gs_ra
-      - guider_gs_dec      
-      - guider_gs_mode
-      type: object
-      properties:
-        name: 
-          type: string
-        version: 
-          type: string
-        script: 
-          type: string
-        guider_po: 
-          type: string
-        guider_gs_ra: 
-         type: number
-        guider_gs_dec: 
-          type: number
-        guider_gs_mode: 
-          type: string 
-    DefaultAcquisition:
-      required:
+      - acquisition
       - acquisition_method
       - ao_modes
       - associations
@@ -1231,6 +1185,8 @@ components:
       - slitmasks
       type: object
       properties:
+        acquisition:
+          type: string
         instrumental_setup:
           type: string
         acquisition_method:
@@ -1275,6 +1231,7 @@ components:
         ao_modes:
         - ao_modes
         - ao_modes
+        acquisition: acquisition
         instrumental_setup: instrumental_setup
     Observation:
       required:
@@ -1303,21 +1260,20 @@ components:
         instrument: instrument
     Target:
       required:
-      - d_dec
+      - ddec
       - dec
       - dec_offset
-      - d_ra
+      - dra
       - epoch
       - equinox
       - frame
-      - mag
+      - magnitude
       - name
       - obstime
       - pm_dec
       - pm_ra
       - ra
       - ra_offset
-      - pa
       type: object
       properties:
         name:
@@ -1327,8 +1283,6 @@ components:
         dec:
           type: string
         equinox:
-          type: number
-        pa:
           type: number
         frame:
           type: string
@@ -1344,33 +1298,34 @@ components:
           type: number
         obstime:
           type: number
-        mag:
-          type: array
-          items:
-            $ref: '#/components/schemas/Magnitude'
+        magnitude:
+          $ref: '#/components/schemas/Magnitude'
         wrap?:
           type: string
-        d_ra:
+        dra:
           type: number
-        d_dec:
+        ddec:
           type: number
         comment?:
           type: string
+        template:
+          type: boolean
       example:
         dec: dec
         epoch: 2.3021358869347655
         pm_dec: 5.637376656633329
         pm_ra: 5.962133916683182
         ra: ra
-        d_dec: 3.616076749251911
+        ddec: 3.616076749251911
         ra_offset: 6.027456183070403
-        d_ra: 9.301444243932576
+        dra: 9.301444243932576
         obstime: 7.061401241503109
         wrap?: wrap?
         comment?: comment?
         name: name
-        mag:
-          mag: magnitude
+        magnitude:
+          template: true
+          magnitude: magnitude
           band: band
         dec_offset: 1.4658129805029452
         equinox: 0.8008281904610115
@@ -1378,14 +1333,18 @@ components:
     Magnitude:
       required:
       - band
-      - mag
+      - magnitude
+      - template
       type: object
       properties:
         band:
           type: string
-        mag:
-          type: number 
+        magnitude:
+          type: string
+        template:
+          type: boolean
       example:
+        template: true
         magnitude: magnitude
         band: band
 
