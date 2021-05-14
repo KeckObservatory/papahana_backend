@@ -1160,7 +1160,7 @@ components:
         instrument:
           type: string
         pi_id:
-          type: string
+          type: number
         observer_ids:
           type: array
           items:
