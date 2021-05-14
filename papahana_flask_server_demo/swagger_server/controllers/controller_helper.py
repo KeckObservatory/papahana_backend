@@ -128,8 +128,9 @@ def update_doc(query, new_vals, collect_name):
     :type collect_name: str
     """
     coll = config_collection(collect_name)
-    if '_id' in new_vals.keys(): # _id is immutable
-    	del new_vals['_id']
+    if '_id' in new_vals.keys():
+        del new_vals['_id']
+
     coll.update_one(query, {"$set": new_vals})
 
 

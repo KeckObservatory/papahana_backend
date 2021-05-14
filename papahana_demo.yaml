@@ -1157,12 +1157,16 @@ components:
       properties:
         name:
           type: string
-        pi_id:
-          type: string
         sem_id:
           type: string
         instrument:
           type: string
+        pi_id:
+          type: string
+        observer_ids:
+          type: array
+          items:
+            type: string
     Status:
       type: object
       properties:

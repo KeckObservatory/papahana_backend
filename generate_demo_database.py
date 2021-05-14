@@ -14,6 +14,7 @@ from getpass import getpass
 seed = 1984739
 random.seed(seed)
 import datetime
+from papahana_flask_server_demo.config import config_collection
 
 INST_MAPPING = { 
                  'DEIMOS': {'DE', 'DF'},
@@ -30,15 +31,15 @@ INST_MAPPING = {
 
 
 pis = {
-"Michael Bluth": 55,
-"Lindsay Bluth-Fünke": 66,
-"Gob Bluth": 88,
-"George Michael Bluth": 99,
-"Maeby Fünke": 77,
-"Buster Bluth": 86,
-"Tobias Fünke": 98,
-"George Bluth Sr.": 11,
-"Lucille Bluth": 76,
+"Michael Bluth": "55",
+"Lindsay Bluth-Fünke": "66",
+"Gob Bluth": "88",
+"George Michael Bluth": "99",
+"Maeby Fünke": "77",
+"Buster Bluth": "86",
+"Tobias Fünke": "98",
+"George Bluth Sr.": "11",
+"Lucille Bluth": "76",
 }
 
 observers = [
@@ -228,9 +229,36 @@ def generate_signature(maxArr):
     pi_name = randPI()
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
-        'pi_id': str(pis[pi_name]),
+        'pi_id': pis[pi_name],
         'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
         'instrument': 'KCWI',
+        'comment': optionalRandComment()
+    }
+    return schema
+
+@remove_none_values_in_dict
+def generate_program(ob_blocks):
+    observers = []
+    for i in range(0, random.randint(0, 9)):
+        pi_name = randPI()
+        observers.append(pis[pi_name])
+
+    pi_name = str(randPI())
+    while pi_name in observers:
+        observers.remove(pi_name)
+
+    ob_set = set()
+    n_ob = random.randint(0, 9)
+    for indx in range(0, n_ob):
+        ob_val = random.randint(0, len(ob_blocks)-1)
+        ob_set.update({ob_blocks[ob_val]})
+
+    schema = {
+        'name': 'Program #' + str(random.randint(0, 99)),
+        'pi_id': pis[pi_name],
+        'observers_id': observers,
+        'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
+        'ob_blocks': list(ob_set),
         'comment': optionalRandComment()
     }
     return schema
@@ -354,39 +382,16 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         schema['_id'] = _id
     return schema
 
-def create_collection(dbName, collName, port=27017, mode='prod'):
-    """ create_collection
-    Creates and returns a mongodb collection object
-    
-    :param dbName: database name
-    :type dbName: str
-    :param collName: collection name
-    :type collName: str
-    :port: port name
-    :type port: int
-    :rtype: pymongo.collection.Collection
-    """
-    if os.environ.get('DOCKER_DATABASE_CONNECTION', False):
-        dbURL = f'mongodb://database:{port}'
-    elif mode is 'prod':
-        dbURL = 'mongodb://10.96.0.228:27017'
-    else:
-        dbURL = f'mongodb://127.0.0.1:{port}'
-    client = pymongo.MongoClient(dbURL)
-    db = client[dbName]
-    coll = db[collName]
-    return coll
-
 if __name__=='__main__':
     seed = 1984739
     random.seed(seed)
     dbName = 'papahana'
-    mode='local'
+    mode = 'dev'
     
     # Create ob_blocks collection
     collName = 'ob_blocks'
     remote = True # run on remote server (n)
-    coll = create_collection(dbName, collName, port=27017, mode=mode)
+    coll = config_collection('obCollect')
     coll.drop()
     coll.create_index([('signature.pi', pymongo.DESCENDING)])
     coll.create_index([('signature.semester', pymongo.DESCENDING)])
@@ -394,15 +399,30 @@ if __name__=='__main__':
     nLen = 5
     maxArr = 5
     inst = 'KCWI'
+    ob_blocks = []
+    print("...generating OBs")
     for idx in range(NOBS):
         doc = generate_observation_block(nLen, maxArr, inst)
         result = coll.insert_one(doc)
+        ob_blocks.append(str(result.inserted_id))
         # assert result.inserted_id == str(idx), 'check that idx was sed properly'
+
+    # create Program collection
+    coll = config_collection('prgCollect')
+    coll.drop()
+    n_prgs = 50
+    print("...generating programs")
+    for idx in range(n_prgs):
+        doc = generate_program(ob_blocks)
+        result = coll.insert_one(doc)
+
     # Create groups collection
     collName = 'groups'
     remote = True # run on remote server (n)
-    coll = create_collection(dbName, collName, port=27017, mode=mode)
+    # coll = create_collection(dbName, collName, port=27017, mode=mode)
+    coll = config_collection('groupCollect')
     coll.drop()
+    print("...generating groups")
     nGroups = 20
     for idx in range(nGroups):
         doc = generate_group()
