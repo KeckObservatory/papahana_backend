@@ -181,6 +181,14 @@ def get_object_id(obj_id):
     return id
 
 
+def clean_objectid(results):
+    cln_results = []
+    for result in results:
+        result['_id'] = str(result['_id'])
+        cln_results.append(result)
+
+    return cln_results
+
 # Group specific helpers
 def get_ob_list(group_id):
     results = get_by_id(group_id, 'groupCollect')

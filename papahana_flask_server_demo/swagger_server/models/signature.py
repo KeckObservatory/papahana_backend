@@ -14,35 +14,40 @@ class Signature(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, pi_id: str=None, sem_id: str=None, instrument: str=None):  # noqa: E501
+    def __init__(self, name: str=None, sem_id: str=None, instrument: str=None, pi_id: int=None, observer_ids: List[int]=None):  # noqa: E501
         """Signature - a model defined in Swagger
 
         :param name: The name of this Signature.  # noqa: E501
         :type name: str
-        :param pi_id: The pi_id of this Signature.  # noqa: E501
-        :type pi_id: str
         :param sem_id: The sem_id of this Signature.  # noqa: E501
         :type sem_id: str
         :param instrument: The instrument of this Signature.  # noqa: E501
         :type instrument: str
+        :param pi_id: The pi_id of this Signature.  # noqa: E501
+        :type pi_id: int
+        :param observer_ids: The observer_ids of this Signature.  # noqa: E501
+        :type observer_ids: List[int]
         """
         self.swagger_types = {
             'name': str,
-            'pi_id': str,
             'sem_id': str,
-            'instrument': str
+            'instrument': str,
+            'pi_id': int,
+            'observer_ids': List[int]
         }
 
         self.attribute_map = {
             'name': 'name',
-            'pi_id': 'pi_id',
             'sem_id': 'sem_id',
-            'instrument': 'instrument'
+            'instrument': 'instrument',
+            'pi_id': 'pi_id',
+            'observer_ids': 'observer_ids'
         }
         self._name = name
-        self._pi_id = pi_id
         self._sem_id = sem_id
         self._instrument = instrument
+        self._pi_id = pi_id
+        self._observer_ids = observer_ids
 
     @classmethod
     def from_dict(cls, dikt) -> 'Signature':
@@ -75,27 +80,6 @@ class Signature(Model):
         """
 
         self._name = name
-
-    @property
-    def pi_id(self) -> str:
-        """Gets the pi_id of this Signature.
-
-
-        :return: The pi_id of this Signature.
-        :rtype: str
-        """
-        return self._pi_id
-
-    @pi_id.setter
-    def pi_id(self, pi_id: str):
-        """Sets the pi_id of this Signature.
-
-
-        :param pi_id: The pi_id of this Signature.
-        :type pi_id: str
-        """
-
-        self._pi_id = pi_id
 
     @property
     def sem_id(self) -> str:
@@ -138,3 +122,45 @@ class Signature(Model):
         """
 
         self._instrument = instrument
+
+    @property
+    def pi_id(self) -> int:
+        """Gets the pi_id of this Signature.
+
+
+        :return: The pi_id of this Signature.
+        :rtype: int
+        """
+        return self._pi_id
+
+    @pi_id.setter
+    def pi_id(self, pi_id: int):
+        """Sets the pi_id of this Signature.
+
+
+        :param pi_id: The pi_id of this Signature.
+        :type pi_id: int
+        """
+
+        self._pi_id = pi_id
+
+    @property
+    def observer_ids(self) -> List[int]:
+        """Gets the observer_ids of this Signature.
+
+
+        :return: The observer_ids of this Signature.
+        :rtype: List[int]
+        """
+        return self._observer_ids
+
+    @observer_ids.setter
+    def observer_ids(self, observer_ids: List[int]):
+        """Sets the observer_ids of this Signature.
+
+
+        :param observer_ids: The observer_ids of this Signature.
+        :type observer_ids: List[int]
+        """
+
+        self._observer_ids = observer_ids

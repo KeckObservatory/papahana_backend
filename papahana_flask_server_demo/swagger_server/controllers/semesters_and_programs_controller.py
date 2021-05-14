@@ -14,7 +14,7 @@ from swagger_server import util
 #     """retrieves all the programs associated with an observer
 #
 #     :param obs_id: observer id
-#     :type obs_id: str
+#     :type obs_id: int
 #     :param semester: semester
 #     :type semester: str
 #
@@ -66,7 +66,7 @@ def semester_programs_get(obs_id, semester=None):
     """retrieves all the programs associated with an observer
 
     :param obs_id: observer id
-    :type obs_id: str
+    :type obs_id: int
     :param semester: semester
     :type semester: str
 
@@ -82,30 +82,32 @@ def semester_programs_get(obs_id, semester=None):
 
     results = utils.get_by_query(query, 'prgCollect')
 
-    cln_results = []
-    for result in results:
-        result['_id'] = str(result['_id'])
-        cln_results.append(result)
-    # > db.programs.find({$ or: [{"pi_id": "88"}, {"observers_id": "88"}]})
-
-    # utils.get_by_id(obs_id, 'prgCollect')
-
-    return cln_results
+    return utils.clean_objectid(results)
 
 
-def semesters_get(obs_id):  # noqa: E501
+def semesters_get(obs_id, semester=None):  # noqa: E501
     """retrieves all the programs associated with a PI
 
      # noqa: E501
 
     :param obs_id: observer id
-    :type obs_id: dict | bytes
+    :type obs_id: int
+    :param semester: semester
+    :type semester: str
 
     :rtype: List[Program]
     """
+
     if connexion.request.is_json:
-        obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        obs_id = object.from_dict(connexion.request.get_json())
+
+    query = {"pi_id": obs_id}
+    if semester:
+        query["sem_id"] = {'$regex': f'{semester}_.*'}
+
+    results = utils.get_by_query(query, 'prgCollect')
+
+    return utils.clean_objectid(results)
 
 
 def semesters_groups_get(sem_id):  # noqa: E501

@@ -31,15 +31,15 @@ INST_MAPPING = {
 
 
 pis = {
-"Michael Bluth": "55",
-"Lindsay Bluth-Fünke": "66",
-"Gob Bluth": "88",
-"George Michael Bluth": "99",
-"Maeby Fünke": "77",
-"Buster Bluth": "86",
-"Tobias Fünke": "98",
-"George Bluth Sr.": "11",
-"Lucille Bluth": "76",
+"Michael Bluth": 5555,
+"Lindsay Bluth-Fünke": 7766,
+"Gob Bluth": 8877,
+"George Michael Bluth": 8899,
+"Maeby Fünke": 7799,
+"Buster Bluth": 8765,
+"Tobias Fünke": 9998,
+"George Bluth Sr.": 1144,
+"Lucille Bluth": 7644,
 }
 
 observers = [
@@ -92,6 +92,8 @@ comments = [
 "I hear the jury?s still out on science.",
 ]
 
+wrap_str = ['north', 'south']
+
 status = [
     "undefined", 
     "completed", 
@@ -100,6 +102,8 @@ status = [
     "progressing",
     "inqueue",
 ]
+
+spectral_types = ['V', 'R', 'I', 'J', 'H', 'K']
 
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
@@ -208,7 +212,8 @@ def generate_semesters(nSem, nLen=5, maxLen=6):
     return [ generate_semester(sem, nLen, maxLen) for sem in semesters[0:nSem] ]
 
 def generate_mag(nLen=2):
-    return {'band': randString(nLen), 'mag': randFloat(nLen)}
+    return {'band': spectral_types[random.randint(0, len(spectral_types)-1)],
+            'mag': randFloat(nLen)}
 
 def generate_mags(maxMags=2):
     return [ generate_mag() for _ in range( random.randint( 1, maxMags ) ) ]
@@ -358,7 +363,7 @@ def generate_target():
         'epoch': randFloat(), 
         'obstime': randFloat(), 
         'mag': generate_mags(), 
-        'wrap': optionalRandString(), 
+        'wrap': wrap_str[random.randint(0, 1)],
         'd_ra': randFloat(), 
         'd_dec': randFloat(), 
         'comment': optionalRandComment()
