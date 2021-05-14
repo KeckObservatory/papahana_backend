@@ -31,7 +31,205 @@ tags:
   externalDocs:
     description: Find out more
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+
 paths:
+  /semesters:
+    summary: Retrieves all the programs (semesters) associated with a PI
+    get:
+      tags:
+        - Semesters and Programs
+      summary: retrieves all the programs associated with a PI
+      operationId: semesters_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/programs:
+    summary: retrieve programs of a given semester.
+    get:
+      tags:
+        - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: semester_programs_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/semester'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation ID not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/observing_blocks/{sem_id}:
+    summary: retrieve programs of a given program (sem_id).
+    get:
+      tags:
+        - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: semesters_observing_blocks_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/proposal/{sem_id}:
+    get:
+      tags:
+        - Semesters and Programs
+      description: retrieves the proposal associated with the program
+      operationId: semesters_proposal_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/submit/{sem_id}:
+    post:
+      tags:
+        - Semesters and Programs
+      description: Submits a program (OBs)
+      operationId: semesters_submit_post
+      parameters:
+        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
+      responses:
+        "201":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+
+    put:
+      tags:
+        - Semesters and Programs
+      description: updates a program (OBs)
+      operationId: semesters_submit_put
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: List of objects added to the program
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/targets/{sem_id}:
+    get:
+      tags:
+        - Semesters and Programs
+      description: Retrieves all the targets associated with a program
+      operationId: semesters_targets_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: array of targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Target'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/groups/:
+    get:
+      tags:
+        - Groups
+        - Semesters and Programs
+      description: Retrieves all groups associated with a program
+      operationId: semesters_groups_get
+      parameters:
+        - $ref: '#/components/parameters/sem_id_in_query'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+
   /groups:
     get:
       tags:
@@ -354,19 +552,17 @@ paths:
     get:
       tags:
       - Observation Block
-      description: "Retrieves the general parameters of an OB (target, exec time,\
-        \ other as needed)"
+      description: "Retrieves the general parameters of an OB (target, exec time, other as needed)"
       operationId: ob_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: On a success gets a new OB.
+          description: On success gets a new OB.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ObservationBlock'
-                x-content-type: application/json
         "400":
           description: Invalid status value
         "404":
@@ -785,7 +981,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
-  /obsBlocks/duplicate/{sem_id}:
+  /obsBlocks/duplicate:
     post:
       tags:
         - Observation Block
@@ -793,7 +989,19 @@ paths:
       operationId: ob_duplicate
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/sem_id'
+#        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/sem_id_not_required'
+##        - sem_id:
+#          in: query
+#          name: sem_id
+#          description: program id including semester
+#          style: form
+#          explode: true
+#          schema:
+#            type: string
+#            default: ""
+#          required: false
+#          example: 2021A_U456
       responses:
         "200":
           description: On success a new OB is generated, with a new unique ID. If needed the OB is associated with a new semester.
@@ -852,6 +1060,27 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
 components:
   schemas:
+    Semester:
+      type: object
+      properties:
+        semester:
+          type: string
+      example:
+        semester: 2020A
+    Program:
+      type: object
+      properties:
+        name:
+          type: string
+        sem_id:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+      example:
+        sem_id: 2020A_H777
+        observation_blocks: [5, 77, 8]
     Group:
       type: object
       properties:
@@ -915,7 +1144,9 @@ components:
           type: number
           example:
             99.99
-        comment: 
+        status:
+          $ref: '#/components/schemas/Status'
+        comment:
           type: string
           example:
             this is a nice ob block.
@@ -924,35 +1155,25 @@ components:
       properties:
         name:
           type: string
-        pi_id:
-          type: number 
         sem_id:
           type: string
         instrument:
           type: string
+        pi_id:
+          type: string
+        observer_ids:
+          type: array
+          items:
+            type: string
     Status:
       type: object
       properties:
         state:
           type: string
-        semesters:
-          type: array
-          items: 
-            type: string
-        observers:
+        executions:
           type: array
           items:
             type: string
-        programs:
-          type: array
-          items: 
-              type: string
-        group:
-          type: array
-          items:
-              type: string
-        comment:
-          type: string
     Acquisition:
       type: object
       oneOf:
@@ -1152,6 +1373,7 @@ components:
       example:
         magnitude: magnitude
         band: band
+
   parameters:
     obs_id:
       name: obs_id
@@ -1161,7 +1383,7 @@ components:
       style: form
       explode: true
       schema:
-        type: object
+        type: string
       example: 609b10d6fd85ea78eb0ddddb
     ob_id:
       name: ob_id
@@ -1173,16 +1395,47 @@ components:
       schema:
         type: string
       example: 6042ced0afc6ecd40fe5a3dd
+    semester:
+      in: query
+      name: semester
+      description: semester
+      style: form
+      explode: true
+      schema:
+        type: string
+        default: ""
+      required: false
+      example: 2021A
     sem_id:
       name: sem_id
       in: path
-      description: program id
+      description: semester id
       required: true
       style: simple
       explode: true
       schema:
         type: string
-      example: 12345asdf
+      example: 2021A_U456
+    sem_id_in_query:
+      in: query
+      name: sem_id
+      description: semester id
+      required: true
+      explode: true
+      schema:
+        type: string
+      example: 2021A
+    sem_id_not_required:
+      in: query
+      name: sem_id
+      description: program id including semester
+      style: form
+      explode: true
+      schema:
+        type: string
+        default: ""
+      required: false
+      example: 2021A_U456
     instrument:
       name: instrument
       in: path

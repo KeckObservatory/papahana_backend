@@ -9,6 +9,7 @@ from swagger_server.models.base_model_ import Model
 from swagger_server.models.acquisition import Acquisition  # noqa: F401,E501
 from swagger_server.models.observation import Observation  # noqa: F401,E501
 from swagger_server.models.signature import Signature  # noqa: F401,E501
+from swagger_server.models.status import Status  # noqa: F401,E501
 from swagger_server.models.target import Target  # noqa: F401,E501
 from swagger_server import util
 
@@ -18,11 +19,15 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     def __init__(self, id: str=None, signature: Signature=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, comment: str=None):  # noqa: E501
 =======
     def __init__(self, id: str=None, signature: Signature=None, target: Target=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
 >>>>>>> Stashed changes
+=======
+    def __init__(self, id: str=None, signature: Signature=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
+>>>>>>> main
         """ObservationBlock - a model defined in Swagger
 
         :param id: The id of this ObservationBlock.  # noqa: E501
@@ -41,6 +46,8 @@ class ObservationBlock(Model):
         :type observation_type: List[str]
         :param priority: The priority of this ObservationBlock.  # noqa: E501
         :type priority: float
+        :param status: The status of this ObservationBlock.  # noqa: E501
+        :type status: Status
         :param comment: The comment of this ObservationBlock.  # noqa: E501
         :type comment: str
         """
@@ -53,6 +60,7 @@ class ObservationBlock(Model):
             'associations': List[str],
             'observation_type': List[str],
             'priority': float,
+            'status': Status,
             'comment': str
         }
 
@@ -65,6 +73,7 @@ class ObservationBlock(Model):
             'associations': 'associations',
             'observation_type': 'observation_type',
             'priority': 'priority',
+            'status': 'status',
             'comment': 'comment'
         }
         self._id = id
@@ -75,6 +84,7 @@ class ObservationBlock(Model):
         self._associations = associations
         self._observation_type = observation_type
         self._priority = priority
+        self._status = status
         self._comment = comment
 
     @classmethod
@@ -255,6 +265,27 @@ class ObservationBlock(Model):
         """
 
         self._priority = priority
+
+    @property
+    def status(self) -> Status:
+        """Gets the status of this ObservationBlock.
+
+
+        :return: The status of this ObservationBlock.
+        :rtype: Status
+        """
+        return self._status
+
+    @status.setter
+    def status(self, status: Status):
+        """Sets the status of this ObservationBlock.
+
+
+        :param status: The status of this ObservationBlock.
+        :type status: Status
+        """
+
+        self._status = status
 
     @property
     def comment(self) -> str:

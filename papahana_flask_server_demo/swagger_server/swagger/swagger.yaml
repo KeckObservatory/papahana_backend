@@ -31,11 +31,213 @@ tags:
   externalDocs:
     description: Find out more
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+
 paths:
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
   /semesters:
     summary: Retrieves all the programs (semesters) associated with a PI
+=======
+  /semesters:
+    summary: Retrieves all the programs (semesters) associated with a PI
+    get:
+      tags:
+        - Semesters and Programs
+      summary: retrieves all the programs associated with a PI
+      operationId: semesters_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/programs:
+    summary: retrieve programs of a given semester.
+    get:
+      tags:
+        - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: semester_programs_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/semester'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation ID not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/observing_blocks/{sem_id}:
+    summary: retrieve programs of a given program (sem_id).
+    get:
+      tags:
+        - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: semesters_observing_blocks_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/proposal/{sem_id}:
+    get:
+      tags:
+        - Semesters and Programs
+      description: retrieves the proposal associated with the program
+      operationId: semesters_proposal_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/submit/{sem_id}:
+    post:
+      tags:
+        - Semesters and Programs
+      description: Submits a program (OBs)
+      operationId: semesters_submit_post
+      parameters:
+        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
+      responses:
+        "201":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+
+    put:
+      tags:
+        - Semesters and Programs
+      description: updates a program (OBs)
+      operationId: semesters_submit_put
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: List of objects added to the program
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/targets/{sem_id}:
+    get:
+      tags:
+        - Semesters and Programs
+      description: Retrieves all the targets associated with a program
+      operationId: semesters_targets_get
+      parameters:
+        - $ref: '#/components/parameters/obs_id'
+        - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: array of targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Target'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/groups/:
+    get:
+      tags:
+        - Groups
+        - Semesters and Programs
+      description: Retrieves all groups associated with a program
+      operationId: semesters_groups_get
+      parameters:
+        - $ref: '#/components/parameters/sem_id_in_query'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+
+  /groups:
+>>>>>>> main
     get:
       tags:
       - Semesters and Programs
@@ -272,11 +474,19 @@ paths:
   /semesters/targets/{sem_id}:
     get:
       tags:
+<<<<<<< HEAD
       - Semesters and Programs
       description: Retrieves all the targets associated with a program
       operationId: semesters_targets_get
       parameters:
       - name: obs_id
+=======
+      - Groups
+      description: Calculate the total execution time of a group
+      operationId: groups_execution_times_get
+      parameters:
+      - name: group_id
+>>>>>>> main
         in: query
         description: observer id
         required: true
@@ -304,6 +514,35 @@ paths:
                 items:
                   $ref: '#/components/schemas/Target'
                 x-content-type: application/json
+<<<<<<< HEAD
+=======
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+  /groups/items:
+    get:
+      tags:
+      - Groups
+      description: Retrieves the ordered list of observing blocks in a group
+      operationId: groups_items_get
+      parameters:
+      - $ref: '#/components/parameters/group_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+                x-content-type: application/json
+>>>>>>> main
         "400":
           description: Invalid status value
         "401":
@@ -316,9 +555,14 @@ paths:
     get:
       tags:
       - Groups
+<<<<<<< HEAD
       - Semesters and Programs
       description: Retrieves all groups associated with a program
       operationId: semesters_groups_get
+=======
+      description: Retrieves a summary of group information
+      operationId: groups_items_summary_get
+>>>>>>> main
       parameters:
       - name: sem_id
         in: query
@@ -398,26 +642,86 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
         required: true
       responses:
-        "201":
+        "200":
           description: OK
+        "400":
+          description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Group id not found
+          description: Group not found
       x-swagger-router-controller: Groups
       x-openapi-router-controller: swagger_server.controllers.groups_controller
-    post:
+  /groups/export:
+    get:
       tags:
       - Groups
-      description: Creates a group
-      operationId: groups_post
+      description: Retrieves a specific group information in a file format (default
+        .json)
+      operationId: groups_export_get
+      parameters:
+      - name: group_id
+        in: query
+        description: group identifier
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 6042ced0afc6ecd40fe5a3dd
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Groups
+      x-openapi-router-controller: swagger_server.controllers.groups_controller
+
+  /obsBlocks:
+    get:
+      tags:
+      - Observation Block
+      description: "Retrieves the general parameters of an OB (target, exec time, other as needed)"
+      operationId: ob_get
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success gets a new OB.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationBlock'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    put:
+      tags:
+      - Observation Block
+      description: Updates the observation block with the new one
+      operationId: ob_put
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
       requestBody:
+        description: Observation block replacing ob_id.
         content:
           application/json:
             schema:
+<<<<<<< HEAD
               $ref: '#/components/schemas/Group'
         required: true
       responses:
@@ -1257,6 +1561,291 @@ paths:
         "200":
           description: "On success retrieves the existing ob schedule,  a list of\
             \ dates."
+=======
+              $ref: '#/components/schemas/ObservationBlock'
+        required: true
+      responses:
+        "200":
+          description: On a success replaces the given OB with the updated OB.
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    post:
+      tags:
+      - Observation Block
+      description: Inserts an observation block.
+      operationId: ob_post
+      requestBody:
+        description: Observation block to be added.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationBlock'
+        required: true
+      responses:
+        "200":
+          description: On a success inserts new OB.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: id of new ob.
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    delete:
+      tags:
+      - Observation Block
+      description: Removes the observation block
+      operationId: ob_delete
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On a success removes given OB from the database.
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/template:
+    get:
+      tags:
+        - Observation Block
+      description: Retrieves the list of templates associated with the OB
+      operationId: ob_template_get
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success Returns the Target and Signature of the observing block being requested.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationBlock'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    post:
+      tags:
+        - Observation Block
+      description: Creates the list of templates associated with the OB
+      operationId: ob_template_post
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success inserts a new list of templates associated with the OB.
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    put:
+      tags:
+        - Observation Block
+      description: Updates the list of templates associated with the OB
+      operationId: ob_template_put
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success replaces the given templates with new list of templates.
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/template/{template_id}:
+    get:
+      tags:
+        - Observation Block
+      description: Retrieves the specified template within the OB
+      operationId: ob_template_id_get
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_id'
+      responses:
+        "200":
+          description: Retrieves and returns the Template of the observing block being requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationBlock'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    put:
+      tags:
+        - Observation Block
+      description: Updates the specified template within the OB
+      operationId: ob_template_id_put
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_id'
+      responses:
+        "200":
+          description: replaces the given Template within the OB with Template of id=templateId
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    delete:
+      tags:
+        - Observation Block
+      description: Removes the specified template within the OB
+      operationId: ob_template_id_delete
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_id'
+      responses:
+        "200":
+          description: removes the template from the OB
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/template/{template_id}/{file_parameter}:
+    get:
+      tags:
+        - Observation Block
+      description: Retrieves the specified template within the OB
+      operationId: ob_template_id_file_get
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/file_parameter'
+      responses:
+        "200":
+          description: Retrieves and returns the Template of the observing block being requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationBlock'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    put:
+      tags:
+        - Observation Block
+      description: Updates the specified template within the OB
+      operationId: ob_template_id_file_put
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/file_parameter'
+      responses:
+        "200":
+          description: replaces the given Template within the OB with Template of id=templateId
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/template/duplicate:
+    post:
+      tags:
+        - Observation Block
+      description: Generate a new copy of the template
+      operationId: ob_template_duplicate
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_id'
+      responses:
+        "200":
+          description: returns a copy of the Template within the OB.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationBlock'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/completelyFilledIn:
+    get:
+      tags:
+        - Observation Block
+      description: Verify that the required parameters have been filled in.
+      operationId: ob_template_filled
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success returns True.
+          content:
+            application/json:
+              schema:
+                type: boolean
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/supplementFiles:
+    get:
+      tags:
+        - Observation Block
+      description: Retrieves list of files.
+      operationId: ob_template_supplement
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success gets list of files associated with the OB.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/timeConstraints:
+    get:
+      tags:
+        - Observation Block
+      description: Retrieves the time constraints (from, to).
+      operationId: ob_time_constraint_get
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/sidereal'
+      responses:
+        "200":
+          description: On success retrieves a list of existing time constraint(s) of an OB.
           content:
             application/json:
               schema:
@@ -1272,6 +1861,49 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
     put:
       tags:
+        - Observation Block
+      description: Updates the time constraints (from, to).
+      operationId: ob_time_constraint_put
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/sidereal'
+      responses:
+        "200":
+          description: On success updates an existing time constraint(s) of an OB.
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+  /obsBlocks/schedule:
+    get:
+      tags:
+        - Observation Block
+      description: Retrieves scheduling information.
+      operationId: ob_schedule_get
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success retrieves the existing ob schedule,  a list of dates.
+>>>>>>> main
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "404":
+          description: Observation Block not found
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+    put:
+      tags:
+<<<<<<< HEAD
       - Observation Block
       description: On success updates an existing ob schedule.
       operationId: ob_schedule_put
@@ -1285,6 +1917,13 @@ paths:
         schema:
           type: string
         example: 6042ced0afc6ecd40fe5a3dd
+=======
+        - Observation Block
+      description: On success updates an existing ob schedule.
+      operationId: ob_schedule_put
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+>>>>>>> main
       responses:
         "200":
           description: On success updates an existing time constraint(s) of an OB.
@@ -1297,20 +1936,17 @@ paths:
   /obsBlocks/executions:
     get:
       tags:
+<<<<<<< HEAD
       - Observation Block
       description: Retrieves the list of execution attempts for a specific OB (for
         a specific night).
+=======
+        - Observation Block
+      description: Retrieves the list of execution attempts for a specific OB (for a specific night).
+>>>>>>> main
       operationId: ob_executions
       parameters:
-      - name: ob_id
-        in: query
-        description: observation block id
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
           description: On success retrieves a list of execution attempts of an OB.
@@ -1330,6 +1966,7 @@ paths:
   /obsBlocks/executionTime:
     get:
       tags:
+<<<<<<< HEAD
       - Observation Block
       description: Calculates the execution time.
       operationId: ob_execution_time
@@ -1343,6 +1980,13 @@ paths:
         schema:
           type: string
         example: 6042ced0afc6ecd40fe5a3dd
+=======
+        - Observation Block
+      description: Calculates the execution time.
+      operationId: ob_execution_time
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+>>>>>>> main
       responses:
         "200":
           description: On success returns an estimated execution time for an OB.
@@ -1357,6 +2001,7 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+<<<<<<< HEAD
   /obsBlocks/duplicate/{sem_id}:
     post:
       tags:
@@ -1398,6 +2043,32 @@ paths:
         "200":
           description: "On success a new OB is generated, with a new unique ID. If\
             \ needed the OB is associated with a new semester."
+=======
+  /obsBlocks/duplicate:
+    post:
+      tags:
+        - Observation Block
+      description: Duplicate the OB, default is current semId.
+      operationId: ob_duplicate
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+#        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/sem_id_not_required'
+##        - sem_id:
+#          in: query
+#          name: sem_id
+#          description: program id including semester
+#          style: form
+#          explode: true
+#          schema:
+#            type: string
+#            default: ""
+#          required: false
+#          example: 2021A_U456
+      responses:
+        "200":
+          description: On success a new OB is generated, with a new unique ID. If needed the OB is associated with a new semester.
+>>>>>>> main
           content:
             application/json:
               schema:
@@ -1412,25 +2083,26 @@ paths:
   /obsBlocks/upgrade:
     post:
       tags:
+<<<<<<< HEAD
       - Observation Block
       description: "When an instrument package changes, attempts to port an existing\
         \ OB to the new package, default is the current semId."
+=======
+        - Observation Block
+      description: When an instrument package changes, attempts to port an existing OB to the new package, default is the current semId.
+>>>>>>> main
       operationId: ob_upgrade
       parameters:
-      - name: ob_id
-        in: query
-        description: observation block id
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
+<<<<<<< HEAD
           description: "On success the new version of the OB is returned, with a new\
             \ unique ID.  If the upgrade fails (the New OB must pass verification),\
             \ an error code is generated."
+=======
+          description: On success the new version of the OB is returned, with a new unique ID.  If the upgrade fails (the New OB must pass verification), an error code is generated.
+>>>>>>> main
           content:
             application/json:
               schema:
@@ -1444,6 +2116,7 @@ paths:
   /obsBlocks/export:
     get:
       tags:
+<<<<<<< HEAD
       - Observation Block
       description: Exports an OB in human-readable format.
       operationId: ob_export
@@ -1457,6 +2130,13 @@ paths:
         schema:
           type: string
         example: 6042ced0afc6ecd40fe5a3dd
+=======
+        - Observation Block
+      description: Exports an OB in human-readable format.
+      operationId: ob_export
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+>>>>>>> main
       responses:
         "200":
           description: On success a TBD text version of the OB is returned.
@@ -1472,8 +2152,11 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
 components:
   schemas:
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> main
     Semester:
       type: object
       properties:
@@ -1494,11 +2177,15 @@ components:
             type: string
       example:
         sem_id: 2020A_H777
+<<<<<<< HEAD
         observation_blocks:
         - 5
         - 77
         - 8
 >>>>>>> Stashed changes
+=======
+        observation_blocks: [5, 77, 8]
+>>>>>>> main
     Group:
       type: object
       properties:
@@ -1560,6 +2247,7 @@ components:
             type: string
         priority:
           type: number
+<<<<<<< HEAD
           example: 99.99
 <<<<<<< Updated upstream
 =======
@@ -1767,6 +2455,36 @@ components:
         - executions
         state: state
 >>>>>>> Stashed changes
+=======
+          example:
+            99.99
+        status:
+          $ref: '#/components/schemas/Status'
+        comment:
+          type: string
+          example:
+            this is a nice ob block.
+    Signature:
+      type: object
+      properties:
+        name:
+          type: string
+        pi_id:
+          type: string
+        sem_id:
+          type: string
+        instrument:
+          type: string
+    Status:
+      type: object
+      properties:
+        state:
+          type: string
+        executions:
+          type: array
+          items:
+            type: string
+>>>>>>> main
     Acquisition:
       type: object
       oneOf:
@@ -1966,6 +2684,10 @@ components:
       example:
         magnitude: magnitude
         band: band
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
   parameters:
     obs_id:
       name: obs_id
@@ -1976,7 +2698,7 @@ components:
       explode: true
       schema:
         type: string
-      example: Dwane Johnson
+      example: 609b10d6fd85ea78eb0ddddb
     ob_id:
       name: ob_id
       in: query
@@ -1987,6 +2709,7 @@ components:
       schema:
         type: string
       example: 6042ced0afc6ecd40fe5a3dd
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     semester:
@@ -1994,22 +2717,34 @@ components:
       in: query
       description: semester
       required: false
+=======
+    semester:
+      in: query
+      name: semester
+      description: semester
+>>>>>>> main
       style: form
       explode: true
       schema:
         type: string
         default: ""
+<<<<<<< HEAD
       example: 2021A
 >>>>>>> Stashed changes
+=======
+      required: false
+      example: 2021A
+>>>>>>> main
     sem_id:
       name: sem_id
       in: path
-      description: program id
+      description: semester id
       required: true
       style: simple
       explode: true
       schema:
         type: string
+<<<<<<< HEAD
 <<<<<<< Updated upstream
       example: 12345asdf
 =======
@@ -2020,22 +2755,41 @@ components:
       description: semester id
       required: true
       style: form
+=======
+      example: 2021A_U456
+    sem_id_in_query:
+      in: query
+      name: sem_id
+      description: semester id
+      required: true
+>>>>>>> main
       explode: true
       schema:
         type: string
       example: 2021A
     sem_id_not_required:
+<<<<<<< HEAD
       name: sem_id
       in: query
       description: program id including semester
       required: false
+=======
+      in: query
+      name: sem_id
+      description: program id including semester
+>>>>>>> main
       style: form
       explode: true
       schema:
         type: string
         default: ""
+<<<<<<< HEAD
       example: 2021A_U456
 >>>>>>> Stashed changes
+=======
+      required: false
+      example: 2021A_U456
+>>>>>>> main
     instrument:
       name: instrument
       in: path
@@ -2191,4 +2945,3 @@ components:
       schema:
         type: string
       example: 6042ced0afc6ecd40fe5a3dd
-

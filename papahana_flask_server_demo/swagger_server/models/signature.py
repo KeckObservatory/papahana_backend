@@ -14,24 +14,25 @@ class Signature(Model):
 
     Do not edit the class manually.
     """
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     def __init__(self, pi: str=None, semesters: List[str]=None, observers: List[str]=None, programs: List[str]=None, group: List[str]=None, comment: str=None):  # noqa: E501
+=======
+    def __init__(self, name: str=None, pi_id: str=None, sem_id: str=None, instrument: str=None):  # noqa: E501
+>>>>>>> main
         """Signature - a model defined in Swagger
 
-        :param pi: The pi of this Signature.  # noqa: E501
-        :type pi: str
-        :param semesters: The semesters of this Signature.  # noqa: E501
-        :type semesters: List[str]
-        :param observers: The observers of this Signature.  # noqa: E501
-        :type observers: List[str]
-        :param programs: The programs of this Signature.  # noqa: E501
-        :type programs: List[str]
-        :param group: The group of this Signature.  # noqa: E501
-        :type group: List[str]
-        :param comment: The comment of this Signature.  # noqa: E501
-        :type comment: str
+        :param name: The name of this Signature.  # noqa: E501
+        :type name: str
+        :param pi_id: The pi_id of this Signature.  # noqa: E501
+        :type pi_id: str
+        :param sem_id: The sem_id of this Signature.  # noqa: E501
+        :type sem_id: str
+        :param instrument: The instrument of this Signature.  # noqa: E501
+        :type instrument: str
         """
         self.swagger_types = {
+<<<<<<< HEAD
             'pi': str,
             'semesters': List[str],
             'observers': List[str],
@@ -57,22 +58,24 @@ class Signature(Model):
             'sem_id': str,
             'instrument': str
 >>>>>>> Stashed changes
+=======
+            'name': str,
+            'pi_id': str,
+            'sem_id': str,
+            'instrument': str
+>>>>>>> main
         }
 
         self.attribute_map = {
-            'pi': 'pi',
-            'semesters': 'semesters',
-            'observers': 'observers',
-            'programs': 'programs',
-            'group': 'group',
-            'comment': 'comment'
+            'name': 'name',
+            'pi_id': 'pi_id',
+            'sem_id': 'sem_id',
+            'instrument': 'instrument'
         }
-        self._pi = pi
-        self._semesters = semesters
-        self._observers = observers
-        self._programs = programs
-        self._group = group
-        self._comment = comment
+        self._name = name
+        self._pi_id = pi_id
+        self._sem_id = sem_id
+        self._instrument = instrument
 
     @classmethod
     def from_dict(cls, dikt) -> 'Signature':
@@ -86,27 +89,28 @@ class Signature(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def pi(self) -> str:
-        """Gets the pi of this Signature.
+    def name(self) -> str:
+        """Gets the name of this Signature.
 
 
-        :return: The pi of this Signature.
+        :return: The name of this Signature.
         :rtype: str
         """
-        return self._pi
+        return self._name
 
-    @pi.setter
-    def pi(self, pi: str):
-        """Sets the pi of this Signature.
+    @name.setter
+    def name(self, name: str):
+        """Sets the name of this Signature.
 
 
-        :param pi: The pi of this Signature.
-        :type pi: str
+        :param name: The name of this Signature.
+        :type name: str
         """
 
-        self._pi = pi
+        self._name = name
 
     @property
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     def semesters(self) -> List[str]:
         """Gets the semesters of this Signature.
@@ -174,58 +178,66 @@ class Signature(Model):
 
         :return: The programs of this Signature.
         :rtype: List[str]
+=======
+    def pi_id(self) -> str:
+        """Gets the pi_id of this Signature.
+
+
+        :return: The pi_id of this Signature.
+        :rtype: str
+>>>>>>> main
         """
-        return self._programs
+        return self._pi_id
 
-    @programs.setter
-    def programs(self, programs: List[str]):
-        """Sets the programs of this Signature.
+    @pi_id.setter
+    def pi_id(self, pi_id: str):
+        """Sets the pi_id of this Signature.
 
 
-        :param programs: The programs of this Signature.
-        :type programs: List[str]
+        :param pi_id: The pi_id of this Signature.
+        :type pi_id: str
         """
 
-        self._programs = programs
+        self._pi_id = pi_id
 
     @property
-    def group(self) -> List[str]:
-        """Gets the group of this Signature.
+    def sem_id(self) -> str:
+        """Gets the sem_id of this Signature.
 
 
-        :return: The group of this Signature.
-        :rtype: List[str]
-        """
-        return self._group
-
-    @group.setter
-    def group(self, group: List[str]):
-        """Sets the group of this Signature.
-
-
-        :param group: The group of this Signature.
-        :type group: List[str]
-        """
-
-        self._group = group
-
-    @property
-    def comment(self) -> str:
-        """Gets the comment of this Signature.
-
-
-        :return: The comment of this Signature.
+        :return: The sem_id of this Signature.
         :rtype: str
         """
-        return self._comment
+        return self._sem_id
 
-    @comment.setter
-    def comment(self, comment: str):
-        """Sets the comment of this Signature.
+    @sem_id.setter
+    def sem_id(self, sem_id: str):
+        """Sets the sem_id of this Signature.
 
 
-        :param comment: The comment of this Signature.
-        :type comment: str
+        :param sem_id: The sem_id of this Signature.
+        :type sem_id: str
         """
 
-        self._comment = comment
+        self._sem_id = sem_id
+
+    @property
+    def instrument(self) -> str:
+        """Gets the instrument of this Signature.
+
+
+        :return: The instrument of this Signature.
+        :rtype: str
+        """
+        return self._instrument
+
+    @instrument.setter
+    def instrument(self, instrument: str):
+        """Sets the instrument of this Signature.
+
+
+        :param instrument: The instrument of this Signature.
+        :type instrument: str
+        """
+
+        self._instrument = instrument

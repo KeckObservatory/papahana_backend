@@ -6,6 +6,7 @@ local:
   obCollect: ob_blocks
   groupCollect: groups
   sequenceCollect: sequences
+  prgCollect: programs
   port: 27017
   password: ...
   username: ...
@@ -14,6 +15,7 @@ demo:
   obCollect: ob_blocks
   groupCollect: groups
   sequenceCollect: sequences
+  prgCollect: programs
   port: 27017
   password: ...
   username: ...
@@ -22,4 +24,5 @@ dev:
   obCollect: ob_blocks
   groupCollect: groups
   sequenceCollect: sequences
+  prgCollect: programs
   port: 27017

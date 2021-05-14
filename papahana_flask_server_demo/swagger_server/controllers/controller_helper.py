@@ -1,4 +1,5 @@
 from config import config_collection
+import pymongo
 import bson
 import json
 
@@ -19,6 +20,12 @@ def get_by_id(id, collect_name):
         return [msg]
 
     query = {"_id": id}
+    coll = config_collection(collect_name)
+
+    return list(coll.find(query))
+
+
+def get_by_query(query, collect_name):
     coll = config_collection(collect_name)
 
     return list(coll.find(query))
@@ -48,6 +55,9 @@ def insert_into_collection(doc, collect_name):
     except Exception as err:
         return err
 
+    if isinstance(result, pymongo.results.InsertOneResult):
+        return result.inserted_id
+
     return result
 
 
@@ -76,6 +86,8 @@ def delete_by_id(id, collect_name):
         print(err)
         return 1
 
+
+
 #TODO check the type.
 def replace_doc(id, doc, collect_name):
     """
@@ -96,6 +108,7 @@ def replace_doc(id, doc, collect_name):
         return err
 
     coll = config_collection(collect_name)
+    
 
     try:
         result = coll.replace_one({'_id': id}, doc)
@@ -117,6 +130,9 @@ def update_doc(query, new_vals, collect_name):
     :type collect_name: str
     """
     coll = config_collection(collect_name)
+    if '_id' in new_vals.keys():
+        del new_vals['_id']
+
     coll.update_one(query, {"$set": new_vals})
 
 
@@ -165,13 +181,6 @@ def get_object_id(obj_id):
         raise ValueError(err)
 
     return id
-
-
-class JSONEncoder(json.JSONEncoder):
-    def default(self, val):
-        if isinstance(val, bson.objectid.ObjectId):
-            return str(val)
-        return json.JSONEncoder.default(self, val)
 
 
 # Group specific helpers
