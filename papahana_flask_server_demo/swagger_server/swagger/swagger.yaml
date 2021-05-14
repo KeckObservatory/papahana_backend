@@ -549,6 +549,78 @@ paths:
       x-swagger-router-controller: Containers
       x-openapi-router-controller: swagger_server.controllers.containers_controller
 
+  /instrumentPackages/{instrument}:
+    get:
+      tags:
+      - Instrument
+      description: Retrieves the list of available instrument packages for an instrument
+      operationId: instrument_packages
+      parameters:
+      - $ref: '#/components/parameters/instrument'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstrumentPackage'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Instrument
+      x-openapi-router-controller: swagger_server.controllers.instrument_controller
+  /instrumentPackages/{instrument}/{ip_version}/signatures:
+    get:
+      tags:
+      - Instrument
+      description: List all template signatures that can be attached to OBs using
+        this instrument package
+      operationId: instrument_packages_ip_signature
+      parameters:
+      - $ref: '#/components/parameters/instrument'
+      - $ref: '#/components/parameters/ip_version'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentPackage'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Instrument
+      x-openapi-router-controller: swagger_server.controllers.instrument_controller
+  /instrumentPackages/{instrument}/{ip_version}/{template_name}:
+    get:
+      tags:
+      - Instrument
+      - Templates
+      description: Retrieves the specified instrument package template signature
+      operationId: instrument_packages_ip_template
+      parameters:
+      - $ref: '#/components/parameters/instrument'
+      - $ref: '#/components/parameters/ip_version'
+      - $ref: '#/components/parameters/template_name'
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentPackage'
+        "400":
+          description: Invalid status value
+        "404":
+          description: Group not found
+      x-swagger-router-controller: Instrument
+      x-openapi-router-controller: swagger_server.controllers.instrument_controller
+
   /obsBlocks:
     get:
       tags:
@@ -1075,7 +1147,7 @@ components:
           type: string
         sem_id:
           type: string
-        observation_blocks:
+        containers:
           type: array
           items:
             type: string
@@ -1352,6 +1424,10 @@ components:
         template: true
         magnitude: magnitude
         band: band
+    FindingChart:
+      description: Finding chart description goes here
+    InstrumentPackage:
+      description: Instrument package description goes here
 
   parameters:
     obs_id:

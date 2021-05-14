@@ -31,6 +31,12 @@ def get_by_query(query, collect_name):
     return list(coll.find(query))
 
 
+def get_fields_by_query(query, fields, collect_name):
+    coll = config_collection(collect_name)
+
+    return list(coll.find(query, fields))
+
+
 def insert_into_collection(doc, collect_name):
     """
     Add a new document to a collection.

@@ -154,14 +154,20 @@ def randStatus():
     return schema
 
 def generate_container(_id=None):
+
+    ob_set = set()
+    n_ob = random.randint(0, 9)
+    for indx in range(0, n_ob):
+        ob_val = random.randint(0, len(ob_blocks)-1)
+        ob_set.update({ob_blocks[ob_val]})
+
     schema = {
         "semester": randSemester(),
         "name": randContainerName(),
-        "comment": randComment(),
-        "observation_blocks": randOBIds()
+        "observation_blocks": list(ob_set),
+        "comment": randComment()
     }
-    if _id:
-        schema['_id'] = _id
+
     return schema
 
 
@@ -242,7 +248,7 @@ def generate_signature(maxArr):
     return schema
 
 @remove_none_values_in_dict
-def generate_program(ob_blocks):
+def generate_program(container_list):
     observers = []
     for i in range(0, random.randint(0, 9)):
         pi_name = randPI()
@@ -255,15 +261,15 @@ def generate_program(ob_blocks):
     ob_set = set()
     n_ob = random.randint(0, 9)
     for indx in range(0, n_ob):
-        ob_val = random.randint(0, len(ob_blocks)-1)
-        ob_set.update({ob_blocks[ob_val]})
+        ob_val = random.randint(0, len(container_list)-1)
+        ob_set.update({container_list[ob_val]})
 
     schema = {
         'name': 'Program #' + str(random.randint(0, 99)),
         'pi_id': pis[pi_name],
         'observers_id': observers,
         'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
-        'ob_blocks': list(ob_set),
+        'container_list': list(ob_set),
         'comment': optionalRandComment()
     }
     return schema
@@ -412,15 +418,6 @@ if __name__=='__main__':
         ob_blocks.append(str(result.inserted_id))
         # assert result.inserted_id == str(idx), 'check that idx was sed properly'
 
-    # create Program collection
-    coll = config_collection('prgCollect')
-    coll.drop()
-    n_prgs = 50
-    print("...generating programs")
-    for idx in range(n_prgs):
-        doc = generate_program(ob_blocks)
-        result = coll.insert_one(doc)
-
     # Create containers collection
     collName = 'containers'
     remote = True # run on remote server (n)
@@ -429,7 +426,19 @@ if __name__=='__main__':
     coll.drop()
     print("...generating containers")
     nContainers = 20
+    container_list = []
     for idx in range(nContainers):
-        doc = generate_container()
+        doc = generate_container(ob_blocks)
         result = coll.insert_one(doc)
+
+        container_list.append(str(result.inserted_id))
         # assert result.inserted_id == str(idx), 'check that idx was sed properly'
+
+    # create Program collection
+    coll = config_collection('prgCollect')
+    coll.drop()
+    n_prgs = 50
+    print("...generating programs")
+    for idx in range(n_prgs):
+        doc = generate_program(container_list)
+        result = coll.insert_one(doc)

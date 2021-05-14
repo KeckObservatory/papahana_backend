@@ -14,30 +14,30 @@ class Program(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, sem_id: str=None, observation_blocks: List[str]=None):  # noqa: E501
+    def __init__(self, name: str=None, sem_id: str=None, containers: List[str]=None):  # noqa: E501
         """Program - a model defined in Swagger
 
         :param name: The name of this Program.  # noqa: E501
         :type name: str
         :param sem_id: The sem_id of this Program.  # noqa: E501
         :type sem_id: str
-        :param observation_blocks: The observation_blocks of this Program.  # noqa: E501
-        :type observation_blocks: List[str]
+        :param containers: The containers of this Program.  # noqa: E501
+        :type containers: List[str]
         """
         self.swagger_types = {
             'name': str,
             'sem_id': str,
-            'observation_blocks': List[str]
+            'containers': List[str]
         }
 
         self.attribute_map = {
             'name': 'name',
             'sem_id': 'sem_id',
-            'observation_blocks': 'observation_blocks'
+            'containers': 'containers'
         }
         self._name = name
         self._sem_id = sem_id
-        self._observation_blocks = observation_blocks
+        self._containers = containers
 
     @classmethod
     def from_dict(cls, dikt) -> 'Program':
@@ -93,22 +93,22 @@ class Program(Model):
         self._sem_id = sem_id
 
     @property
-    def observation_blocks(self) -> List[str]:
-        """Gets the observation_blocks of this Program.
+    def containers(self) -> List[str]:
+        """Gets the containers of this Program.
 
 
-        :return: The observation_blocks of this Program.
+        :return: The containers of this Program.
         :rtype: List[str]
         """
-        return self._observation_blocks
+        return self._containers
 
-    @observation_blocks.setter
-    def observation_blocks(self, observation_blocks: List[str]):
-        """Sets the observation_blocks of this Program.
+    @containers.setter
+    def containers(self, containers: List[str]):
+        """Sets the containers of this Program.
 
 
-        :param observation_blocks: The observation_blocks of this Program.
-        :type observation_blocks: List[str]
+        :param containers: The containers of this Program.
+        :type containers: List[str]
         """
 
-        self._observation_blocks = observation_blocks
+        self._containers = containers

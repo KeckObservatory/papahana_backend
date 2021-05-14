@@ -61,9 +61,9 @@ from swagger_server import util
 #     return program_list
 
 
-#TODO rthis needs to be changed to observer instead of pi
 def semester_programs_get(obs_id, semester=None):
-    """retrieves all the programs associated with an observer
+    """
+    retrieves all the programs associated with an observer
 
     :param obs_id: observer id
     :type obs_id: int
@@ -86,9 +86,8 @@ def semester_programs_get(obs_id, semester=None):
 
 
 def semesters_get(obs_id, semester=None):  # noqa: E501
-    """retrieves all the programs associated with a PI
-
-     # noqa: E501
+    """
+    retrieves all the programs associated with a PI
 
     :param obs_id: observer id
     :type obs_id: int
@@ -111,23 +110,28 @@ def semesters_get(obs_id, semester=None):  # noqa: E501
 
 
 def semesters_containers_get(sem_id):  # noqa: E501
-    """semesters_containers_get
+    """
+    Retrieves all containers associated with a program
 
-    Retrieves all containers associated with a program # noqa: E501
+    http://vm-webtools.keck.hawaii.edu:50001/v0/semesters/containers/?sem_id=2021A_K0000
 
     :param sem_id: semester id
     :type sem_id: str
 
     :rtype: List[Container]
     """
-    return 'do some magic!'
+
+    query = {'sem_id': sem_id}
+    fields = {"container_list": 1, "_id": 0}
+    results = utils.get_fields_by_query(query, fields, 'prgCollect')
+
+    return results
 
 
 def semesters_observing_blocks_get(obs_id, sem_id):  # noqa: E501
     """
     retrieves all the programs associated with an observer
 
-     # noqa: E501
 
     :param obs_id: observer id
     :type obs_id: dict | bytes
@@ -157,10 +161,9 @@ def semesters_proposal_get(obs_id, sem_id):  # noqa: E501
     return 'do some magic!'
 
 
-def semesters_submit_post(sem_id, obs_id):  # noqa: E501
-    """semesters_submit_post
-
-    Submits a program (OBs) # noqa: E501
+def semesters_submit_post(sem_id, obs_id):
+    """
+    Submits a program (OBs)
 
     :param sem_id: semester id
     :type sem_id: str
@@ -190,10 +193,9 @@ def semesters_submit_put(obs_id, sem_id):  # noqa: E501
     return 'do some magic!'
 
 
-def semesters_targets_get(obs_id, sem_id):  # noqa: E501
-    """semesters_targets_get
-
-    Retrieves all the targets associated with a program # noqa: E501
+def semesters_targets_get(obs_id, sem_id):
+    """
+     Retrieves all the targets associated with a program
 
     :param obs_id: observer id
     :type obs_id: dict | bytes
