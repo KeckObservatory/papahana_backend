@@ -40,6 +40,8 @@ def insert_into_collection(doc, collect_name):
 
     """
     coll = config_collection(collect_name)
+    if '_id' in doc.keys(): # assign auto generated id
+        del doc['_id']
 
     try:
         result = coll.insert_one(doc)

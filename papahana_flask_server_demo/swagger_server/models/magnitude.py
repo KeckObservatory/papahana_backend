@@ -14,30 +14,25 @@ class Magnitude(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, band: str=None, magnitude: str=None, template: bool=None):  # noqa: E501
+    def __init__(self, band: str=None, mag: float=None):  # noqa: E501
         """Magnitude - a model defined in Swagger
 
         :param band: The band of this Magnitude.  # noqa: E501
         :type band: str
-        :param magnitude: The magnitude of this Magnitude.  # noqa: E501
-        :type magnitude: str
-        :param template: The template of this Magnitude.  # noqa: E501
-        :type template: bool
+        :param mag: The mag of this Magnitude.  # noqa: E501
+        :type mag: float
         """
         self.swagger_types = {
             'band': str,
-            'magnitude': str,
-            'template': bool
+            'mag': float
         }
 
         self.attribute_map = {
             'band': 'band',
-            'magnitude': 'magnitude',
-            'template': 'template'
+            'mag': 'mag'
         }
         self._band = band
-        self._magnitude = magnitude
-        self._template = template
+        self._mag = mag
 
     @classmethod
     def from_dict(cls, dikt) -> 'Magnitude':
@@ -74,47 +69,24 @@ class Magnitude(Model):
         self._band = band
 
     @property
-    def magnitude(self) -> str:
-        """Gets the magnitude of this Magnitude.
+    def mag(self) -> float:
+        """Gets the mag of this Magnitude.
 
 
-        :return: The magnitude of this Magnitude.
-        :rtype: str
+        :return: The mag of this Magnitude.
+        :rtype: float
         """
-        return self._magnitude
+        return self._mag
 
-    @magnitude.setter
-    def magnitude(self, magnitude: str):
-        """Sets the magnitude of this Magnitude.
+    @mag.setter
+    def mag(self, mag: float):
+        """Sets the mag of this Magnitude.
 
 
-        :param magnitude: The magnitude of this Magnitude.
-        :type magnitude: str
+        :param mag: The mag of this Magnitude.
+        :type mag: float
         """
-        if magnitude is None:
-            raise ValueError("Invalid value for `magnitude`, must not be `None`")  # noqa: E501
+        if mag is None:
+            raise ValueError("Invalid value for `mag`, must not be `None`")  # noqa: E501
 
-        self._magnitude = magnitude
-
-    @property
-    def template(self) -> bool:
-        """Gets the template of this Magnitude.
-
-
-        :return: The template of this Magnitude.
-        :rtype: bool
-        """
-        return self._template
-
-    @template.setter
-    def template(self, template: bool):
-        """Sets the template of this Magnitude.
-
-
-        :param template: The template of this Magnitude.
-        :type template: bool
-        """
-        if template is None:
-            raise ValueError("Invalid value for `template`, must not be `None`")  # noqa: E501
-
-        self._template = template
+        self._mag = mag

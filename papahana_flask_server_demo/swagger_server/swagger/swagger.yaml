@@ -32,6 +32,322 @@ tags:
     description: Find out more
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
 paths:
+<<<<<<< Updated upstream
+=======
+  /semesters:
+    summary: Retrieves all the programs (semesters) associated with a PI
+    get:
+      tags:
+      - Semesters and Programs
+      summary: retrieves all the programs associated with a PI
+      operationId: semesters_get
+      parameters:
+      - name: obs_id
+        in: query
+        description: observer id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 609b10d6fd85ea78eb0ddddb
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/programs:
+    summary: retrieve programs of a given semester.
+    get:
+      tags:
+      - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: semester_programs_get
+      parameters:
+      - name: obs_id
+        in: query
+        description: observer id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 609b10d6fd85ea78eb0ddddb
+      - name: semester
+        in: query
+        description: semester
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: ""
+        example: 2021A
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation ID not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/observing_blocks/{sem_id}:
+    summary: retrieve programs of a given program (sem_id).
+    get:
+      tags:
+      - Semesters and Programs
+      summary: retrieves all the programs associated with an observer
+      operationId: semesters_observing_blocks_get
+      parameters:
+      - name: obs_id
+        in: query
+        description: observer id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 609b10d6fd85ea78eb0ddddb
+      - name: sem_id
+        in: path
+        description: semester id
+        required: true
+        style: simple
+        explode: true
+        schema:
+          type: string
+        example: 2021A_U456
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Semester Id not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/proposal/{sem_id}:
+    get:
+      tags:
+      - Semesters and Programs
+      description: retrieves the proposal associated with the program
+      operationId: semesters_proposal_get
+      parameters:
+      - name: obs_id
+        in: query
+        description: observer id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 609b10d6fd85ea78eb0ddddb
+      - name: sem_id
+        in: path
+        description: semester id
+        required: true
+        style: simple
+        explode: true
+        schema:
+          type: string
+        example: 2021A_U456
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/submit/{sem_id}:
+    put:
+      tags:
+      - Semesters and Programs
+      description: updates a program (OBs)
+      operationId: semesters_submit_put
+      parameters:
+      - name: obs_id
+        in: query
+        description: observer id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 609b10d6fd85ea78eb0ddddb
+      - name: sem_id
+        in: path
+        description: semester id
+        required: true
+        style: simple
+        explode: true
+        schema:
+          type: string
+        example: 2021A_U456
+      responses:
+        "200":
+          description: List of objects added to the program
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+    post:
+      tags:
+      - Semesters and Programs
+      description: Submits a program (OBs)
+      operationId: semesters_submit_post
+      parameters:
+      - name: sem_id
+        in: path
+        description: semester id
+        required: true
+        style: simple
+        explode: true
+        schema:
+          type: string
+        example: 2021A_U456
+      - name: obs_id
+        in: query
+        description: observer id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 609b10d6fd85ea78eb0ddddb
+      responses:
+        "201":
+          description: OK
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/targets/{sem_id}:
+    get:
+      tags:
+      - Semesters and Programs
+      description: Retrieves all the targets associated with a program
+      operationId: semesters_targets_get
+      parameters:
+      - name: obs_id
+        in: query
+        description: observer id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 609b10d6fd85ea78eb0ddddb
+      - name: sem_id
+        in: path
+        description: semester id
+        required: true
+        style: simple
+        explode: true
+        schema:
+          type: string
+        example: 2021A_U456
+      responses:
+        "200":
+          description: array of targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Target'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation runs not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+  /semesters/groups/:
+    get:
+      tags:
+      - Groups
+      - Semesters and Programs
+      description: Retrieves all groups associated with a program
+      operationId: semesters_groups_get
+      parameters:
+      - name: sem_id
+        in: query
+        description: semester id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 2021A
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Group not found
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+>>>>>>> Stashed changes
   /groups:
     get:
       tags:
@@ -1058,6 +1374,7 @@ paths:
           type: string
         example: 6042ced0afc6ecd40fe5a3dd
       - name: sem_id
+<<<<<<< Updated upstream
         in: path
         description: program id
         required: true
@@ -1066,6 +1383,17 @@ paths:
         schema:
           type: string
         example: 12345asdf
+=======
+        in: query
+        description: program id including semester
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: ""
+        example: 2021A_U456
+>>>>>>> Stashed changes
       responses:
         "200":
           description: "On success a new OB is generated, with a new unique ID. If\
@@ -1144,6 +1472,33 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
 components:
   schemas:
+<<<<<<< Updated upstream
+=======
+    Semester:
+      type: object
+      properties:
+        semester:
+          type: string
+      example:
+        semester: 2020A
+    Program:
+      type: object
+      properties:
+        name:
+          type: string
+        sem_id:
+          type: string
+        observation_blocks:
+          type: array
+          items:
+            type: string
+      example:
+        sem_id: 2020A_H777
+        observation_blocks:
+        - 5
+        - 77
+        - 8
+>>>>>>> Stashed changes
     Group:
       type: object
       properties:
@@ -1188,9 +1543,7 @@ components:
         signature:
           $ref: '#/components/schemas/Signature'
         target:
-          type: array
-          items:
-            $ref: '#/components/schemas/Target'
+          $ref: '#/components/schemas/Target'
         acquisition:
           $ref: '#/components/schemas/Acquisition'
         observations:
@@ -1208,6 +1561,11 @@ components:
         priority:
           type: number
           example: 99.99
+<<<<<<< Updated upstream
+=======
+        status:
+          $ref: '#/components/schemas/Status'
+>>>>>>> Stashed changes
         comment:
           type: string
           example: this is a nice ob block.
@@ -1216,6 +1574,7 @@ components:
         - associations
         - associations
         signature:
+<<<<<<< Updated upstream
           pi: pi
           comment: comment
           semesters:
@@ -1230,6 +1589,12 @@ components:
           group:
           - group
           - group
+=======
+          sem_id: sem_id
+          name: name
+          pi_id: 0.8008281904610115
+          instrument: instrument
+>>>>>>> Stashed changes
         observations:
         - associations:
           - associations
@@ -1247,6 +1612,7 @@ components:
           instrument: instrument
         comment: this is a nice ob block.
         id: id
+<<<<<<< Updated upstream
         acquisition:
           associations:
           - associations
@@ -1289,20 +1655,37 @@ components:
           equinox: 0.8008281904610115
           frame: frame
         - dec: dec
+=======
+        acquisition: ""
+        priority: 99.99
+        target:
+          dec: dec
+>>>>>>> Stashed changes
           epoch: 2.3021358869347655
           pm_dec: 5.637376656633329
           pm_ra: 5.962133916683182
           ra: ra
+<<<<<<< Updated upstream
           ddec: 3.616076749251911
           ra_offset: 6.027456183070403
           dra: 9.301444243932576
+=======
+          d_dec: 3.616076749251911
+          ra_offset: 6.027456183070403
+          d_ra: 9.301444243932576
+>>>>>>> Stashed changes
           obstime: 7.061401241503109
           wrap?: wrap?
           comment?: comment?
           name: name
+<<<<<<< Updated upstream
           magnitude:
             template: true
             magnitude: magnitude
+=======
+          mag:
+            mag: magnitude
+>>>>>>> Stashed changes
             band: band
           dec_offset: 1.4658129805029452
           equinox: 0.8008281904610115
@@ -1310,10 +1693,38 @@ components:
         observation_type:
         - observation_type
         - observation_type
+<<<<<<< Updated upstream
     Signature:
       type: object
       properties:
         pi:
+=======
+        status:
+          executions:
+          - executions
+          - executions
+          state: state
+    Signature:
+      type: object
+      properties:
+        name:
+          type: string
+        pi_id:
+          type: number
+        sem_id:
+          type: string
+        instrument:
+          type: string
+      example:
+        sem_id: sem_id
+        name: name
+        pi_id: 0.8008281904610115
+        instrument: instrument
+    Status:
+      type: object
+      properties:
+        state:
+>>>>>>> Stashed changes
           type: string
         semesters:
           type: array
@@ -1331,6 +1742,7 @@ components:
           type: array
           items:
             type: string
+<<<<<<< Updated upstream
         comment:
           type: string
       example:
@@ -1348,9 +1760,45 @@ components:
         group:
         - group
         - group
+=======
+      example:
+        executions:
+        - executions
+        - executions
+        state: state
+>>>>>>> Stashed changes
     Acquisition:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/KCWIAcquisition'
+      - $ref: '#/components/schemas/DefaultAcquisition'
+    KCWIAcquisition:
       required:
-      - acquisition
+      - guider_gs_dec
+      - guider_gs_mode
+      - guider_gs_ra
+      - guider_po
+      - name
+      - script
+      - version
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        script:
+          type: string
+        guider_po:
+          type: string
+        guider_gs_ra:
+          type: number
+        guider_gs_dec:
+          type: number
+        guider_gs_mode:
+          type: string
+    DefaultAcquisition:
+      required:
       - acquisition_method
       - ao_modes
       - associations
@@ -1361,8 +1809,6 @@ components:
       - slitmasks
       type: object
       properties:
-        acquisition:
-          type: string
         instrumental_setup:
           type: string
         acquisition_method:
@@ -1407,7 +1853,6 @@ components:
         ao_modes:
         - ao_modes
         - ao_modes
-        acquisition: acquisition
         instrumental_setup: instrumental_setup
     Observation:
       required:
@@ -1436,16 +1881,17 @@ components:
         instrument: instrument
     Target:
       required:
-      - ddec
+      - d_dec
+      - d_ra
       - dec
       - dec_offset
-      - dra
       - epoch
       - equinox
       - frame
-      - magnitude
+      - mag
       - name
       - obstime
+      - pa
       - pm_dec
       - pm_ra
       - ra
@@ -1459,6 +1905,8 @@ components:
         dec:
           type: string
         equinox:
+          type: number
+        pa:
           type: number
         frame:
           type: string
@@ -1474,34 +1922,33 @@ components:
           type: number
         obstime:
           type: number
-        magnitude:
-          $ref: '#/components/schemas/Magnitude'
+        mag:
+          type: array
+          items:
+            $ref: '#/components/schemas/Magnitude'
         wrap?:
           type: string
-        dra:
+        d_ra:
           type: number
-        ddec:
+        d_dec:
           type: number
         comment?:
           type: string
-        template:
-          type: boolean
       example:
         dec: dec
         epoch: 2.3021358869347655
         pm_dec: 5.637376656633329
         pm_ra: 5.962133916683182
         ra: ra
-        ddec: 3.616076749251911
+        d_dec: 3.616076749251911
         ra_offset: 6.027456183070403
-        dra: 9.301444243932576
+        d_ra: 9.301444243932576
         obstime: 7.061401241503109
         wrap?: wrap?
         comment?: comment?
         name: name
-        magnitude:
-          template: true
-          magnitude: magnitude
+        mag:
+          mag: magnitude
           band: band
         dec_offset: 1.4658129805029452
         equinox: 0.8008281904610115
@@ -1509,18 +1956,14 @@ components:
     Magnitude:
       required:
       - band
-      - magnitude
-      - template
+      - mag
       type: object
       properties:
         band:
           type: string
-        magnitude:
-          type: string
-        template:
-          type: boolean
+        mag:
+          type: number
       example:
-        template: true
         magnitude: magnitude
         band: band
   parameters:
@@ -1544,6 +1987,20 @@ components:
       schema:
         type: string
       example: 6042ced0afc6ecd40fe5a3dd
+<<<<<<< Updated upstream
+=======
+    semester:
+      name: semester
+      in: query
+      description: semester
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        default: ""
+      example: 2021A
+>>>>>>> Stashed changes
     sem_id:
       name: sem_id
       in: path
@@ -1553,7 +2010,32 @@ components:
       explode: true
       schema:
         type: string
+<<<<<<< Updated upstream
       example: 12345asdf
+=======
+      example: 2021A_U456
+    sem_id_in_query:
+      name: sem_id
+      in: query
+      description: semester id
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 2021A
+    sem_id_not_required:
+      name: sem_id
+      in: query
+      description: program id including semester
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        default: ""
+      example: 2021A_U456
+>>>>>>> Stashed changes
     instrument:
       name: instrument
       in: path

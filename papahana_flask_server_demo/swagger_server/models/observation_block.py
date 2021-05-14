@@ -18,7 +18,11 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
+<<<<<<< Updated upstream
     def __init__(self, id: str=None, signature: Signature=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, comment: str=None):  # noqa: E501
+=======
+    def __init__(self, id: str=None, signature: Signature=None, target: Target=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
+>>>>>>> Stashed changes
         """ObservationBlock - a model defined in Swagger
 
         :param id: The id of this ObservationBlock.  # noqa: E501
@@ -26,7 +30,7 @@ class ObservationBlock(Model):
         :param signature: The signature of this ObservationBlock.  # noqa: E501
         :type signature: Signature
         :param target: The target of this ObservationBlock.  # noqa: E501
-        :type target: List[Target]
+        :type target: Target
         :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
         :type acquisition: Acquisition
         :param observations: The observations of this ObservationBlock.  # noqa: E501
@@ -43,7 +47,7 @@ class ObservationBlock(Model):
         self.swagger_types = {
             'id': str,
             'signature': Signature,
-            'target': List[Target],
+            'target': Target,
             'acquisition': Acquisition,
             'observations': List[Observation],
             'associations': List[str],
@@ -127,22 +131,22 @@ class ObservationBlock(Model):
         self._signature = signature
 
     @property
-    def target(self) -> List[Target]:
+    def target(self) -> Target:
         """Gets the target of this ObservationBlock.
 
 
         :return: The target of this ObservationBlock.
-        :rtype: List[Target]
+        :rtype: Target
         """
         return self._target
 
     @target.setter
-    def target(self, target: List[Target]):
+    def target(self, target: Target):
         """Sets the target of this ObservationBlock.
 
 
         :param target: The target of this ObservationBlock.
-        :type target: List[Target]
+        :type target: Target
         """
 
         self._target = target

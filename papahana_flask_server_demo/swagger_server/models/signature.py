@@ -14,6 +14,7 @@ class Signature(Model):
 
     Do not edit the class manually.
     """
+<<<<<<< Updated upstream
     def __init__(self, pi: str=None, semesters: List[str]=None, observers: List[str]=None, programs: List[str]=None, group: List[str]=None, comment: str=None):  # noqa: E501
         """Signature - a model defined in Swagger
 
@@ -37,6 +38,25 @@ class Signature(Model):
             'programs': List[str],
             'group': List[str],
             'comment': str
+=======
+    def __init__(self, name: str=None, pi_id: float=None, sem_id: str=None, instrument: str=None):  # noqa: E501
+        """Signature - a model defined in Swagger
+
+        :param name: The name of this Signature.  # noqa: E501
+        :type name: str
+        :param pi_id: The pi_id of this Signature.  # noqa: E501
+        :type pi_id: float
+        :param sem_id: The sem_id of this Signature.  # noqa: E501
+        :type sem_id: str
+        :param instrument: The instrument of this Signature.  # noqa: E501
+        :type instrument: str
+        """
+        self.swagger_types = {
+            'name': str,
+            'pi_id': float,
+            'sem_id': str,
+            'instrument': str
+>>>>>>> Stashed changes
         }
 
         self.attribute_map = {
@@ -87,15 +107,25 @@ class Signature(Model):
         self._pi = pi
 
     @property
+<<<<<<< Updated upstream
     def semesters(self) -> List[str]:
         """Gets the semesters of this Signature.
 
 
         :return: The semesters of this Signature.
         :rtype: List[str]
+=======
+    def pi_id(self) -> float:
+        """Gets the pi_id of this Signature.
+
+
+        :return: The pi_id of this Signature.
+        :rtype: float
+>>>>>>> Stashed changes
         """
         return self._semesters
 
+<<<<<<< Updated upstream
     @semesters.setter
     def semesters(self, semesters: List[str]):
         """Sets the semesters of this Signature.
@@ -103,6 +133,15 @@ class Signature(Model):
 
         :param semesters: The semesters of this Signature.
         :type semesters: List[str]
+=======
+    @pi_id.setter
+    def pi_id(self, pi_id: float):
+        """Sets the pi_id of this Signature.
+
+
+        :param pi_id: The pi_id of this Signature.
+        :type pi_id: float
+>>>>>>> Stashed changes
         """
 
         self._semesters = semesters
