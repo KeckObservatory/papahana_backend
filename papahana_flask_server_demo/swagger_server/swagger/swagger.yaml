@@ -19,7 +19,7 @@ tags:
   externalDocs:
     description: Manage Semesters and programs
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
-- name: Groups
+- name: Containers
   externalDocs:
     description: Find out more
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
@@ -204,13 +204,13 @@ paths:
           description: Observation runs not found
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/groups/:
+  /semesters/containers/:
     get:
       tags:
-        - Groups
+        - Containers
         - Semesters and Programs
-      description: Retrieves all groups associated with a program
-      operationId: semesters_groups_get
+      description: Retrieves all containers associated with a program
+      operationId: semesters_containers_get
       parameters:
         - $ref: '#/components/parameters/sem_id_in_query'
       responses:
@@ -221,26 +221,26 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Group'
+                  $ref: '#/components/schemas/Container'
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
+          description: Container not found
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
 
-  /groups:
+  /containers:
     get:
       tags:
-        - Groups
-      description: Retrieves a specific group's information
-      operationId: groups_get
+        - Containers
+      description: Retrieves a specific container's information
+      operationId: containers_get
       parameters:
-        - name: group_id
+        - name: container_id
           in: query
-          description: group identifier
+          description: container identifier
           required: true
           style: form
           explode: true
@@ -253,24 +253,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Container'
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
     put:
       tags:
-        - Groups
-      description: Overwrites a group
-      operationId: groups_put
+        - Containers
+      description: Overwrites a container
+      operationId: containers_put
       parameters:
-        - name: group_id
+        - name: container_id
           in: query
-          description: group identifier
+          description: container identifier
           required: true
           style: form
           explode: true
@@ -281,7 +281,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              $ref: '#/components/schemas/Container'
         required: true
       responses:
         "201":
@@ -289,19 +289,19 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Group id not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
+          description: Container id not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
     post:
       tags:
-        - Groups
-      description: Creates a group
-      operationId: groups_post
+        - Containers
+      description: Creates a container
+      operationId: containers_post
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              $ref: '#/components/schemas/Container'
         required: true
       responses:
         "201":
@@ -309,18 +309,18 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Group id not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
+          description: Container id not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
     delete:
       tags:
-        - Groups
-      description: Delete group by id
-      operationId: groups_delete
+        - Containers
+      description: Delete container by id
+      operationId: containers_delete
       parameters:
-        - name: group_id
+        - name: container_id
           in: query
-          description: group identifier
+          description: container identifier
           required: true
           style: form
           explode: true
@@ -333,19 +333,19 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Group id not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
-  /groups/append:
+          description: Container id not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
+  /containers/append:
     put:
       tags:
-      - Groups
-      description: Appends an observation block to a group by id
-      operationId: groups_append_put
+      - Containers
+      description: Appends an observation block to a container by id
+      operationId: containers_append_put
       parameters:
-      - name: group_id
+      - name: container_id
         in: query
-        description: group identifier
+        description: container identifier
         required: true
         style: form
         explode: true
@@ -368,19 +368,19 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
-  /groups/executionTimes:
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
+  /containers/executionTimes:
     get:
       tags:
-      - Groups
-      description: Calculate the total execution time of a group
-      operationId: groups_execution_times_get
+      - Containers
+      description: Calculate the total execution time of a container
+      operationId: containers_execution_times_get
       parameters:
-      - name: group_id
+      - name: container_id
         in: query
-        description: group identifier
+        description: container identifier
         required: true
         style: form
         explode: true
@@ -401,17 +401,17 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
-  /groups/items:
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
+  /containers/items:
     get:
       tags:
-      - Groups
-      description: Retrieves the ordered list of observing blocks in a group
-      operationId: groups_items_get
+      - Containers
+      description: Retrieves the ordered list of observing blocks in a container
+      operationId: containers_items_get
       parameters:
-      - $ref: '#/components/parameters/group_id'
+      - $ref: '#/components/parameters/container_id'
       responses:
         "200":
           description: OK
@@ -420,26 +420,26 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Group'
+                  $ref: '#/components/schemas/Container'
                 x-content-type: application/json
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
-  /groups/items/summary:
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
+  /containers/items/summary:
     get:
       tags:
-      - Groups
-      description: Retrieves a summary of group information
-      operationId: groups_items_summary_get
+      - Containers
+      description: Retrieves a summary of container information
+      operationId: containers_items_summary_get
       parameters:
-      - name: group_id
+      - name: container_id
         in: query
-        description: group identifier
+        description: container identifier
         required: true
         style: form
         explode: true
@@ -452,26 +452,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GroupSummary'
+                $ref: '#/components/schemas/ContainerSummary'
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
-  /groups/verify:
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
+  /containers/verify:
     get:
       tags:
-      - Groups
-      description: Request verification of the elements of a group. Sends group summary
+      - Containers
+      description: Request verification of the elements of a container. Sends container summary
         as a sucessfull response
-      operationId: groups_verify_get
+      operationId: containers_verify_get
       parameters:
-      - name: group_id
+      - name: container_id
         in: query
-        description: group identifier
+        description: container identifier
         required: true
         style: form
         explode: true
@@ -484,28 +484,28 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GroupSummary'
+                $ref: '#/components/schemas/ContainerSummary'
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
-  /groups/scheduleToO:
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
+  /containers/scheduleToO:
     post:
       tags:
-      - Groups
-      description: Submits a group for Target of Opportunity (ToO) (all the elements)
-      operationId: groups_schedule_too_post
+      - Containers
+      description: Submits a container for Target of Opportunity (ToO) (all the elements)
+      operationId: containers_schedule_too_post
       requestBody:
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Container'
         required: true
       responses:
         "200":
@@ -515,20 +515,20 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
-  /groups/export:
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
+  /containers/export:
     get:
       tags:
-      - Groups
-      description: Retrieves a specific group information in a file format (default
+      - Containers
+      description: Retrieves a specific container information in a file format (default
         .json)
-      operationId: groups_export_get
+      operationId: containers_export_get
       parameters:
-      - name: group_id
+      - name: container_id
         in: query
-        description: group identifier
+        description: container identifier
         required: true
         style: form
         explode: true
@@ -541,13 +541,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Container'
         "400":
           description: Invalid status value
         "404":
-          description: Group not found
-      x-swagger-router-controller: Groups
-      x-openapi-router-controller: swagger_server.controllers.groups_controller
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
 
   /obsBlocks:
     get:
@@ -1082,7 +1082,7 @@ components:
       example:
         sem_id: 2020A_H777
         observation_blocks: [5, 77, 8]
-    Group:
+    Container:
       type: object
       properties:
         id:
@@ -1101,7 +1101,7 @@ components:
         observation_blocks:
           - observation_blocks
           - observation_blocks
-    GroupSummary:
+    ContainerSummary:
       type: object
       properties:
         id:
@@ -1117,7 +1117,7 @@ components:
         comment:
           type: string
       example:
-        group_id: group_id
+        container_id: container_id
     ObservationBlock:
       type: object
       properties:
@@ -1560,13 +1560,4 @@ components:
       explode: false
       schema:
         type: boolean
-    group_id:
-      name: group_id
-      in: query
-      description: group identifier
-      required: true
-      style: form
-      explode: true
-      schema:
-        type: string
-      example: 6042ced0afc6ecd40fe5a3dd
+

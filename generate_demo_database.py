@@ -108,9 +108,9 @@ spectral_types = ['V', 'R', 'I', 'J', 'H', 'K']
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
-groups = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
+containers = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
 NOBS = 100 # number of observation blocks
-randGroupName = lambda: random.choice(groups)
+randContainerName = lambda: random.choice(containers)
 randOBIds = lambda x=5: [int(x) for x in list(np.random.choice( range(0,NOBS+1), size=random.randint(0, x), replace=False))]
 
 
@@ -153,10 +153,10 @@ def randStatus():
     schema = {'state': rstat, 'executions': executions}
     return schema
 
-def generate_group(_id=None):
+def generate_container(_id=None):
     schema = {
         "semester": randSemester(),
-        "name": randGroupName(),
+        "name": randContainerName(),
         "comment": randComment(),
         "observation_blocks": randOBIds()
     }
@@ -421,15 +421,15 @@ if __name__=='__main__':
         doc = generate_program(ob_blocks)
         result = coll.insert_one(doc)
 
-    # Create groups collection
-    collName = 'groups'
+    # Create containers collection
+    collName = 'containers'
     remote = True # run on remote server (n)
     # coll = create_collection(dbName, collName, port=27017, mode=mode)
-    coll = config_collection('groupCollect')
+    coll = config_collection('containerCollect')
     coll.drop()
-    print("...generating groups")
-    nGroups = 20
-    for idx in range(nGroups):
-        doc = generate_group()
+    print("...generating containers")
+    nContainers = 20
+    for idx in range(nContainers):
+        doc = generate_container()
         result = coll.insert_one(doc)
         # assert result.inserted_id == str(idx), 'check that idx was sed properly'

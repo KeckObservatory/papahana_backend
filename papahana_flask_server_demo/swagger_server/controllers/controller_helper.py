@@ -7,10 +7,10 @@ import json
 # Generalized
 def get_by_id(id, collect_name):
     """
-    query by string group_id
+    query by string container_id
 
-    :param group_id: group identifier
-    :type group_id: str
+    :param container_id: container identifier
+    :type container_id: str
 
     :rtype: Dict{Query}
     """
@@ -155,10 +155,10 @@ def delete_from_collection(query, collect_name):
 
 def query_by_id(id):
     """
-    query by string group_id
+    query by string container_id
 
-    :param group_id: group identifier
-    :type group_id: str
+    :param container_id: container identifier
+    :type container_id: str
 
     :rtype: Dict{Query}
     """
@@ -189,9 +189,9 @@ def clean_objectid(results):
 
     return cln_results
 
-# Group specific helpers
-def get_ob_list(group_id):
-    results = get_by_id(group_id, 'groupCollect')
+# Container specific helpers
+def get_ob_list(container_id):
+    results = get_by_id(container_id, 'containerCollect')
 
     if results:
         ob_list = results[0]['observation_blocks']

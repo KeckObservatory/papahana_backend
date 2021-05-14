@@ -1,7 +1,7 @@
 import connexion
 import six
 
-from swagger_server.models.group import Group
+from swagger_server.models.container import Container
 from swagger_server.models.program import Program
 from swagger_server.models.target import Target
 from swagger_server.controllers import controller_helper as utils
@@ -110,15 +110,15 @@ def semesters_get(obs_id, semester=None):  # noqa: E501
     return utils.clean_objectid(results)
 
 
-def semesters_groups_get(sem_id):  # noqa: E501
-    """semesters_groups_get
+def semesters_containers_get(sem_id):  # noqa: E501
+    """semesters_containers_get
 
-    Retrieves all groups associated with a program # noqa: E501
+    Retrieves all containers associated with a program # noqa: E501
 
     :param sem_id: semester id
     :type sem_id: str
 
-    :rtype: List[Group]
+    :rtype: List[Container]
     """
     return 'do some magic!'
 

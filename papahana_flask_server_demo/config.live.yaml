@@ -4,7 +4,7 @@ mode:
 local:
   dbName: papahana 
   obCollect: ob_blocks
-  groupCollect: groups
+  containerCollect: containers
   prgCollect: programs
   port: 27017
   password: ...
@@ -12,7 +12,7 @@ local:
 demo:
   dbName: papahana 
   obCollect: ob_blocks
-  groupCollect: groups
+  containerCollect: containers
   prgCollect: programs
   port: 27017
   password: ...
@@ -20,6 +20,6 @@ demo:
 dev:
   dbName: papahana
   obCollect: ob_blocks
-  groupCollect: groups
+  containerCollect: containers
   prgCollect: programs
   port: 27017
