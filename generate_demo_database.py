@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: latin-1 -*-
+import yaml
+
 import numpy as np
 import os
 import pymongo
@@ -266,8 +268,6 @@ def generate_program(container_list):
 
     schema = {
         'name': 'Program #' + str(random.randint(0, 99)),
-        'pi_id': pis[pi_name],
-        'observers_id': observers,
         'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
         'container_list': list(ob_set),
         'comment': optionalRandComment()
@@ -393,6 +393,21 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         schema['_id'] = _id
     return schema
 
+def read_mode(config='config.live.yaml'):
+    with open(config) as file:
+        mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
+
+    mode = mode_dict['config']
+
+    return mode
+
+
+def read_config(mode, config='config.live.yaml'):
+    with open(config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)[mode]
+
+    return config
+
 if __name__=='__main__':
     seed = 1984739
     random.seed(seed)
@@ -402,7 +417,9 @@ if __name__=='__main__':
     # Create ob_blocks collection
     collName = 'ob_blocks'
     remote = True # run on remote server (n)
-    coll = config_collection('obCollect')
+    mode = read_mode()
+    config = read_config(mode)
+    coll = config_collection('obCollect', mode=mode, conf=config)
     coll.drop()
     coll.create_index([('signature.pi', pymongo.DESCENDING)])
     coll.create_index([('signature.semester', pymongo.DESCENDING)])
@@ -422,7 +439,7 @@ if __name__=='__main__':
     collName = 'containers'
     remote = True # run on remote server (n)
     # coll = create_collection(dbName, collName, port=27017, mode=mode)
-    coll = config_collection('containerCollect')
+    coll = config_collection('containerCollect', mode=mode, conf=config)
     coll.drop()
     print("...generating containers")
     nContainers = 20
@@ -435,7 +452,7 @@ if __name__=='__main__':
         # assert result.inserted_id == str(idx), 'check that idx was sed properly'
 
     # create Program collection
-    coll = config_collection('prgCollect')
+    coll = config_collection('prgCollect', mode=mode, conf=config)
     coll.drop()
     n_prgs = 50
     print("...generating programs")

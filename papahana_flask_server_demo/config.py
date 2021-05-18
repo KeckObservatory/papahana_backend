@@ -5,10 +5,11 @@ import os
 from flask import current_app
 
 
-def config_collection(collection, config='config.live.yaml'):
-    with current_app.app_context():
-        conf = current_app.config_params
-        mode = current_app.mode
+def config_collection(collection, mode=None, conf=None):
+    if not mode and not conf:
+        with current_app.app_context():
+            conf = current_app.config_params
+            mode = current_app.mode
 
     if mode == 'dev':
         coll = create_collection(conf['dbName'], conf[collection], mode, port=conf['port'])

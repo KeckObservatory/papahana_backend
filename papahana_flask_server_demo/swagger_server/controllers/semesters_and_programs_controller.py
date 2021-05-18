@@ -155,8 +155,13 @@ def program_semid_get(sem_id, obs_id):  # noqa: E501
     :param obs_id: observer id
     :type obs_id: int
 
-    :rtype: List[Program]
+    :rtype: Program
     """
+
+    sem_ids = utils.get_proposal_ids(obs_id)
+    if sem_id not in sem_ids:
+        return None
+
     return 'do some magic!'
 
 
