@@ -208,14 +208,20 @@ def get_ob_list(container_id):
         ob_list = []
 
     return ob_list
-
 # semesters_and_program specific
 def get_proposal_ids(obs_id):
     with current_app.app_context():
-        local_var = current_app.config_params
+        urls = current_app.urls
 
 # https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid=2003
-    url = f'https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid={obs_id}&json=True'
+#     url = f'https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid={obs_id}&json=True'
+    url_cmd = f'cmd=getAllProposals&obsid={obs_id}&json=True'
+
+    if 'proposalApi' not in urls:
+        return None
+
+    url = urls['proposalApi'] + url_cmd
+
     response = requests.get(url)
     try:
         result = json.loads(response.content)
@@ -233,4 +239,3 @@ def get_proposal_ids(obs_id):
         prop_ids.append(prop["KTN"])
 
     return prop_ids
-
