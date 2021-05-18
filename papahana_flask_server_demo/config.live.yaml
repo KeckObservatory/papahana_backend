@@ -1,5 +1,5 @@
 mode:
-  config: dev 
+        config: local 
 
 local:
   dbName: papahana 

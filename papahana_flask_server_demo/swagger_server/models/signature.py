@@ -82,6 +82,55 @@ class Signature(Model):
         self._name = name
 
     @property
+    def pi_id(self) -> float:
+        """Gets the pi_id of this Signature.
+
+
+        :return: The pi_id of this Signature.
+        :rtype: float
+        """
+
+
+    @pi_id.setter
+    def pi_id(self, pi_id: float):
+        """Sets the pi_id of this Signature.
+
+
+        :param pi_id: The pi_id of this Signature.
+        :type pi_id: float
+        """
+
+        self._semesters = semesters
+
+    @property
+    def observers(self) -> List[str]:
+        """Gets the observers of this Signature.
+
+
+        :return: The observers of this Signature.
+        :rtype: List[str]
+        """
+        return self._observers
+
+    @observers.setter
+    def observers(self, observers: List[str]):
+        """Sets the observers of this Signature.
+
+
+        :param observers: The observers of this Signature.
+        :type observers: List[str]
+        """
+
+        self._observers = observers
+
+    @property
+    def programs(self) -> List[str]:
+        """Gets the programs of this Signature.
+
+
+        :return: The programs of this Signature.
+        :rtype: List[str]
+        """
     def sem_id(self) -> str:
         """Gets the sem_id of this Signature.
 

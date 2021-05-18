@@ -5,7 +5,6 @@ import connexion
 from swagger_server import encoder
 import yaml
 
-
 def read_mode(config='../config.live.yaml'):
     with open(config) as file:
         mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
@@ -35,7 +34,8 @@ def create_app():
 
 def main():
     app = create_app()
-    app.run(port=50001)
+    CORS(app.app)
+    app.run(port=50000)
 
 
 if __name__ == '__main__':

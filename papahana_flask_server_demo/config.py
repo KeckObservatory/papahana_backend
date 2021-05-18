@@ -19,7 +19,7 @@ def config_collection(collection, mode=None, conf=None):
     elif mode == 'local':
         coll = create_collection(conf['dbName'], conf[collection], mode, port=conf['port'])
     else:
-        raise ValueError('collection mode not known')
+        coll = create_collection(conf['dbName'], conf[collection], port=conf['port'], mode=mode)
     return coll
 
 
