@@ -2,6 +2,8 @@ from config import config_collection
 import pymongo
 import bson
 import json
+import requests
+from flask import current_app
 
 
 # Generalized
@@ -205,3 +207,27 @@ def get_ob_list(container_id):
         ob_list = []
 
     return ob_list
+
+def get_proposal_ids(obs_id):
+    with current_app.app_context():
+        local_var = current_app.config_params
+        print(local_var)
+# https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid=2003
+    url = f'https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid={obs_id}&json=True'
+    response = requests.get(url)
+    try:
+        result = json.loads(response.content)
+    except Exception as err:
+        return err
+
+    if not result['success'] or 'data' not in result:
+        return result['msg']
+
+    prop_ids = []
+    all_props = result['data']['AllProposals']
+    for prop in all_props:
+        if "KTN" not in prop:
+            continue
+        prop_ids.append(prop["KTN"])
+
+    return prop_ids

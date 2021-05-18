@@ -15,9 +15,9 @@ tags:
   externalDocs:
     description: Find out more
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
-- name: Semesters and Programs
+- name: Semester ID
   externalDocs:
-    description: Manage Semesters and programs
+    description: Find out more
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
 - name: Containers
   externalDocs:
@@ -33,16 +33,15 @@ tags:
     url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
 
 paths:
-  /semesters:
-    summary: Retrieves all the programs (semesters) associated with a PI
+  /semesterIds/:
+    summary: Retrieves all the programs associated with an observer
     get:
       tags:
         - Semesters and Programs
-      summary: retrieves all the programs associated with a PI
-      operationId: semesters_get
+      summary: retrieves all the programs associated with an observer.
+      operationId: programs_get
       parameters:
         - $ref: '#/components/parameters/obs_id'
-        - $ref: '#/components/parameters/semester'
       responses:
         "200":
           description: OK
@@ -57,19 +56,19 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Semester Id not found
+          description: Observation Id not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/programs:
+  /semesterIds/{semester}:
     summary: retrieve programs of a given semester.
     get:
       tags:
         - Semesters and Programs
-      summary: retrieves all the programs associated with an observer
-      operationId: semester_programs_get
+      summary: retrieves all the programs associated with an observer for the semester.
+      operationId: program_semester_get
       parameters:
+        - $ref: '#/components/parameters/semester_path'
         - $ref: '#/components/parameters/obs_id'
-        - $ref: '#/components/parameters/semester'
       responses:
         "200":
           description: OK
@@ -84,19 +83,19 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Observation ID not found
+          description: Observation or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/observing_blocks/{sem_id}:
-    summary: retrieve programs of a given program (sem_id).
+  /semesterIds/{sem_id}:
+    summary: retrieve the programs of a given semester ID.
     get:
       tags:
         - Semesters and Programs
-      summary: retrieves all the programs associated with an observer
-      operationId: semesters_observing_blocks_get
+      summary: Retrieves the specified program.
+      operationId: program_semid_get
       parameters:
-        - $ref: '#/components/parameters/obs_id'
         - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -111,51 +110,54 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Semester Id not found
+          description: Observation or Semester ID not found
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/proposal/{sem_id}:
+  /semesterIds/{sem_id}/proposal:
     get:
       tags:
         - Semesters and Programs
-      description: retrieves the proposal associated with the program
-      operationId: semesters_proposal_get
+      description: retrieves the proposal associated with the program.
+      operationId: sem_id_proposal_get
       parameters:
-        - $ref: '#/components/parameters/obs_id'
         - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
-          description: OK
+          description: returns the pdf or ps file of the proposal.
           content:
-            application/json:
+            application/pdf:
               schema:
-                $ref: '#/components/schemas/Program'
+                type: string
+                format: binary
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Observation runs not found
+          description: Program not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/submit/{sem_id}:
+  /semesterIds/{sem_id}/submit:
     post:
       tags:
         - Semesters and Programs
-      description: Submits a program (OBs)
-      operationId: semesters_submit_post
+      description: Submits a program (OBs).  Uses the obsid in the authentication \
+                    header and provided semId to retrieve the proposal file \
+                    associated with the program
+      operationId: program_submit_post
       parameters:
         - $ref: '#/components/parameters/sem_id'
         - $ref: '#/components/parameters/obs_id'
       responses:
         "201":
-          description: OK
+          description: OK, new program created.
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
-          description: Observation runs not found
+          description: Observation ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
 
@@ -163,10 +165,10 @@ paths:
       tags:
         - Semesters and Programs
       description: updates a program (OBs)
-      operationId: semesters_submit_put
+      operationId: program_submit_put
       parameters:
-        - $ref: '#/components/parameters/obs_id'
         - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: List of objects added to the program
@@ -175,18 +177,18 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Observation runs not found
+          description: Observation ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/targets/{sem_id}:
+  /semesterIds/{sem_id}/targets:
     get:
       tags:
         - Semesters and Programs
-      description: Retrieves all the targets associated with a program
-      operationId: semesters_targets_get
+      description: Retrieves all the targets associated with a program.
+      operationId: sem_id_targets_get
       parameters:
-        - $ref: '#/components/parameters/obs_id'
         - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: array of targets
@@ -201,16 +203,17 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Observation runs not found
+          description: Program not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesters/containers/:
+
+  /semesterIds/containers/:
     get:
       tags:
         - Containers
         - Semesters and Programs
       description: Retrieves all containers associated with a program
-      operationId: semesters_containers_get
+      operationId: program_containers_get
       parameters:
         - $ref: '#/components/parameters/sem_id_in_query'
       responses:
@@ -230,6 +233,33 @@ paths:
           description: Container not found
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+
+  /containers/{sem_id}:
+    get:
+      tags:
+      - Containers
+      description: Retrieves all the containers associated with a given program
+      operationId: containers_semid_get
+      parameters:
+      - $ref: '#/components/parameters/sem_id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Container'
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Container not found
+      x-swagger-router-controller: Containers
+      x-openapi-router-controller: swagger_server.controllers.containers_controller
 
   /containers:
     get:
@@ -1062,19 +1092,7 @@ paths:
       operationId: ob_duplicate
       parameters:
         - $ref: '#/components/parameters/ob_id'
-#        - $ref: '#/components/parameters/sem_id'
         - $ref: '#/components/parameters/sem_id_not_required'
-##        - sem_id:
-#          in: query
-#          name: sem_id
-#          description: program id including semester
-#          style: form
-#          explode: true
-#          schema:
-#            type: string
-#            default: ""
-#          required: false
-#          example: 2021A_U456
       responses:
         "200":
           description: On success a new OB is generated, with a new unique ID. If needed the OB is associated with a new semester.
@@ -1133,13 +1151,13 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.observation_block_controller
 components:
   schemas:
-    Semester:
-      type: object
-      properties:
-        semester:
-          type: string
-      example:
-        semester: 2020A
+#    Semester:
+#      type: object
+#      properties:
+#        semester:
+#          type: string
+#      example:
+#        semester: 2020A
     Program:
       type: object
       properties:
@@ -1460,6 +1478,16 @@ components:
         type: string
         default: ""
       required: false
+      example: 2021A
+    semester_path:
+      name: semester
+      in: path
+      description: semester id
+      required: true
+      style: simple
+      explode: true
+      schema:
+        type: string
       example: 2021A
     sem_id:
       name: sem_id

@@ -1,22 +1,15 @@
 import pymongo
 import urllib
 from getpass import getpass
-import yaml
 import os
-
-
-def read_mode(config='config.live.yaml'):
-    with open(config) as file:
-        mode = yaml.load(file, Loader=yaml.FullLoader)['mode']
-
-    return mode['config']
+from flask import current_app
 
 
 def config_collection(collection, config='config.live.yaml'):
-    mode = read_mode()
+    with current_app.app_context():
+        conf = current_app.config_params
+        mode = current_app.mode
 
-    with open(config) as file:
-        conf = yaml.load(file, Loader=yaml.FullLoader)[mode]
     if mode == 'dev':
         coll = create_collection(conf['dbName'], conf[collection], mode, port=conf['port'])
     elif mode == 'demo':

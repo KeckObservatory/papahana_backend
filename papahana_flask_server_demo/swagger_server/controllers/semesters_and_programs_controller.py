@@ -60,83 +60,83 @@ from swagger_server import util
 #
 #     return program_list
 
+#
+# def semester_programs_get(obs_id, semester=None):
+#     """
+#     retrieves all the programs associated with an observer
+#
+#     :param obs_id: observer id
+#     :type obs_id: int
+#     :param semester: semester
+#     :type semester: str
+#
+#     :rtype: List[Program]
+#     """
+#
+#     if connexion.request.is_json:
+#         obs_id = object.from_dict(connexion.request.get_json())
+#
+#     query = {"$or": [{"pi_id": obs_id}, {"observers_id": obs_id}]}
+#     if semester:
+#         query["sem_id"] = {'$regex': f'{semester}_.*'}
+#
+#     results = utils.get_by_query(query, 'prgCollect')
+#
+#     return utils.clean_objectid(results)
 
-def semester_programs_get(obs_id, semester=None):
-    """
-    retrieves all the programs associated with an observer
+
+def programs_get(obs_id):  # noqa: E501
+    """retrieves all the programs associated with an observer.
+
+     # noqa: E501
 
     :param obs_id: observer id
     :type obs_id: int
-    :param semester: semester
-    :type semester: str
 
     :rtype: List[Program]
     """
-
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())
 
-    query = {"$or": [{"pi_id": obs_id}, {"observers_id": obs_id}]}
-    if semester:
-        query["sem_id"] = {'$regex': f'{semester}_.*'}
+    sem_ids = utils.get_proposal_ids(obs_id)
 
-    results = utils.get_by_query(query, 'prgCollect')
-
-    return utils.clean_objectid(results)
+    return sem_ids
 
 
-def semesters_get(obs_id, semester=None):  # noqa: E501
-    """
-    retrieves all the programs associated with a PI
+    # query = {"pi_id": obs_id}
+    #
+    # # if semester:
+    # #     query["sem_id"] = {'$regex': f'{semester}_.*'}
+    #
+    # results = utils.get_by_query(query, 'prgCollect')
+    # return utils.clean_objectid(results)
 
+def sem_id_proposal_get(sem_id, obs_id):  # noqa: E501
+    """sem_id_proposal_get
+
+    retrieves the proposal associated with the program. # noqa: E501
+
+    :param sem_id: semester id
+    :type sem_id: str
     :param obs_id: observer id
     :type obs_id: int
-    :param semester: semester
-    :type semester: str
 
-    :rtype: List[Program]
+    :rtype: Object
     """
-
     if connexion.request.is_json:
-        obs_id = object.from_dict(connexion.request.get_json())
-
-    query = {"pi_id": obs_id}
-    if semester:
-        query["sem_id"] = {'$regex': f'{semester}_.*'}
-
-    results = utils.get_by_query(query, 'prgCollect')
-
-    return utils.clean_objectid(results)
+        obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 
-def semesters_containers_get(sem_id):  # noqa: E501
-    """
-    Retrieves all containers associated with a program
+def program_semester_get(semester, obs_id):  # noqa: E501
+    """retrieves all the programs associated with an observer for the semester.
 
-    http://vm-webtools.keck.hawaii.edu:50001/v0/semesters/containers/?sem_id=2021A_K0000
+     # noqa: E501
 
-    :param sem_id: semester id
-    :type sem_id: str
-
-    :rtype: List[Container]
-    """
-
-    query = {'sem_id': sem_id}
-    fields = {"container_list": 1, "_id": 0}
-    results = utils.get_fields_by_query(query, fields, 'prgCollect')
-
-    return results
-
-
-def semesters_observing_blocks_get(obs_id, sem_id):  # noqa: E501
-    """
-    retrieves all the programs associated with an observer
-
-
+    :param semester: semester id
+    :type semester: str
     :param obs_id: observer id
-    :type obs_id: dict | bytes
-    :param sem_id: semester id
-    :type sem_id: str
+    :type obs_id: int
 
     :rtype: List[Program]
     """
@@ -145,30 +145,31 @@ def semesters_observing_blocks_get(obs_id, sem_id):  # noqa: E501
     return 'do some magic!'
 
 
-def semesters_proposal_get(obs_id, sem_id):  # noqa: E501
-    """
-    retrieves the proposal associated with the program
+def program_semid_get(sem_id, obs_id):  # noqa: E501
+    """Retrieves the specified program.
 
-    :param obs_id: observer id
-    :type obs_id: dict | bytes
+     # noqa: E501
+
     :param sem_id: semester id
     :type sem_id: str
+    :param obs_id: observer id
+    :type obs_id: int
 
-    :rtype: Program
+    :rtype: List[Program]
     """
-    if connexion.request.is_json:
-        obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
-def semesters_submit_post(sem_id, obs_id):
+def program_submit_post(sem_id, obs_id):  # noqa: E501
     """
-    Submits a program (OBs)
+    Submits a program (OBs).  Uses the obsid in the authentication
+    header and provided semId to retrieve the proposal file
+    associated with the program # noqa: E501
 
     :param sem_id: semester id
     :type sem_id: str
     :param obs_id: observer id
-    :type obs_id: dict | bytes
+    :type obs_id: int
 
     :rtype: None
     """
@@ -177,14 +178,15 @@ def semesters_submit_post(sem_id, obs_id):
     return 'do some magic!'
 
 
-def semesters_submit_put(obs_id, sem_id):  # noqa: E501
-    """
+def program_submit_put(sem_id, obs_id):  # noqa: E501
+    """sem_id_submit_put
+
     updates a program (OBs) # noqa: E501
 
-    :param obs_id: observer id
-    :type obs_id: dict | bytes
     :param sem_id: semester id
     :type sem_id: str
+    :param obs_id: observer id
+    :type obs_id: int
 
     :rtype: None
     """
@@ -193,17 +195,39 @@ def semesters_submit_put(obs_id, sem_id):  # noqa: E501
     return 'do some magic!'
 
 
-def semesters_targets_get(obs_id, sem_id):
+def sem_id_targets_get(sem_id, obs_id):  # noqa: E501
     """
-     Retrieves all the targets associated with a program
+    Retrieves all the targets associated with a program. # noqa: E501
 
-    :param obs_id: observer id
-    :type obs_id: dict | bytes
     :param sem_id: semester id
     :type sem_id: str
+    :param obs_id: observer id
+    :type obs_id: int
 
     :rtype: List[Target]
     """
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
+
+
+def program_containers_get(sem_id):  # noqa: E501
+    """
+    Retrieves all containers associated with a program # noqa: E501
+
+    :param sem_id: semester id
+    :type sem_id: str
+
+    :rtype: List[Container]
+    """
+    return 'do some magic!'
+
+
+
+
+
+
+
+
+
+

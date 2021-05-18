@@ -8,6 +8,7 @@ from swagger_server.controllers import controller_helper as utils
 from swagger_server import util
 import pdb
 
+
 def ob_get(ob_id):  # noqa: E501
     """ob_get
 

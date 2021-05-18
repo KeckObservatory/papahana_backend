@@ -22,4 +22,5 @@ dev:
   obCollect: ob_blocks
   containerCollect: containers
   prgCollect: programs
+  proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?
   port: 27017

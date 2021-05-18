@@ -104,6 +104,18 @@ def containers_delete(container_id):  # noqa: E501
     utils.delete_from_collection(query, 'containerCollect')
 
 
+def containers_semid_get(sem_id):  # noqa: E501
+    """containers_semid_get
+
+    Retrieves all the containers associated with a given program # noqa: E501
+
+    :param sem_id: semester id
+    :type sem_id: str
+
+    :rtype: List[Container]
+    """
+    return
+
 def containers_append_put(body, container_id):  # noqa: E501
     """containers_append_put
 

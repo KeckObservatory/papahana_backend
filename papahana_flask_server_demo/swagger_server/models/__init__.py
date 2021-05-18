@@ -12,7 +12,6 @@ from swagger_server.models.magnitude import Magnitude
 from swagger_server.models.observation import Observation
 from swagger_server.models.observation_block import ObservationBlock
 from swagger_server.models.program import Program
-from swagger_server.models.semester import Semester
 from swagger_server.models.signature import Signature
 from swagger_server.models.status import Status
 from swagger_server.models.target import Target
