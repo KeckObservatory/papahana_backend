@@ -107,6 +107,35 @@ status = [
 
 spectral_types = ['V', 'R', 'I', 'J', 'H', 'K']
 
+sem_ids = [
+  "2017A_U033",
+  "2017A_U050",
+  "2017B_U042",
+  "2017B_U043",
+  "2018A_U042",
+  "2018A_U043",
+  "2018A_U044",
+  "2018A_U045",
+  "2018B_U016",
+  "2018B_U064",
+  "2019A_N020",
+  "2019A_U123",
+  "2019A_U124",
+  "2019B_U158",
+  "2019B_U159",
+  "2019B_U160",
+  "2020A_N028",
+  "2020A_U169",
+  "2020B_U048",
+  "2020B_U049",
+  "2020B_U082",
+  "2020B_N133",
+  "2021A_U046",
+  "2021A_U073",
+  "2021A_N140",
+  "2021B_U056",
+  "2021B_N057"
+]
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
@@ -131,6 +160,7 @@ sampleInst = lambda: random.choice(list(INST_MAPPING.keys()))
 randPI = lambda: random.choice(list(pis))
 randObserver = lambda: random.choice(observers)
 randSemester = lambda: random.choice(semesters)
+randSemId = lambda: random.choice(sem_ids)
 randPIList = lambda x=1: lambda x=1: list(np.random.choice(list(pis), size=random.randint(1, x), replace=False))
 randObserverList = lambda x=1: list(np.random.choice(observers, size=random.randint(1, x), replace=False))
 randComment = lambda: random.choice(comments)
@@ -243,7 +273,8 @@ def generate_signature(maxArr):
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
         'pi_id': pis[pi_name],
-        'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
+        # 'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
+        'sem_id': str(randSemester()),
         'instrument': 'KCWI',
         'comment': optionalRandComment()
     }
@@ -268,7 +299,7 @@ def generate_program(container_list):
 
     schema = {
         'name': 'Program #' + str(random.randint(0, 99)),
-        'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
+        'sem_id': str(randSemId()),
         'container_list': list(ob_set),
         'comment': optionalRandComment()
     }

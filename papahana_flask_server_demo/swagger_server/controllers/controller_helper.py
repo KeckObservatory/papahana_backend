@@ -197,6 +197,7 @@ def clean_objectid(results):
 
     return cln_results
 
+
 # Container specific helpers
 def get_ob_list(container_id):
     results = get_by_id(container_id, 'containerCollect')
@@ -208,10 +209,11 @@ def get_ob_list(container_id):
 
     return ob_list
 
+# semesters_and_program specific
 def get_proposal_ids(obs_id):
     with current_app.app_context():
         local_var = current_app.config_params
-        print(local_var)
+
 # https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid=2003
     url = f'https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid={obs_id}&json=True'
     response = requests.get(url)
@@ -231,3 +233,4 @@ def get_proposal_ids(obs_id):
         prop_ids.append(prop["KTN"])
 
     return prop_ids
+

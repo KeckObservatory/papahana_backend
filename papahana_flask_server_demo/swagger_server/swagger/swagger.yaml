@@ -59,7 +59,7 @@ paths:
           description: Observation Id not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesterIds/{semester}:
+  /semesterIds/{semester}/semester/:
     summary: retrieve programs of a given semester.
     get:
       tags:
@@ -86,7 +86,7 @@ paths:
           description: Observation or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
-  /semesterIds/{sem_id}:
+  /semesterIds/{sem_id}/semid:
     summary: retrieve the programs of a given semester ID.
     get:
       tags:
@@ -102,9 +102,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Program'
+                $ref: '#/components/schemas/Program'
         "400":
           description: Invalid status value
         "401":

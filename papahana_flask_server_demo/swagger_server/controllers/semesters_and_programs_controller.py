@@ -125,13 +125,11 @@ def sem_id_proposal_get(sem_id, obs_id):  # noqa: E501
     """
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return 'do some magic! sem_id_proposal_get'
 
 
 def program_semester_get(semester, obs_id):  # noqa: E501
     """retrieves all the programs associated with an observer for the semester.
-
-     # noqa: E501
 
     :param semester: semester id
     :type semester: str
@@ -142,7 +140,7 @@ def program_semester_get(semester, obs_id):  # noqa: E501
     """
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return 'do some magic! program_semester_get'
 
 
 def program_semid_get(sem_id, obs_id):  # noqa: E501
@@ -160,9 +158,16 @@ def program_semid_get(sem_id, obs_id):  # noqa: E501
 
     sem_ids = utils.get_proposal_ids(obs_id)
     if sem_id not in sem_ids:
-        return None
+        return 'No Results'
 
-    return 'do some magic!'
+    query = {'sem_id': sem_id}
+    prg = utils.get_by_query(query, 'prgCollect')
+
+    if prg:
+        prg[0]['_id'] = str(prg[0]['_id'])
+        return prg[0]
+
+    return 'No results'
 
 
 def program_submit_post(sem_id, obs_id):  # noqa: E501
@@ -180,7 +185,7 @@ def program_submit_post(sem_id, obs_id):  # noqa: E501
     """
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return 'do some magic! program_submit_post'
 
 
 def program_submit_put(sem_id, obs_id):  # noqa: E501
@@ -197,7 +202,7 @@ def program_submit_put(sem_id, obs_id):  # noqa: E501
     """
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return 'do some magic! program_submit_put'
 
 
 def sem_id_targets_get(sem_id, obs_id):  # noqa: E501
@@ -213,10 +218,10 @@ def sem_id_targets_get(sem_id, obs_id):  # noqa: E501
     """
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return 'do some magic! sem_id_targets_get'
 
 
-def program_containers_get(sem_id):  # noqa: E501
+def sem_id_targets_get(sem_id):  # noqa: E501
     """
     Retrieves all containers associated with a program # noqa: E501
 
@@ -225,8 +230,20 @@ def program_containers_get(sem_id):  # noqa: E501
 
     :rtype: List[Container]
     """
-    return 'do some magic!'
+    return 'do some magic! sem_id_targets_get'
 
+
+def program_containers_get(sem_id):  # noqa: E501
+    """program_containers_get
+
+    Retrieves all containers associated with a program # noqa: E501
+
+    :param sem_id: semester id
+    :type sem_id: str
+
+    :rtype: List[Container]
+    """
+    return 'do some magic! program_containers_get'
 
 
 
