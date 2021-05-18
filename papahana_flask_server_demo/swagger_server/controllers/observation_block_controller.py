@@ -18,12 +18,12 @@ def ob_get(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
+    ob = utils.get_by_id(ob_id, 'obCollect')[0]
+    ob_id = ob.get('_id', False)
     if ob:
-        ob[0]['_id'] = str(ob[0]['_id'])
-        return ob[0]
-
-    return ""
+        ob['_id'] = str(ob_id)
+        return ob
+    return {}
 
 def ob_post(body):  # noqa: E501
     """ob_post
@@ -35,7 +35,7 @@ def ob_post(body):  # noqa: E501
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
     result = utils.insert_into_collection(obDict, 'obCollect')
-    return str(result)
+    return result 
 
 
 def ob_put(body, ob_id):  # noqa: E501
@@ -48,12 +48,13 @@ def ob_put(body, ob_id):  # noqa: E501
     :param ob_id: observation block id
     :type ob_id: ObjectId
 
-    :rtype: None
+    :rtype: str
     """
     if connexion.request.is_json:
         body = connexion.request.get_json()
+    result = utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
+    return result
 
-    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
 
 def ob_delete(ob_id):  # noqa: E501
@@ -66,10 +67,10 @@ def ob_delete(ob_id):  # noqa: E501
     :param ob_id: observation block id
     :type ob_id: str
 
-    :rtype: None
+    :rtype: str 
     """
-    response = utils.delete_by_id(ob_id, 'obCollect')
-    return str(response)
+    result = utils.delete_by_id(ob_id, 'obCollect')
+    return result 
 
 
 def ob_duplicate(ob_id, sem_id=None):
@@ -85,19 +86,14 @@ def ob_duplicate(ob_id, sem_id=None):
 
     :rtype: str
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
-
-    if not ob:
-        return f'No observing block with id {ob_id}'
-
-    ob = ob[0]
+    ob = ob_get(ob_id)
+    if not ob.get('_id', False): # ob not found
+        return ob
     del ob['_id']
 
     if sem_id:
          ob['signature']['sem_id'] = sem_id
-
     result = utils.insert_into_collection(ob, 'obCollect')
-
     return str(result)
 
 
@@ -112,12 +108,11 @@ def ob_executions(ob_id):  # noqa: E501
 
     :rtype: List[str]
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
-
-    if not ob or "status" not in ob[0] or "executions" not in ob[0]["status"]:
+    ob = ob_get(ob_id)
+    executions = ob.get('status', False).get('executions', False)
+    if not executions:
         return []
-
-    return ob[0]["status"]["executions"]
+    return executions 
 
 
 def ob_schedule_put(ob_id):  # noqa: E501
@@ -148,12 +143,11 @@ def ob_execution_time(ob_id):  # noqa: E501
     :type ob_id: str
 
     :rtype: float
-    """
-    ob = utils.get_by_id(ob_id, 'obCollect')
-    if not ob or "science" not in ob[0]:
-        return 0
-
-    sci_blk = ob[0]['science']
+    """  
+    ob = ob_get(ob_id)
+    sci_blk = ob.get('science', False)
+    if not sci_blk: 
+        return 0 
 
     exp1 = 0
     exp2 = 0
@@ -181,11 +175,8 @@ def ob_export(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
-    if ob:
-        return ob[0]
-
-    return "No result"
+    ob = ob_get(ob_id)
+    return ob
 
 
 def ob_schedule_get(ob_id):  # noqa: E501
