@@ -14,14 +14,14 @@ def read_mode(config='../config.live.yaml'):
         return 'production'
 
 
-def read_config(mode, config='../config.live.yaml'):
+def read_config(mode, config='config.live.yaml'):
     with open(config) as file:
         config = yaml.load(file, Loader=yaml.FullLoader)[mode]
 
     return config
 
 
-def read_urls(config='../config.live.yaml'):
+def read_urls(config='config.live.yaml'):
     with open(config) as file:
         urls = yaml.load(file, Loader=yaml.FullLoader)['urls']
 
