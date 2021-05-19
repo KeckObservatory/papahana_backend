@@ -10,7 +10,7 @@ from swagger_server.controllers import containers_controller
 from swagger_server import util
 
 
-def programs_get(obs_id):  # noqa: E501
+def programs_get(obs_id):
     """
     retrieves all the programs associated with an observer.
 
@@ -35,7 +35,7 @@ def programs_get(obs_id):  # noqa: E501
     return prg_list
 
 
-def sem_id_proposal_get(sem_id, obs_id):  # noqa: E501
+def sem_id_proposal_get(sem_id, obs_id):
     """
     retrieves the proposal associated with the program.
 
@@ -54,7 +54,7 @@ def sem_id_proposal_get(sem_id, obs_id):  # noqa: E501
     return 'do some magic! sem_id_proposal_get'
 
 
-def program_semester_get(semester, obs_id):  # noqa: E501
+def program_semester_get(semester, obs_id):
     """
     retrieves all the programs associated with an observer for the semester.
 
@@ -77,7 +77,7 @@ def program_semester_get(semester, obs_id):  # noqa: E501
     return semester_list
 
 
-def program_semid_get(sem_id, obs_id):  # noqa: E501
+def program_semid_get(sem_id, obs_id):
     """
     Retrieves the specified program.
 
@@ -105,7 +105,7 @@ def program_semid_get(sem_id, obs_id):  # noqa: E501
     return None
 
 
-def program_submit_post(sem_id, obs_id):  # noqa: E501
+def program_submit_post(sem_id, obs_id):
     """
     Submits a program (OBs).  Uses the obsid in the authentication
     header and provided semId to retrieve the proposal file
@@ -123,7 +123,7 @@ def program_submit_post(sem_id, obs_id):  # noqa: E501
     return 'do some magic! program_submit_post'
 
 
-def program_submit_put(sem_id, obs_id):  # noqa: E501
+def program_submit_put(sem_id, obs_id):
     """sem_id_submit_put
 
     updates a program (OBs) # noqa: E501
@@ -140,9 +140,10 @@ def program_submit_put(sem_id, obs_id):  # noqa: E501
     return 'do some magic! program_submit_put'
 
 
-def sem_id_containers_get(sem_id, obs_id):  # noqa: E501
+def sem_id_containers_get(sem_id, obs_id):
     """
     Retrieves all containers associated with a program
+    http://vm-webtools.keck.hawaii.edu:50001/v0/semesterIds/2020A_U169/containers?obs_id=2003
 
     :param sem_id: semester id
     :type sem_id: str
@@ -161,8 +162,7 @@ def sem_id_containers_get(sem_id, obs_id):  # noqa: E501
     return prg['container_list']
 
 
-
-def sem_id_targets_get(sem_id, obs_id):  # noqa: E501
+def sem_id_targets_get(sem_id, obs_id):
     """
     Retrieves all the targets associated with a program. # noqa: E501
 
