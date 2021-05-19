@@ -205,15 +205,16 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
 
-  /semesterIds/containers/:
+  /semesterIds/{sem_id}/containers:
     get:
       tags:
         - Containers
         - Semesters and Programs
       description: Retrieves all containers associated with a program
-      operationId: program_containers_get
+      operationId: sem_id_containers_get
       parameters:
-        - $ref: '#/components/parameters/sem_id_in_query'
+        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK

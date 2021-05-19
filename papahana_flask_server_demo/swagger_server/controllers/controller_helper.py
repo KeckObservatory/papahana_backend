@@ -208,25 +208,12 @@ def get_ob_list(container_id):
         ob_list = []
 
     return ob_list
+
+
 # semesters_and_program specific
 def get_proposal_ids(obs_id):
-    with current_app.app_context():
-        urls = current_app.urls
-
-# https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid=2003
-#     url = f'https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?cmd=getAllProposals&obsid={obs_id}&json=True'
-    url_cmd = f'cmd=getAllProposals&obsid={obs_id}&json=True'
-
-    if 'proposalApi' not in urls:
-        return None
-
-    url = urls['proposalApi'] + url_cmd
-
-    response = requests.get(url)
-    try:
-        result = json.loads(response.content)
-    except Exception as err:
-        return err
+    cmd_url = f'cmd=getAllProposals&obsid={obs_id}&json=True'
+    result = query_proposals_api(cmd_url)
 
     if not result['success'] or 'data' not in result:
         return result['msg']
@@ -239,3 +226,30 @@ def get_proposal_ids(obs_id):
         prop_ids.append(prop["KTN"])
 
     return prop_ids
+
+
+def get_ids(sem_id):
+    cmd_url = f"cmd=getOBSID&ktn={sem_id}&json=True"
+    result = query_proposals_api(cmd_url)
+
+    if not result['success'] or 'data' not in result:
+        return result['msg']
+
+    return result['data']
+
+
+def query_proposals_api(cmd_url):
+    with current_app.app_context():
+        urls = current_app.urls
+
+    if 'proposalApi' not in urls:
+        return None
+
+    url = urls['proposalApi'] + cmd_url
+
+    response = requests.get(url)
+    try:
+        result = json.loads(response.content)
+        return result
+    except Exception as err:
+        return err

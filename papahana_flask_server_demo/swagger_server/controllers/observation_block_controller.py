@@ -10,8 +10,7 @@ import pdb
 
 
 def ob_get(ob_id):  # noqa: E501
-    """ob_get
-
+    """
     Retrieves the general parameters of an OB.
 
     :param ob_id: observation block id
@@ -28,8 +27,9 @@ def ob_get(ob_id):  # noqa: E501
 
 
 def ob_post(body):  # noqa: E501
-    """ob_post
-    Inserts an observation block. # noqa: E501
+    """
+    Inserts an observation block.
+
     :param body: Observation block to be added.
     :type body: dict | bytes
     :rtype: str
@@ -59,8 +59,7 @@ def ob_put(body, ob_id):  # noqa: E501
 
 
 def ob_delete(ob_id):  # noqa: E501
-    """ob_delete
-
+    """
     Removes the observation block # noqa: E501
 
     curl -v -H "Content-Type: application/json" -X DELETE "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
@@ -76,7 +75,7 @@ def ob_delete(ob_id):  # noqa: E501
 
 def ob_duplicate(ob_id, sem_id=None):
     """
-    Duplicate the OB, default is current semId. ]
+    Duplicate the OB, default is current semId.
 
     curl -v -H "Content-Type: application/json" -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/duplicate?ob_id=609c27515ef7b19168a7f646"
 
@@ -104,8 +103,7 @@ def ob_duplicate(ob_id, sem_id=None):
 
 
 def ob_executions(ob_id):  # noqa: E501
-    """ob_executions
-
+    """
     Retrieves the list of execution attempts for a specific OB
     (for a specific night).
 
@@ -123,8 +121,7 @@ def ob_executions(ob_id):  # noqa: E501
 
 
 def ob_schedule_put(ob_id):  # noqa: E501
-    """ob_schedule_put
-
+    """
     On success updates an existing ob schedule.
 
     :param ob_id: observation block id
@@ -140,8 +137,7 @@ def ob_schedule_put(ob_id):  # noqa: E501
 
 #TODO should this only be the remaining execution time
 def ob_execution_time(ob_id):  # noqa: E501
-    """ob_execution_time
-
+    """
     http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/executionTime/?ob_id=2
 
     Calculates the execution time. # noqa: E501
@@ -172,8 +168,7 @@ def ob_execution_time(ob_id):  # noqa: E501
 
 
 def ob_export(ob_id):  # noqa: E501
-    """ob_export
-
+    """
     http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/export/?ob_id=2
 
     Exports an OB in human-readable format. # noqa: E501
@@ -191,8 +186,7 @@ def ob_export(ob_id):  # noqa: E501
 
 
 def ob_schedule_get(ob_id):  # noqa: E501
-    """ob_schedule_get
-
+    """
     Retrieves scheduling information. # noqa: E501
 
     :param ob_id: observation block id
