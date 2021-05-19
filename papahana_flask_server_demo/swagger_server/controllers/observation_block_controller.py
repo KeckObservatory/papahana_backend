@@ -226,9 +226,10 @@ def ob_template_filled(ob_id):  # noqa: E501
     return 'do some magic!'
 
 
-def ob_template_duplicate(ob_id, template_id):
-    """
-    Generate a new copy of the template
+def ob_template_get(ob_id):  # noqa: E501
+    """ob_template_get
+
+    Retrieves the list of templates associated with the OB # noqa: E501
 
     :param ob_id: observation block id
     :type ob_id: str
