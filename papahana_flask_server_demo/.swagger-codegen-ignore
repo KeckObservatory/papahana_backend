@@ -12,6 +12,8 @@ config.py
 /swagger_server/controllers/controller_helper.py
 /swagger_server/controllers/observation_block_controller.py
 /swagger_server/controllers/groups_controller.py
+/swagger_server/controllers/semesters_and_programs_controller.py
+/swagger_server/controllers/containers_controller.py
 /swagger_server/util.py #  patch for typing module not having a GenericMeta class
 /swagger_server/__main__.py # so that it will always run on port 50000 and have cors
 
