@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.group import Group  # noqa: E501
+from swagger_server.models.container import Container  # noqa: E501
 from swagger_server.models.program import Program  # noqa: E501
 from swagger_server.models.target import Target  # noqa: E501
 from swagger_server.test import BaseTestCase
@@ -14,105 +14,105 @@ from swagger_server.test import BaseTestCase
 class TestSemestersAndProgramsController(BaseTestCase):
     """SemestersAndProgramsController integration test stubs"""
 
-    def test_semester_programs_get(self):
-        """Test case for semester_programs_get
+    def test_program_semester_get(self):
+        """Test case for program_semester_get
 
-        retrieves all the programs associated with an observer
+        retrieves all the programs associated with an observer for the semester.
         """
-        query_string = [('obs_id', None)]
+        query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesters/{sem_id}'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{semester}/semester/'.format(semester='semester_example'),
             method='GET',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_semesters_get(self):
-        """Test case for semesters_get
+    def test_program_semid_get(self):
+        """Test case for program_semid_get
 
-        retrieves all the programs associated with a PI
+        Retrieves the specified program.
         """
-        query_string = [('obs_id', None)]
+        query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesters',
+            '/v0/semesterIds/{sem_id}/semid'.format(sem_id='sem_id_example'),
             method='GET',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_semesters_groups_get(self):
-        """Test case for semesters_groups_get
+    def test_program_submit_post(self):
+        """Test case for program_submit_post
 
         
         """
-        query_string = [('sem_id', 'sem_id_example')]
+        query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesters/groups/',
-            method='GET',
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_semesters_observing_blocks_get(self):
-        """Test case for semesters_observing_blocks_get
-
-        retrieves all the programs associated with an observer
-        """
-        query_string = [('obs_id', None)]
-        response = self.client.open(
-            '/v0/semesters/observing_blocks/{sem_id}'.format(sem_id='sem_id_example'),
-            method='GET',
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_semesters_proposal_get(self):
-        """Test case for semesters_proposal_get
-
-        
-        """
-        query_string = [('obs_id', None)]
-        response = self.client.open(
-            '/v0/semesters/proposal/{sem_id}'.format(sem_id='sem_id_example'),
-            method='GET',
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_semesters_submit_post(self):
-        """Test case for semesters_submit_post
-
-        
-        """
-        query_string = [('obs_id', None)]
-        response = self.client.open(
-            '/v0/semesters/submit/{sem_id}'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/submit'.format(sem_id='sem_id_example'),
             method='POST',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_semesters_submit_put(self):
-        """Test case for semesters_submit_put
+    def test_program_submit_put(self):
+        """Test case for program_submit_put
 
         
         """
-        query_string = [('obs_id', None)]
+        query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesters/submit/{sem_id}'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/submit'.format(sem_id='sem_id_example'),
             method='PUT',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_semesters_targets_get(self):
-        """Test case for semesters_targets_get
+    def test_programs_get(self):
+        """Test case for programs_get
+
+        retrieves all the programs associated with an observer.
+        """
+        query_string = [('obs_id', 56)]
+        response = self.client.open(
+            '/v0/semesterIds/',
+            method='GET',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_sem_id_containers_get(self):
+        """Test case for sem_id_containers_get
 
         
         """
-        query_string = [('obs_id', None)]
+        query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesters/targets/{sem_id}'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/containers'.format(sem_id='sem_id_example'),
+            method='GET',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_sem_id_proposal_get(self):
+        """Test case for sem_id_proposal_get
+
+        
+        """
+        query_string = [('obs_id', 56)]
+        response = self.client.open(
+            '/v0/semesterIds/{sem_id}/proposal'.format(sem_id='sem_id_example'),
+            method='GET',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_sem_id_targets_get(self):
+        """Test case for sem_id_targets_get
+
+        
+        """
+        query_string = [('obs_id', 56)]
+        response = self.client.open(
+            '/v0/semesterIds/{sem_id}/targets'.format(sem_id='sem_id_example'),
             method='GET',
             query_string=query_string)
         self.assert200(response,
