@@ -29,8 +29,10 @@ def containers_get(container_id):  # noqa: E501
     """
     result = utils.get_by_id(container_id, 'containerCollect')
 
-    if result:
-        result = str(result[0])
+    if result and type(result) is list:
+        result = result[0]
+        if '_id' in result:
+            result['_id'] = str(result['_id'])
     else:
         result = {}
 

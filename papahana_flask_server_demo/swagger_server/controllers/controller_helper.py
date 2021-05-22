@@ -202,7 +202,7 @@ def clean_objectid(results):
 def get_ob_list(container_id):
     results = get_by_id(container_id, 'containerCollect')
 
-    if results:
+    if results and type(results) is list:
         ob_list = results[0]['observation_blocks']
     else:
         ob_list = []

@@ -267,15 +267,7 @@ paths:
       description: Retrieves a specific container's information
       operationId: containers_get
       parameters:
-        - name: container_id
-          in: query
-          description: container identifier
-          required: true
-          style: form
-          explode: true
-          schema:
-              $ref: '#/components/schemas/Container'
-          example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       responses:
         "200":
           description: OK
@@ -297,15 +289,7 @@ paths:
       description: Overwrites a container
       operationId: containers_put
       parameters:
-        - name: container_id
-          in: query
-          description: container identifier
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
-          example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       requestBody:
         content:
           application/json:
@@ -347,15 +331,7 @@ paths:
       description: Delete container by id
       operationId: containers_delete
       parameters:
-        - name: container_id
-          in: query
-          description: container identifier
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
-          example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       responses:
         "204":
           description: Deleted
@@ -372,15 +348,7 @@ paths:
       description: Appends an observation block to a container by id
       operationId: containers_append_put
       parameters:
-      - name: container_id
-        in: query
-        description: container identifier
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       requestBody:
         content:
           application/json:
@@ -407,15 +375,7 @@ paths:
       description: Calculate the total execution time of a container
       operationId: containers_execution_times_get
       parameters:
-      - name: container_id
-        in: query
-        description: container identifier
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       responses:
         "200":
           description: OK
@@ -440,7 +400,7 @@ paths:
       description: Retrieves the ordered list of observing blocks in a container
       operationId: containers_items_get
       parameters:
-      - $ref: '#/components/parameters/container_id'
+        - $ref: '#/components/parameters/container_id'
       responses:
         "200":
           description: OK
@@ -466,15 +426,7 @@ paths:
       description: Retrieves a summary of container information
       operationId: containers_items_summary_get
       parameters:
-      - name: container_id
-        in: query
-        description: container identifier
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       responses:
         "200":
           description: OK
@@ -498,15 +450,7 @@ paths:
         as a sucessfull response
       operationId: containers_verify_get
       parameters:
-      - name: container_id
-        in: query
-        description: container identifier
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       responses:
         "200":
           description: OK
@@ -555,15 +499,7 @@ paths:
         .json)
       operationId: containers_export_get
       parameters:
-      - name: container_id
-        in: query
-        description: container identifier
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 6042ced0afc6ecd40fe5a3dd
+        - $ref: '#/components/parameters/container_id'
       responses:
         "200":
           description: OK
@@ -1629,7 +1565,6 @@ components:
       in: query
       description: container identifier
       required: true
-      style: form
       explode: true
       schema:
         type: string
