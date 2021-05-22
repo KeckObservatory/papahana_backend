@@ -233,32 +233,32 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
 
-  /containers/{sem_id}:
-    get:
-      tags:
-      - Containers
-      description: Retrieves all the containers associated with a given program
-      operationId: containers_semid_get
-      parameters:
-      - $ref: '#/components/parameters/sem_id'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Container'
-                x-content-type: application/json
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "404":
-          description: Container not found
-      x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+#  /containers/{sem_id}:
+#    get:
+#      tags:
+#      - Containers
+#      description: Retrieves all the containers associated with a given program
+#      operationId: semid_containers_get
+#      parameters:
+#      - $ref: '#/components/parameters/sem_id'
+#      responses:
+#        "200":
+#          description: OK
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/Container'
+#                x-content-type: application/json
+#        "400":
+#          description: Invalid status value
+#        "401":
+#          description: Unauthorized
+#        "404":
+#          description: Container not found
+#      x-swagger-router-controller: Containers
+#      x-openapi-router-controller: swagger_server.controllers.containers_controller
 
   /containers:
     get:
@@ -274,7 +274,7 @@ paths:
           style: form
           explode: true
           schema:
-            type: string
+              $ref: '#/components/schemas/Container'
           example: 6042ced0afc6ecd40fe5a3dd
       responses:
         "200":
@@ -449,7 +449,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Container'
+                  $ref: '#/components/schemas/ObservationBlock'
                 x-content-type: application/json
         "400":
           description: Invalid status value

@@ -5,7 +5,7 @@ import pymongo
 from swagger_server.models.container import Container  # noqa: E501
 from swagger_server.models.container_summary import ContainerSummary  # noqa: E501
 from swagger_server.models.observation_block import ObservationBlock  # noqa: E501
-from swagger_server.controllers import observation_block_controller as ob_control
+from swagger_server.controllers import observation_block_controller
 from swagger_server.controllers import controller_helper as utils
 
 # from swagger_server import util
@@ -32,7 +32,7 @@ def containers_get(container_id):  # noqa: E501
     if result:
         result = str(result[0])
     else:
-        result = ""
+        result = {}
 
     return result
 
@@ -104,19 +104,6 @@ def containers_delete(container_id):  # noqa: E501
     utils.delete_from_collection(query, 'containerCollect')
 
 
-def containers_semid_get(sem_id):  # noqa: E501
-    """containers_semid_get
-
-    Retrieves all the containers associated with a given program # noqa: E501
-
-    :param sem_id: semester id
-    :type sem_id: str
-
-    :rtype: List[Container]
-    """
-    return
-
-
 def containers_append_put(body, container_id):  # noqa: E501
     """containers_append_put
 
@@ -157,7 +144,7 @@ def containers_execution_times_get(container_id):  # noqa: E501
     ob_list = utils.get_ob_list(container_id)
     total_time = 0
     for ob in ob_list:
-        total_time += ob_control.ob_execution_time(str(ob))
+        total_time += observation_block_controller.ob_execution_time(str(ob))
 
     return total_time
 
@@ -184,12 +171,16 @@ def containers_items_get(container_id):  # noqa: E501
     :param container_id: container identifier
     :type container_id: str
 
-    :rtype: List[Container]
+    :rtype: List[ObservationBlock]
     """
     ob_list = utils.get_ob_list(container_id)
     ob_list.sort()
 
-    return str(ob_list)
+    ob_block_list = []
+    for ob in ob_list:
+        ob_block_list.append(observation_block_controller.ob_get(ob))
+
+    return ob_block_list
 
 
 # TODO this seems like it is the same as /containers_get
@@ -216,7 +207,7 @@ def containers_schedule_too_post(body):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        body = [Container.from_dict(d) for d in connexion.request.get_json()]  # noqa: E501
+        body = [Container.from_dict(d) for d in connexion.request.get_json()]
     return 'do some magic!'
 
 
@@ -234,18 +225,4 @@ def containers_verify_get(container_id):  # noqa: E501
 
     return 'do some magic!'
 
-
-def sem_id_containers_get(sem_id):  # noqa: E501
-    """sem_id_containers_get
-    /semesters/containers
-
-    Retrieves all containers associated with a program.
-
-    :param sem_id: semester id
-    :type sem_id: str
-
-    :rtype: List[Container]
-    """
-    #TODO get sem_id from the ob_block
-    return 'do some magic!'
 

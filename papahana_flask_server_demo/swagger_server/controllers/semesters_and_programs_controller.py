@@ -6,6 +6,7 @@ from swagger_server.models.program import Program
 from swagger_server.models.target import Target
 from swagger_server.controllers import controller_helper as utils
 from swagger_server.controllers import containers_controller
+from swagger_server.controllers import observation_block_controller
 
 from swagger_server import util
 
@@ -93,7 +94,7 @@ def program_semid_get(sem_id, obs_id):
 
     # check that the observer is associated with the sem_id passed in.
     if sem_id not in sem_ids:
-        return None
+        return {}
 
     query = {'sem_id': sem_id}
     prg = utils.get_by_query(query, 'prgCollect')
@@ -102,7 +103,7 @@ def program_semid_get(sem_id, obs_id):
         prg[0]['_id'] = str(prg[0]['_id'])
         return prg[0]
 
-    return None
+    return {}
 
 
 def program_submit_post(sem_id, obs_id):
@@ -157,14 +158,18 @@ def sem_id_containers_get(sem_id, obs_id):
 
     prg = program_semid_get(sem_id, obs_id)
     if 'container_list' not in prg:
-        return None
+        return []
 
-    return prg['container_list']
+    container_list = []
+    for container_id in prg['container_list']:
+        container_list.append(containers_controller.containers_get(container_id))
+
+    return container_list
 
 
 def sem_id_targets_get(sem_id, obs_id):
     """
-    Retrieves all the targets associated with a program. # noqa: E501
+    Retrieves all the targets associated with a program.
 
     :param sem_id: semester id
     :type sem_id: str
@@ -176,16 +181,33 @@ def sem_id_targets_get(sem_id, obs_id):
     if connexion.request.is_json:
         obs_id = object.from_dict(connexion.request.get_json())
 
-    container_list = program_containers_get(sem_id, obs_id)
+    container_list = sem_id_containers_get(sem_id, obs_id)
 
+    ob_ids = []
     for container_id in container_list:
-        ob_blocks = containers_controller.containers_items_get(container_id)
+        ob_ids += containers_controller.containers_items_get(container_id)
 
-    #TODO get targets from ob_blocks
+    all_targets = []
+    for ob_id in ob_ids:
+        ob_block = observation_block_controller.ob_get(ob_id)
+        if 'target' in ob_block:
+            all_targets.append(ob_block['target'])
 
-    return 'do some magic! sem_id_targets_get'
+    return all_targets
 
 
+def semid_containers_get(sem_id):  # noqa: E501
+    """containers_semid_get
+
+    Retrieves all the containers associated with a given program # noqa: E501
+
+    :param sem_id: semester id
+    :type sem_id: str
+
+    :rtype: List[Container]
+    """
+
+    return
 
 
 

@@ -14,12 +14,12 @@ def get_by_id(id, collect_name):
     :param container_id: container identifier
     :type container_id: str
 
-    :rtype: Dict{Query}
+    :rtype: List[Dict{Query}]
     """
     try:
         id = get_object_id(id)
     except ValueError as msg:
-        return [msg]
+        return msg
 
     query = {"_id": id}
     coll = config_collection(collect_name)

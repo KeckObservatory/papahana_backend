@@ -216,7 +216,7 @@ def random_dates():
 
 
 def generate_ra():
-    raDeg = z_fill_number(randInt(0, 360))
+    raDeg = z_fill_number(randInt(0, 24))
     arcMinutes = z_fill_number(randInt(0, 60))
     arcSeconds = z_fill_number(randInt(0, 60))
     ra = " ".join([raDeg, arcMinutes, arcSeconds])

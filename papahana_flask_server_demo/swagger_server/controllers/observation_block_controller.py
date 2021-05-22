@@ -1,7 +1,7 @@
 import connexion
 from bson.objectid import ObjectId
 
-from swagger_server.models.observation_block import ObservationBlock  # noqa: E501
+from swagger_server.models.observation_block import ObservationBlock
 from swagger_server.models.observation import Observation
 from swagger_server.controllers import controller_helper as utils
 
@@ -19,9 +19,13 @@ def ob_get(ob_id):  # noqa: E501
     :rtype: ObservationBlock
     """
     ob = utils.get_by_id(ob_id, 'obCollect')
+
     if ob:
-        ob[0]['_id'] = str(ob[0]['_id'])
-        return ob[0]
+        if type(ob) is list:
+            ob[0]['_id'] = str(ob[0]['_id'])
+            return ob[0]
+        else:
+            return ob
 
     return ""
 
@@ -36,6 +40,7 @@ def ob_post(body):  # noqa: E501
     """
     if connexion.request.is_json:
         obDict = connexion.request.get_json()
+
     result = utils.insert_into_collection(obDict, 'obCollect')
     return str(result)
 
@@ -216,7 +221,7 @@ def ob_template_duplicate(ob_id, template_id):
 def ob_template_filled(ob_id):  # noqa: E501
     """ob_template_filled
 
-    Verify that the required parameters have been filled in. # noqa: E501
+    Verify that the required parameters have been filled in.
 
     :param ob_id: observation block id
     :type ob_id: str

@@ -3,7 +3,7 @@ import connexion
 import yaml
 
 
-def read_mode(config='../config.live.yaml'):
+def read_mode(config='config.live.yaml'):
     with open(config) as file:
         mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
 
