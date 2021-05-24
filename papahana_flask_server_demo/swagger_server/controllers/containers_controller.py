@@ -20,26 +20,20 @@ def containers_get(container_id):  # noqa: E501
     error:
     http://vm-webtools.keck.hawaii.edu:50000/v0/containers?container_id=09ad6fc4062bf346f1b0437
     result:
-    http://vm-webtools.keck.hawaii.edu:50000/v0/containers?container_id=609ad6fc4062bf346f1b0437
+    http://vm-webtools.keck.hawaii.edu:50000/v0/containers?container_id=60a6b4057c25cc6791b5fb02
 
     :param container_id: container identifier
     :type container_id: str
 
     :rtype: Container
     """
-    result = utils.get_by_id(container_id, 'containerCollect')
-
-    if result and type(result) is list:
-        result = result[0]
-        if '_id' in result:
-            result['_id'] = str(result['_id'])
-    else:
-        result = {}
-
-    return result
+    try:
+        return utils.get_by_id(container_id, 'containerCollect')
+    except ValueError as err:
+        return err
 
 
-def containers_post(body):  # noqa: E501
+def containers_post(body):
     """
     Creates a container # noqa: E501
 

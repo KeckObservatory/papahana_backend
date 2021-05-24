@@ -18,16 +18,10 @@ def ob_get(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
-
-    if ob:
-        if type(ob) is list:
-            ob[0]['_id'] = str(ob[0]['_id'])
-            return ob[0]
-        else:
-            return ob
-
-    return ""
+    try:
+        return utils.get_by_id(ob_id, 'obCollect')
+    except ValueError as err:
+        return err
 
 
 def ob_post(body):  # noqa: E501
@@ -91,16 +85,18 @@ def ob_duplicate(ob_id, sem_id=None):
 
     :rtype: str
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
+    try:
+        ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
+    except ValueError as err:
+        return err
 
     if not ob:
         return f'No observing block with id {ob_id}'
 
-    ob = ob[0]
     del ob['_id']
 
     if sem_id:
-         ob['signature']['sem_id'] = sem_id
+        ob['signature']['sem_id'] = sem_id
 
     result = utils.insert_into_collection(ob, 'obCollect')
 
@@ -117,12 +113,15 @@ def ob_executions(ob_id):  # noqa: E501
 
     :rtype: List[str]
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
+    try:
+        ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
+    except ValueError as err:
+        return err
 
-    if not ob or "status" not in ob[0] or "executions" not in ob[0]["status"]:
+    if not ob or "status" not in ob or "executions" not in ob["status"]:
         return []
 
-    return ob[0]["status"]["executions"]
+    return ob["status"]["executions"]
 
 
 def ob_schedule_put(ob_id):  # noqa: E501
@@ -152,11 +151,15 @@ def ob_execution_time(ob_id):  # noqa: E501
 
     :rtype: float
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
-    if not ob or "science" not in ob[0]:
+    try:
+        ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
+    except ValueError as err:
+        return err
+
+    if not ob or "science" not in ob:
         return 0
 
-    sci_blk = ob[0]['science']
+    sci_blk = ob['science']
 
     exp1 = 0
     exp2 = 0
@@ -183,11 +186,10 @@ def ob_export(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    ob = utils.get_by_id(ob_id, 'obCollect')
-    if ob:
-        return ob[0]
-
-    return "No result"
+    try:
+        return utils.get_by_id(ob_id, 'obCollect')
+    except ValueError as err:
+        return err
 
 
 def ob_schedule_get(ob_id):  # noqa: E501

@@ -99,9 +99,8 @@ def program_semid_get(sem_id, obs_id):
     query = {'sem_id': sem_id}
     prg = utils.get_by_query(query, 'prgCollect')
 
-    if prg:
-        prg[0]['_id'] = str(prg[0]['_id'])
-        return prg[0]
+    if prg and type(prg) is list:
+        return utils.json_with_objectid(prg[0])
 
     return {}
 

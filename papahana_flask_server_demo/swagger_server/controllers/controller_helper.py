@@ -4,27 +4,49 @@ import bson
 import json
 import requests
 from flask import current_app
+from bson import json_util
 
 
 # Generalized
-def get_by_id(id, collect_name):
+def json_with_objectid(result):
+    """
+    :param result: the results
+    :type result: dict
+
+    work with the ObjectID to make it json serializable.  Also unnest the
+    $oid from _id to make the id = result['_id]
+    """
+    cln_result = json.loads(json_util.dumps(result))
+    if '_id' in cln_result and '$oid' in cln_result['_id']:
+        cln_result['_id'] = cln_result['_id']['$oid']
+
+    return cln_result
+
+
+def get_by_id(id, collect_name, cln_oid=True):
     """
     query by string container_id
 
     :param container_id: container identifier
     :type container_id: str
 
-    :rtype: List[Dict{Query}]
+    :rtype: Dict{Query Result}
     """
     try:
         id = get_object_id(id)
     except ValueError as msg:
-        return msg
+        raise ValueError(msg)
 
     query = {"_id": id}
     coll = config_collection(collect_name)
 
-    return list(coll.find(query))
+    results = list(coll.find(query))
+    if not results:
+        return {}
+    if cln_oid:
+        return json_with_objectid(results[0])
+
+    return results[0]
 
 
 def get_by_query(query, collect_name):
