@@ -194,7 +194,7 @@ def generate_container(_id=None):
         ob_set.update({ob_blocks[ob_val]})
 
     schema = {
-        "semester": randSemester(),
+        "sem_id": randSemId(),
         "name": randContainerName(),
         "observation_blocks": list(ob_set),
         "comment": randComment()
@@ -274,7 +274,7 @@ def generate_signature(maxArr):
         'name': 'standard stars #' + str(random.randint(0, 9)),
         'pi_id': pis[pi_name],
         # 'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
-        'sem_id': str(randSemester()),
+        'sem_id': str(randSemId()),
         'instrument': 'KCWI',
         'comment': optionalRandComment()
     }

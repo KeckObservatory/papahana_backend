@@ -39,7 +39,7 @@ paths:
       tags:
         - Semester Id
       summary: retrieves all the sem_ids associated with an observer.
-      operationId: programs_get
+      operationId: sem_id_get
       parameters:
         - $ref: '#/components/parameters/obs_id'
       responses:
@@ -50,7 +50,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Program'
+                  type: string
         "400":
           description: Invalid status value
         "401":
@@ -60,12 +60,12 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
   /semesterIds/{semester}/semester/:
-    summary: retrieve programs of a given semester.
+    summary: retrieves sem_id of a given semester for an obs_id.
     get:
       tags:
         - Semester Id
-      summary: retrieves all the programs associated with an observer for the semester.
-      operationId: program_semester_get
+      summary: retrieves all the sem_id associated with an observer for the semester.
+      operationId: sem_id_semester_get
       parameters:
         - $ref: '#/components/parameters/semester_path'
         - $ref: '#/components/parameters/obs_id'
@@ -77,7 +77,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Program'
+                  type: string
         "400":
           description: Invalid status value
         "401":
@@ -86,13 +86,13 @@ paths:
           description: Observation or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
-  /semesterIds/{sem_id}/semid:
-    summary: retrieve the programs of a given semester ID.
+  /semesterIds/{sem_id}/ob:
+    summary: retrieve the ob_block information of a given semester ID.
     get:
       tags:
         - Semester Id
-      summary: Retrieves the specified program.
-      operationId: program_semid_get
+      summary: Retrieves the ob_blocks for a sem_id.
+      operationId: sem_id_ob_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
         - $ref: '#/components/parameters/obs_id'
@@ -102,7 +102,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Program'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
         "401":
@@ -127,55 +129,12 @@ paths:
             application/pdf:
               schema:
                 type: string
-                format: binary
         "400":
           description: Invalid status value
         "401":
           description: Unauthorized
         "404":
           description: Program not found.
-      x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semester_id_controller
-  /semesterIds/{sem_id}/submit:
-    post:
-      tags:
-        - Semester Id
-      description: Submits a program (OBs).  Uses the obsid in the authentication \
-                    header and provided semId to retrieve the proposal file \
-                    associated with the program
-      operationId: program_submit_post
-      parameters:
-        - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
-      responses:
-        "201":
-          description: OK, new program created.
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "404":
-          description: Observation ID not found.
-      x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semester_id_controller
-
-    put:
-      tags:
-        - Semester Id
-      description: updates a program (OBs)
-      operationId: program_submit_put
-      parameters:
-        - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
-      responses:
-        "200":
-          description: List of objects added to the program
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "404":
-          description: Observation ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
   /semesterIds/{sem_id}/targets:
@@ -204,7 +163,6 @@ paths:
           description: Program not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
-
   /semesterIds/{sem_id}/containers:
     get:
       tags:
@@ -232,33 +190,59 @@ paths:
           description: Container not found
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
+  /semesterIds/{sem_id}/submit:
+    post:
+      tags:
+        - Semester Id
+      description: Submits a program (OBs).  Uses the obsid in the authentication \
+                    header and provided semId to retrieve the proposal file \
+                    associated with the program
+      operationId: sem_id_submit_post
+      parameters:
+        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationBlock'
+        required: true
+      responses:
+        "201":
+          description: OK, new program created.
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation ID not found.
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
 
-#  /containers/{sem_id}:
-#    get:
-#      tags:
-#      - Containers
-#      description: Retrieves all the containers associated with a given program
-#      operationId: semid_containers_get
-#      parameters:
-#      - $ref: '#/components/parameters/sem_id'
-#      responses:
-#        "200":
-#          description: OK
-#          content:
-#            application/json:
-#              schema:
-#                type: array
-#                items:
-#                  $ref: '#/components/schemas/Container'
-#                x-content-type: application/json
-#        "400":
-#          description: Invalid status value
-#        "401":
-#          description: Unauthorized
-#        "404":
-#          description: Container not found
-#      x-swagger-router-controller: Containers
-#      x-openapi-router-controller: papahana.controllers.containers_controller
+    put:
+      tags:
+        - Semester Id
+      description: updates a program (OBs)
+      operationId: sem_id_submit_put
+      parameters:
+        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/obs_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationBlock'
+      responses:
+        "200":
+          description: List of objects added to the program
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "404":
+          description: Observation ID not found.
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
 
   /containers:
     get:
@@ -1086,13 +1070,17 @@ paths:
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 components:
   schemas:
-#    Semester:
-#      type: object
-#      properties:
-#        semester:
-#          type: string
-#      example:
-#        semester: 2020A
+    ProgramInfo:
+      type: object
+      properties:
+        containers:
+          type: array
+          items:
+            type: string
+        ob_blocks:
+          type: array
+          items:
+            type: string
     Program:
       type: object
       properties:

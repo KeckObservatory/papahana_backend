@@ -8,13 +8,25 @@ from bson import json_util
 
 
 # Generalized
-def json_with_objectid(result):
+def list_with_objectid(results):
     """
+    unwrap a list of dictionaries that include ObjectIds
+
     :param result: the results
     :type result: dict
+    """
+    for indx in range(0, len(results)):
+        results[indx] = json_with_objectid(results[indx])
 
+    return results
+
+def json_with_objectid(result):
+    """
     work with the ObjectID to make it json serializable.  Also unnest the
     $oid from _id to make the id = result['_id]
+
+    :param result: the results
+    :type result: dict
     """
     cln_result = json.loads(json_util.dumps(result))
     if '_id' in cln_result and '$oid' in cln_result['_id']:
@@ -275,3 +287,13 @@ def query_proposals_api(cmd_url):
         return result
     except Exception as err:
         return err
+
+
+def obs_id_associated(sem_id, obs_id):
+    sem_ids = get_proposal_ids(obs_id)
+
+    # check that the observer is associated with the sem_id passed in.
+    if sem_id not in sem_ids:
+        return False
+
+    return True

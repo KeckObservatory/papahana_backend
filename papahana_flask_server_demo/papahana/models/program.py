@@ -14,30 +14,30 @@ class Program(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, sem_id: str=None, containers: List[str]=None):  # noqa: E501
+    def __init__(self, name: str=None, sem_id: str=None, ob_blocks: List[str]=None):  # noqa: E501
         """Program - a model defined in Swagger
 
         :param name: The name of this Program.  # noqa: E501
         :type name: str
         :param sem_id: The sem_id of this Program.  # noqa: E501
         :type sem_id: str
-        :param containers: The containers of this Program.  # noqa: E501
-        :type containers: List[str]
+        :param ob_blocks: The ob_blocks of this Program.  # noqa: E501
+        :type ob_blocks: List[str]
         """
         self.swagger_types = {
             'name': str,
             'sem_id': str,
-            'containers': List[str]
+            'ob_blocks': List[str]
         }
 
         self.attribute_map = {
             'name': 'name',
             'sem_id': 'sem_id',
-            'containers': 'containers'
+            'ob_blocks': 'ob_blocks'
         }
         self._name = name
         self._sem_id = sem_id
-        self._containers = containers
+        self._ob_blocks = ob_blocks
 
     @classmethod
     def from_dict(cls, dikt) -> 'Program':
@@ -93,22 +93,22 @@ class Program(Model):
         self._sem_id = sem_id
 
     @property
-    def containers(self) -> List[str]:
-        """Gets the containers of this Program.
+    def ob_blocks(self) -> List[str]:
+        """Gets the ob_blocks of this Program.
 
 
-        :return: The containers of this Program.
+        :return: The ob_blocks of this Program.
         :rtype: List[str]
         """
-        return self._containers
+        return self._ob_blocks
 
-    @containers.setter
-    def containers(self, containers: List[str]):
-        """Sets the containers of this Program.
+    @ob_blocks.setter
+    def ob_blocks(self, ob_blocks: List[str]):
+        """Sets the ob_blocks of this Program.
 
 
-        :param containers: The containers of this Program.
-        :type containers: List[str]
+        :param ob_blocks: The ob_blocks of this Program.
+        :type ob_blocks: List[str]
         """
 
-        self._containers = containers
+        self._ob_blocks = ob_blocks
