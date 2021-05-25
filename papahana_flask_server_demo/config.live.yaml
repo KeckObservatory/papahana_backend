@@ -5,25 +5,21 @@ local:
   dbName: papahana 
   obCollect: ob_blocks
   containerCollect: containers
-  prgCollect: programs
   port: 27017
   ip: 10.96.0.228
-  port: 27017
 demo:
   dbName: papahana 
   obCollect: ob_blocks
   containerCollect: containers
-  prgCollect: programs
   ip: 127.0.0.1
   port: 27017
 dev:
   dbName: papahana
   obCollect: ob_blocks
   containerCollect: containers
-  prgCollect: programs
   port: 27017
   ip: 10.96.0.228
 
-urls:
-  proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php?
+apis:
+  proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php
 

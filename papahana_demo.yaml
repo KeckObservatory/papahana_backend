@@ -58,7 +58,7 @@ paths:
         "404":
           description: Observation Id not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
   /semesterIds/{semester}/semester/:
     summary: retrieve programs of a given semester.
     get:
@@ -85,7 +85,7 @@ paths:
         "404":
           description: Observation or Semester ID not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
   /semesterIds/{sem_id}/semid:
     summary: retrieve the programs of a given semester ID.
     get:
@@ -110,7 +110,7 @@ paths:
         "404":
           description: Observation or Semester ID not found
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
   /semesterIds/{sem_id}/proposal:
     get:
       tags:
@@ -135,7 +135,7 @@ paths:
         "404":
           description: Program not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
   /semesterIds/{sem_id}/submit:
     post:
       tags:
@@ -157,7 +157,7 @@ paths:
         "404":
           description: Observation ID not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
 
     put:
       tags:
@@ -177,7 +177,7 @@ paths:
         "404":
           description: Observation ID not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
   /semesterIds/{sem_id}/targets:
     get:
       tags:
@@ -203,7 +203,7 @@ paths:
         "404":
           description: Program not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
 
   /semesterIds/{sem_id}/containers:
     get:
@@ -231,7 +231,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: swagger_server.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
 
 #  /containers/{sem_id}:
 #    get:
@@ -258,7 +258,7 @@ paths:
 #        "404":
 #          description: Container not found
 #      x-swagger-router-controller: Containers
-#      x-openapi-router-controller: swagger_server.controllers.containers_controller
+#      x-openapi-router-controller: papahana.controllers.containers_controller
 
   /containers:
     get:
@@ -282,7 +282,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
     put:
       tags:
         - Containers
@@ -304,7 +304,7 @@ paths:
         "404":
           description: Container id not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
     post:
       tags:
         - Containers
@@ -324,7 +324,7 @@ paths:
         "404":
           description: Container id not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
     delete:
       tags:
         - Containers
@@ -340,7 +340,7 @@ paths:
         "404":
           description: Container id not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/append:
     put:
       tags:
@@ -367,7 +367,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/executionTimes:
     get:
       tags:
@@ -392,7 +392,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/items:
     get:
       tags:
@@ -418,7 +418,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/items/summary:
     get:
       tags:
@@ -441,7 +441,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/verify:
     get:
       tags:
@@ -465,7 +465,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/scheduleToO:
     post:
       tags:
@@ -490,7 +490,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/export:
     get:
       tags:
@@ -512,7 +512,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: Containers
-      x-openapi-router-controller: swagger_server.controllers.containers_controller
+      x-openapi-router-controller: papahana.controllers.containers_controller
 
   /instrumentPackages/{instrument}:
     get:
@@ -536,7 +536,7 @@ paths:
         "404":
           description: Group not found
       x-swagger-router-controller: Instrument
-      x-openapi-router-controller: swagger_server.controllers.instrument_controller
+      x-openapi-router-controller: papahana.controllers.instrument_controller
   /instrumentPackages/{instrument}/{ip_version}/signatures:
     get:
       tags:
@@ -559,7 +559,7 @@ paths:
         "404":
           description: Group not found
       x-swagger-router-controller: Instrument
-      x-openapi-router-controller: swagger_server.controllers.instrument_controller
+      x-openapi-router-controller: papahana.controllers.instrument_controller
   /instrumentPackages/{instrument}/{ip_version}/{template_name}:
     get:
       tags:
@@ -584,7 +584,7 @@ paths:
         "404":
           description: Group not found
       x-swagger-router-controller: Instrument
-      x-openapi-router-controller: swagger_server.controllers.instrument_controller
+      x-openapi-router-controller: papahana.controllers.instrument_controller
 
   /obsBlocks:
     get:
@@ -606,7 +606,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
       - Observation Block
@@ -629,7 +629,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     post:
       tags:
       - Observation Block
@@ -656,7 +656,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     delete:
       tags:
       - Observation Block
@@ -672,7 +672,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/template:
     get:
       tags:
@@ -693,7 +693,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     post:
       tags:
         - Observation Block
@@ -709,7 +709,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
@@ -725,7 +725,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/template/{template_id}:
     get:
       tags:
@@ -747,7 +747,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
@@ -764,7 +764,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     delete:
       tags:
         - Observation Block
@@ -781,7 +781,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/template/{template_id}/{file_parameter}:
     get:
       tags:
@@ -804,7 +804,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
@@ -822,7 +822,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/template/duplicate:
     post:
       tags:
@@ -844,7 +844,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/completelyFilledIn:
     get:
       tags:
@@ -866,7 +866,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/supplementFiles:
     get:
       tags:
@@ -890,7 +890,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/timeConstraints:
     get:
       tags:
@@ -915,7 +915,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
@@ -932,7 +932,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/schedule:
     get:
       tags:
@@ -956,7 +956,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
@@ -972,7 +972,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/executions:
     get:
       tags:
@@ -996,7 +996,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/executionTime:
     get:
       tags:
@@ -1018,7 +1018,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/duplicate:
     post:
       tags:
@@ -1041,7 +1041,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/upgrade:
     post:
       tags:
@@ -1062,7 +1062,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/export:
     get:
       tags:
@@ -1083,7 +1083,7 @@ paths:
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
-      x-openapi-router-controller: swagger_server.controllers.observation_block_controller
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
 components:
   schemas:
 #    Semester:
