@@ -11,8 +11,6 @@ from papahana.models.instrument_package import InstrumentPackage
 from papahana.models.magnitude import Magnitude
 from papahana.models.observation import Observation
 from papahana.models.observation_block import ObservationBlock
-from papahana.models.program import Program
-from papahana.models.program_info import ProgramInfo
 from papahana.models.signature import Signature
 from papahana.models.status import Status
 from papahana.models.target import Target

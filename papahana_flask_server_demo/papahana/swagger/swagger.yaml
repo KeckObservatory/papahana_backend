@@ -1070,31 +1070,6 @@ paths:
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 components:
   schemas:
-    ProgramInfo:
-      type: object
-      properties:
-        containers:
-          type: array
-          items:
-            type: string
-        ob_blocks:
-          type: array
-          items:
-            type: string
-    Program:
-      type: object
-      properties:
-        name:
-          type: string
-        sem_id:
-          type: string
-        ob_blocks:
-          type: array
-          items:
-            type: string
-      example:
-        sem_id: 2020A_H777
-        observation_blocks: [5, 77, 8]
     Container:
       type: object
       properties:

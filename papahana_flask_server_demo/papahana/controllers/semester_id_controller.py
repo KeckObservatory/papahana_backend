@@ -7,7 +7,6 @@ from papahana.controllers import observation_block_controller
 
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.container import Container
-from papahana.models.program_info import ProgramInfo
 from papahana.models.target import Target
 from papahana import util
 
