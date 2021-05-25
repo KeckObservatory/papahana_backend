@@ -34,11 +34,11 @@ tags:
 
 paths:
   /semesterIds/:
-    summary: Retrieves all the programs associated with an observer
+    summary: Retrieves all the sem_ids associated with an observer
     get:
       tags:
-        - Semesters and Programs
-      summary: retrieves all the programs associated with an observer.
+        - Semester Id
+      summary: retrieves all the sem_ids associated with an observer.
       operationId: programs_get
       parameters:
         - $ref: '#/components/parameters/obs_id'
@@ -58,12 +58,12 @@ paths:
         "404":
           description: Observation Id not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
   /semesterIds/{semester}/semester/:
     summary: retrieve programs of a given semester.
     get:
       tags:
-        - Semesters and Programs
+        - Semester Id
       summary: retrieves all the programs associated with an observer for the semester.
       operationId: program_semester_get
       parameters:
@@ -85,12 +85,12 @@ paths:
         "404":
           description: Observation or Semester ID not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
   /semesterIds/{sem_id}/semid:
     summary: retrieve the programs of a given semester ID.
     get:
       tags:
-        - Semesters and Programs
+        - Semester Id
       summary: Retrieves the specified program.
       operationId: program_semid_get
       parameters:
@@ -110,11 +110,11 @@ paths:
         "404":
           description: Observation or Semester ID not found
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
   /semesterIds/{sem_id}/proposal:
     get:
       tags:
-        - Semesters and Programs
+        - Semester Id
       description: retrieves the proposal associated with the program.
       operationId: sem_id_proposal_get
       parameters:
@@ -135,11 +135,11 @@ paths:
         "404":
           description: Program not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
   /semesterIds/{sem_id}/submit:
     post:
       tags:
-        - Semesters and Programs
+        - Semester Id
       description: Submits a program (OBs).  Uses the obsid in the authentication \
                     header and provided semId to retrieve the proposal file \
                     associated with the program
@@ -157,11 +157,11 @@ paths:
         "404":
           description: Observation ID not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
 
     put:
       tags:
-        - Semesters and Programs
+        - Semester Id
       description: updates a program (OBs)
       operationId: program_submit_put
       parameters:
@@ -177,11 +177,11 @@ paths:
         "404":
           description: Observation ID not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
   /semesterIds/{sem_id}/targets:
     get:
       tags:
-        - Semesters and Programs
+        - Semester Id
       description: Retrieves all the targets associated with a program.
       operationId: sem_id_targets_get
       parameters:
@@ -203,13 +203,13 @@ paths:
         "404":
           description: Program not found.
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
 
   /semesterIds/{sem_id}/containers:
     get:
       tags:
         - Containers
-        - Semesters and Programs
+        - Semester Id
       description: Retrieves all containers associated with a program
       operationId: sem_id_containers_get
       parameters:
@@ -231,7 +231,7 @@ paths:
         "404":
           description: Container not found
       x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semesters_and_programs_controller
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
 
 #  /containers/{sem_id}:
 #    get:
@@ -1100,7 +1100,7 @@ components:
           type: string
         sem_id:
           type: string
-        containers:
+        ob_blocks:
           type: array
           items:
             type: string

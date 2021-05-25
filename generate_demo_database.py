@@ -464,7 +464,6 @@ if __name__=='__main__':
         doc = generate_observation_block(nLen, maxArr, inst)
         result = coll.insert_one(doc)
         ob_blocks.append(str(result.inserted_id))
-        # assert result.inserted_id == str(idx), 'check that idx was sed properly'
 
     # Create containers collection
     collName = 'containers'
@@ -480,13 +479,12 @@ if __name__=='__main__':
         result = coll.insert_one(doc)
 
         container_list.append(str(result.inserted_id))
-        # assert result.inserted_id == str(idx), 'check that idx was sed properly'
 
     # create Program collection
-    coll = config_collection('prgCollect', mode=mode, conf=config)
-    coll.drop()
-    n_prgs = 50
-    print("...generating programs")
-    for idx in range(n_prgs):
-        doc = generate_program(container_list)
-        result = coll.insert_one(doc)
+    # coll = config_collection('prgCollect', mode=mode, conf=config)
+    # coll.drop()
+    # n_prgs = 50
+    # print("...generating programs")
+    # for idx in range(n_prgs):
+    #     doc = generate_program(container_list)
+    #     result = coll.insert_one(doc)
