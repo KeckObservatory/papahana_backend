@@ -39,7 +39,7 @@ def ob_post(body):  # noqa: E501
     return str(result)
 
 
-def ob_put(body, ob_id, helper=False):  # noqa: E501
+def ob_put(body, ob_id):
     """
     Updates the observation block with the new one
     [webdev@vm-webtools ~]$ curl -v -H "Content-Type: application/json" -X PUT -d '{"signature.instrument": "KCWI-test"}' "http://vm-webtools.keck.hawaii.edu:50000/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
@@ -51,11 +51,9 @@ def ob_put(body, ob_id, helper=False):  # noqa: E501
 
     :rtype: None
     """
-    if not helper and connexion.request.is_json:
+    if connexion.request.is_json:
         body = connexion.request.get_json()
 
-    print("here")
-    print(body)
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
 
@@ -71,7 +69,6 @@ def ob_delete(ob_id):  # noqa: E501
     :rtype: None
     """
     response = utils.delete_by_id(ob_id, 'obCollect')
-    return str(response)
 
 
 def ob_duplicate(ob_id, sem_id=None):
@@ -124,21 +121,6 @@ def ob_executions(ob_id):  # noqa: E501
         return []
 
     return ob["status"]["executions"]
-
-
-def ob_schedule_put(ob_id):  # noqa: E501
-    """
-    On success updates an existing ob schedule.
-
-    :param ob_id: observation block id
-    :type ob_id: str
-
-    :rtype: None
-    """
-
-    #TODO need schedule constraints in db
-
-    return 'do some magic!'
 
 
 #TODO should this only be the remaining execution time
@@ -194,19 +176,6 @@ def ob_export(ob_id):  # noqa: E501
         return err
 
 
-def ob_schedule_get(ob_id):  # noqa: E501
-    """
-    Retrieves scheduling information. # noqa: E501
-
-    :param ob_id: observation block id
-    :type ob_id: str
-
-    :rtype: List[str]
-    """
-
-    return 'Need schedule information in db'
-
-
 def ob_template_duplicate(ob_id, template_id):
     """
     Generate a new copy of the template
@@ -223,8 +192,7 @@ def ob_template_duplicate(ob_id, template_id):
 
 
 def ob_template_filled(ob_id):  # noqa: E501
-    """ob_template_filled
-
+    """
     Verify that the required parameters have been filled in.
 
     :param ob_id: observation block id
@@ -294,12 +262,11 @@ def ob_template_id_delete(ob_id, template_id):
 
         ob['science'] = sci_templates
 
-    ob_put(ob, ob_id, helper=True)
+    utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')\
 
 
-def ob_template_id_file_get(ob_id, template_id, file_parameter):  # noqa: E501
-    """ob_template_id_file_get
-
+def ob_template_id_file_get(ob_id, template_id, file_parameter):
+    """
     Retrieves the specified template within the OB # noqa: E501
 
     :param ob_id: observation block id
@@ -332,8 +299,7 @@ def ob_template_id_file_put(ob_id, template_id, file_parameter):  # noqa: E501
 
 
 def ob_template_id_get(ob_id, template_id):  # noqa: E501
-    """ob_template_id_get
-
+    """
     Retrieves the specified template within the OB # noqa: E501
 
     :param ob_id: observation block id
@@ -360,9 +326,8 @@ def ob_template_id_get(ob_id, template_id):  # noqa: E501
 
 
 def ob_template_id_put(ob_id, template_id):  # noqa: E501
-    """ob_template_id_put
-
-    Updates the specified template within the OB # noqa: E501
+    """
+    Updates the specified template within the OB
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -371,38 +336,47 @@ def ob_template_id_put(ob_id, template_id):  # noqa: E501
 
     :rtype: None
     """
+
+    #TODO Does this replace the template,  or update fields?
+
     return 'do some magic!'
 
 
-def ob_template_post(ob_id):  # noqa: E501
-    """ob_template_post
-
+def ob_template_post(body, ob_id):
+    """
     Creates the list of templates associated with the OB # noqa: E501
 
+    :param body:
+    :type body: list | bytes
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: None
     """
+    if connexion.request.is_json:
+        body = [ObservationBlock.from_dict(d) for d in connexion.request.get_json()]
     return 'do some magic!'
 
 
-def ob_template_put(ob_id):  # noqa: E501
+def ob_template_put(body, ob_id):  # noqa: E501
     """ob_template_put
 
     Updates the list of templates associated with the OB # noqa: E501
 
+    :param body:
+    :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: None
     """
+    if connexion.request.is_json:
+        body = ObservationBlock.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
 def ob_template_supplement(ob_id):  # noqa: E501
-    """ob_template_supplement
-
+    """
     Retrieves list of files. # noqa: E501
 
     :param ob_id: observation block id
@@ -414,8 +388,7 @@ def ob_template_supplement(ob_id):  # noqa: E501
 
 
 def ob_time_constraint_get(ob_id, sidereal):  # noqa: E501
-    """ob_time_constraint_get
-
+    """
     Retrieves the time constraints (from, to). # noqa: E501
 
     :param ob_id: observation block id
@@ -428,11 +401,12 @@ def ob_time_constraint_get(ob_id, sidereal):  # noqa: E501
     return 'do some magic!'
 
 
-def ob_time_constraint_put(ob_id, sidereal):  # noqa: E501
-    """ob_time_constraint_put
-
+def ob_time_constraint_put(body, ob_id, sidereal):  # noqa: E501
+    """
     Updates the time constraints (from, to). # noqa: E501
 
+    :param body:
+    :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
     :param sidereal: tracking rate
@@ -440,7 +414,12 @@ def ob_time_constraint_put(ob_id, sidereal):  # noqa: E501
 
     :rtype: None
     """
+    if connexion.request.is_json:
+        body = str.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
+
+
+
 
 
 def ob_upgrade(ob_id):  # noqa: E501
@@ -455,3 +434,32 @@ def ob_upgrade(ob_id):  # noqa: E501
     :rtype: ObservationBlock
     """
     return 'do some magic!'
+
+
+def ob_schedule_put(ob_id):  # noqa: E501
+    """
+    On success updates an existing ob schedule.
+
+    :param ob_id: observation block id
+    :type ob_id: str
+
+    :rtype: None
+    """
+
+    #TODO need schedule constraints in db
+
+    return 'do some magic!'
+
+
+def ob_schedule_get(ob_id):  # noqa: E501
+    """
+    Retrieves scheduling information. # noqa: E501
+
+    :param ob_id: observation block id
+    :type ob_id: str
+
+    :rtype: List[str]
+    """
+
+    return 'Need schedule information in db'
+

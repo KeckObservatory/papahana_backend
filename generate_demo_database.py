@@ -393,7 +393,7 @@ def generate_kcwi_science():
 
 def generate_kcwi_acquisiton(nLen, maxArr):
     acq = random.choice(filled_acq_templates)
-    acq['index'] = f'acq_0'
+    acq['index'] = 0
     return acq
     # schema = {
     #     "name": "KCWI_ifu_acq_direct",

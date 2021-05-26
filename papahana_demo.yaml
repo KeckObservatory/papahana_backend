@@ -685,6 +685,14 @@ paths:
       operationId: ob_template_post
       parameters:
         - $ref: '#/components/parameters/ob_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ObservationBlock'
+        required: true
       responses:
         "200":
           description: On success inserts a new list of templates associated with the OB.
@@ -701,6 +709,12 @@ paths:
       operationId: ob_template_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationBlock'
+        required: true
       responses:
         "200":
           description: On success replaces the given templates with new list of templates.
@@ -908,6 +922,13 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/sidereal'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type:
+                string
+        required: true
       responses:
         "200":
           description: On success updates an existing time constraint(s) of an OB.
