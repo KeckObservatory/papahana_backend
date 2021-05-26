@@ -264,6 +264,7 @@ def generate_ra():
     ra = " ".join([raDeg, arcMinutes, arcSeconds])
     return ra
 
+
 def generate_dec():
     arcMinutes = z_fill_number(randInt(0, 60))
     arcSeconds = z_fill_number(randInt(0, 60))
@@ -272,13 +273,17 @@ def generate_dec():
     dec = elevation+" ".join([decDeg, arcMinutes, arcSeconds])
     return dec
 
+
 def remove_none_values_in_dict(method):
     '''None values in dict returned by method are removed
     '''
     @wraps(method)
     def remove_none(*args, **kw):
         result = method(*args, **kw)
-        return {key: val for key, val in result.items() if val is not None}
+        if type(result) is dict:
+            return {key: val for key, val in result.items() if val is not None}
+        else:
+            return result
     return remove_none
 
 def generate_semester(sem, nLen, maxLen=6):
@@ -347,6 +352,7 @@ def generate_program(container_list):
     }
     return schema
 
+
 def generate_dither():
     dmin, dmax = [random.randint(-15, 15), random.randint(-15, 15)].sort()
     schema = {
@@ -357,13 +363,17 @@ def generate_dither():
     }
     return schema
 
-@remove_none_values_in_dict
-def generate_kcwi_science(nLen, maxArr):
-    name = rand_kcwi_science()
-    cam = random.choice([ "BL","BM","BH1","BH2", "RL","RM","RH1","RH2"])
-    camIsBlue = cam[0] is 'B'
-    cwave = random.randint(3500, 6500) if camIsBlue else random.randint(6500, 10000)
-    schema = random.choice(filled_sci_templates)
+def generate_kcwi_science():
+    import copy
+
+    schema = []
+    n_templates = random.randint(0, 5)
+    for indx in range(1, n_templates):
+        tmp_list = copy.deepcopy(filled_sci_templates)
+        filled_template = random.choice(tmp_list)
+        filled_template['index'] = indx
+        schema.append(filled_template)
+
     # schema = {
     #     "name": name,
     #     "version": "0.1",
@@ -382,8 +392,9 @@ def generate_kcwi_science(nLen, maxArr):
 
 
 def generate_kcwi_acquisiton(nLen, maxArr):
-    return random.choice(filled_acq_templates)
-
+    acq = random.choice(filled_acq_templates)
+    acq['index'] = f'acq_0'
+    return acq
     # schema = {
     #     "name": "KCWI_ifu_acq_direct",
     #     "version": "0.1",
@@ -396,11 +407,11 @@ def generate_kcwi_acquisiton(nLen, maxArr):
     # return schema
 
 
-def generate_science(nLen, maxArr, inst='KCWI'):
+def generate_science(inst='KCWI'):
     if inst=='KCWI':
-        schema = generate_kcwi_science(nLen, maxArr)
+        schema = generate_kcwi_science()
     else:
-        schema = generate_kcwi_science(nLen, maxArr) # fill this in later
+        schema = generate_kcwi_science() # fill this in later
     return schema
 
 
@@ -461,7 +472,7 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         'version': "0.1",
         'target': random.choice([None, generate_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
-        'science': generate_science(nLen, maxArr, inst),
+        'science': generate_science(inst),
         'associations': randArrStr(nLen, maxArr),
         'priority': randFloat(100),
         'status': randStatus(),
@@ -485,6 +496,7 @@ def read_config(mode, config='config.live.yaml'):
         config = yaml.load(file, Loader=yaml.FullLoader)[mode]
 
     return config
+
 
 if __name__=='__main__':
     seed = 1984739

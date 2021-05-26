@@ -1476,13 +1476,13 @@ components:
     template_id:
       name: template_id
       in: path
-      description: unique identifier of template
+      description: index of template within the OB.
       required: true
       style: simple
       explode: false
       schema:
-        type: string
-      example: "1"
+        type: integer
+      example: 1
     template_name:
       name: template_name
       in: path
