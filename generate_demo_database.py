@@ -139,6 +139,25 @@ sem_ids = [
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
+templates = [
+    {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
+     "version": "0.1", "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
+     "DET2_NEXT": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
+     "CFG_SLICER": ""},
+
+    {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
+     "version": "0.1", "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
+     "DET2_NEXT": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
+     "CFG_SLICER": "", "SEQ_NDITHER": 0,
+     "SEQ_DITARRAY": [[0, 0, "", ""], [0, 0, "", ""], [0, 0, "", ""]]},
+
+    {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
+     "version": "0.1", "GUIDER_PO": "IFU", "GUIDER_GS_RA": "14 03 15",
+     "GUIDER_GS_DEC": "+54 20 43", "GUIDER_GS_MODE": "User"}
+]
+
+
+
 containers = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
 NOBS = 100 # number of observation blocks
 randContainerName = lambda: random.choice(containers)
@@ -185,8 +204,8 @@ def randStatus():
     schema = {'state': rstat, 'executions': executions}
     return schema
 
-def generate_container(_id=None):
 
+def generate_container(_id=None):
     ob_set = set()
     n_ob = random.randint(0, 9)
     for indx in range(0, n_ob):
@@ -468,7 +487,6 @@ if __name__=='__main__':
     # Create containers collection
     collName = 'containers'
     remote = True # run on remote server (n)
-    # coll = create_collection(dbName, collName, port=27017, mode=mode)
     coll = config_collection('containerCollect', mode=mode, conf=config)
     coll.drop()
     print("...generating containers")
@@ -480,11 +498,11 @@ if __name__=='__main__':
 
         container_list.append(str(result.inserted_id))
 
-    # create Program collection
-    # coll = config_collection('prgCollect', mode=mode, conf=config)
-    # coll.drop()
-    # n_prgs = 50
-    # print("...generating programs")
-    # for idx in range(n_prgs):
-    #     doc = generate_program(container_list)
-    #     result = coll.insert_one(doc)
+    # create Template collection
+    collName = 'templates'
+    remote = True # run on remote server (n)
+    coll = config_collection('templateCollect', mode=mode, conf=config)
+    coll.drop()
+    print("...generating templates")
+    for template in templates:
+        result = coll.insert_one(template)

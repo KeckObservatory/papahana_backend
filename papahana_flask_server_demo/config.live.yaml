@@ -5,18 +5,21 @@ local:
   dbName: papahana 
   obCollect: ob_blocks
   containerCollect: containers
+  templateCollect: templates
   port: 27017
   ip: 10.96.0.228
 demo:
   dbName: papahana 
   obCollect: ob_blocks
   containerCollect: containers
+  templateCollect: templates
   ip: 127.0.0.1
   port: 27017
 dev:
   dbName: papahana
   obCollect: ob_blocks
   containerCollect: containers
+  templateCollect: templates
   port: 27017
   ip: 10.96.0.228
 
