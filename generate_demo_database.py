@@ -139,18 +139,41 @@ sem_ids = [
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
-templates = [
+filled_sci_templates = [
+        {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
+         "version": "0.1", "DET1_EXPTIME": 1200, "DET1_NEXP": 2,
+         "DET2_EXPTIME": 1200, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
+         "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium"},
+
+        {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
+         "version": "0.1", "DET1_EXPTIME": 60, "DET1_NEXP": 2,
+         "DET2_EXPTIME": 60, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
+         "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium", "SEQ_NDITHER": 3,
+         "SEQ_DITARRAY": [[0,0,"T","Guided"], [5,5,"T","Guided"],
+                          [-10,-10, "T", "Guided"]]}
+    ]
+
+filled_acq_templates = [
+    {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "sci",
+     "version": "0.1", "GUIDER_PO": "IFU",
+     "GUIDER_GS_RA": "14 03 15", "GUIDER_GS_DEC": "+54 20 43",
+     "GUIDER_GS_MODE": "User"}
+    ]
+
+science_templates = [
     {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
      "version": "0.1", "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
-     "DET2_NEXT": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
+     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
      "CFG_SLICER": ""},
 
     {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
      "version": "0.1", "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
-     "DET2_NEXT": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
+     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
      "CFG_SLICER": "", "SEQ_NDITHER": 0,
      "SEQ_DITARRAY": [[0, 0, "", ""], [0, 0, "", ""], [0, 0, "", ""]]},
+]
 
+acquisition_templates = [
     {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
      "version": "0.1", "GUIDER_PO": "IFU", "GUIDER_GS_RA": "14 03 15",
      "GUIDER_GS_DEC": "+54 20 43", "GUIDER_GS_MODE": "User"}
@@ -186,7 +209,7 @@ randComment = lambda: random.choice(comments)
 optionalRandComment = lambda: random.choice([None, randComment()])
 randSemesterList = lambda x=3: list(np.random.choice(semesters, size=random.randint(0, x), replace=False))
 # randStatus = lambda: random.choice(status)
-rand_kcwi_science = lambda: random.choice(status)
+rand_kcwi_science = lambda: random.choice(kcwi_science)
 z_fill_number = lambda x, zf=2: str(x).zfill(2)
 raDeg = z_fill_number(randInt(0, 360))
 arcMinutes = z_fill_number(randInt(0, 60))
@@ -340,34 +363,38 @@ def generate_kcwi_science(nLen, maxArr):
     cam = random.choice([ "BL","BM","BH1","BH2", "RL","RM","RH1","RH2"])
     camIsBlue = cam[0] is 'B'
     cwave = random.randint(3500, 6500) if camIsBlue else random.randint(6500, 10000)
-    schema = {
-        "name": name,
-        "version": "0.1",
-        "det1_exptime": random.randint(0,3600),
-        "det1_nexp": random.randint(0,99),
-        "det2_exptime": random.randint(0,3600),
-        "det2_nexp": random.randint(0,99),
-        "cfg_cam_grating": random.choice([ "BL","BM","BH1","BH2", "RL","RM","RH1","RH2" ]),
-        "cfg_cam_cwave": random.randint(6500,10000),
-        "cfg_slicer": random.choice(["Small", "Medium", "Large"])
-    }
-    if 'dither' in name:
-        schema["seq_ditarray"] = generate_dither()
-        schema["seq_ndither"] = random.randint(0,99)
+    schema = random.choice(filled_sci_templates)
+    # schema = {
+    #     "name": name,
+    #     "version": "0.1",
+    #     "det1_exptime": random.randint(0,3600),
+    #     "det1_nexp": random.randint(0,99),
+    #     "det2_exptime": random.randint(0,3600),
+    #     "det2_nexp": random.randint(0,99),
+    #     "cfg_cam_grating": random.choice([ "BL","BM","BH1","BH2", "RL","RM","RH1","RH2" ]),
+    #     "cfg_cam_cwave": random.randint(6500,10000),
+    #     "cfg_slicer": random.choice(["Small", "Medium", "Large"])
+    # }
+    # if 'dither' in name:
+    #     schema["seq_ditarray"] = generate_dither()
+    #     schema["seq_ndither"] = random.randint(0,99)
     return schema
 
 
 def generate_kcwi_acquisiton(nLen, maxArr):
-    schema = {
-        "name": "KCWI_ifu_acq_direct",
-        "version": "0.1",
-        "script": "KCWI_ifu_acq_direct",
-        "guider_po": random.choice( ["REF","IFU"] ),
-        "guider_gs_ra": random.uniform(0, 24) % 1000,
-        "guider_gs_dec": random.uniform(-90, 90) % 1000,
-        "guider_gs_mode": random.choice(["Automatic", "Operator", "User"])
-    }
-    return schema
+    return random.choice(filled_acq_templates)
+
+    # schema = {
+    #     "name": "KCWI_ifu_acq_direct",
+    #     "version": "0.1",
+    #     "script": "KCWI_ifu_acq_direct",
+    #     "guider_po": random.choice( ["REF","IFU"] ),
+    #     "guider_gs_ra": random.uniform(0, 24) % 1000,
+    #     "guider_gs_dec": random.uniform(-90, 90) % 1000,
+    #     "guider_gs_mode": random.choice(["Automatic", "Operator", "User"])
+    # }
+    # return schema
+
 
 def generate_science(nLen, maxArr, inst='KCWI'):
     if inst=='KCWI':
@@ -375,6 +402,7 @@ def generate_science(nLen, maxArr, inst='KCWI'):
     else:
         schema = generate_kcwi_science(nLen, maxArr) # fill this in later
     return schema
+
 
 def generate_acquisition(nLen, maxArr, inst='KCWI'):
     if inst=='KCWI':
@@ -431,10 +459,10 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     schema = {
         'signature': generate_signature(maxArr),
         'version': "0.1",
-        'target': random.choice( [ None, generate_target() ] ),
-        'acquisition': random.choice( [ None, generate_acquisition( nLen, maxArr, inst ) ] ),
-        'science': random.choice( [None, generate_science( nLen, maxArr, inst ) ] ),
-        'associations': randArrStr( nLen, maxArr ),
+        'target': random.choice([None, generate_target()]),
+        'acquisition': generate_acquisition(nLen, maxArr, inst),
+        'science': generate_science(nLen, maxArr, inst),
+        'associations': randArrStr(nLen, maxArr),
         'priority': randFloat(100),
         'status': randStatus(),
         'comment': optionalRandComment()
@@ -504,5 +532,8 @@ if __name__=='__main__':
     coll = config_collection('templateCollect', mode=mode, conf=config)
     coll.drop()
     print("...generating templates")
-    for template in templates:
+    for template in science_templates:
+        result = coll.insert_one(template)
+
+    for template in acquisition_templates:
         result = coll.insert_one(template)

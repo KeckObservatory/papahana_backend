@@ -236,7 +236,7 @@ def ob_template_filled(ob_id):  # noqa: E501
 def ob_template_get(ob_id):  # noqa: E501
     """ob_template_get
 
-    Retrieves the list of templates associated with the OB # noqa: E501
+    Retrieves the list of templates associated with the OB
 
     :param ob_id: observation block id
     :type ob_id: str
