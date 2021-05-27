@@ -1,4 +1,6 @@
 import connexion
+from copy import deepcopy
+from flask import abort
 from bson.objectid import ObjectId
 
 from papahana.models.observation_block import ObservationBlock
@@ -9,7 +11,7 @@ from papahana import util
 import pdb
 
 
-def ob_get(ob_id):  # noqa: E501
+def ob_get(ob_id):
     """
     Retrieves the general parameters of an OB.
 
@@ -18,13 +20,10 @@ def ob_get(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    try:
-        return utils.get_by_id(ob_id, 'obCollect')
-    except ValueError as err:
-        return err
+    return utils.get_by_id(ob_id, 'obCollect')
 
 
-def ob_post(body):  # noqa: E501
+def ob_post(body):
     """
     Inserts an observation block.
 
@@ -33,9 +32,9 @@ def ob_post(body):  # noqa: E501
     :rtype: str
     """
     if connexion.request.is_json:
-        obDict = connexion.request.get_json()
+        body = connexion.request.get_json()
 
-    result = utils.insert_into_collection(obDict, 'obCollect')
+    result = utils.insert_into_collection(body, 'obCollect')
     return str(result)
 
 
@@ -57,7 +56,7 @@ def ob_put(body, ob_id):
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
 
-def ob_delete(ob_id):  # noqa: E501
+def ob_delete(ob_id):
     """
     Removes the observation block # noqa: E501
 
@@ -84,13 +83,7 @@ def ob_duplicate(ob_id, sem_id=None):
 
     :rtype: str
     """
-    try:
-        ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
-    except ValueError as err:
-        return err
-
-    if not ob:
-        return f'No observing block with id {ob_id}'
+    ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
 
     del ob['_id']
 
@@ -112,12 +105,9 @@ def ob_executions(ob_id):  # noqa: E501
 
     :rtype: List[str]
     """
-    try:
-        ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
-    except ValueError as err:
-        return err
+    ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
 
-    if not ob or "status" not in ob or "executions" not in ob["status"]:
+    if "status" not in ob or "executions" not in ob["status"]:
         return []
 
     return ob["status"]["executions"]
@@ -135,12 +125,9 @@ def ob_execution_time(ob_id):  # noqa: E501
 
     :rtype: float
     """
-    try:
-        ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
-    except ValueError as err:
-        return err
+    ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
 
-    if not ob or "science" not in ob:
+    if "science" not in ob:
         return 0
 
     sci_blk = ob['science']
@@ -159,7 +146,7 @@ def ob_execution_time(ob_id):  # noqa: E501
     return max(exp1, exp2)
 
 
-def ob_export(ob_id):  # noqa: E501
+def ob_export(ob_id):
     """
     http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/export/?ob_id=2
 
@@ -170,25 +157,7 @@ def ob_export(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    try:
-        return utils.get_by_id(ob_id, 'obCollect')
-    except ValueError as err:
-        return err
-
-
-def ob_template_duplicate(ob_id, template_id):
-    """
-    Generate a new copy of the template
-
-    :param ob_id: observation block id
-    :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
-
-    :rtype: ObservationBlock
-    """
-
-    return 'do some magic!'
+    return utils.get_by_id(ob_id, 'obCollect')
 
 
 def ob_template_filled(ob_id):  # noqa: E501
@@ -214,12 +183,9 @@ def ob_template_get(ob_id):  # noqa: E501
 
     :rtype: ObservationBlock
     """
-    template_list = []
-
     ob = ob_get(ob_id)
-    if not ob:
-        return template_list
 
+    template_list = []
     if 'acquisition' in ob:
         acq = ob['acquisition']
         if acq:
@@ -254,11 +220,12 @@ def ob_template_id_delete(ob_id, template_id):
             return
         indx = template_id - 1
         sci_templates = ob['science']
+
         if len(sci_templates) > indx:
             del sci_templates[indx]
 
-        for template in sci_templates:
-            template['index'] = template['index'] - 1
+        for cnt in range(0, len(sci_templates)):
+            sci_templates[cnt]['index'] = cnt + 1
 
         ob['science'] = sci_templates
 
@@ -324,11 +291,47 @@ def ob_template_id_get(ob_id, template_id):  # noqa: E501
 
     return {}
 
+#TODO this adds the template to the list in the OB,  and returns the template
+def ob_template_duplicate(ob_id, template_id):
+    """
+    Generate a new copy of the template and add it to the list of templates in
+    the OB.
 
-def ob_template_id_put(ob_id, template_id):  # noqa: E501
+    curl -v -H "Content-Type: application/json" -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/template/duplicate/1?ob_id=60aec72417469e6111a54d78"
+
+    :param ob_id: observation block id
+    :type ob_id: str
+    :param template_id: index of template within the OB.
+    :type template_id: int
+
+    :rtype: Observation
+    """
+    if ob_id == 0:
+        abort(404, 'Invalid template ID')
+
+    ob = ob_get(ob_id)
+
+    if 'science' not in ob or len(ob['science']) < template_id:
+        abort(404, 'Invalid template ID')
+
+    sci_templates = ob['science']
+    new_template = deepcopy(sci_templates[template_id - 1])
+    new_template['index'] = len(sci_templates) + 1
+
+    sci_templates.append(new_template)
+    utils.update_doc(utils.query_by_id(ob_id), {"science": sci_templates},
+                     'obCollect')
+
+    return new_template
+
+
+#TODO Does this replace the template,  or update fields?
+def ob_template_id_put(body, ob_id, template_id):
     """
     Updates the specified template within the OB
 
+    :param body:
+    :type body: list | bytes
     :param ob_id: observation block id
     :type ob_id: str
     :param template_id: index of template within the OB.
@@ -336,15 +339,15 @@ def ob_template_id_put(ob_id, template_id):  # noqa: E501
 
     :rtype: None
     """
-
-    #TODO Does this replace the template,  or update fields?
+    if connexion.request.is_json:
+        body = [Observation.from_dict(d) for d in connexion.request.get_json()]
 
     return 'do some magic!'
 
 
-def ob_template_post(body, ob_id):
+def ob_template_post(body, ob_id):  # noqa: E501
     """
-    Creates the list of templates associated with the OB # noqa: E501
+    Creates the list of templates associated with the OB
 
     :param body:
     :type body: list | bytes
@@ -354,24 +357,23 @@ def ob_template_post(body, ob_id):
     :rtype: None
     """
     if connexion.request.is_json:
-        body = [ObservationBlock.from_dict(d) for d in connexion.request.get_json()]
+        body = [Observation.from_dict(d) for d in connexion.request.get_json()]  # noqa: E501
     return 'do some magic!'
 
 
 def ob_template_put(body, ob_id):  # noqa: E501
-    """ob_template_put
-
+    """
     Updates the list of templates associated with the OB # noqa: E501
 
     :param body:
-    :type body: dict | bytes
+    :type body: list | bytes
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: None
     """
     if connexion.request.is_json:
-        body = ObservationBlock.from_dict(connexion.request.get_json())  # noqa: E501
+        body = [Observation.from_dict(d) for d in connexion.request.get_json()]  # noqa: E501
     return 'do some magic!'
 
 
@@ -387,9 +389,9 @@ def ob_template_supplement(ob_id):  # noqa: E501
     return 'do some magic!'
 
 
-def ob_time_constraint_get(ob_id, sidereal):  # noqa: E501
+def ob_time_constraint_get(ob_id, sidereal):
     """
-    Retrieves the time constraints (from, to). # noqa: E501
+    Retrieves the time constraints (from, to).
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -417,9 +419,6 @@ def ob_time_constraint_put(body, ob_id, sidereal):  # noqa: E501
     if connexion.request.is_json:
         body = str.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
-
-
-
 
 
 def ob_upgrade(ob_id):  # noqa: E501

@@ -16,6 +16,7 @@ from getpass import getpass
 seed = 1984739
 random.seed(seed)
 import datetime
+# import generate_db_data.py as data
 from papahana_flask_server_demo.config import config_collection
 
 INST_MAPPING = { 
@@ -141,12 +142,12 @@ kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
 filled_sci_templates = [
         {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
-         "version": "0.1", "DET1_EXPTIME": 1200, "DET1_NEXP": 2,
+         "version": 0.1, "DET1_EXPTIME": 1200, "DET1_NEXP": 2,
          "DET2_EXPTIME": 1200, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
          "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium"},
 
         {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
-         "version": "0.1", "DET1_EXPTIME": 60, "DET1_NEXP": 2,
+         "version": 0.1, "DET1_EXPTIME": 60, "DET1_NEXP": 2,
          "DET2_EXPTIME": 60, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
          "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium", "SEQ_NDITHER": 3,
          "SEQ_DITARRAY": [[0,0,"T","Guided"], [5,5,"T","Guided"],
@@ -154,29 +155,30 @@ filled_sci_templates = [
     ]
 
 filled_acq_templates = [
-    {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "sci",
-     "version": "0.1", "GUIDER_PO": "IFU",
-     "GUIDER_GS_RA": "14 03 15", "GUIDER_GS_DEC": "+54 20 43",
-     "GUIDER_GS_MODE": "User"}
+    {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
+     "version": 0.1, "GUIDER_PO": "IFU", "wrap": "shortest",
+     "rotmode": "stationary", "GUIDER_GS_RA": "14 03 15",
+     "GUIDER_GS_DEC": "+54 20 43", "GUIDER_GS_MODE": "User"}
     ]
 
 science_templates = [
     {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
-     "version": "0.1", "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
-     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
+     "version": 0.1, "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
+     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0.0,
      "CFG_SLICER": ""},
 
     {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
-     "version": "0.1", "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
-     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0,
+     "version": 0.1, "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
+     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0.0,
      "CFG_SLICER": "", "SEQ_NDITHER": 0,
      "SEQ_DITARRAY": [[0, 0, "", ""], [0, 0, "", ""], [0, 0, "", ""]]},
 ]
 
 acquisition_templates = [
     {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
-     "version": "0.1", "GUIDER_PO": "IFU", "GUIDER_GS_RA": "14 03 15",
-     "GUIDER_GS_DEC": "+54 20 43", "GUIDER_GS_MODE": "User"}
+     "wrap": "shortest", "rotmode": "stationary",
+     "version": 0.1, "GUIDER_PO": "IFU", "GUIDER_GS_RA": "",
+     "GUIDER_GS_DEC": "", "GUIDER_GS_MODE": ""}
 ]
 
 
@@ -275,8 +277,10 @@ def generate_dec():
 
 
 def remove_none_values_in_dict(method):
-    '''None values in dict returned by method are removed
-    '''
+    """
+    None values in dict returned by method are removed
+    """
+
     @wraps(method)
     def remove_none(*args, **kw):
         result = method(*args, **kw)
@@ -286,6 +290,7 @@ def remove_none_values_in_dict(method):
             return result
     return remove_none
 
+
 def generate_semester(sem, nLen, maxLen=6):
     return {'_id': sem,
             'semester': sem,
@@ -293,15 +298,19 @@ def generate_semester(sem, nLen, maxLen=6):
             'comment': optionalRandComment()
            }
 
+
 def generate_semesters(nSem, nLen=5, maxLen=6):
     return [ generate_semester(sem, nLen, maxLen) for sem in semesters[0:nSem] ]
+
 
 def generate_mag(nLen=2):
     return {'band': spectral_types[random.randint(0, len(spectral_types)-1)],
             'mag': randFloat(nLen)}
 
+
 def generate_mags(maxMags=2):
     return [ generate_mag() for _ in range( random.randint( 1, maxMags ) ) ]
+
 
 @remove_none_values_in_dict
 def generate_observation(nLen, maxArr):
@@ -313,6 +322,7 @@ def generate_observation(nLen, maxArr):
         'comment': optionalRandComment()
     }
     return schema
+
 
 @remove_none_values_in_dict
 def generate_signature(maxArr):
@@ -326,6 +336,7 @@ def generate_signature(maxArr):
         'comment': optionalRandComment()
     }
     return schema
+
 
 @remove_none_values_in_dict
 def generate_program(container_list):
@@ -363,6 +374,7 @@ def generate_dither():
     }
     return schema
 
+
 def generate_kcwi_science():
     import copy
 
@@ -374,20 +386,6 @@ def generate_kcwi_science():
         filled_template['index'] = indx
         schema.append(filled_template)
 
-    # schema = {
-    #     "name": name,
-    #     "version": "0.1",
-    #     "det1_exptime": random.randint(0,3600),
-    #     "det1_nexp": random.randint(0,99),
-    #     "det2_exptime": random.randint(0,3600),
-    #     "det2_nexp": random.randint(0,99),
-    #     "cfg_cam_grating": random.choice([ "BL","BM","BH1","BH2", "RL","RM","RH1","RH2" ]),
-    #     "cfg_cam_cwave": random.randint(6500,10000),
-    #     "cfg_slicer": random.choice(["Small", "Medium", "Large"])
-    # }
-    # if 'dither' in name:
-    #     schema["seq_ditarray"] = generate_dither()
-    #     schema["seq_ndither"] = random.randint(0,99)
     return schema
 
 
@@ -395,16 +393,6 @@ def generate_kcwi_acquisiton(nLen, maxArr):
     acq = random.choice(filled_acq_templates)
     acq['index'] = 0
     return acq
-    # schema = {
-    #     "name": "KCWI_ifu_acq_direct",
-    #     "version": "0.1",
-    #     "script": "KCWI_ifu_acq_direct",
-    #     "guider_po": random.choice( ["REF","IFU"] ),
-    #     "guider_gs_ra": random.uniform(0, 24) % 1000,
-    #     "guider_gs_dec": random.uniform(-90, 90) % 1000,
-    #     "guider_gs_mode": random.choice(["Automatic", "Operator", "User"])
-    # }
-    # return schema
 
 
 def generate_science(inst='KCWI'):
@@ -452,7 +440,7 @@ def generate_target():
         'frame': randString(), 
         'ra_offset': randFloat(), 
         'dec_offset': randFloat(),
-        'pa': randInt(),
+        'pa': randFloat(),
         'pm_ra': randFloat(), 
         'pm_dec': randFloat(), 
         'epoch': randFloat(), 
@@ -465,11 +453,12 @@ def generate_target():
     }
     return schema
 
+
 @remove_none_values_in_dict
 def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     schema = {
         'signature': generate_signature(maxArr),
-        'version': "0.1",
+        'version': 0.1,
         'target': random.choice([None, generate_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
         'science': generate_science(inst),
@@ -481,6 +470,7 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     if _id:
         schema['_id'] = _id
     return schema
+
 
 def read_mode(config='config.live.yaml'):
     with open(config) as file:

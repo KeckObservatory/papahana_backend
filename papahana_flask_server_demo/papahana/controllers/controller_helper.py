@@ -3,7 +3,7 @@ import pymongo
 import bson
 import json
 import requests
-from flask import current_app
+from flask import current_app, abort
 from bson import json_util
 
 
@@ -47,14 +47,15 @@ def get_by_id(id, collect_name, cln_oid=True):
     try:
         id = get_object_id(id)
     except ValueError as msg:
-        raise ValueError(msg)
+        abort(404, f'Invalid observation block id. {msg}')
 
     query = {"_id": id}
     coll = config_collection(collect_name)
 
     results = list(coll.find(query))
     if not results:
-        return {}
+        abort(404, f'No Observation Block found.')
+
     if cln_oid:
         return json_with_objectid(results[0])
 

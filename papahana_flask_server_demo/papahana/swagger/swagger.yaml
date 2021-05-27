@@ -691,7 +691,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/ObservationBlock'
+                $ref: '#/components/schemas/Observation'
         required: true
       responses:
         "200":
@@ -713,7 +713,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ObservationBlock'
+              type: array
+              items:
+                $ref: '#/components/schemas/Observation'
         required: true
       responses:
         "200":
@@ -754,6 +756,14 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/template_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Observation'
+        required: true
       responses:
         "200":
           description: replaces the given Template within the OB with Template of id=templateId
@@ -796,7 +806,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObservationBlock'
+                $ref: '#/components/schemas/Observation'
         "400":
           description: Invalid status value
         "404":
@@ -821,11 +831,11 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-  /obsBlocks/template/duplicate:
+  /obsBlocks/template/duplicate/{template_id}:
     post:
       tags:
         - Observation Block
-      description: Generate a new copy of the template
+      description: Generate a new copy of the template and add it to the list of templates in the OB.
       operationId: ob_template_duplicate
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -836,7 +846,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObservationBlock'
+                $ref: '#/components/schemas/Observation'
         "400":
           description: Invalid status value
         "404":
@@ -898,13 +908,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/sidereal'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type:
-                string
-        required: true
       responses:
         "200":
           description: On success retrieves a list of existing time constraint(s) of an OB.
@@ -929,6 +932,13 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/sidereal'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type:
+                string
+        required: true
       responses:
         "200":
           description: On success updates an existing time constraint(s) of an OB.
