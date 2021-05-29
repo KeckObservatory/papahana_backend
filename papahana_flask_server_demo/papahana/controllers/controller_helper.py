@@ -87,10 +87,11 @@ def insert_into_collection(doc, collect_name):
             A boolean acknowledged as true if the operation ran with
                 write concern or false if write concern was disabled.
             A field insertedId with the _id value of the inserted document.
-
     """
     coll = config_collection(collect_name)
 
+    if "_id" in doc:
+        del doc["_id"]
     try:
         result = coll.insert_one(doc)
     except Exception as err:

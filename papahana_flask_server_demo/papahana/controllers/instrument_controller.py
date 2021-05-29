@@ -19,7 +19,7 @@ def instrument_packages(instrument):  # noqa: E501
 
 def instrument_packages_ip_signature(instrument, ip_version):  # noqa: E501
     """
-    List all template signatures that can be attached to OBs using this instrument package # noqa: E501
+    List all template signatures that can be attached to OBs using this instrument package
 
     :param instrument: instrument used to make observation
     :type instrument: str
@@ -31,7 +31,7 @@ def instrument_packages_ip_signature(instrument, ip_version):  # noqa: E501
     return 'do some magic!'
 
 
-def instrument_packages_ip_template(instrument, ip_version, template_name):  # noqa: E501
+def instrument_packages_ip_template(instrument, ip_version, template_name):
     """
     Retrieves the specified instrument package template signature # noqa: E501
 

@@ -637,8 +637,6 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     delete:
@@ -671,7 +669,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObservationBlock'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
         "400":
           description: Invalid status value
         "404":
@@ -741,7 +741,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObservationBlock'
+                $ref: '#/components/schemas/Observation'
         "400":
           description: Invalid status value
         "404":
@@ -760,9 +760,7 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Observation'
+              $ref: '#/components/schemas/Observation'
         required: true
       responses:
         "200":
@@ -1145,7 +1143,6 @@ components:
         signature:
           $ref: '#/components/schemas/Signature'
         target:
-          type: array
           items:
             $ref: '#/components/schemas/Target'
         acquisition:
@@ -1198,20 +1195,12 @@ components:
             type: string
     Acquisition:
       required:
-      - acquisition
-      - acquisition_method
-      - ao_modes
-      - associations
-      - guider_selection
-      - instrumental_setup
-      - offset_stars
-      - position_angles
-      - slitmasks
+      - instrument
       type: object
       properties:
         acquisition:
           type: string
-        instrumental_setup:
+        instrument:
           type: string
         acquisition_method:
           type: string
@@ -1259,29 +1248,20 @@ components:
         instrumental_setup: instrumental_setup
     Observation:
       required:
-      - associations
-      - exposure_sequences
       - instrument
+      - index
       type: object
       properties:
         instrument:
           type: string
-        exposure_sequences:
-          type: array
-          items:
-            type: string
-        associations:
-          type: array
-          items:
-            type: string
+        index:
+          type: integer
+        name:
+          type: string
       example:
-        associations:
-        - associations
-        - associations
-        exposure_sequences:
-        - exposure_sequences
-        - exposure_sequences
-        instrument: instrument
+        instrument: "KCWI"
+        name: "KCWI_ifu_sci_stare"
+        index: 1
     Target:
       required:
       - ddec
@@ -1448,6 +1428,15 @@ components:
         default: ""
       required: false
       example: 2021A_U456
+    template_type:
+      in: query
+      name: template_type
+      description: A string to indicate template,  <acq, sci, eng, cal>
+      required: true
+      explode: true
+      schema:
+        type: string
+      example: sci
     instrument:
       name: instrument
       in: path

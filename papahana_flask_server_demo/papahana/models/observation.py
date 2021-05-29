@@ -14,30 +14,30 @@ class Observation(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, instrument: str=None, exposure_sequences: List[str]=None, associations: List[str]=None):  # noqa: E501
+    def __init__(self, instrument: str=None, index: int=None, name: str=None):  # noqa: E501
         """Observation - a model defined in Swagger
 
         :param instrument: The instrument of this Observation.  # noqa: E501
         :type instrument: str
-        :param exposure_sequences: The exposure_sequences of this Observation.  # noqa: E501
-        :type exposure_sequences: List[str]
-        :param associations: The associations of this Observation.  # noqa: E501
-        :type associations: List[str]
+        :param index: The index of this Observation.  # noqa: E501
+        :type index: int
+        :param name: The name of this Observation.  # noqa: E501
+        :type name: str
         """
         self.swagger_types = {
             'instrument': str,
-            'exposure_sequences': List[str],
-            'associations': List[str]
+            'index': int,
+            'name': str
         }
 
         self.attribute_map = {
             'instrument': 'instrument',
-            'exposure_sequences': 'exposure_sequences',
-            'associations': 'associations'
+            'index': 'index',
+            'name': 'name'
         }
         self._instrument = instrument
-        self._exposure_sequences = exposure_sequences
-        self._associations = associations
+        self._index = index
+        self._name = name
 
     @classmethod
     def from_dict(cls, dikt) -> 'Observation':
@@ -74,47 +74,45 @@ class Observation(Model):
         self._instrument = instrument
 
     @property
-    def exposure_sequences(self) -> List[str]:
-        """Gets the exposure_sequences of this Observation.
+    def index(self) -> int:
+        """Gets the index of this Observation.
 
 
-        :return: The exposure_sequences of this Observation.
-        :rtype: List[str]
+        :return: The index of this Observation.
+        :rtype: int
         """
-        return self._exposure_sequences
+        return self._index
 
-    @exposure_sequences.setter
-    def exposure_sequences(self, exposure_sequences: List[str]):
-        """Sets the exposure_sequences of this Observation.
+    @index.setter
+    def index(self, index: int):
+        """Sets the index of this Observation.
 
 
-        :param exposure_sequences: The exposure_sequences of this Observation.
-        :type exposure_sequences: List[str]
+        :param index: The index of this Observation.
+        :type index: int
         """
-        if exposure_sequences is None:
-            raise ValueError("Invalid value for `exposure_sequences`, must not be `None`")  # noqa: E501
+        if index is None:
+            raise ValueError("Invalid value for `index`, must not be `None`")  # noqa: E501
 
-        self._exposure_sequences = exposure_sequences
+        self._index = index
 
     @property
-    def associations(self) -> List[str]:
-        """Gets the associations of this Observation.
+    def name(self) -> str:
+        """Gets the name of this Observation.
 
 
-        :return: The associations of this Observation.
-        :rtype: List[str]
+        :return: The name of this Observation.
+        :rtype: str
         """
-        return self._associations
+        return self._name
 
-    @associations.setter
-    def associations(self, associations: List[str]):
-        """Sets the associations of this Observation.
+    @name.setter
+    def name(self, name: str):
+        """Sets the name of this Observation.
 
 
-        :param associations: The associations of this Observation.
-        :type associations: List[str]
+        :param name: The name of this Observation.
+        :type name: str
         """
-        if associations is None:
-            raise ValueError("Invalid value for `associations`, must not be `None`")  # noqa: E501
 
-        self._associations = associations
+        self._name = name

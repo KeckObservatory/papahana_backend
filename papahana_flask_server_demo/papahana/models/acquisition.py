@@ -14,13 +14,13 @@ class Acquisition(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, acquisition: str=None, instrumental_setup: str=None, acquisition_method: str=None, guider_selection: str=None, ao_modes: List[str]=None, associations: List[str]=None, offset_stars: List[str]=None, slitmasks: List[str]=None, position_angles: List[str]=None):  # noqa: E501
+    def __init__(self, acquisition: str=None, instrument: str=None, acquisition_method: str=None, guider_selection: str=None, ao_modes: List[str]=None, associations: List[str]=None, offset_stars: List[str]=None, slitmasks: List[str]=None, position_angles: List[str]=None):  # noqa: E501
         """Acquisition - a model defined in Swagger
 
         :param acquisition: The acquisition of this Acquisition.  # noqa: E501
         :type acquisition: str
-        :param instrumental_setup: The instrumental_setup of this Acquisition.  # noqa: E501
-        :type instrumental_setup: str
+        :param instrument: The instrument of this Acquisition.  # noqa: E501
+        :type instrument: str
         :param acquisition_method: The acquisition_method of this Acquisition.  # noqa: E501
         :type acquisition_method: str
         :param guider_selection: The guider_selection of this Acquisition.  # noqa: E501
@@ -38,7 +38,7 @@ class Acquisition(Model):
         """
         self.swagger_types = {
             'acquisition': str,
-            'instrumental_setup': str,
+            'instrument': str,
             'acquisition_method': str,
             'guider_selection': str,
             'ao_modes': List[str],
@@ -50,7 +50,7 @@ class Acquisition(Model):
 
         self.attribute_map = {
             'acquisition': 'acquisition',
-            'instrumental_setup': 'instrumental_setup',
+            'instrument': 'instrument',
             'acquisition_method': 'acquisition_method',
             'guider_selection': 'guider_selection',
             'ao_modes': 'ao_modes',
@@ -60,7 +60,7 @@ class Acquisition(Model):
             'position_angles': 'position_angles'
         }
         self._acquisition = acquisition
-        self._instrumental_setup = instrumental_setup
+        self._instrument = instrument
         self._acquisition_method = acquisition_method
         self._guider_selection = guider_selection
         self._ao_modes = ao_modes
@@ -98,33 +98,31 @@ class Acquisition(Model):
         :param acquisition: The acquisition of this Acquisition.
         :type acquisition: str
         """
-        if acquisition is None:
-            raise ValueError("Invalid value for `acquisition`, must not be `None`")  # noqa: E501
 
         self._acquisition = acquisition
 
     @property
-    def instrumental_setup(self) -> str:
-        """Gets the instrumental_setup of this Acquisition.
+    def instrument(self) -> str:
+        """Gets the instrument of this Acquisition.
 
 
-        :return: The instrumental_setup of this Acquisition.
+        :return: The instrument of this Acquisition.
         :rtype: str
         """
-        return self._instrumental_setup
+        return self._instrument
 
-    @instrumental_setup.setter
-    def instrumental_setup(self, instrumental_setup: str):
-        """Sets the instrumental_setup of this Acquisition.
+    @instrument.setter
+    def instrument(self, instrument: str):
+        """Sets the instrument of this Acquisition.
 
 
-        :param instrumental_setup: The instrumental_setup of this Acquisition.
-        :type instrumental_setup: str
+        :param instrument: The instrument of this Acquisition.
+        :type instrument: str
         """
-        if instrumental_setup is None:
-            raise ValueError("Invalid value for `instrumental_setup`, must not be `None`")  # noqa: E501
+        if instrument is None:
+            raise ValueError("Invalid value for `instrument`, must not be `None`")  # noqa: E501
 
-        self._instrumental_setup = instrumental_setup
+        self._instrument = instrument
 
     @property
     def acquisition_method(self) -> str:
@@ -144,8 +142,6 @@ class Acquisition(Model):
         :param acquisition_method: The acquisition_method of this Acquisition.
         :type acquisition_method: str
         """
-        if acquisition_method is None:
-            raise ValueError("Invalid value for `acquisition_method`, must not be `None`")  # noqa: E501
 
         self._acquisition_method = acquisition_method
 
@@ -167,8 +163,6 @@ class Acquisition(Model):
         :param guider_selection: The guider_selection of this Acquisition.
         :type guider_selection: str
         """
-        if guider_selection is None:
-            raise ValueError("Invalid value for `guider_selection`, must not be `None`")  # noqa: E501
 
         self._guider_selection = guider_selection
 
@@ -190,8 +184,6 @@ class Acquisition(Model):
         :param ao_modes: The ao_modes of this Acquisition.
         :type ao_modes: List[str]
         """
-        if ao_modes is None:
-            raise ValueError("Invalid value for `ao_modes`, must not be `None`")  # noqa: E501
 
         self._ao_modes = ao_modes
 
@@ -213,8 +205,6 @@ class Acquisition(Model):
         :param associations: The associations of this Acquisition.
         :type associations: List[str]
         """
-        if associations is None:
-            raise ValueError("Invalid value for `associations`, must not be `None`")  # noqa: E501
 
         self._associations = associations
 
@@ -236,8 +226,6 @@ class Acquisition(Model):
         :param offset_stars: The offset_stars of this Acquisition.
         :type offset_stars: List[str]
         """
-        if offset_stars is None:
-            raise ValueError("Invalid value for `offset_stars`, must not be `None`")  # noqa: E501
 
         self._offset_stars = offset_stars
 
@@ -259,8 +247,6 @@ class Acquisition(Model):
         :param slitmasks: The slitmasks of this Acquisition.
         :type slitmasks: List[str]
         """
-        if slitmasks is None:
-            raise ValueError("Invalid value for `slitmasks`, must not be `None`")  # noqa: E501
 
         self._slitmasks = slitmasks
 
@@ -282,7 +268,5 @@ class Acquisition(Model):
         :param position_angles: The position_angles of this Acquisition.
         :type position_angles: List[str]
         """
-        if position_angles is None:
-            raise ValueError("Invalid value for `position_angles`, must not be `None`")  # noqa: E501
 
         self._position_angles = position_angles
