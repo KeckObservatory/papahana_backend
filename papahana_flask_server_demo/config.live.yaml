@@ -6,6 +6,7 @@ local:
   obCollect: ob_blocks
   containerCollect: containers
   templateCollect: templates
+  instCollect: instrument_packages
   port: 27017
   ip: 10.96.0.228
 demo:
@@ -13,6 +14,7 @@ demo:
   obCollect: ob_blocks
   containerCollect: containers
   templateCollect: templates
+  instCollect: instrument_packages
   ip: 127.0.0.1
   port: 27017
 dev:
@@ -20,6 +22,7 @@ dev:
   obCollect: ob_blocks
   containerCollect: containers
   templateCollect: templates
+  instCollect: instrument_packages
   port: 27017
   ip: 10.96.0.228
 

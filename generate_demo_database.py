@@ -16,7 +16,6 @@ from getpass import getpass
 seed = 1984739
 random.seed(seed)
 import datetime
-# import generate_db_data.py as data
 from papahana_flask_server_demo.config import config_collection
 
 INST_MAPPING = { 
@@ -242,6 +241,73 @@ def generate_container(_id=None):
         "name": randContainerName(),
         "observation_blocks": list(ob_set),
         "comment": randComment()
+    }
+
+    return schema
+
+
+def generate_inst_package():
+
+    schema = {
+        "instrument": "KCWI",
+        "version": 0.1,
+        "modes": ["ifu", "img"],
+        "cameras": [
+            {
+                "name": "BLUE",
+                "type": "spectrograph",
+                "detector": "4kx4k EE2V",
+                "identifier": "CAM1"
+            },
+            {
+                "name": "RED",
+                "type": "spectrograph",
+                "detector": "None",
+                "identifier": "CAM2"
+            }],
+        "templates": {
+            "acquisition": [
+                {"name": "KCWI_ifu_acq_direct",
+                 "version": "0.1"},
+                {"name": "KCWI_ifu_acq_offsetStar",
+                 "version": 0.1}],
+            "science": [
+                {"name": "KCWI_ifu_sci_stare",
+                 "version": "0.1"},
+                {"name": "KCWI_ifu_sci_dither",
+                 "version": 0.1}]
+        },
+        "configuration_parameters": [
+            {"parameter": "CFG.CAM1.GRATING",
+             "ui_string": "Blue Grating",
+             "values": ["BL","BM","BH1","BH2"],
+             "range": None,
+             "type": "dropdown",
+             "required": True},
+            {"parameter": "CFG.CAM1.CWAVE",
+             "ui_string": "Blue Central Wavelength",
+             "values": None,
+             "range": [3500,6500],
+             "type": "continuum",
+             "required": True},
+            {"parameter": "CFG.CAM2.GRATING",
+             "ui_string": "Red Grating",
+             "values": ["RL","RM","RH1","RH2"],
+             "range": None,
+             "type": "dropdown",
+             "required": False},
+            {"parameter": "CFG.CAM2.CWAVE",
+             "ui_string": "Red Central Wavelength",
+             "values": None,
+             "range": [6500,10000],
+             "type": "continuum",
+             "required": False},
+            {"parameter": "CFG.SLICER",
+             "ui_string": "Image Slicer",
+             "values": ["Small", "Medium", "Large"],
+             "range": None,
+             "type": "dropdown",
+             "required": True}]
     }
 
     return schema
@@ -539,3 +605,10 @@ if __name__=='__main__':
 
     for template in acquisition_templates:
         result = coll.insert_one(template)
+
+    colName = 'instrument_packages'
+    coll = config_collection('instCollect', mode=mode, conf=config)
+    coll.drop()
+    print("...generating instrument package")
+    ip = generate_inst_package()
+    result = coll.insert_one(ip)
