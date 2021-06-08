@@ -5,51 +5,56 @@ from papahana_flask_server_demo.config import config_collection
 
 kcwi_acq_direct_template_properties = {
         "guider_po": {
-        "title": "Pointing origin",
-        "enum": ["REF","IFU"],
-        "type": "string"
+            "title": "Pointing origin",
+            "enum": ["REF", "IFU"],
+            "type": "string"
         },
         "guider_gs_ra": {
-        "title": "Guide Star Right Ascention",
-	"minimum": 0,
-	"maximum": 24,
-        "type": "number",
-	},
+            "title": "Guide Star Right Ascention",
+            "minimum": 0,
+            "maximum": 24,
+            "type": "number",
+        },
         "guider_gs_dec": {
-        "title": "Guide Star Declination",
-	"minimum": -90,
-	"maximum": 90,
-        "type": "number",
+            "title": "Guide Star Declination",
+            "minimum": -90,
+            "maximum": 90,
+            "type": "number",
         },
         "guider_gs_mode": {
-        "title": "Guide Star Selection Mode",
-        "enum": ["Automatic", "Operator", "User"],
-        "type": "string",
+            "title": "Guide Star Selection Mode",
+            "enum": ["Automatic", "Operator", "User"],
+            "type": "string",
         }
 }  
 
 kcwi_acq_direct_template_schema = {
-        "title": 'direct acquisition template',
-        "type": 'object',
-	"required": ["guider_po", "guider_gs_mode"],
-        "properties": kcwi_acq_direct_template_properties 
+    "title": 'direct acquisition template',
+    "type": 'object',
+    "required": ["guider_po", "guider_gs_mode"],
+    "properties": kcwi_acq_direct_template_properties
 }
 
 dither_schema = {
     "type": "object",
-    "required": ["min", "max", "letter"],
+    "required": ["min", "max", "position", "guided"],
     "properties": {
       "min": {
-      "type": "number",
-      "title": "minimum",
+          "type": "number",
+          "title": "minimum",
       },
       "max": {
-      "type": "number",
-      "title": "maximum",
+          "type": "number",
+          "title": "maximum",
       },
-      "letter": {
-      "type": "string",
-      "title": "letter",
+      "position": {
+          "type": "string",
+          "enum": ["T", "S", "O"],
+          "title": "telescope position",
+      },
+      "guided": {
+          "type": "bool",
+          "title": "guided",
       }
     }
 }
