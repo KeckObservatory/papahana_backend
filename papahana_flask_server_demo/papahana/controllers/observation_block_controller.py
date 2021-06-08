@@ -61,7 +61,7 @@ def ob_put(body, ob_id):
 
 def ob_delete(ob_id):
     """
-    Removes the observation block # noqa: E501
+    Removes the observation block
 
     curl -v -H "Content-Type: application/json" -X DELETE "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
 
@@ -128,25 +128,19 @@ def ob_execution_time(ob_id):  # noqa: E501
 
     :rtype: float
     """
-    ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
+    fields = {"science.properties": 1, "_id": 0}
+    ob_science = utils.get_fields_by_query(utils.query_by_id(ob_id),
+                                           fields, 'obCollect')
 
-    if "science" not in ob:
+    if not ob_science:
         return 0
 
-    exp1 = 0
-    exp2 = 0
-    sci_blk = ob['science']
+    total_tm = 0
+    sci_blks = ob_science[0]['science']
+    for block in sci_blks:
+        total_tm += utils.calc_exec_time(block)
 
-    if sci_blk.keys() >= {"det1_exptime", "det1_nexp"}:
-        if sci_blk['det1_exptime'] and sci_blk['det1_nexp']:
-            exp1 = sci_blk['det1_exptime'] * sci_blk['det1_nexp']
-
-    if sci_blk.keys() >= {"det1_exptime", "det2_exptime",
-                          "det1_nexp", "det2_nexp"}:
-        if sci_blk['det2_exptime'] and sci_blk['det2_nexp']:
-            exp2 = sci_blk['det2_exptime'] * sci_blk['det2_nexp']
-
-    return max(exp1, exp2)
+    return total_tm
 
 
 def ob_export(ob_id):
@@ -163,7 +157,7 @@ def ob_export(ob_id):
     return utils.get_by_id(ob_id, 'obCollect')
 
 
-def ob_template_filled(ob_id):  # noqa: E501
+def ob_template_filled(ob_id):
     """
     Verify that the required parameters have been filled in.
 
@@ -172,10 +166,44 @@ def ob_template_filled(ob_id):  # noqa: E501
 
     :rtype: bool
     """
-    return 'do some magic!'
+    fields = {"schema": 1, "_id": 0}
+    templates = ob_template_get(ob_id)
+    for filled in templates:
+        if filled.keys() < {"name", "version", "properties"}:
+            return False
+
+        query = {"name": filled["name"], "version": filled["version"]}
+        schema = utils.get_fields_by_query(query, fields, 'templateCollect')
+        if not schema:
+            return False
+
+        required = schema[0]['schema']['required']
+        properties = schema[0]['schema']['properties']
+
+        return check_required(required, properties, filled)
 
 
-def ob_template_get(ob_id):  # noqa: E501
+def check_required(required, properties, filled):
+
+    for key in required:
+        if ('properties' not in filled or key not in filled['properties'] or
+                not filled['properties'][key]):
+            return False
+        key_props = properties[key]
+        key_type = key_props['type']
+        if key_type is 'number' or key_type is 'integer':
+            if (filled[key] > key_props['maximum'] or
+                    filled[key] < key_props['minimum']):
+                return False
+        elif key_type is 'array':
+            req = key_props['items']['required']
+            props = key_props['items']['properties']
+            for key2 in req:
+                # TODO figure out the array ....
+                continue
+
+
+def ob_template_get(ob_id):
     """
     Retrieves the list of templates associated with the OB
 
@@ -239,7 +267,7 @@ def ob_template_id_delete(ob_id, template_id):
 
 def ob_template_id_file_get(ob_id, template_id, file_parameter):
     """
-    Retrieves the specified template within the OB # noqa: E501
+    Retrieves the specified template within the OB
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -257,9 +285,8 @@ def ob_template_id_file_get(ob_id, template_id, file_parameter):
 
 
 def ob_template_id_file_put(ob_id, template_id, file_parameter):
-    """ob_template_id_file_put
-
-    Updates the specified template within the OB # noqa: E501
+    """
+    Updates the specified template within the OB
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -370,42 +397,63 @@ def ob_template_id_put(body, ob_id, template_id):
                      'obCollect')
 
 
-#TODO this is assuming the science templates since it is of type List/Array
-def ob_template_post(body, ob_id):  # noqa: E501
+def ob_template_post(body, ob_id, template_type):  # noqa: E501
     """
     Creates the list of templates associated with the OB
 
-    curl -v -H "Content-Type: application/json" -X POST -d '[ { "name" : "KCWI_ifu_sci_stare", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 1200, "DET1_NEXP" : 2, "DET2_EXPTIME" : 1200, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "index" : 1 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 2 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 3 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 4 } ]' "http://vm-webtools.keck:50001/v0/obsBlocks/template?ob_id=60af17f31b0b74a975b1c7f0"
+    curl -v -H "Content-Type: application/json" -X POST -d '[ { "name" : "KCWI_ifu_sci_stare", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 1200, "DET1_NEXP" : 2, "DET2_EXPTIME" : 1200, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "index" : 1 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 2 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 3 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 4 } ]' "http://vm-webtools.keck:50001/v0/obsBlocks/template?ob_id=60bab915ddb1146b87136414&template_type=sci"
 
     :param body:
-    :type body: list | bytes
+    :type body: list or dict
     :param ob_id: observation block id
     :type ob_id: str
+    :param template_type: A string to indicate template, (acq, sci, eng, cal)
+    :type template_type: str
 
     :rtype: None
     """
     if connexion.request.is_json:
         body = json.loads(json.dumps(connexion.request.get_json()))
 
-    utils.update_doc(utils.query_by_id(ob_id), {"science": body}, 'obCollect')
+    if type(body) is not list:
+        body = [body]
+
+    full_type = {'sci': 'science', 'acq': 'acquisition', 'eng': 'engineering',
+                 'cal': 'calibration'}
+
+    new_vals = {full_type[template_type]: body}
+
+    utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
-#TODO What is the difference with the above?  Adds to the list?
-def ob_template_put(body, ob_id):  # noqa: E501
+def ob_template_put(body, ob_id, template_type):
     """
-    Updates the list of templates associated with the OB # noqa: E501
+    Updates the list of templates associated with the OB
+
+    curl -v -H "Content-Type: application/json" -X PUT -d '[ { "name" : "KCWI_ifu_sci_stare", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 1200, "DET1_NEXP" : 2, "DET2_EXPTIME" : 1200, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "index" : 1 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 2 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 3 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 4 } ]' "http://vm-webtools.keck:50001/v0/obsBlocks/template?ob_id=60bab915ddb1146b87136414&template_type=sci"
 
     :param body:
-    :type body: list | bytes
+    :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
+    :param template_type: A string to indicate template, (acq, sci, eng, cal)
+    :type template_type: str
 
     :rtype: None
     """
     if connexion.request.is_json:
         body = json.loads(json.dumps(connexion.request.get_json()))
 
-    return 'do some magic!'
+    full_type = {'sci': 'science', 'acq': 'acquisition', 'eng': 'engineering',
+                 'cal': 'calibration'}
+
+    if type(body) is list:
+        for val in body:
+            new_vals = {full_type[template_type]: val}
+            utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
+    else:
+        new_vals = {full_type[template_type]: body}
+        utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
 def ob_template_supplement(ob_id):
@@ -434,9 +482,9 @@ def ob_time_constraint_get(ob_id, sidereal):
     return 'do some magic!'
 
 
-def ob_time_constraint_put(body, ob_id, sidereal):  # noqa: E501
+def ob_time_constraint_put(body, ob_id, sidereal):
     """
-    Updates the time constraints (from, to). # noqa: E501
+    Updates the time constraints (from, to).
 
     :param body:
     :type body: dict | bytes
@@ -448,11 +496,11 @@ def ob_time_constraint_put(body, ob_id, sidereal):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        body = str.from_dict(connexion.request.get_json())  # noqa: E501
+        body = str.from_dict(connexion.request.get_json())
     return 'do some magic!'
 
 
-def ob_upgrade(ob_id):  # noqa: E501
+def ob_upgrade(ob_id):
     """ob_upgrade
 
     When an instrument package changes, attempts to port an existing OB

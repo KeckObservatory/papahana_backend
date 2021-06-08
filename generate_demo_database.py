@@ -97,12 +97,19 @@ comments = [
 wrap_str = ['north', 'south']
 
 status = [
-    "undefined", 
-    "completed", 
-    "broken",
-    "invalid",
-    "progressing",
-    "inqueue",
+    "Started",
+    "Executed",
+    "Completed",
+    "Failed",
+    "Terminated",
+    "Stopped",
+]
+
+timeConstraint = [
+    [None, None], ['2021-01-01 08:00:00', '2021-01-01 10:00:00'],
+    ['2021-02-02 09:00:00', '2021-02-03 18:00:00'],
+    ['2021-05-01 08:00:00', '2021-06-01 10:00:00'],
+    ['2021-06-01 08:00:00', '2021-06-07 10:00:00']
 ]
 
 spectral_types = ['V', 'R', 'I', 'J', 'H', 'K']
@@ -140,26 +147,48 @@ sem_ids = [
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
 filled_sci_templates = [
-        {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
-         "version": 0.1, "DET1_EXPTIME": 1200, "DET1_NEXP": 2,
-         "DET2_EXPTIME": 1200, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
-         "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium"},
-
-        {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
-         "version": 0.1, "DET1_EXPTIME": 60, "DET1_NEXP": 2,
-         "DET2_EXPTIME": 60, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
-         "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium", "SEQ_NDITHER": 3,
-         "SEQ_DITARRAY": [[0,0,"T","Guided"], [5,5,"T","Guided"],
-                          [-10,-10, "T", "Guided"]]}
-    ]
+    {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
+     "version": 0.1, "properties": {"det1_exptime": 60, "det1_nexp": 4,
+                                    "det2_exptime": 50, "det2_nexp": 5}
+    },
+    {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci", "version": 0.1,
+     "properties":
+         {"det1_exptime": 40, "det1_nexp":  4, "det2_exptime": 20,
+          "det2_nexp" : 6, "seq_ndither" : 4, "seq_ditarray" : [
+             [0,0,"T","Guided"], [5,5,"T","Guided"], [-10,-10, "T", "Guided"]]}
+     }
+]
 
 filled_acq_templates = [
     {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
-     "version": 0.1, "GUIDER_PO": "IFU", "wrap": "shortest",
-     "rotmode": "stationary", "GUIDER_GS_RA": "14 03 15",
-     "GUIDER_GS_DEC": "+54 20 43", "GUIDER_GS_MODE": "User"}
-    ]
+     "wrap": "shortest", "rotmode": "stationary", "version": 0.1,
+     "properties":
+         {"guider_po": "REF", "guider_gs_ra": '12:00:59',
+          "guider_gs_dec": '20:12:13.9', "guider_gs_mode": "Automatic"}
+     }
+]
 
+# filled_sci_templates = [
+#         {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
+#          "version": 0.1, "DET1_EXPTIME": 1200, "DET1_NEXP": 2,
+#          "DET2_EXPTIME": 1200, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
+#          "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium"},
+#
+#         {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
+#          "version": 0.1, "DET1_EXPTIME": 60, "DET1_NEXP": 2,
+#          "DET2_EXPTIME": 60, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
+#          "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium", "SEQ_NDITHER": 3,
+#          "SEQ_DITARRAY": [[0,0,"T","Guided"], [5,5,"T","Guided"],
+#                           [-10,-10, "T", "Guided"]]}
+#     ]
+
+# filled_acq_templates = [
+#     {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
+#      "version": 0.1, "GUIDER_PO": "IFU", "wrap": "shortest",
+#      "rotmode": "stationary", "GUIDER_GS_RA": "14 03 15",
+#      "GUIDER_GS_DEC": "+54 20 43", "GUIDER_GS_MODE": "User"}
+#     ]
+#
 science_templates = [
     {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
      "version": 0.1, "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
@@ -229,7 +258,11 @@ def randStatus():
     return schema
 
 
-def generate_container(_id=None):
+def randTimeConstraint():
+    return random.choice(timeConstraint)
+
+
+def generate_container(ob_blocks):
     ob_set = set()
     n_ob = random.randint(0, 9)
     for indx in range(0, n_ob):
@@ -531,6 +564,7 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         'associations': randArrStr(nLen, maxArr),
         'priority': randFloat(100),
         'status': randStatus(),
+        'time_constraints': randTimeConstraint(),
         'comment': optionalRandComment()
     }
     if _id:
@@ -594,17 +628,17 @@ if __name__=='__main__':
 
         container_list.append(str(result.inserted_id))
 
-    # create Template collection
-    collName = 'templates'
-    remote = True # run on remote server (n)
-    coll = config_collection('templateCollect', mode=mode, conf=config)
-    coll.drop()
-    print("...generating templates")
-    for template in science_templates:
-        result = coll.insert_one(template)
-
-    for template in acquisition_templates:
-        result = coll.insert_one(template)
+    # # create Template collection
+    # collName = 'templates'
+    # remote = True # run on remote server (n)
+    # coll = config_collection('templateCollect', mode=mode, conf=config)
+    # coll.drop()
+    # print("...generating templates")
+    # for template in science_templates:
+    #     result = coll.insert_one(template)
+    #
+    # for template in acquisition_templates:
+    #     result = coll.insert_one(template)
 
     colName = 'instrument_packages'
     coll = config_collection('instCollect', mode=mode, conf=config)

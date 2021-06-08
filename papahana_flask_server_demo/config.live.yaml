@@ -3,7 +3,7 @@ mode:
 
 local:
   dbName: papahana 
-  obCollect: ob_blocks
+  obCollect: observation_blocks
   containerCollect: containers
   templateCollect: templates
   instCollect: instrument_packages
@@ -11,7 +11,7 @@ local:
   ip: 10.96.0.228
 demo:
   dbName: papahana 
-  obCollect: ob_blocks
+  obCollect: observation_blocks
   containerCollect: containers
   templateCollect: templates
   instCollect: instrument_packages
@@ -19,7 +19,7 @@ demo:
   port: 27017
 dev:
   dbName: papahana
-  obCollect: ob_blocks
+  obCollect: observation_blocks
   containerCollect: containers
   templateCollect: templates
   instCollect: instrument_packages

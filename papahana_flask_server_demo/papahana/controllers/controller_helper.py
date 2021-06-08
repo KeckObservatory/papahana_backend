@@ -20,6 +20,7 @@ def list_with_objectid(results):
 
     return results
 
+
 def json_with_objectid(result):
     """
     work with the ObjectID to make it json serializable.  Also unnest the
@@ -150,7 +151,6 @@ def replace_doc(id, doc, collect_name):
         return err
 
     coll = config_collection(collect_name)
-    
 
     try:
         result = coll.replace_one({'_id': id}, doc)
@@ -176,6 +176,24 @@ def update_doc(query, new_vals, collect_name):
         del new_vals['_id']
 
     coll.update_one(query, {"$set": new_vals})
+
+
+def update_add_doc(query, new_vals, collect_name):
+    """
+    Update a database collection document.
+
+    :param query: the query used to find the document
+    :type query: dict
+    :param new_vals: the key/val pair of new values to update.
+    :type new_vals: dict
+    :param collect_name: the database collection to update.
+    :type collect_name: str
+    """
+    coll = config_collection(collect_name)
+    if '_id' in new_vals.keys():
+        del new_vals['_id']
+
+    coll.update_one(query, {"$push": new_vals})
 
 
 def delete_from_collection(query, collect_name):
@@ -232,6 +250,26 @@ def clean_objectid(results):
         cln_results.append(result)
 
     return cln_results
+
+
+# Observation Block specific
+def calc_exec_time(block):
+    if "properties" not in block:
+        return 0
+
+    exp1 = 0
+    exp2 = 0
+    sci_blk = block["properties"]
+    if sci_blk.keys() >= {"det1_exptime", "det1_nexp"}:
+        if sci_blk['det1_exptime'] and sci_blk['det1_nexp']:
+            exp1 = sci_blk['det1_exptime'] * sci_blk['det1_nexp']
+
+    if sci_blk.keys() >= {"det1_exptime", "det2_exptime",
+                          "det1_nexp", "det2_nexp"}:
+        if sci_blk['det2_exptime'] and sci_blk['det2_nexp']:
+            exp2 = sci_blk['det2_exptime'] * sci_blk['det2_nexp']
+
+    return max(exp1, exp2)
 
 
 # Container specific helpers

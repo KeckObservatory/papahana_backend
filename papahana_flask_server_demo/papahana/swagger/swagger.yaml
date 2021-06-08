@@ -685,13 +685,16 @@ paths:
       operationId: ob_template_post
       parameters:
         - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_type'
       requestBody:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Observation'
+                oneOf:
+                  - $ref: '#/components/schemas/Observation'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Observation'
         required: true
       responses:
         "200":
@@ -709,13 +712,16 @@ paths:
       operationId: ob_template_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_type'
       requestBody:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Observation'
+                oneOf:
+                  - $ref: '#/components/schemas/Observation'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Observation'
         required: true
       responses:
         "200":
@@ -1304,13 +1310,13 @@ components:
           type: number
         magnitude:
           $ref: '#/components/schemas/Magnitude'
-        wrap?:
+        wrap:
           type: string
         dra:
           type: number
         ddec:
           type: number
-        comment?:
+        comment:
           type: string
         template:
           type: boolean
@@ -1324,8 +1330,8 @@ components:
         ra_offset: 6.027456183070403
         dra: 9.301444243932576
         obstime: 7.061401241503109
-        wrap?: wrap?
-        comment?: comment?
+        wrap: wrap
+        comment: comment
         name: name
         magnitude:
           template: true
@@ -1366,7 +1372,7 @@ components:
       explode: true
       schema:
         type: integer
-      example: 609b10d6fd85ea78eb0ddddb
+      example: 2009
     ob_id:
       name: ob_id
       in: query
@@ -1431,7 +1437,7 @@ components:
     template_type:
       in: query
       name: template_type
-      description: A string to indicate template,  <acq, sci, eng, cal>
+      description: A string to indicate template,  (acq, sci, eng, cal)
       required: true
       explode: true
       schema:
@@ -1456,6 +1462,15 @@ components:
         - OSIRIS
         - NIRES
         - NIRC2
+        - kcwi
+        - deimos
+        - esi
+        - hires
+        - lris
+        - mosfire
+        - osiris
+        - nires
+        - nirc2
         - DE
         - DF
         - EI
@@ -1472,7 +1487,7 @@ components:
         - NS
         - N2
         - NC
-      example: kcwi
+      example: KCWI
     ip_version:
       name: ip_version
       in: path
@@ -1481,7 +1496,7 @@ components:
       style: simple
       explode: false
       schema:
-        type: integer
+        type: number
       example: 0
     index:
       name: index

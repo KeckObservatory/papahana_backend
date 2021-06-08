@@ -8,7 +8,6 @@ from papahana.models.observation_block import ObservationBlock  # noqa: E501
 from papahana.controllers import observation_block_controller
 from papahana.controllers import controller_helper as utils
 
-# from papahana import util
 from config import config_collection
 from bson.objectid import ObjectId
 
@@ -86,10 +85,10 @@ def containers_put(body, container_id):  # noqa: E501
     utils.update_doc(query, new_vals, 'containerCollect')
 
 
-def containers_delete(container_id):  # noqa: E501
+def containers_delete(container_id):
     """containers_delete
 
-    Delete container by id # noqa: E501
+    Delete container by id
 
     :param container_id: container identifier
     :type container_id: str
