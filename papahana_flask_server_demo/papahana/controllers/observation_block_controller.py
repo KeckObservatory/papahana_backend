@@ -480,7 +480,7 @@ def ob_time_constraint_put(body, ob_id):
     """
     Create / replace the time constraints (from, to).
 
-    curl -v -H "Content-Type: application/json" -X PUT -d '["2021-05-01 08:00:11", "2021-05-01 08:00:22"]' "http://vm-webtools.keck:50001/v0/obsBlocks/timeConstraints?ob_id=60bfddd9ae0bf221a676bf33&sidereal=True"
+    curl -v -H "Content-Type: application/json" -X PUT -d '["2021-05-01 08:00:11", "2021-05-01 08:00:22"]' "http://vm-webtools.keck:50001/v0/obsBlocks/timeConstraints?ob_id=60bfddd9ae0bf221a676bf33"
 
     :param body:
     :type body: list
