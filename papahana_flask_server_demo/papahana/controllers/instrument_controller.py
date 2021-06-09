@@ -19,9 +19,9 @@ def instrument_packages(instrument):
     return 'do some magic!'
 
 
-def instrument_packages_ip_signature(instrument, ip_version):
+def instrument_packages_ip_parameter(instrument, ip_version):
     """
-    List all template signatures that can be attached to OBs using this
+    List all template parameters that can be attached to OBs using this
     instrument package
 
     :param instrument: instrument used to make observation

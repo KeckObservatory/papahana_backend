@@ -20,6 +20,7 @@ def ob_get(ob_id):
 
     :rtype: ObservationBlock
     """
+
     return utils.get_by_id(ob_id, 'obCollect')
 
 
@@ -129,14 +130,13 @@ def ob_execution_time(ob_id):  # noqa: E501
     :rtype: float
     """
     fields = {"science.properties": 1, "_id": 0}
-    ob_science = utils.get_fields_by_query(utils.query_by_id(ob_id),
-                                           fields, 'obCollect')
+    ob_science = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
     if not ob_science:
         return 0
 
     total_tm = 0
-    sci_blks = ob_science[0]['science']
+    sci_blks = ob_science['science']
     for block in sci_blks:
         total_tm += utils.calc_exec_time(block)
 
@@ -170,37 +170,26 @@ def ob_template_filled(ob_id):
     templates = ob_template_get(ob_id)
     for filled in templates:
         if filled.keys() < {"name", "version", "properties"}:
+            print("missing properties")
             return False
 
         query = {"name": filled["name"], "version": filled["version"]}
         schema = utils.get_fields_by_query(query, fields, 'templateCollect')
         if not schema:
+            print("no schema field")
             return False
 
         required = schema[0]['schema']['required']
         properties = schema[0]['schema']['properties']
 
-        return check_required(required, properties, filled)
-
-
-def check_required(required, properties, filled):
-
-    for key in required:
-        if ('properties' not in filled or key not in filled['properties'] or
-                not filled['properties'][key]):
+        if 'properties' not in filled:
+            print("no properties field")
             return False
-        key_props = properties[key]
-        key_type = key_props['type']
-        if key_type is 'number' or key_type is 'integer':
-            if (filled[key] > key_props['maximum'] or
-                    filled[key] < key_props['minimum']):
-                return False
-        elif key_type is 'array':
-            req = key_props['items']['required']
-            props = key_props['items']['properties']
-            for key2 in req:
-                # TODO figure out the array ....
-                continue
+
+        if not utils.check_required(required, properties, filled['properties']):
+            return False
+
+    return True
 
 
 def ob_template_get(ob_id):
@@ -393,8 +382,7 @@ def ob_template_id_put(body, ob_id, template_id):
         body['index'] = template_id
         templates[template_id - 1] = body
 
-    utils.update_doc(utils.query_by_id(ob_id), {key: templates},
-                     'obCollect')
+    utils.update_doc(utils.query_by_id(ob_id), {key: templates}, 'obCollect')
 
 
 def ob_template_post(body, ob_id, template_type):  # noqa: E501
@@ -468,36 +456,44 @@ def ob_template_supplement(ob_id):
     return 'do some magic!'
 
 
-def ob_time_constraint_get(ob_id, sidereal):
+def ob_time_constraint_get(ob_id):
     """
     Retrieves the time constraints (from, to).
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param sidereal: tracking rate
-    :type sidereal: bool
 
-    :rtype: None
+    :rtype: List[str]
     """
-    return 'do some magic!'
+    fields = {"time_constraints": 1}
+    results = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    if not results:
+        abort(404, f'Observation block id not found')
+
+    if 'time_constraints' not in results:
+        return []
+
+    return results['time_constraints']
 
 
-def ob_time_constraint_put(body, ob_id, sidereal):
+def ob_time_constraint_put(body, ob_id):
     """
-    Updates the time constraints (from, to).
+    Create / replace the time constraints (from, to).
+
+    curl -v -H "Content-Type: application/json" -X PUT -d '["2021-05-01 08:00:11", "2021-05-01 08:00:22"]' "http://vm-webtools.keck:50001/v0/obsBlocks/timeConstraints?ob_id=60bfddd9ae0bf221a676bf33&sidereal=True"
 
     :param body:
-    :type body: dict | bytes
+    :type body: list
     :param ob_id: observation block id
     :type ob_id: str
-    :param sidereal: tracking rate
-    :type sidereal: bool
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = str.from_dict(connexion.request.get_json())
-    return 'do some magic!'
+    if not isinstance(body, list):
+        abort(400, 'Invalid input type -- time constraints must be an array.')
+
+    utils.update_doc(utils.query_by_id(ob_id), {"time_constraints": body},
+                     'obCollect')
 
 
 def ob_upgrade(ob_id):

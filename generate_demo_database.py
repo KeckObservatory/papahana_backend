@@ -106,7 +106,7 @@ status = [
 ]
 
 timeConstraint = [
-    [None, None], ['2021-01-01 08:00:00', '2021-01-01 10:00:00'],
+    None, ['2021-01-01 08:00:00', '2021-01-01 10:00:00'],
     ['2021-02-02 09:00:00', '2021-02-03 18:00:00'],
     ['2021-05-01 08:00:00', '2021-06-01 10:00:00'],
     ['2021-06-01 08:00:00', '2021-06-07 10:00:00']
@@ -148,14 +148,14 @@ kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
 filled_sci_templates = [
     {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
-     "version": 0.1, "properties": {"det1_exptime": 60, "det1_nexp": 4,
-                                    "det2_exptime": 50, "det2_nexp": 5}
+     "version": 0.1, "properties": {
+        "det1_exptime": 60, "det1_nexp": 4, "det2_exptime": 50, "det2_nexp": 5}
     },
     {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci", "version": 0.1,
      "properties":
          {"det1_exptime": 40, "det1_nexp":  4, "det2_exptime": 20,
-          "det2_nexp" : 6, "seq_ndither" : 4, "seq_ditarray" : [
-             [0,0,"T","Guided"], [5,5,"T","Guided"], [-10,-10, "T", "Guided"]]}
+          "det2_nexp": 6, "seq_ndither": 4, "seq_ditarray": [
+             [0, 0, "T", True], [5, 5, "T", True], [-10, -10, "T", True]]}
      }
 ]
 
