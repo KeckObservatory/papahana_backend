@@ -521,13 +521,13 @@ paths:
           description: Group not found
       x-swagger-router-controller: Instrument
       x-openapi-router-controller: papahana.controllers.instrument_controller
-  /instrumentPackages/{instrument}/{ip_version}/signatures:
+  /instrumentPackages/{instrument}/{ip_version}/parameters:
     get:
       tags:
       - Instrument
-      description: List all template signatures that can be attached to OBs using
+      description: List all template parameters that can be attached to OBs using
         this instrument package
-      operationId: instrument_packages_ip_signature
+      operationId: instrument_packages_ip_parameter
       parameters:
       - $ref: '#/components/parameters/instrument'
       - $ref: '#/components/parameters/ip_version'
@@ -549,7 +549,7 @@ paths:
       tags:
       - Instrument
       - Templates
-      description: Retrieves the specified instrument package template signature
+      description: Retrieves the specified instrument package template parameters
       operationId: instrument_packages_ip_template
       parameters:
       - $ref: '#/components/parameters/instrument'
@@ -665,7 +665,7 @@ paths:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: On success Returns the Target and Signature of the observing block being requested.
+          description: On success Returns the Target and Metadata of the observing block being requested.
           content:
             application/json:
               schema:
@@ -685,13 +685,16 @@ paths:
       operationId: ob_template_post
       parameters:
         - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_type'
       requestBody:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Observation'
+                oneOf:
+                  - $ref: '#/components/schemas/Observation'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Observation'
         required: true
       responses:
         "200":
@@ -709,13 +712,16 @@ paths:
       operationId: ob_template_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/template_type'
       requestBody:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Observation'
+                oneOf:
+                  - $ref: '#/components/schemas/Observation'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Observation'
         required: true
       responses:
         "200":
@@ -905,7 +911,6 @@ paths:
       operationId: ob_time_constraint_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/sidereal'
       responses:
         "200":
           description: On success retrieves a list of existing time constraint(s) of an OB.
@@ -925,23 +930,23 @@ paths:
     put:
       tags:
         - Observation Block
-      description: Updates the time constraints (from, to).
+      description: Creates / Replaces the time constraints (from, to).
       operationId: ob_time_constraint_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/sidereal'
       requestBody:
         content:
           application/json:
             schema:
-              type:
-                string
+              type: array
+              items:
+                type: string
         required: true
       responses:
         "200":
           description: On success updates an existing time constraint(s) of an OB.
         "400":
-          description: Invalid status value
+          description: Invalid input time constraints -- input must be an array.
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
@@ -1140,8 +1145,8 @@ components:
       properties:
         id:
           type: string
-        signature:
-          $ref: '#/components/schemas/Signature'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
         target:
           items:
             $ref: '#/components/schemas/Target'
@@ -1169,7 +1174,7 @@ components:
           type: string
           example:
             this is a nice ob block.
-    Signature:
+    Metadata:
       type: object
       properties:
         name:
@@ -1304,13 +1309,13 @@ components:
           type: number
         magnitude:
           $ref: '#/components/schemas/Magnitude'
-        wrap?:
+        wrap:
           type: string
         dra:
           type: number
         ddec:
           type: number
-        comment?:
+        comment:
           type: string
         template:
           type: boolean
@@ -1324,8 +1329,8 @@ components:
         ra_offset: 6.027456183070403
         dra: 9.301444243932576
         obstime: 7.061401241503109
-        wrap?: wrap?
-        comment?: comment?
+        wrap: wrap
+        comment: comment
         name: name
         magnitude:
           template: true
@@ -1366,7 +1371,7 @@ components:
       explode: true
       schema:
         type: integer
-      example: 609b10d6fd85ea78eb0ddddb
+      example: 2009
     ob_id:
       name: ob_id
       in: query
@@ -1431,7 +1436,7 @@ components:
     template_type:
       in: query
       name: template_type
-      description: A string to indicate template,  <acq, sci, eng, cal>
+      description: A string to indicate template,  (acq, sci, eng, cal)
       required: true
       explode: true
       schema:
@@ -1456,6 +1461,15 @@ components:
         - OSIRIS
         - NIRES
         - NIRC2
+        - kcwi
+        - deimos
+        - esi
+        - hires
+        - lris
+        - mosfire
+        - osiris
+        - nires
+        - nirc2
         - DE
         - DF
         - EI
@@ -1472,7 +1486,7 @@ components:
         - NS
         - N2
         - NC
-      example: kcwi
+      example: KCWI
     ip_version:
       name: ip_version
       in: path
@@ -1481,7 +1495,7 @@ components:
       style: simple
       explode: false
       schema:
-        type: integer
+        type: number
       example: 0
     index:
       name: index
