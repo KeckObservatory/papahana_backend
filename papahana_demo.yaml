@@ -1445,12 +1445,12 @@ components:
     template_type:
       in: query
       name: template_type
-      description: A string to indicate template,  (acq, sci, eng, cal)
+      description: A string to indicate template,  (acquisition, science, engineering, calibration)
       required: true
       explode: true
       schema:
         type: string
-      example: sci
+      example: science
     instrument:
       name: instrument
       in: path
@@ -1524,8 +1524,17 @@ components:
       style: simple
       explode: false
       schema:
-        type: integer
-      example: 1
+        type: string
+        oneOf:
+        - pattern: '^acq\d{1}$'
+        - pattern: '^acq\d{2}$'
+        - pattern: '^sci\d{1}$'
+        - pattern: '^sci\d{2}$'
+        - pattern: '^eng\d{1}$'
+        - pattern: '^eng\d{2}$'
+        - pattern: '^cal\d{1}$'
+        - pattern: '^cal\d{2}$'
+      example: sci2
     template_name:
       name: template_name
       in: path

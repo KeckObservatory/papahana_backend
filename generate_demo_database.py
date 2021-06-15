@@ -465,10 +465,10 @@ def generate_kcwi_science():
 
     schema = []
     n_templates = random.randint(0, 5)
-    for indx in range(1, n_templates):
+    for indx in range(0, n_templates):
         tmp_list = copy.deepcopy(filled_sci_templates)
         filled_template = random.choice(tmp_list)
-        filled_template['template_index'] = indx
+        filled_template['template_index'] = f'sci{indx}'
         schema.append(filled_template)
 
     return schema
@@ -476,7 +476,7 @@ def generate_kcwi_science():
 
 def generate_kcwi_acquisiton(nLen, maxArr):
     acq = random.choice(filled_acq_templates)
-    acq['template_index'] = 0
+    acq['template_index'] = 'acq0'
     return acq
 
 

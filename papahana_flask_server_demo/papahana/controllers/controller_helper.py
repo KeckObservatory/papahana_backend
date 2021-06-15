@@ -330,6 +330,42 @@ def calc_exec_time(block):
     return max(exp1, exp2)
 
 
+def get_templates_by_id(ob, template_id):
+    template_indx, template_type = template_indx_type(template_id)
+    templates = get_templates(ob, template_type, template_indx)
+
+    return template_indx, templates
+
+
+def template_indx_type(template_id):
+    try:
+        template_type = template_id[:3]
+        template_indx = int(template_id[3:])
+    except ValueError:
+        abort(400, "Invalid template_id.")
+    except Exception as err:
+        abort(400, f"Error with template_id: {err}")
+
+    type_map = {'sci': 'science', 'acq': 'acquisition',
+                'eng': 'engineering', 'cal': 'calibration'}
+
+    return template_indx, type_map[template_type]
+
+
+def get_templates(ob, template_type, template_indx):
+    if template_type not in ob or len(ob[template_type]) <= template_indx:
+        abort(400, 'Invalid template ID')
+
+    templates = ob[template_type]
+
+    return templates
+
+
+def write_json(dict_data, output):
+    with open(output, 'w') as fp:
+        json.dump(dict_data, fp)
+
+
 # Container specific helpers
 def get_ob_list(container_id):
     """

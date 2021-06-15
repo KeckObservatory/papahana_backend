@@ -231,44 +231,43 @@ def ob_template_id_delete(ob_id, template_id):
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
 
     :rtype: None
     """
     ob = ob_get(ob_id)
-    if template_id == 0:
-        if 'acquisition' not in ob:
-            return
-        del ob['acquisition']
+    template_indx, template_type = utils.template_indx_type(template_id)
+    templates = utils.get_templates(ob, template_type, template_indx)
+
+    if template_type not in ob:
+        return
+
+    if type(templates) is not list:
+        del ob[template_type]
     else:
-        if 'science' not in ob:
+        if len(templates) < template_indx:
             return
+        del templates[template_indx]
 
-        indx = template_id - 1
-        sci_templates = ob['science']
+        for cnt in range(0, len(templates)):
+            templates[cnt]['index'] = cnt
 
-        if len(sci_templates) < indx:
-            return
-        del sci_templates[indx]
-
-        for cnt in range(0, len(sci_templates)):
-            sci_templates[cnt]['index'] = cnt + 1
-
-        ob['science'] = sci_templates
+        ob[template_type] = templates
 
     utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
 
 
 #TODO come back to types other then json
+#TODO think through cleanup
 def ob_template_id_file_get(ob_id, template_id, file_parameter):
     """
     Retrieves the specified template within the OB
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
     :param file_parameter: file paramter description here
     :type file_parameter: str
 
@@ -280,7 +279,7 @@ def ob_template_id_file_get(ob_id, template_id, file_parameter):
     output = f"{OUT_DIR}/{filename}"
 
     if file_parameter == 'json':
-        write_json(template, output)
+        utils.write_json(template, output)
     else:
         file_writer = {'json': docs.to_json, 'csv': docs.to_csv,
                        'html': docs.to_html, 'txt': docs.to_string}
@@ -290,48 +289,25 @@ def ob_template_id_file_get(ob_id, template_id, file_parameter):
                                as_attachment=True)
 
 
-def write_json(dict_data, output):
-    with open(output, 'w') as fp:
-        json.dump(dict_data, fp)
-
-
 #TODO currently only working with JSON
 def ob_template_id_file_put(body, ob_id, template_id, file_parameter):
     """
     Updates the specified template within the OB
 
-    curl -X PUT "http://vm-webtools.keck:50001/v0/obsBlocks/template/1/json?ob_id=60c7e8b3d671374172c38d3b" --upload-file /tmp/60c7e8b3d671374172c38d3b.json
+    curl -X PUT "http://vm-webtools.keck:50001/v0/obsBlocks/template/sci3/json?ob_id=60c8eb93d131fb50a4b06f6f" --upload-file /tmp/60c8eb93d131fb50a4b06f6f.json
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
     :param file_parameter: file parameter description here
     :type file_parameter: str
 
     :rtype: None
     """
-    # file_reader = {'json': pandas.read_json, 'csv': pandas.read_csv,
-    #                'html': pandas.read_html, 'txt': pandas.read_json}
-
     json_data = json.loads(body.decode('ascii'))
 
-    query = utils.query_by_id(ob_id)
-
-#TODO ARGHH wht about cals and eng  (ADD TO INDEX?!!!)
-    if template_id > 0:
-        fields = {'acquisition': 1, '_id': 0}
-    else:
-        fields = {'science': 1, '_id': 0}
-    new_vals = ''
-
-    science_templates = utils.get_fields_by_query(query, fields, 'obCollect')
-
-    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
-
-    return
-
-# def read_json()
+    ob_template_id_put(json_data, ob_id, template_id)
 
 
 def ob_template_id_get(ob_id, template_id):
@@ -340,25 +316,19 @@ def ob_template_id_get(ob_id, template_id):
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index of template within the OB, sci0, acq0.
+    :type template_id: str
 
     :rtype: Observation
     """
     ob = ob_get(ob_id)
+    template_indx, template_type = utils.template_indx_type(template_id)
+    templates = utils.get_templates(ob, template_type, template_indx)
 
-    if template_id == 0:
-        return ob['acquisition']
-
-    template_indx = template_id - 1
-    if 'science' not in ob:
-        return {}
-
-    sci_templates = ob['science']
-    if sci_templates and len(sci_templates) > template_indx:
-        return sci_templates[template_indx]
-
-    return {}
+    if type(templates) is not list:
+        return ob[template_type]
+    else:
+        return templates[template_indx]
 
 
 def ob_template_duplicate(ob_id, template_id):
@@ -370,25 +340,24 @@ def ob_template_duplicate(ob_id, template_id):
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
 
     :rtype: Observation
     """
-    if template_id == 0:
-        abort(404, 'Invalid template ID')
+
+    if 'sci' not in template_id:
+        abort(400, 'Invalid template_id, only duplicating science is supported.')
 
     ob = ob_get(ob_id)
 
-    if 'science' not in ob or len(ob['science']) < template_id:
-        abort(404, 'Invalid template ID')
+    template_indx, templates = utils.get_templates_by_id(ob, template_id)
 
-    sci_templates = ob['science']
-    new_template = deepcopy(sci_templates[template_id - 1])
-    new_template['index'] = len(sci_templates) + 1
+    new_template = deepcopy(templates[template_indx])
+    new_template['template_index'] = f'sci{len(templates)}'
 
-    sci_templates.append(new_template)
-    utils.update_doc(utils.query_by_id(ob_id), {"science": sci_templates},
+    templates.append(new_template)
+    utils.update_doc(utils.query_by_id(ob_id), {"science": templates},
                      'obCollect')
 
     return new_template
@@ -402,8 +371,8 @@ def ob_template_id_put(body, ob_id, template_id):
     :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
 
     :rtype: None
     """
@@ -412,22 +381,18 @@ def ob_template_id_put(body, ob_id, template_id):
         body = json.loads(json.dumps(connexion.request.get_json()))
 
     ob = ob_get(ob_id)
-    if template_id == 0:
-        key = 'acquisition'
-    else:
-        key = 'science'
+    template_indx, template_type = utils.template_indx_type(template_id)
+    templates = utils.get_templates(ob, template_type, template_indx)
 
-    if key not in ob or len(ob[key]) < template_id:
-        abort(404, 'Invalid template ID')
-
-    if template_id == 0:
-        templates = body
-    else:
-        templates = ob[key]
+    if type(templates) is list:
+        templates = ob[template_type]
         body['index'] = template_id
-        templates[template_id - 1] = body
+        templates[template_indx] = body
+    else:
+        templates = body
 
-    utils.update_doc(utils.query_by_id(ob_id), {key: templates}, 'obCollect')
+    new_vals = {template_type: templates}
+    utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
 def ob_template_post(body, ob_id, template_type):  # noqa: E501
