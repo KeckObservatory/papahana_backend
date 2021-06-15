@@ -826,6 +826,12 @@ paths:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/template_id'
         - $ref: '#/components/parameters/file_parameter'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        required: true
       responses:
         "200":
           description: replaces the given Template within the OB with Template of id=templateId
@@ -877,6 +883,8 @@ paths:
           description: Invalid status value
         "404":
           description: Observation Block not found
+        "422":
+          description: OB is missing required parameters.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
   /obsBlocks/supplementFiles:
@@ -1550,13 +1558,18 @@ components:
     file_parameter:
       name: file_parameter
       in: path
-      description: file paramter description here
+      description: file type
       required: true
       style: simple
       explode: false
       schema:
         type: string
-      example: ex file parameter goes here
+        enum:
+          - csv
+          - json
+          - html
+          - txt
+      example: json
     container_id:
       name: container_id
       in: query

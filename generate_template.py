@@ -7,16 +7,16 @@ kcwi_acq_direct_template_properties = {
         "wrap": {
             "ui_name": "Rotator Wrap Position",
             "option": "list",
-            "allowed": ['south', 'north'],
-            "default": None,
+            "allowed": ['south', 'north', 'auto'],
+            "default": 'auto',
             "optionality": "optional",
             "type": "string"
         },
         "rotmode": {
             "ui_name": "Rotator Mode",
             "option": "list",
-            "allowed": ["PA", "stationary", "vert_angle"],
-            "default": "PA",
+            "allowed": ["PA", "stationary", "vertical_angle"],
+            "default": None,
             "optionality": "required",
             "type": "string"
         },
@@ -24,93 +24,85 @@ kcwi_acq_direct_template_properties = {
             "ui_name": "Pointing origin",
             "option": "list",
             "allowed": ["REF", "IFU"],
-            "default": "IFU",
+            "default": None,
             "optionality": "required",
             "type": "string"
         },
         "guider_gs_ra": {
             "ui_name": "Guide Star Right Ascension",
             "option": "range",
-            "allowed": [0, 24],
+            "allowed": [0.0, 24.0],
             "default": None,
             "optionality": "optional",
-            "type": "number",
+            "type": "string",
         },
         "guider_gs_dec": {
             "ui_name": "Guide Star Declination",
             "option": "range",
-            "allowed": [-90, 90],
+            "allowed": [-90.0, 90.0],
             "default": None,
             "optionality": "optional",
-            "type": "number",
+            "type": "string",
         },
         "guider_gs_mode": {
             "ui_name": "Guide Star Selection Mode",
             "option": "list",
-            "allowed": ["Automatic", "Operator", "User"],
-            "default": "Automatic",
+            "allowed": ["auto", "operator", "user"],
+            "default": "auto",
             "optionality": "required",
             "type": "string"
         }
 }  
 
-# kcwi_acq_direct_template_schema = {
-#     "title": 'direct acquisition template',
-#     "type": 'object',
-#     "required": ["guider_po", "guider_gs_mode"],
-#     "properties": kcwi_acq_direct_template_properties
-# }
-
-
 dither_schema = {
-    "min": {
-        "ui_name": "minimum",
-        "option": "range",
-        "allowed": [-4000.0, 4000.0],
-        "default": None,
-        "optionality": "required",
-        "type": "number"
-      },
-    "max": {
-        "ui_name": "minimum",
-        "option": "range",
-        "allowed": [-4000.0, 4000.0],
-        "default": None,
-        "optionality": "required",
-        "type": "number"
-    },
-    "position": {
-        "ui_name": "Telescope Position",
-        "option": "list",
-        "allowed": ["T", "S", "O"],
-        "default": "T",
-        "optionality": "required",
-        "type": "string",
-    },
-    "guided": {
-        "ui_name": "Guided",
-        "option": "bool",
-        "default": True,
-        "optionality": "required",
-        "type": "bool"
-    }
+    "ui_name": "Dither Pattern",
+    "option": "list",
+    "default": None,
+    "optionality": "required",
+    "type": "array",
+    "allowed": [
+        {"ra": {
+            "ui_name": "Right Ascension Offset",
+            "option": "range",
+            "allowed": [-4000.0, 4000.0],
+            "default": None,
+            "optionality": "required",
+            "type": "float"
+        }},
+        {"dec": {
+            "ui_name": "Declination Offset",
+            "option": "range",
+            "allowed": [-4000.0, 4000.0],
+            "default": None,
+            "optionality": "required",
+            "type": "float"
+        }},
+        {"position": {
+            "ui_name": "Telescope Position",
+            "option": "list",
+            "allowed": ["T", "S", "O"],
+            "default": None,
+            "optionality": "required",
+            "type": "string",
+        }},
+        {"guided": {
+            "ui_name": "Guided",
+            "option": "boolean",
+            "default": True,
+            "optionality": "required",
+            "type": "boolean"
+        }}
+    ]
 }
-
-# dither_schema_array = {
-#     "title": "List and types of positions",
-#     "type": "array",
-#     "items": dither_schema
-# }
-
 
 kcwi_ifu_sci_dither_properties = {
     "det1_exptime": {
         "ui_name": "Blue exposure time for individual exposures",
         "option": "range",
-        "allowed": [0, 3600],
+        "allowed": [0.0, 3600.0],
         "default": None,
         "optionality": "required",
-        "type": "integer"
+        "type": "float"
     },
     "det1_nexp": {
         "ui_name": "Blue number of exposures per dither position",
@@ -123,15 +115,15 @@ kcwi_ifu_sci_dither_properties = {
     "det2_exptime": {
         "ui_name": "Red exposure time for individual exposures",
         "option": "range",
-        "allowed": [0, 3600],
+        "allowed": [0.0, 3600.0],
         "default": None,
         "optionality": "optional",
-        "type": "integer"
+        "type": "float"
     },
     "det2_nexp": {
         "ui_name": "Blue number of exposures per dither position",
         "option": "range",
-        "allowed": [0, 3600],
+        "allowed": [0.0, 100],
         "default": None,
         "optionality": "optional",
         "type": "integer",
@@ -139,72 +131,27 @@ kcwi_ifu_sci_dither_properties = {
     "seq_ndither": {
         "ui_name": "Number of dither positions",
         "option": "range",
-        "allowed": [0, 99],
+        "allowed": [0, 100],
         "default": None,
         "optionality": "required",
         "type": "integer",
     },
     "seq_ditarray": dither_schema
 }
-#
-# kcwi_config_properties = {
-#        "cfg_cam1_grating": {
-#             "title": "Blue Grating",
-#             "enum": [ "BL","BM","BH1","BH2" ],
-#             "type": "string",
-#         },
-#         "cfg_cam1_cwave": {
-#             "title": "Blue Central Wavelength",
-# 	    "minimum": 3500,
-# 	    "maximum": 6500,
-#             "type": "number",
-#         },
-#         "cfg_cam2_grating": {
-#             "title": "Red Grating",
-#             "enum": [ "RL","RM","RH1","RH2" ],
-#             "type": "string",
-#         },
-#         "cfg_cam2_cwave": {
-#             "title": "Red Central Wavelength",
-# 	    "minimum": 6500,
-# 	    "maximum": 10000,
-#             "type": "number",
-#         },
-#         "cfg_slicer": {
-#             "title": "Image Slicer",
-#             "enum": [ "Small", "Medium", "Large" ],
-#             "type": "string",
-#         }
-# }
-
-# kcwi_config_schema = {
-#         "title": "KCWI configuration",
-#         "type": "object",
-#         "required": ["cfg_slicer", "cfg_cam1_cwave", "cfg_cam1_grating"],
-#         "properties": kcwi_config_properties
-# }
-
-# kcwi_ifu_sci_dither_schema = {
-#         "title": "Dither Properies",
-#         "type": "object",
-# 	"required": ["seq_ndither", "seq_ditarray", "det1_exptime", "det2_exptime"],
-#         "properties": kcwi_ifu_sci_dither_properties
-# }
-
 
 kcwi_ifu_sci_stare_parameters = {
     "det1_exptime": {
         "ui_name": "Blue exposure time",
         "option": "range",
-        "allowed": [0, 3600],
+        "allowed": [0.0, 3600.0],
         "default": None,
         "optionality": "required",
-        "type": "number",
+        "type": "float",
     },
     "det1_nexp": {
         "ui_name": "Blue number of exposures",
         "option": "range",
-        "allowed": [0, 3600],
+        "allowed": [0.0, 3600.0],
         "default": None,
         "optionality": "required",
         "type": "integer",
@@ -212,15 +159,15 @@ kcwi_ifu_sci_stare_parameters = {
     "det2_exptime": {
         "ui_name": "Red exposure time",
         "option": "range",
-        "allowed": [0, 3600],
+        "allowed": [0.0, 3600.0],
         "default": None,
         "optionality": "required",
-        "type": "number",
+        "type": "float",
     },
     "det2_nexp": {
         "ui_name": "Blue number of exposures",
         "option": "range",
-        "allowed": [0, 3600],
+        "allowed": [0.0, 3600.0],
         "default": None,
         "optionality": "required",
         "type": "integer",
@@ -262,20 +209,11 @@ kcwi_ifu_acq_direct_template = {
         "script": "KCWI_ifu_acq_direct"
     },
     "properties": kcwi_acq_direct_template_properties
-	# "schema": kcwi_acq_direct_template_schema,
 }
 
 #TODO: Fill with separate template
 kcwi_ifu_acq_offsetStar_template = kcwi_ifu_acq_direct_template.copy()
 kcwi_ifu_acq_offsetStar_template['name'] = 'KCWI_ifu_acq_offsetStar'
-
-# kcwi_config_template = {
-#         "name": "KCWI_config",
-#         "instrument": "KCWI",
-#         "type": "config",
-#         "version": 0.1,
-#         "schema": kcwi_config_schema
-# }
 
 kcwi_instrument_package = {
     "instrument": "KCWI",

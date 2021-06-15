@@ -30,68 +30,66 @@ INST_MAPPING = {
                  'NIRC2': {'N2', 'NC'},
                 }
 
-
-
 pis = {
-"Michael Bluth": 5555,
-"Lindsay Bluth-Fünke": 7766,
-"Gob Bluth": 8877,
-"George Michael Bluth": 8899,
-"Maeby Fünke": 7799,
-"Buster Bluth": 8765,
-"Tobias Fünke": 9998,
-"George Bluth Sr.": 1144,
-"Lucille Bluth": 7644,
+    "Michael Bluth": 5555,
+    "Lindsay Bluth-Fünke": 7766,
+    "Gob Bluth": 8877,
+    "George Michael Bluth": 8899,
+    "Maeby Fünke": 7799,
+    "Buster Bluth": 8765,
+    "Tobias Fünke": 9998,
+    "George Bluth Sr.": 1144,
+    "Lucille Bluth": 7644,
 }
 
 observers = [
-"Narrator",
-"Oscar Bluth",
-"Lucille Austero",
-"Barry Zuckerkorn",
-"Kitty Sanchez",
-"Steve Holt",
-"Lupe",
-"Annyong Bluth",
-"Carl Weathers",
-"Maggie Lizer",
-"Stefan Gentles",
-"Marta Estrella",
-"Cindi Lightballoon",
-"John Beard",
-"Ann Veal",
-"Wayne Jarvis",
-"Dr. Fishman",
-"Stan Sitwell",
-"Sally Sitwell",
-"Mort Meyers",
-"Starla",
-"Tony Wonder",
-"Gene Parmesan",
-"Terry Veal",
-"Rita Leeds",
-"Larry Middleman",
-"Bob Loblaw",
-"Ron Howard",
-"DeBrie Bardeaux",
-"Rebel Alley",
-"Herbert Love",
-"Marky Bark",
-"Argyle Austero",
-"Paul 'P-Hound' Huan",
-"Mark Cherry",
-"Murphy Brown Fünke",
-"Lottie Dottie Da",
-"Dusty Radler"
+    "Narrator",
+    "Oscar Bluth",
+    "Lucille Austero",
+    "Barry Zuckerkorn",
+    "Kitty Sanchez",
+    "Steve Holt",
+    "Lupe",
+    "Annyong Bluth",
+    "Carl Weathers",
+    "Maggie Lizer",
+    "Stefan Gentles",
+    "Marta Estrella",
+    "Cindi Lightballoon",
+    "John Beard",
+    "Ann Veal",
+    "Wayne Jarvis",
+    "Dr. Fishman",
+    "Stan Sitwell",
+    "Sally Sitwell",
+    "Mort Meyers",
+    "Starla",
+    "Tony Wonder",
+    "Gene Parmesan",
+    "Terry Veal",
+    "Rita Leeds",
+    "Larry Middleman",
+    "Bob Loblaw",
+    "Ron Howard",
+    "DeBrie Bardeaux",
+    "Rebel Alley",
+    "Herbert Love",
+    "Marky Bark",
+    "Argyle Austero",
+    "Paul 'P-Hound' Huan",
+    "Mark Cherry",
+    "Murphy Brown Fünke",
+    "Lottie Dottie Da",
+    "Dusty Radler"
 ]
 
 comments = [
-"Here?s some money. Go see a star war.",
-"I don?t understand the question and I won?t respond to it.",
-"I am one of the few honest people I have ever known.",
-"I?m a scholar. I enjoy scholarly pursuits.",
-"I?ve made a huge tiny mistake.",
-"I hear the jury?s still out on science.",
+    "Here?s some money. Go see a star war.",
+    "I don?t understand the question and I won?t respond to it.",
+    "I am one of the few honest people I have ever known.",
+    "I?m a scholar. I enjoy scholarly pursuits.",
+    "I?ve made a huge tiny mistake.",
+    "I hear the jury?s still out on science.",
 ]
 
 wrap_str = ['north', 'south']
@@ -147,69 +145,58 @@ sem_ids = [
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
 filled_sci_templates = [
-    {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
-     "version": 0.1, "properties": {
-        "det1_exptime": 60, "det1_nexp": 4, "det2_exptime": 50, "det2_nexp": 5}
+    {
+        "metadata": {
+            "name": "KCWI_ifu_sci_stare", "ui_name": "KCWI stare",
+              "instrument": "KCWI", "type": "science", "version": 0.1,
+              "script": "KCWI_ifu_sci_stare"
+        },
+        "properties": {
+            "det1_exptime": 30,
+            "det1_nexp": 4,
+            "det2_exptime": 24,
+            "det2_nexp": 6
+        }
     },
-    {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci", "version": 0.1,
-     "properties":
-         {"det1_exptime": 40, "det1_nexp":  4, "det2_exptime": 20,
-          "det2_nexp": 6, "seq_ndither": 4, "seq_ditarray": [
-             [0, 0, "T", True], [5, 5, "T", True], [-10, -10, "T", True]]}
-     }
+    {
+        "metadata": {
+            "name": "KCWI_ifu_sci_dither",
+            "ui_name": "KCWI dither",
+            "instrument": "KCWI",
+            "type": "science",
+            "version": 0.1,
+            "script": "KCWI_ifu_sci_stare"
+        },
+        "properties": {
+            "det1_exptime": 60.0,
+            "det1_nexp": 2,
+            "det2_exptime": 121.0,
+            "det2_nexp": 4,
+            "seq_ndither": 4,
+            "seq_ditarray": [
+                [0, 0, 'T', True], [5, 5, 'S', False],
+                [0, 0, 'T', True], [5, 5, 'S', False]
+            ]
+        }
+    }
 ]
 
-filled_acq_templates = [
-    {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
-     "wrap": "shortest", "rotmode": "stationary", "version": 0.1,
-     "properties":
-         {"guider_po": "REF", "guider_gs_ra": '12:00:59',
-          "guider_gs_dec": '20:12:13.9', "guider_gs_mode": "Automatic"}
-     }
-]
-
-# filled_sci_templates = [
-#         {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
-#          "version": 0.1, "DET1_EXPTIME": 1200, "DET1_NEXP": 2,
-#          "DET2_EXPTIME": 1200, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
-#          "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium"},
-#
-#         {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
-#          "version": 0.1, "DET1_EXPTIME": 60, "DET1_NEXP": 2,
-#          "DET2_EXPTIME": 60, "DET2_NEXT": 2, "CFG_CAM1_GRATING": "BM",
-#          "CFG_CAM1_CWAVE": 4500, "CFG_SLICER": "Medium", "SEQ_NDITHER": 3,
-#          "SEQ_DITARRAY": [[0,0,"T","Guided"], [5,5,"T","Guided"],
-#                           [-10,-10, "T", "Guided"]]}
-#     ]
-
-# filled_acq_templates = [
-#     {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
-#      "version": 0.1, "GUIDER_PO": "IFU", "wrap": "shortest",
-#      "rotmode": "stationary", "GUIDER_GS_RA": "14 03 15",
-#      "GUIDER_GS_DEC": "+54 20 43", "GUIDER_GS_MODE": "User"}
-#     ]
-#
-science_templates = [
-    {"name": "KCWI_ifu_sci_stare", "instrument": "KCWI", "type": "sci",
-     "version": 0.1, "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
-     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0.0,
-     "CFG_SLICER": ""},
-
-    {"name": "KCWI_ifu_sci_dither", "instrument": "KCWI", "type": "sci",
-     "version": 0.1, "DET1_EXPTIME": 0, "DET1_NEXP": 0, "DET2_EXPTIME": 0,
-     "DET2_NEXP": 0, "CFG_CAM1_GRATING": "", "CFG_CAM1_CWAVE": 0.0,
-     "CFG_SLICER": "", "SEQ_NDITHER": 0,
-     "SEQ_DITARRAY": [[0, 0, "", ""], [0, 0, "", ""], [0, 0, "", ""]]},
-]
-
-acquisition_templates = [
-    {"name": "KCWI_ifu_acq_direct", "instrument": "KCWI", "type": "acq",
-     "wrap": "shortest", "rotmode": "stationary",
-     "version": 0.1, "GUIDER_PO": "IFU", "GUIDER_GS_RA": "",
-     "GUIDER_GS_DEC": "", "GUIDER_GS_MODE": ""}
-]
-
-
+filled_acq_templates = [{
+    "metadata": {
+        "name": "KCWI_ifu_acq_direct",
+        "ui_name": "KCWI direct",
+        "instrument": "KCWI",
+        "type": "acquisition",
+        "version": 0.1,
+        "script": "KCWI_ifu_acq_direct"},
+    "properties": {
+        "wrap": "auto",
+        "rotmode": "PA",
+        "guider_po": "IFU",
+        "guider_gs_ra": "12:44:55.6",
+        "guider_gs_dec": '55:22:19.9',
+        "guider_gs_mode": "auto"}
+}]
 
 containers = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
 NOBS = 100 # number of observation blocks
@@ -362,7 +349,7 @@ def generate_ra():
     raDeg = z_fill_number(randInt(0, 24))
     arcMinutes = z_fill_number(randInt(0, 60))
     arcSeconds = z_fill_number(randInt(0, 60))
-    ra = " ".join([raDeg, arcMinutes, arcSeconds])
+    ra = ":".join([raDeg, arcMinutes, arcSeconds])
     return ra
 
 
@@ -371,7 +358,7 @@ def generate_dec():
     arcSeconds = z_fill_number(randInt(0, 60))
     decDeg = z_fill_number(randInt(0, 90))
     elevation = random.choice(['+', '-'])
-    dec = elevation+" ".join([decDeg, arcMinutes, arcSeconds])
+    dec = elevation+":".join([decDeg, arcMinutes, arcSeconds])
     return dec
 
 
@@ -424,12 +411,11 @@ def generate_observation(nLen, maxArr):
 
 
 @remove_none_values_in_dict
-def generate_signature(maxArr):
+def generate_metadata(maxArr):
     pi_name = randPI()
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
         'pi_id': pis[pi_name],
-        # 'sem_id': str(randSemester()) + '_K000' + str(random.randint(0, 9)),
         'sem_id': str(randSemId()),
         'instrument': 'KCWI',
         'comment': optionalRandComment()
@@ -482,7 +468,7 @@ def generate_kcwi_science():
     for indx in range(1, n_templates):
         tmp_list = copy.deepcopy(filled_sci_templates)
         filled_template = random.choice(tmp_list)
-        filled_template['index'] = indx
+        filled_template['template_index'] = indx
         schema.append(filled_template)
 
     return schema
@@ -490,7 +476,7 @@ def generate_kcwi_science():
 
 def generate_kcwi_acquisiton(nLen, maxArr):
     acq = random.choice(filled_acq_templates)
-    acq['index'] = 0
+    acq['template_index'] = 0
     return acq
 
 
@@ -556,7 +542,7 @@ def generate_target():
 @remove_none_values_in_dict
 def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     schema = {
-        'signature': generate_signature(maxArr),
+        'metadata': generate_metadata(maxArr),
         'version': 0.1,
         'target': random.choice([None, generate_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
@@ -601,9 +587,9 @@ if __name__=='__main__':
     config = read_config(mode)
     coll = config_collection('obCollect', mode=mode, conf=config)
     coll.drop()
-    coll.create_index([('signature.pi', pymongo.DESCENDING)])
-    coll.create_index([('signature.semester', pymongo.DESCENDING)])
-    coll.create_index([('signature.program', pymongo.DESCENDING)])
+    coll.create_index([('metadata.pi', pymongo.DESCENDING)])
+    coll.create_index([('metadata.semester', pymongo.DESCENDING)])
+    coll.create_index([('metadata.program', pymongo.DESCENDING)])
     nLen = 5
     maxArr = 5
     inst = 'KCWI'

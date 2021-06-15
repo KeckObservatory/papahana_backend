@@ -1,8 +1,10 @@
 import connexion
 from copy import deepcopy
-from flask import abort
+from flask import abort, send_from_directory
 from io import StringIO
 import json
+import pandas
+import io
 
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.observation import Observation
@@ -10,6 +12,7 @@ from papahana.controllers import controller_helper as utils
 
 from papahana import util
 
+OUT_DIR = "/tmp"
 
 def ob_get(ob_id):
     """
@@ -142,7 +145,7 @@ def ob_execution_time(ob_id):  # noqa: E501
 
     return total_tm
 
-
+#TODO this is only retrieving the OB
 def ob_export(ob_id):
     """
     http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/export/?ob_id=2
@@ -166,27 +169,29 @@ def ob_template_filled(ob_id):
 
     :rtype: bool
     """
-    fields = {"schema": 1, "_id": 0}
+    fields = {"properties": 1, "_id": 0}
     templates = ob_template_get(ob_id)
     for filled in templates:
-        if filled.keys() < {"name", "version", "properties"}:
-            print("missing properties")
-            return False
+        if filled.keys() < {"metadata", "properties"}:
+            abort(422, "The Observation Block Template is missing the keys: "
+                       "metadata or properties.")
 
-        query = {"name": filled["name"], "version": filled["version"]}
-        schema = utils.get_fields_by_query(query, fields, 'templateCollect')
-        if not schema:
-            print("no schema field")
-            return False
+        metadata = filled["metadata"]
+        if metadata.keys() < {"name", "ui_name", "instrument", "science",
+                              "version", "script"}:
+            abort(422, "The Observation Block Template is missing one"
+                       "of the metadata keys.")
 
-        required = schema[0]['schema']['required']
-        properties = schema[0]['schema']['properties']
+        query = {"metadata.name": metadata['name'],
+                 "metadata.version": metadata['version']}
 
-        if 'properties' not in filled:
-            print("no properties field")
-            return False
+        template = utils.get_fields_by_query(query, fields, 'templateCollect')
+        if not template:
+            abort(422, f"No template found with name {metadata['name']} "
+                       f"and version {metadata['version']}.")
 
-        if not utils.check_required(required, properties, filled['properties']):
+        if not utils.check_required(template[0]['properties'],
+                                    filled['properties']):
             return False
 
     return True
@@ -239,6 +244,7 @@ def ob_template_id_delete(ob_id, template_id):
     else:
         if 'science' not in ob:
             return
+
         indx = template_id - 1
         sci_templates = ob['science']
 
@@ -254,6 +260,7 @@ def ob_template_id_delete(ob_id, template_id):
     utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
 
 
+#TODO come back to types other then json
 def ob_template_id_file_get(ob_id, template_id, file_parameter):
     """
     Retrieves the specified template within the OB
@@ -268,25 +275,63 @@ def ob_template_id_file_get(ob_id, template_id, file_parameter):
     :rtype: ObservationBlock
     """
     template = ob_template_id_get(ob_id, template_id)
-    file = StringIO(template)
+    docs = pandas.DataFrame(template)
+    filename = f"{ob_id}.{file_parameter}"
+    output = f"{OUT_DIR}/{filename}"
 
-    return file.getvalue()
+    if file_parameter == 'json':
+        write_json(template, output)
+    else:
+        file_writer = {'json': docs.to_json, 'csv': docs.to_csv,
+                       'html': docs.to_html, 'txt': docs.to_string}
+        file_writer[file_parameter](output)
+
+    return send_from_directory(OUT_DIR, f'{ob_id}.{file_parameter}',
+                               as_attachment=True)
 
 
-def ob_template_id_file_put(ob_id, template_id, file_parameter):
+def write_json(dict_data, output):
+    with open(output, 'w') as fp:
+        json.dump(dict_data, fp)
+
+
+#TODO currently only working with JSON
+def ob_template_id_file_put(body, ob_id, template_id, file_parameter):
     """
     Updates the specified template within the OB
+
+    curl -X PUT "http://vm-webtools.keck:50001/v0/obsBlocks/template/1/json?ob_id=60c7e8b3d671374172c38d3b" --upload-file /tmp/60c7e8b3d671374172c38d3b.json
 
     :param ob_id: observation block id
     :type ob_id: str
     :param template_id: index of template within the OB.
     :type template_id: int
-    :param file_parameter: file paramter description here
+    :param file_parameter: file parameter description here
     :type file_parameter: str
 
     :rtype: None
     """
-    return 'do some magic!'
+    # file_reader = {'json': pandas.read_json, 'csv': pandas.read_csv,
+    #                'html': pandas.read_html, 'txt': pandas.read_json}
+
+    json_data = json.loads(body.decode('ascii'))
+
+    query = utils.query_by_id(ob_id)
+
+#TODO ARGHH wht about cals and eng  (ADD TO INDEX?!!!)
+    if template_id > 0:
+        fields = {'acquisition': 1, '_id': 0}
+    else:
+        fields = {'science': 1, '_id': 0}
+    new_vals = ''
+
+    science_templates = utils.get_fields_by_query(query, fields, 'obCollect')
+
+    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
+
+    return
+
+# def read_json()
 
 
 def ob_template_id_get(ob_id, template_id):

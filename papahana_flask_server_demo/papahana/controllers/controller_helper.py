@@ -46,7 +46,7 @@ def get_by_id(id, collect_name, cln_oid=True):
 
     :param container_id: container identifier
     :type container_id: str
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: Dict{Query Result}
@@ -72,7 +72,7 @@ def get_by_query(query, collect_name):
 
     :param query: json query parameter
     :type query: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: List[Dict{Query Result}]
@@ -90,7 +90,7 @@ def get_fields_by_query(query, fields, collect_name):
     :type query: dict
     :param query: json field parameters
     :type query: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: List[Dict{Query Result}]
@@ -108,7 +108,7 @@ def get_fields_by_id(ob_id, fields, collect_name):
     :type query: dict
     :param query: json field parameters
     :type query: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: List[Dict{Query Result}]
@@ -129,7 +129,7 @@ def insert_into_collection(doc, collect_name):
 
     :param doc: the document to insert
     :type doc: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     rtype: document id
@@ -155,7 +155,7 @@ def delete_by_id(id, collect_name):
 
     :param id: the document id
     :type query: str / ObjectId
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype (int) 1 on error,  0 on success
@@ -180,7 +180,7 @@ def replace_doc(id, doc, collect_name):
     :type query: str / ObjectId
     :param doc: the document used as a replacement.
     :type doc: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype
@@ -205,7 +205,7 @@ def update_doc(query, new_vals, collect_name):
     :type query: dict
     :param new_vals: the key/val pair of new values to update.
     :type new_vals: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
     """
     coll = config_collection(collect_name)
@@ -217,13 +217,13 @@ def update_doc(query, new_vals, collect_name):
 
 def update_add_doc(query, new_vals, collect_name):
     """
-    Update a database collection document.
+    Add to a database collection document.
 
     :param query: the query used to find the document
     :type query: dict
     :param new_vals: the key/val pair of new values to update.
     :type new_vals: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
     """
     coll = config_collection(collect_name)
@@ -239,7 +239,7 @@ def delete_from_collection(query, collect_name):
 
     :param query: the query used to find the document
     :type query: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
     """
     coll = config_collection(collect_name)
@@ -417,44 +417,39 @@ def obs_id_associated(sem_id, obs_id):
 
 
 #validation specific
-def check_required(required, properties, filled):
+def check_required(properties, filled):
+    """
+    This trusts that the template keys have already been checked to exist.
+    """
 
-    for key in required:
+    type_map = {'integer': int, 'float': float, 'string': str, 'array': list,
+                'boolean': bool}
+
+    for key in properties:
+        if properties[key]['optionality'] != 'required':
+            continue
+
         if key not in filled or not filled[key]:
-            print("incorrect key")
-            return False
+            abort(422, f"Observation Block is missing key {key}")
 
-        type_map = {'integer': int, 'number': float,
-                    'string': str, 'array': list}
+        ob_value = filled[key]
+        template_properties = properties[key]
 
-        key_props = properties[key]
-        key_py_type = type_map[key_props['type']]
-        if not check_type(filled[key], key_py_type, key_props['type']):
-            print("wrong type", str(key_py_type), filled[key], key_props['type'])
-            return False
+        if not check_type(ob_value, template_properties['type'],
+                          type_map[template_properties['type']]):
+            abort(422, f"{ob_value} is not of type: "
+                       f"{template_properties['type']}.")
 
-        if not check_enum(key_props, filled, key):
-            print("incorrect value")
-            return False
-
-        if key_py_type is float or key_py_type is int:
-            if 'maximum' in key_props and 'minimum' in key_props:
-                if (filled[key] > key_props['maximum'] or
-                        filled[key] < key_props['minimum']):
-                    print("out of range")
-                    return False
-
-        elif key_py_type is list:
-            req = key_props['items']['required']
-            props = key_props['items']['properties']
-            check_required(req, props, filled['items'])
+        if not check_allowed(ob_value, template_properties):
+            abort(422, f"{ob_value} is is not within values: "
+                       f"{template_properties['allowed']}")
 
         return True
 
 
-def check_type(val, key_py_type, key_type):
+def check_type(val, key_type, key_py_type):
     if not isinstance(val, key_py_type):
-        if key_type == 'number':
+        if key_type == 'float':
             if isinstance(val, int):
                 return True
 
@@ -463,9 +458,24 @@ def check_type(val, key_py_type, key_type):
     return True
 
 
-def check_enum(key_props, filled, key):
-    if 'enum' in key_props:
-        if filled[key] not in key_props['enum']:
+def check_allowed(ob_value, template_properties):
+    allowed_type = template_properties['option']
+    allowed = template_properties['allowed']
+
+    if allowed_type == 'range':
+        if ob_value < allowed[0] or ob_value > allowed[1]:
+            return False
+
+    if allowed_type == 'list':
+        if ob_value not in allowed:
+            return False
+
+    if allowed_type == 'boolean':
+        if isinstance(ob_value, bool):
             return False
 
     return True
+
+
+
+
