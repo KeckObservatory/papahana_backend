@@ -19,7 +19,6 @@ from papahana.models.observation_block import ObservationBlock
 from papahana.models.observation_metadata import ObservationMetadata
 from papahana.models.observation_template import ObservationTemplate
 from papahana.models.one_of_coordinate_schema import OneOfCoordinateSchema
-from papahana.models.one_of_sem_id_schema import OneOfSemIdSchema
 from papahana.models.one_of_template_id_schema import OneOfTemplateIdSchema
 from papahana.models.one_of_template_schema import OneOfTemplateSchema
 from papahana.models.one_ofbody import OneOfbody

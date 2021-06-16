@@ -8,6 +8,7 @@ from typing import List, Dict  # noqa: F401
 from papahana.models.base_model_ import Model
 from papahana.models.instrument_enum import InstrumentEnum  # noqa: F401,E501
 from papahana.models.sem_id_schema import SemIdSchema  # noqa: F401,E501
+import re  # noqa: F401,E501
 from papahana import util
 
 

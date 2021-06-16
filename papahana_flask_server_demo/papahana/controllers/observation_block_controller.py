@@ -7,7 +7,6 @@ import pandas
 import io
 
 from papahana.models.observation_block import ObservationBlock
-from papahana.models.observation import Observation
 from papahana.controllers import controller_helper as utils
 
 from papahana import util
