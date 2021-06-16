@@ -14,25 +14,30 @@ class Status(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, state: str=None, executions: List[str]=None):  # noqa: E501
+    def __init__(self, state: str='started', executions: List[str]=None, deleted: bool=False):  # noqa: E501
         """Status - a model defined in Swagger
 
         :param state: The state of this Status.  # noqa: E501
         :type state: str
         :param executions: The executions of this Status.  # noqa: E501
         :type executions: List[str]
+        :param deleted: The deleted of this Status.  # noqa: E501
+        :type deleted: bool
         """
         self.swagger_types = {
             'state': str,
-            'executions': List[str]
+            'executions': List[str],
+            'deleted': bool
         }
 
         self.attribute_map = {
             'state': 'state',
-            'executions': 'executions'
+            'executions': 'executions',
+            'deleted': 'deleted'
         }
         self._state = state
         self._executions = executions
+        self._deleted = deleted
 
     @classmethod
     def from_dict(cls, dikt) -> 'Status':
@@ -63,6 +68,12 @@ class Status(Model):
         :param state: The state of this Status.
         :type state: str
         """
+        allowed_values = ["started", "executed", "completed", "failed", "terminated", "stopped"]  # noqa: E501
+        if state not in allowed_values:
+            raise ValueError(
+                "Invalid value for `state` ({0}), must be one of {1}"
+                .format(state, allowed_values)
+            )
 
         self._state = state
 
@@ -86,3 +97,24 @@ class Status(Model):
         """
 
         self._executions = executions
+
+    @property
+    def deleted(self) -> bool:
+        """Gets the deleted of this Status.
+
+
+        :return: The deleted of this Status.
+        :rtype: bool
+        """
+        return self._deleted
+
+    @deleted.setter
+    def deleted(self, deleted: bool):
+        """Sets the deleted of this Status.
+
+
+        :param deleted: The deleted of this Status.
+        :type deleted: bool
+        """
+
+        self._deleted = deleted

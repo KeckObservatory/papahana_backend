@@ -417,7 +417,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ContainerSummary'
+                $ref: '#/components/schemas/Container'
         "400":
           description: Invalid status value
         "401":
@@ -441,7 +441,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ContainerSummary'
+                $ref: '#/components/schemas/Container'
         "400":
           description: Invalid status value
         "401":
@@ -669,9 +669,7 @@ paths:
               schema:
                 type: array
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/ObservationTemplate'
-                    - $ref: '#/components/schemas/ScienceTemplate'
+                  $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
         "404":
@@ -691,13 +689,10 @@ paths:
           application/json:
             schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ObservationTemplate'
-                  - $ref: '#/components/schemas/ScienceTemplate'
+                  - $ref: '#/components/schemas/TemplateSchema'
                   - type: array
                     items:
-                      oneOf:
-                        - $ref: '#/components/schemas/ObservationTemplate'
-                        - $ref: '#/components/schemas/ScienceTemplate'
+                      $ref: '#/components/schemas/TemplateSchema'
         required: true
       responses:
         "200":
@@ -721,13 +716,11 @@ paths:
           application/json:
             schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ObservationTemplate'
-                  - $ref: '#/components/schemas/ScienceTemplate'
+                  - $ref: '#/components/schemas/TemplateSchema'
                   - type: array
                     items:
-                      oneOf:
-                        - $ref: '#/components/schemas/ObservationTemplate'
-                        - $ref: '#/components/schemas/ScienceTemplate'
+                      $ref: '#/components/schemas/TemplateSchema'
+
         required: true
       responses:
         "200":
@@ -753,9 +746,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ObservationTemplate'
-                  - $ref: '#/components/schemas/ScienceTemplate'
+                $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
         "404":
@@ -774,9 +765,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/ObservationTemplate'
-                - $ref: '#/components/schemas/ScienceTemplate'
+              $ref: '#/components/schemas/TemplateSchema'
         required: true
       responses:
         "200":
@@ -820,9 +809,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ObservationTemplate'
-                  - $ref: '#/components/schemas/ScienceTemplate'
+                $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
         "404":
@@ -869,9 +856,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ObservationTemplate'
-                  - $ref: '#/components/schemas/ScienceTemplate'
+                $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
         "404":
@@ -1125,9 +1110,14 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
 components:
   schemas:
     Container:
+      required:
+        - name
+        - sem_id
+        - observation_blocks
       type: object
       properties:
         name:
@@ -1138,26 +1128,9 @@ components:
           type: array
           items:
             type: string
+          default: []
         comment:
           type: string
-
-    ContainerSummary:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        semester:
-          type: string
-        observation_blocks:
-          type: array
-          items:
-            type: string
-        comment:
-          type: string
-      example:
-        container_id: container_id
 
     ObservationBlock:
       required:
@@ -1174,8 +1147,7 @@ components:
         science:
           type: array
           items:
-            oneOf:
-              - $ref: '#/components/schemas/ScienceTemplate'
+            $ref: '#/components/schemas/ScienceTemplate'
         # TODO add calibration and eng templates here
         observation:
           type: array
@@ -1189,7 +1161,8 @@ components:
           $ref: '#/components/schemas/Status'
         time_constraints:
           type: array
-#            items: string
+          items:
+            type: string
         comment:
           type: string
           example:
@@ -1222,7 +1195,7 @@ components:
         sem_id:
           $ref: '#/components/schemas/SemIdSchema'
         instrument:
-          $ref: '#/components/schemas/instrument_enum'
+          $ref: '#/components/schemas/InstrumentEnum'
         comment:
           type: string
       example:
@@ -1245,18 +1218,18 @@ components:
             - failed
             - terminated
             - stopped
+          default: started
         executions:
           type: array
           items:
             type: string
+          default: []
         deleted:
-          type: integer
-          enum:
-            - 0
-            - 1
-
+          type: boolean
+          default: false
 
     ObservationTemplate:
+      # TODO this is a place holder until Eng and Cal templates are added.
       type: object
       properties:
         metadata:
@@ -1264,7 +1237,7 @@ components:
           items:
             $ref: '#/components/schemas/ObservationMetadata'
         template_index:
-          type: integer
+          $ref: '#/components/schemas/TemplateIdSchema'
 
     ScienceTemplate:
       required:
@@ -1281,28 +1254,7 @@ components:
           items:
             $ref: '#/components/schemas/ScienceParameters'
         template_index:
-          $ref: '#/components/schemas/template_id_schema'
-
-    ScienceParameters:
-      required:
-        - det1_exptime
-        - det1_nexp
-      type: object
-      properties:
-        det1_exptime:
-          type: number
-        det1_nexp:
-          type: integer
-        det2_exptime:
-          type: number
-        det2_nexp:
-          type: integer
-        seq_ndither:
-          type: integer
-        seq_ditarray:
-          type: array
-          items:
-            $ref: '#/components/schemas/DitherSchema'
+          $ref: '#/components/schemas/TemplateIdSchema'
 
     Acquisition:
       required:
@@ -1319,7 +1271,7 @@ components:
           items:
             $ref: '#/components/schemas/AcquisitionParameters'
         template_index:
-          $ref: '#/components/schemas/template_id_schema'
+          $ref: '#/components/schemas/TemplateIdSchema'
 
     ObservationMetadata:
       required:
@@ -1335,7 +1287,7 @@ components:
         ui_name:
           type: string
         instrument:
-          $ref: '#/components/schemas/instrument_enum'
+          $ref: '#/components/schemas/InstrumentEnum'
         template_type:
           type: string
           enum:
@@ -1366,6 +1318,7 @@ components:
             - "south"
             - "north"
             - "auto"
+          default: "auto"
         rotmode:
           type: string
           enum:
@@ -1391,6 +1344,27 @@ components:
             - "auto"
             - "operator"
             - "user"
+
+    ScienceParameters:
+      required:
+        - det1_exptime
+        - det1_nexp
+      type: object
+      properties:
+        det1_exptime:
+          type: number
+        det1_nexp:
+          type: integer
+        det2_exptime:
+          type: number
+        det2_nexp:
+          type: integer
+        seq_ndither:
+          type: integer
+        seq_ditarray:
+          type: array
+          items:
+            $ref: '#/components/schemas/DitherSchema'
 
     Target:
       required:
@@ -1450,6 +1424,7 @@ components:
         magnitude:
           magnitude: 14.5
           band: J
+
     Magnitude:
       required:
       - band
@@ -1463,12 +1438,15 @@ components:
       example:
         magnitude: 14.7
         band: K
+
     FindingChart:
       description: Finding chart description goes here
+
+    # TODO add IP template description
     InstrumentPackage:
       description: Instrument package description goes here
 
-    template_id_schema:
+    TemplateIdSchema:
       type: string
       oneOf:
         - pattern: '^acq\d{1}$'
@@ -1480,7 +1458,7 @@ components:
         - pattern: '^cal\d{1}$'
         - pattern: '^cal\d{2}$'
 
-    instrument_enum:
+    InstrumentEnum:
       type: string
       enum:
         - KCWI
@@ -1549,13 +1527,13 @@ components:
     SemIdSchema:
       type: string
       oneOf:
-        - pattern: '^\d{4}A_U\d{3}$'
-        - pattern: '^\d{4}B_U\d{3}$'
+        - pattern: '^\d{4}A_[A-Z]{1}\d{3}$'
+        - pattern: '^\d{4}B_[A-Z]{1}\d{3}$'
 
-#      TemplateSchema:
-#        oneOf:
-#            - $ref: '#/components/schemas/ObservationTemplate'
-#            - $ref: '#/components/schemas/ScienceTemplate'
+    TemplateSchema:
+      oneOf:
+          - $ref: '#/components/schemas/ObservationTemplate'
+          - $ref: '#/components/schemas/ScienceTemplate'
 
   parameters:
     obs_id:
@@ -1651,7 +1629,7 @@ components:
       style: simple
       explode: false
       schema:
-        $ref: '#/components/schemas/instrument_enum'
+        $ref: '#/components/schemas/InstrumentEnum'
     ip_version:
       name: ip_version
       in: path
@@ -1680,7 +1658,7 @@ components:
       style: simple
       explode: false
       schema:
-        $ref: '#/components/schemas/template_id_schema'
+        $ref: '#/components/schemas/TemplateIdSchema'
       example: sci2
     template_name:
       name: template_name

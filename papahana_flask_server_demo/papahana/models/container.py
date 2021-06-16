@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
+from papahana.models.sem_id_schema import SemIdSchema  # noqa: F401,E501
 from papahana import util
 
 
@@ -14,38 +15,33 @@ class Container(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: object=None, name: str=None, semester: str=None, observation_blocks: List[str]=None, comment: str=None):  # noqa: E501
+    def __init__(self, name: str=None, sem_id: SemIdSchema=None, observation_blocks: List[str]=None, comment: str=None):  # noqa: E501
         """Container - a model defined in Swagger
 
-        :param id: The id of this Container.  # noqa: E501
-        :type id: object
         :param name: The name of this Container.  # noqa: E501
         :type name: str
-        :param semester: The semester of this Container.  # noqa: E501
-        :type semester: str
+        :param sem_id: The sem_id of this Container.  # noqa: E501
+        :type sem_id: SemIdSchema
         :param observation_blocks: The observation_blocks of this Container.  # noqa: E501
         :type observation_blocks: List[str]
         :param comment: The comment of this Container.  # noqa: E501
         :type comment: str
         """
         self.swagger_types = {
-            'id': object,
             'name': str,
-            'semester': str,
+            'sem_id': SemIdSchema,
             'observation_blocks': List[str],
             'comment': str
         }
 
         self.attribute_map = {
-            'id': 'id',
             'name': 'name',
-            'semester': 'semester',
+            'sem_id': 'sem_id',
             'observation_blocks': 'observation_blocks',
             'comment': 'comment'
         }
-        self._id = id
         self._name = name
-        self._semester = semester
+        self._sem_id = sem_id
         self._observation_blocks = observation_blocks
         self._comment = comment
 
@@ -59,27 +55,6 @@ class Container(Model):
         :rtype: Container
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def id(self) -> object:
-        """Gets the id of this Container.
-
-
-        :return: The id of this Container.
-        :rtype: object
-        """
-        return self._id
-
-    @id.setter
-    def id(self, id: object):
-        """Sets the id of this Container.
-
-
-        :param id: The id of this Container.
-        :type id: object
-        """
-
-        self._id = id
 
     @property
     def name(self) -> str:
@@ -99,29 +74,33 @@ class Container(Model):
         :param name: The name of this Container.
         :type name: str
         """
+        if name is None:
+            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
 
     @property
-    def semester(self) -> str:
-        """Gets the semester of this Container.
+    def sem_id(self) -> SemIdSchema:
+        """Gets the sem_id of this Container.
 
 
-        :return: The semester of this Container.
-        :rtype: str
+        :return: The sem_id of this Container.
+        :rtype: SemIdSchema
         """
-        return self._semester
+        return self._sem_id
 
-    @semester.setter
-    def semester(self, semester: str):
-        """Sets the semester of this Container.
+    @sem_id.setter
+    def sem_id(self, sem_id: SemIdSchema):
+        """Sets the sem_id of this Container.
 
 
-        :param semester: The semester of this Container.
-        :type semester: str
+        :param sem_id: The sem_id of this Container.
+        :type sem_id: SemIdSchema
         """
+        if sem_id is None:
+            raise ValueError("Invalid value for `sem_id`, must not be `None`")  # noqa: E501
 
-        self._semester = semester
+        self._sem_id = sem_id
 
     @property
     def observation_blocks(self) -> List[str]:
@@ -141,6 +120,8 @@ class Container(Model):
         :param observation_blocks: The observation_blocks of this Container.
         :type observation_blocks: List[str]
         """
+        if observation_blocks is None:
+            raise ValueError("Invalid value for `observation_blocks`, must not be `None`")  # noqa: E501
 
         self._observation_blocks = observation_blocks
 

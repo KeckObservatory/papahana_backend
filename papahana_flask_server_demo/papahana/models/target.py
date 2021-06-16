@@ -6,8 +6,8 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
+from papahana.models.coordinate_schema import CoordinateSchema  # noqa: F401,E501
 from papahana.models.magnitude import Magnitude  # noqa: F401,E501
-import re  # noqa: F401,E501
 from papahana import util
 
 
@@ -16,15 +16,15 @@ class Target(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, ra: str=None, dec: str=None, equinox: str='J2000', frame: str='Fk5', pa: float=0.0, pm_ra: float=0.0, pm_dec: float=0.0, epoch: float=2000.0, obstime: float=None, magnitude: Magnitude=None, dra: float=0.0, ddec: float=0.0, comment: str=None):  # noqa: E501
+    def __init__(self, name: str=None, ra: CoordinateSchema=None, dec: CoordinateSchema=None, equinox: str='J2000', frame: str='Fk5', pa: float=0.0, pm_ra: float=0.0, pm_dec: float=0.0, epoch: float=2000.0, obstime: float=None, magnitude: Magnitude=None, dra: float=0.0, ddec: float=0.0, comment: str=None):  # noqa: E501
         """Target - a model defined in Swagger
 
         :param name: The name of this Target.  # noqa: E501
         :type name: str
         :param ra: The ra of this Target.  # noqa: E501
-        :type ra: str
+        :type ra: CoordinateSchema
         :param dec: The dec of this Target.  # noqa: E501
-        :type dec: str
+        :type dec: CoordinateSchema
         :param equinox: The equinox of this Target.  # noqa: E501
         :type equinox: str
         :param frame: The frame of this Target.  # noqa: E501
@@ -50,8 +50,8 @@ class Target(Model):
         """
         self.swagger_types = {
             'name': str,
-            'ra': str,
-            'dec': str,
+            'ra': CoordinateSchema,
+            'dec': CoordinateSchema,
             'equinox': str,
             'frame': str,
             'pa': float,
@@ -131,22 +131,22 @@ class Target(Model):
         self._name = name
 
     @property
-    def ra(self) -> str:
+    def ra(self) -> CoordinateSchema:
         """Gets the ra of this Target.
 
 
         :return: The ra of this Target.
-        :rtype: str
+        :rtype: CoordinateSchema
         """
         return self._ra
 
     @ra.setter
-    def ra(self, ra: str):
+    def ra(self, ra: CoordinateSchema):
         """Sets the ra of this Target.
 
 
         :param ra: The ra of this Target.
-        :type ra: str
+        :type ra: CoordinateSchema
         """
         if ra is None:
             raise ValueError("Invalid value for `ra`, must not be `None`")  # noqa: E501
@@ -154,22 +154,22 @@ class Target(Model):
         self._ra = ra
 
     @property
-    def dec(self) -> str:
+    def dec(self) -> CoordinateSchema:
         """Gets the dec of this Target.
 
 
         :return: The dec of this Target.
-        :rtype: str
+        :rtype: CoordinateSchema
         """
         return self._dec
 
     @dec.setter
-    def dec(self, dec: str):
+    def dec(self, dec: CoordinateSchema):
         """Sets the dec of this Target.
 
 
         :param dec: The dec of this Target.
-        :type dec: str
+        :type dec: CoordinateSchema
         """
         if dec is None:
             raise ValueError("Invalid value for `dec`, must not be `None`")  # noqa: E501

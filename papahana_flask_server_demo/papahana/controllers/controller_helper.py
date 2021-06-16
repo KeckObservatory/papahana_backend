@@ -51,7 +51,7 @@ def query_by_id(id):
     """
     id = get_object_id(id)
 
-    return {"_id": id, "status.deleted": 0}
+    return {"_id": id, "status.deleted": False}
 
 
 def get_by_id(id, collect_name, cln_oid=True):
@@ -91,7 +91,7 @@ def get_by_query(query, collect_name):
     """
     coll = config_collection(collect_name)
     if "status.deleted" not in query:
-        query["status.deleted"] = 0
+        query["status.deleted"] = False
 
     return list(coll.find(query))
 
@@ -111,7 +111,7 @@ def get_fields_by_query(query, fields, collect_name):
     """
     coll = config_collection(collect_name)
     if "status.deleted" not in query:
-        query["status.deleted"] = 0
+        query["status.deleted"] = False
 
     return list(coll.find(query, fields))
 

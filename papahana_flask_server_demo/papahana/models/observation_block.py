@@ -6,9 +6,12 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
-from papahana.models.metadata import Metadata  # noqa: F401,E501
-from papahana.models.observation import Observation  # noqa: F401,E501
+from papahana.models.acquisition import Acquisition  # noqa: F401,E501
+from papahana.models.obs_block_metadata import ObsBlockMetadata  # noqa: F401,E501
+from papahana.models.observation_template import ObservationTemplate  # noqa: F401,E501
+from papahana.models.science_template import ScienceTemplate  # noqa: F401,E501
 from papahana.models.status import Status  # noqa: F401,E501
+from papahana.models.target import Target  # noqa: F401,E501
 from papahana import util
 
 
@@ -17,54 +20,59 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, metadata: Metadata=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
+    def __init__(self, metadata: ObsBlockMetadata=None, target: List[Target]=None, acquisition: Acquisition=None, science: List[ScienceTemplate]=None, observation: List[ObservationTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[str]=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
-        :param id: The id of this ObservationBlock.  # noqa: E501
-        :type id: str
         :param metadata: The metadata of this ObservationBlock.  # noqa: E501
-        :type metadata: Metadata
-        :param observations: The observations of this ObservationBlock.  # noqa: E501
-        :type observations: List[Observation]
+        :type metadata: ObsBlockMetadata
+        :param target: The target of this ObservationBlock.  # noqa: E501
+        :type target: List[Target]
+        :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
+        :type acquisition: Acquisition
+        :param science: The science of this ObservationBlock.  # noqa: E501
+        :type science: List[ScienceTemplate]
+        :param observation: The observation of this ObservationBlock.  # noqa: E501
+        :type observation: List[ObservationTemplate]
         :param associations: The associations of this ObservationBlock.  # noqa: E501
         :type associations: List[str]
-        :param observation_type: The observation_type of this ObservationBlock.  # noqa: E501
-        :type observation_type: List[str]
-        :param priority: The priority of this ObservationBlock.  # noqa: E501
-        :type priority: float
         :param status: The status of this ObservationBlock.  # noqa: E501
         :type status: Status
+        :param time_constraints: The time_constraints of this ObservationBlock.  # noqa: E501
+        :type time_constraints: List[str]
         :param comment: The comment of this ObservationBlock.  # noqa: E501
         :type comment: str
         """
         self.swagger_types = {
-            'id': str,
-            'metadata': Metadata,
-            'observations': List[Observation],
+            'metadata': ObsBlockMetadata,
+            'target': List[Target],
+            'acquisition': Acquisition,
+            'science': List[ScienceTemplate],
+            'observation': List[ObservationTemplate],
             'associations': List[str],
-            'observation_type': List[str],
-            'priority': float,
             'status': Status,
+            'time_constraints': List[str],
             'comment': str
         }
 
         self.attribute_map = {
-            'id': 'id',
             'metadata': 'metadata',
-            'observations': 'observations',
+            'target': 'target',
+            'acquisition': 'acquisition',
+            'science': 'science',
+            'observation': 'observation',
             'associations': 'associations',
-            'observation_type': 'observation_type',
-            'priority': 'priority',
             'status': 'status',
+            'time_constraints': 'time_constraints',
             'comment': 'comment'
         }
-        self._id = id
         self._metadata = metadata
-        self._observations = observations
+        self._target = target
+        self._acquisition = acquisition
+        self._science = science
+        self._observation = observation
         self._associations = associations
-        self._observation_type = observation_type
-        self._priority = priority
         self._status = status
+        self._time_constraints = time_constraints
         self._comment = comment
 
     @classmethod
@@ -79,67 +87,111 @@ class ObservationBlock(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self) -> str:
-        """Gets the id of this ObservationBlock.
-
-
-        :return: The id of this ObservationBlock.
-        :rtype: str
-        """
-        return self._id
-
-    @id.setter
-    def id(self, id: str):
-        """Sets the id of this ObservationBlock.
-
-
-        :param id: The id of this ObservationBlock.
-        :type id: str
-        """
-
-        self._id = id
-
-    @property
-    def metadata(self) -> Metadata:
+    def metadata(self) -> ObsBlockMetadata:
         """Gets the metadata of this ObservationBlock.
 
 
         :return: The metadata of this ObservationBlock.
-        :rtype: Metadata
+        :rtype: ObsBlockMetadata
         """
         return self._metadata
 
     @metadata.setter
-    def metadata(self, metadata: Metadata):
+    def metadata(self, metadata: ObsBlockMetadata):
         """Sets the metadata of this ObservationBlock.
 
 
         :param metadata: The metadata of this ObservationBlock.
-        :type metadata: Metadata
+        :type metadata: ObsBlockMetadata
         """
+        if metadata is None:
+            raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
 
         self._metadata = metadata
 
     @property
-    def observations(self) -> List[Observation]:
-        """Gets the observations of this ObservationBlock.
+    def target(self) -> List[Target]:
+        """Gets the target of this ObservationBlock.
 
 
-        :return: The observations of this ObservationBlock.
-        :rtype: List[Observation]
+        :return: The target of this ObservationBlock.
+        :rtype: List[Target]
         """
-        return self._observations
+        return self._target
 
-    @observations.setter
-    def observations(self, observations: List[Observation]):
-        """Sets the observations of this ObservationBlock.
+    @target.setter
+    def target(self, target: List[Target]):
+        """Sets the target of this ObservationBlock.
 
 
-        :param observations: The observations of this ObservationBlock.
-        :type observations: List[Observation]
+        :param target: The target of this ObservationBlock.
+        :type target: List[Target]
         """
 
-        self._observations = observations
+        self._target = target
+
+    @property
+    def acquisition(self) -> Acquisition:
+        """Gets the acquisition of this ObservationBlock.
+
+
+        :return: The acquisition of this ObservationBlock.
+        :rtype: Acquisition
+        """
+        return self._acquisition
+
+    @acquisition.setter
+    def acquisition(self, acquisition: Acquisition):
+        """Sets the acquisition of this ObservationBlock.
+
+
+        :param acquisition: The acquisition of this ObservationBlock.
+        :type acquisition: Acquisition
+        """
+
+        self._acquisition = acquisition
+
+    @property
+    def science(self) -> List[ScienceTemplate]:
+        """Gets the science of this ObservationBlock.
+
+
+        :return: The science of this ObservationBlock.
+        :rtype: List[ScienceTemplate]
+        """
+        return self._science
+
+    @science.setter
+    def science(self, science: List[ScienceTemplate]):
+        """Sets the science of this ObservationBlock.
+
+
+        :param science: The science of this ObservationBlock.
+        :type science: List[ScienceTemplate]
+        """
+
+        self._science = science
+
+    @property
+    def observation(self) -> List[ObservationTemplate]:
+        """Gets the observation of this ObservationBlock.
+
+
+        :return: The observation of this ObservationBlock.
+        :rtype: List[ObservationTemplate]
+        """
+        return self._observation
+
+    @observation.setter
+    def observation(self, observation: List[ObservationTemplate]):
+        """Sets the observation of this ObservationBlock.
+
+
+        :param observation: The observation of this ObservationBlock.
+        :type observation: List[ObservationTemplate]
+        """
+
+        self._observation = observation
 
     @property
     def associations(self) -> List[str]:
@@ -163,48 +215,6 @@ class ObservationBlock(Model):
         self._associations = associations
 
     @property
-    def observation_type(self) -> List[str]:
-        """Gets the observation_type of this ObservationBlock.
-
-
-        :return: The observation_type of this ObservationBlock.
-        :rtype: List[str]
-        """
-        return self._observation_type
-
-    @observation_type.setter
-    def observation_type(self, observation_type: List[str]):
-        """Sets the observation_type of this ObservationBlock.
-
-
-        :param observation_type: The observation_type of this ObservationBlock.
-        :type observation_type: List[str]
-        """
-
-        self._observation_type = observation_type
-
-    @property
-    def priority(self) -> float:
-        """Gets the priority of this ObservationBlock.
-
-
-        :return: The priority of this ObservationBlock.
-        :rtype: float
-        """
-        return self._priority
-
-    @priority.setter
-    def priority(self, priority: float):
-        """Sets the priority of this ObservationBlock.
-
-
-        :param priority: The priority of this ObservationBlock.
-        :type priority: float
-        """
-
-        self._priority = priority
-
-    @property
     def status(self) -> Status:
         """Gets the status of this ObservationBlock.
 
@@ -224,6 +234,27 @@ class ObservationBlock(Model):
         """
 
         self._status = status
+
+    @property
+    def time_constraints(self) -> List[str]:
+        """Gets the time_constraints of this ObservationBlock.
+
+
+        :return: The time_constraints of this ObservationBlock.
+        :rtype: List[str]
+        """
+        return self._time_constraints
+
+    @time_constraints.setter
+    def time_constraints(self, time_constraints: List[str]):
+        """Sets the time_constraints of this ObservationBlock.
+
+
+        :param time_constraints: The time_constraints of this ObservationBlock.
+        :type time_constraints: List[str]
+        """
+
+        self._time_constraints = time_constraints
 
     @property
     def comment(self) -> str:
