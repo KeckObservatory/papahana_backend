@@ -502,7 +502,7 @@ paths:
     get:
       tags:
       - Instrument
-      description: Retrieves the list of available instrument packages for an instrument
+      description: Retrieves the the available instrument packages for an instrument.
       operationId: instrument_packages
       parameters:
       - $ref: '#/components/parameters/instrument'
@@ -512,9 +512,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InstrumentPackage'
+                $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
         "404":
@@ -1212,54 +1210,48 @@ components:
       - instrument
       type: object
       properties:
-        acquisition:
+        metadata:
           type: string
-        instrument:
-          type: string
-        acquisition_method:
-          type: string
-        guider_selection:
-          type: string
-        ao_modes:
-          type: array
-          items:
-            type: string
-        associations:
-          type: array
-          items:
-            type: string
-        offset_stars:
-          type: array
-          items:
-            type: string
-        slitmasks:
-          type: array
-          items:
-            type: string
-        position_angles:
-          type: array
-          items:
-            type: string
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/Acq_metadata'
+#        properties:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/Acq_properties'
       example:
-        associations:
-        - associations
-        - associations
-        offset_stars:
-        - offset_stars
-        - offset_stars
-        position_angles:
-        - position_angles
-        - position_angles
-        acquisition_method: acquisition_method
-        guider_selection: guider_selection
-        slitmasks:
-        - slitmasks
-        - slitmasks
-        ao_modes:
-        - ao_modes
-        - ao_modes
-        acquisition: acquisition
-        instrumental_setup: instrumental_setup
+        associations: stuff
+
+    Acq_metadata:
+      name:
+        type: string
+      uiname:
+        type: string
+      instrument:
+        type: string
+      type:
+        type: string
+      version:
+        type: string
+      script:
+        type: string
+    Acq_properties:
+      wrap:
+        type: string
+      rotmode:
+        type: string
+      guider_po:
+        type: string
+      ra_offset:
+        type: string
+      dec_offset:
+        type: string
+      guider_gs_ra:
+        type: string
+      guider_gs_dec:
+        type: string
+      guider_gs_mode:
+        type: string
     Observation:
       required:
       - instrument
@@ -1278,93 +1270,77 @@ components:
         index: 1
     Target:
       required:
-      - ddec
-      - dec
-      - dec_offset
-      - dra
-      - epoch
-      - equinox
-      - frame
-      - magnitude
       - name
-      - obstime
-      - pm_dec
-      - pm_ra
       - ra
-      - ra_offset
+      - dec
+      - magnitude
       type: object
       properties:
         name:
           type: string
         ra:
           type: string
+          pattern: '^\d{2}:\d{2}:\d{2}$'
         dec:
           type: string
+          pattern: '^\d{2}:\d{2}:\d{2}.\d{1}$'
         equinox:
-          type: number
+          type: string
+          default: "J2000"
         frame:
           type: string
-        ra_offset:
+          default: "Fk5"
+        PA:
           type: number
-        dec_offset:
-          type: number
+          default: 0.0
         pm_ra:
           type: number
+          default: 0.0
         pm_dec:
           type: number
+          default: 0.0
         epoch:
           type: number
+          default: 2000.0
         obstime:
           type: number
         magnitude:
           $ref: '#/components/schemas/Magnitude'
-        wrap:
-          type: string
         dra:
           type: number
+          default: 0.0
         ddec:
           type: number
+          default: 0.0
         comment:
           type: string
-        template:
-          type: boolean
       example:
-        dec: dec
-        epoch: 2.3021358869347655
-        pm_dec: 5.637376656633329
+        name: A Stellar Galaxy
+        ra: 15:01:01
+        dec: 20:00:02.2
+        equinox: J2000
+        frame: Fk5
+        PA: -90.0
         pm_ra: 5.962133916683182
-        ra: ra
-        ddec: 3.616076749251911
-        ra_offset: 6.027456183070403
-        dra: 9.301444243932576
-        obstime: 7.061401241503109
-        wrap: wrap
+        pm_dec: 5.637376656633329
+        obstime: 2021-04-22 15:08:04
         comment: comment
-        name: name
         magnitude:
-          template: true
-          magnitude: magnitude
-          band: band
-        dec_offset: 1.4658129805029452
-        equinox: 0.8008281904610115
-        frame: frame
+          magnitude: 14.5
+          band: J
     Magnitude:
       required:
       - band
       - magnitude
-      - template
       type: object
       properties:
         band:
           type: string
         magnitude:
-          type: string
-        template:
-          type: boolean
+          type: float
       example:
-        template: true
-        magnitude: magnitude
-        band: band
+        magnitude: 14.7
+        band: K
     FindingChart:
       description: Finding chart description goes here
     InstrumentPackage:
@@ -1450,6 +1426,11 @@ components:
       explode: true
       schema:
         type: string
+        enum:
+        - acquisition
+        - science
+        - engineering
+        - calibration
       example: science
     instrument:
       name: instrument

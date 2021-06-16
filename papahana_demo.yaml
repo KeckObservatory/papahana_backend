@@ -502,7 +502,7 @@ paths:
     get:
       tags:
       - Instrument
-      description: Retrieves the list of available instrument packages for an instrument
+      description: Retrieves the the available instrument packages for an instrument.
       operationId: instrument_packages
       parameters:
       - $ref: '#/components/parameters/instrument'
@@ -512,9 +512,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InstrumentPackage'
+                $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
         "404":
@@ -671,7 +669,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Observation'
+                  oneOf:
+                    - $ref: '#/components/schemas/ObservationTemplate'
+                    - $ref: '#/components/schemas/ScienceTemplate'
         "400":
           description: Invalid status value
         "404":
@@ -691,10 +691,13 @@ paths:
           application/json:
             schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Observation'
+                  - $ref: '#/components/schemas/ObservationTemplate'
+                  - $ref: '#/components/schemas/ScienceTemplate'
                   - type: array
                     items:
-                      $ref: '#/components/schemas/Observation'
+                      oneOf:
+                        - $ref: '#/components/schemas/ObservationTemplate'
+                        - $ref: '#/components/schemas/ScienceTemplate'
         required: true
       responses:
         "200":
@@ -718,10 +721,13 @@ paths:
           application/json:
             schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Observation'
+                  - $ref: '#/components/schemas/ObservationTemplate'
+                  - $ref: '#/components/schemas/ScienceTemplate'
                   - type: array
                     items:
-                      $ref: '#/components/schemas/Observation'
+                      oneOf:
+                        - $ref: '#/components/schemas/ObservationTemplate'
+                        - $ref: '#/components/schemas/ScienceTemplate'
         required: true
       responses:
         "200":
@@ -747,7 +753,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Observation'
+                oneOf:
+                  - $ref: '#/components/schemas/ObservationTemplate'
+                  - $ref: '#/components/schemas/ScienceTemplate'
         "400":
           description: Invalid status value
         "404":
@@ -766,7 +774,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Observation'
+              oneOf:
+                - $ref: '#/components/schemas/ObservationTemplate'
+                - $ref: '#/components/schemas/ScienceTemplate'
         required: true
       responses:
         "200":
@@ -810,7 +820,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Observation'
+                oneOf:
+                  - $ref: '#/components/schemas/ObservationTemplate'
+                  - $ref: '#/components/schemas/ScienceTemplate'
         "400":
           description: Invalid status value
         "404":
@@ -857,7 +869,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Observation'
+                oneOf:
+                  - $ref: '#/components/schemas/ObservationTemplate'
+                  - $ref: '#/components/schemas/ScienceTemplate'
         "400":
           description: Invalid status value
         "404":
@@ -1116,22 +1130,17 @@ components:
     Container:
       type: object
       properties:
-        id:
-          type: object
         name:
           type: string
-        semester:
-          type: string
+        sem_id:
+          $ref: '#/components/schemas/SemIdSchema'
         observation_blocks:
           type: array
           items:
             type: string
         comment:
           type: string
-      example:
-        observation_blocks:
-          - observation_blocks
-          - observation_blocks
+
     ContainerSummary:
       type: object
       properties:
@@ -1149,226 +1158,404 @@ components:
           type: string
       example:
         container_id: container_id
+
     ObservationBlock:
+      required:
+        - metadata
       type: object
       properties:
-        id:
-          type: string
         metadata:
-          $ref: '#/components/schemas/Metadata'
+          $ref: '#/components/schemas/ObsBlockMetadata'
         target:
           items:
             $ref: '#/components/schemas/Target'
         acquisition:
           $ref: '#/components/schemas/Acquisition'
-        observations:
+        science:
           type: array
           items:
-            $ref: '#/components/schemas/Observation'
+            oneOf:
+              - $ref: '#/components/schemas/ScienceTemplate'
+        # TODO add calibration and eng templates here
+        observation:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationTemplate'
         associations:
           type: array
           items:
             type: string
-        observation_type:
-          type: array
-          items:
-            type: string
-        priority:
-          type: number
-          example:
-            99.99
         status:
           $ref: '#/components/schemas/Status'
+        time_constraints:
+          type: array
+#            items: string
         comment:
           type: string
           example:
-            this is a nice ob block.
-    Metadata:
+            A great Observation Block.
+
+    ObsBlockMetadata:
+      required:
+        - name
+        - version
+        - ob_type
+        - pi_id
+        - sem_id
+        - instrument
       type: object
       properties:
         name:
           type: string
-        sem_id:
+        version:
+          type: number
+        ob_type:
           type: string
-        instrument:
-          type: string
+          enum:
+            - science
+            - calibration
+            - engineering
+        priority:
+          type: number
         pi_id:
           type: integer
-        observer_ids:
-          type: array
-          items:
-            type: integer
+        sem_id:
+          $ref: '#/components/schemas/SemIdSchema'
+        instrument:
+          $ref: '#/components/schemas/instrument_enum'
+        comment:
+          type: string
+      example:
+        name: "standard stars #9"
+        version: 0.1
+        pi_id: 7766
+        sem_id: "2021A_U046"
+        instrument: "KCWI"
+        comment: "All I see are stars."
+
     Status:
       type: object
       properties:
         state:
           type: string
+          enum:
+            - started
+            - executed
+            - completed
+            - failed
+            - terminated
+            - stopped
         executions:
           type: array
           items:
             type: string
+        deleted:
+          type: integer
+          enum:
+            - 0
+            - 1
+
+
+    ObservationTemplate:
+      type: object
+      properties:
+        metadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationMetadata'
+        template_index:
+          type: integer
+
+    ScienceTemplate:
+      required:
+        - metadata
+        - parameters
+      type: object
+      properties:
+        metadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationMetadata'
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScienceParameters'
+        template_index:
+          $ref: '#/components/schemas/template_id_schema'
+
+    ScienceParameters:
+      required:
+        - det1_exptime
+        - det1_nexp
+      type: object
+      properties:
+        det1_exptime:
+          type: number
+        det1_nexp:
+          type: integer
+        det2_exptime:
+          type: number
+        det2_nexp:
+          type: integer
+        seq_ndither:
+          type: integer
+        seq_ditarray:
+          type: array
+          items:
+            $ref: '#/components/schemas/DitherSchema'
+
     Acquisition:
       required:
-      - instrument
+      - metadata
+      - parameters
       type: object
       properties:
-        acquisition:
-          type: string
-        instrument:
-          type: string
-        acquisition_method:
-          type: string
-        guider_selection:
-          type: string
-        ao_modes:
+        metadata:
           type: array
           items:
-            type: string
-        associations:
+            $ref: '#/components/schemas/ObservationMetadata'
+        parameters:
           type: array
           items:
-            type: string
-        offset_stars:
-          type: array
-          items:
-            type: string
-        slitmasks:
-          type: array
-          items:
-            type: string
-        position_angles:
-          type: array
-          items:
-            type: string
-      example:
-        associations:
-        - associations
-        - associations
-        offset_stars:
-        - offset_stars
-        - offset_stars
-        position_angles:
-        - position_angles
-        - position_angles
-        acquisition_method: acquisition_method
-        guider_selection: guider_selection
-        slitmasks:
-        - slitmasks
-        - slitmasks
-        ao_modes:
-        - ao_modes
-        - ao_modes
-        acquisition: acquisition
-        instrumental_setup: instrumental_setup
-    Observation:
+            $ref: '#/components/schemas/AcquisitionParameters'
+        template_index:
+          $ref: '#/components/schemas/template_id_schema'
+
+    ObservationMetadata:
       required:
-      - instrument
-      - index
+        - name
+        - ui_name
+        - instrument
+        - version
+        - script
       type: object
       properties:
-        instrument:
-          type: string
-        index:
-          type: integer
         name:
           type: string
+        ui_name:
+          type: string
+        instrument:
+          $ref: '#/components/schemas/instrument_enum'
+        template_type:
+          type: string
+          enum:
+            - "acquisition"
+          default: "acquisition"
+        version:
+          type: number
+        script:
+          type: string
       example:
-        instrument: "KCWI"
-        name: "KCWI_ifu_sci_stare"
-        index: 1
+        name: KCWI_ifu_acq_offsetStar
+        ui_name: KCWI direct
+        instrument: KCWI
+        template_type: acquisition
+        version: 0.1
+        script: KCWI_ifu_acq_offsetStar
+
+    AcquisitionParameters:
+      required:
+        - rotmode
+        - guider_po
+        - guider_gs_mode
+      type: object
+      properties:
+        wrap:
+          type: string
+          enum:
+            - "south"
+            - "north"
+            - "auto"
+        rotmode:
+          type: string
+          enum:
+            - "PA"
+            - "stationary"
+            - "vertical_angle"
+        guider_po:
+          type: string
+          enum:
+            - "REF"
+            - "IFU"
+        ra_offset:
+          type: number
+        dec_offset:
+          type: number
+        guider_gs_ra:
+          $ref: '#/components/schemas/CoordinateSchema'
+        guider_gs_dec:
+          $ref: '#/components/schemas/CoordinateSchema'
+        guider_gs_mode:
+          type: string
+          enum:
+            - "auto"
+            - "operator"
+            - "user"
+
     Target:
       required:
-      - ddec
-      - dec
-      - dec_offset
-      - dra
-      - epoch
-      - equinox
-      - frame
-      - magnitude
       - name
-      - obstime
-      - pm_dec
-      - pm_ra
       - ra
-      - ra_offset
+      - dec
+      - magnitude
       type: object
       properties:
         name:
           type: string
         ra:
-          type: string
+          $ref: '#/components/schemas/CoordinateSchema'
         dec:
-          type: string
+          $ref: '#/components/schemas/CoordinateSchema'
         equinox:
-          type: number
+          type: string
+          default: "J2000"
         frame:
           type: string
-        ra_offset:
+          default: "Fk5"
+        PA:
           type: number
-        dec_offset:
-          type: number
+          default: 0.0
         pm_ra:
           type: number
+          default: 0.0
         pm_dec:
           type: number
+          default: 0.0
         epoch:
           type: number
+          default: 2000.0
         obstime:
           type: number
         magnitude:
           $ref: '#/components/schemas/Magnitude'
-        wrap:
-          type: string
         dra:
           type: number
+          default: 0.0
         ddec:
           type: number
+          default: 0.0
         comment:
           type: string
-        template:
-          type: boolean
       example:
-        dec: dec
-        epoch: 2.3021358869347655
-        pm_dec: 5.637376656633329
-        pm_ra: 5.962133916683182
-        ra: ra
-        ddec: 3.616076749251911
-        ra_offset: 6.027456183070403
-        dra: 9.301444243932576
-        obstime: 7.061401241503109
-        wrap: wrap
+        name: A Stellar Galaxy
+        ra: '15:01:01'
+        dec: '20:00:02.2'
+        equinox: J2000
+        frame: Fk5
+        PA: -90.0
+        pm_ra: 5.96
+        pm_dec: 5.6373
+        obstime: 2021-04-22 15:08:04
         comment: comment
-        name: name
         magnitude:
-          template: true
-          magnitude: magnitude
-          band: band
-        dec_offset: 1.4658129805029452
-        equinox: 0.8008281904610115
-        frame: frame
+          magnitude: 14.5
+          band: J
     Magnitude:
       required:
       - band
       - magnitude
-      - template
       type: object
       properties:
         band:
           type: string
         magnitude:
-          type: string
-        template:
-          type: boolean
+          type: number
       example:
-        template: true
-        magnitude: magnitude
-        band: band
+        magnitude: 14.7
+        band: K
     FindingChart:
       description: Finding chart description goes here
     InstrumentPackage:
       description: Instrument package description goes here
+
+    template_id_schema:
+      type: string
+      oneOf:
+        - pattern: '^acq\d{1}$'
+        - pattern: '^acq\d{2}$'
+        - pattern: '^sci\d{1}$'
+        - pattern: '^sci\d{2}$'
+        - pattern: '^eng\d{1}$'
+        - pattern: '^eng\d{2}$'
+        - pattern: '^cal\d{1}$'
+        - pattern: '^cal\d{2}$'
+
+    instrument_enum:
+      type: string
+      enum:
+        - KCWI
+        - DEIMOS
+        - ESI
+        - HIRES
+        - LRIS
+        - MOSFIRE
+        - OSIRIS
+        - NIRES
+        - NIRC2
+        - kcwi
+        - deimos
+        - esi
+        - hires
+        - lris
+        - mosfire
+        - osiris
+        - nires
+        - nirc2
+        - DE
+        - DF
+        - EI
+        - HI
+        - KB
+        - KF
+        - LB
+        - LR
+        - MF
+        - OI
+        - OS
+        - NR
+        - NI
+        - NS
+        - N2
+        - NC
+
+    CoordinateSchema:
+      type: string
+      oneOf:
+        - pattern: '^\d{2}:\d{2}:\d{2}$'
+        - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}$'
+        - pattern: '^\d{2}:\d{2}:\d{2}.\d{2}$'
+
+    DitherSchema:
+      required:
+        - ra
+        - dec
+        - position
+        - guided
+      type: object
+      properties:
+        ra:
+          type: number
+        dec:
+          type: number
+        position:
+          type: string
+          enum:
+            - T
+            - S
+            - O
+        guided:
+          type: boolean
+
+    SemIdSchema:
+      type: string
+      oneOf:
+        - pattern: '^\d{4}A_U\d{3}$'
+        - pattern: '^\d{4}B_U\d{3}$'
+
+#      TemplateSchema:
+#        oneOf:
+#            - $ref: '#/components/schemas/ObservationTemplate'
+#            - $ref: '#/components/schemas/ScienceTemplate'
 
   parameters:
     obs_id:
@@ -1450,6 +1637,11 @@ components:
       explode: true
       schema:
         type: string
+        enum:
+        - acquisition
+        - science
+        - engineering
+        - calibration
       example: science
     instrument:
       name: instrument
@@ -1459,43 +1651,7 @@ components:
       style: simple
       explode: false
       schema:
-        type: string
-        enum:
-        - KCWI
-        - DEIMOS
-        - ESI
-        - HIRES
-        - LRIS
-        - MOSFIRE
-        - OSIRIS
-        - NIRES
-        - NIRC2
-        - kcwi
-        - deimos
-        - esi
-        - hires
-        - lris
-        - mosfire
-        - osiris
-        - nires
-        - nirc2
-        - DE
-        - DF
-        - EI
-        - HI
-        - KB
-        - KF
-        - LB
-        - LR
-        - MF
-        - OI
-        - OS
-        - NR
-        - NI
-        - NS
-        - N2
-        - NC
-      example: KCWI
+        $ref: '#/components/schemas/instrument_enum'
     ip_version:
       name: ip_version
       in: path
@@ -1524,16 +1680,7 @@ components:
       style: simple
       explode: false
       schema:
-        type: string
-        oneOf:
-        - pattern: '^acq\d{1}$'
-        - pattern: '^acq\d{2}$'
-        - pattern: '^sci\d{1}$'
-        - pattern: '^sci\d{2}$'
-        - pattern: '^eng\d{1}$'
-        - pattern: '^eng\d{2}$'
-        - pattern: '^cal\d{1}$'
-        - pattern: '^cal\d{2}$'
+        $ref: '#/components/schemas/template_id_schema'
       example: sci2
     template_name:
       name: template_name

@@ -7,15 +7,15 @@ from papahana.controllers import controller_helper as utils
 
 
 def instrument_packages(instrument):
-    """
-    Retrieves the list of available instrument packages for an instrument
+    """instrument_packages
+
+    Retrieves the the available instrument packages for an instrument.
 
     :param instrument: instrument used to make observation
     :type instrument: str
 
-    :rtype: List[InstrumentPackage]
+    :rtype: InstrumentPackage
     """
-    # TODO are there more than one instrument package per instrument.
     return 'do some magic!'
 
 

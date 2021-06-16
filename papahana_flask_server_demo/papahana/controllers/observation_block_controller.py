@@ -12,7 +12,9 @@ from papahana.controllers import controller_helper as utils
 
 from papahana import util
 
+# directory used for writing files to return
 OUT_DIR = "/tmp"
+
 
 def ob_get(ob_id):
     """
@@ -23,7 +25,6 @@ def ob_get(ob_id):
 
     :rtype: ObservationBlock
     """
-
     return utils.get_by_id(ob_id, 'obCollect')
 
 
@@ -35,7 +36,8 @@ def ob_post(body):
 
     :param body: Observation block to be added.
     :type body: dict | bytes
-    :rtype: str
+
+    :rtype: str of new OB ID.
     """
     if connexion.request.is_json:
         body = connexion.request.get_json()
@@ -74,7 +76,7 @@ def ob_delete(ob_id):
 
     :rtype: None
     """
-    response = utils.delete_by_id(ob_id, 'obCollect')
+    utils.delete_by_id(ob_id, 'obCollect')
 
 
 def ob_duplicate(ob_id, sem_id=None):
@@ -121,29 +123,29 @@ def ob_executions(ob_id):
 
 
 #TODO should this only be the remaining execution time
-def ob_execution_time(ob_id):  # noqa: E501
+def ob_execution_time(ob_id):
     """
     http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/executionTime/?ob_id=2
 
-    Calculates the execution time. # noqa: E501
+    Calculates the execution time.
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: float
     """
-    fields = {"science.properties": 1, "_id": 0}
-    ob_science = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    fields = {"science.parameters": 1, "_id": 0}
+    science = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
-    if not ob_science:
-        return 0
+    if not science:
+        return
 
     total_tm = 0
-    sci_blks = ob_science['science']
-    for block in sci_blks:
+    for block in science:
         total_tm += utils.calc_exec_time(block)
 
     return total_tm
+
 
 #TODO this is only retrieving the OB
 def ob_export(ob_id):
@@ -169,15 +171,15 @@ def ob_template_filled(ob_id):
 
     :rtype: bool
     """
-    fields = {"properties": 1, "_id": 0}
+    fields = {"parameters": 1, "_id": 0}
     templates = ob_template_get(ob_id)
     for filled in templates:
-        if filled.keys() < {"metadata", "properties"}:
+        if filled.keys() < {"metadata", "parameters"}:
             abort(422, "The Observation Block Template is missing the keys: "
-                       "metadata or properties.")
+                       "metadata or parameters.")
 
         metadata = filled["metadata"]
-        if metadata.keys() < {"name", "ui_name", "instrument", "science",
+        if metadata.keys() < {"name", "ui_name", "instrument", "template_type",
                               "version", "script"}:
             abort(422, "The Observation Block Template is missing one"
                        "of the metadata keys.")
@@ -190,8 +192,8 @@ def ob_template_filled(ob_id):
             abort(422, f"No template found with name {metadata['name']} "
                        f"and version {metadata['version']}.")
 
-        if not utils.check_required(template[0]['properties'],
-                                    filled['properties']):
+        if not utils.check_required(template[0]['parameters'],
+                                    filled['parameters']):
             return False
 
     return True
@@ -385,8 +387,7 @@ def ob_template_id_put(body, ob_id, template_id):
     templates = utils.get_templates(ob, template_type, template_indx)
 
     if type(templates) is list:
-        templates = ob[template_type]
-        body['index'] = template_id
+        body['template_index'] = template_id
         templates[template_indx] = body
     else:
         templates = body
@@ -395,7 +396,7 @@ def ob_template_id_put(body, ob_id, template_id):
     utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
-def ob_template_post(body, ob_id, template_type):  # noqa: E501
+def ob_template_post(body, ob_id, template_type):
     """
     Creates the list of templates associated with the OB
 
@@ -405,7 +406,8 @@ def ob_template_post(body, ob_id, template_type):  # noqa: E501
     :type body: list or dict
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_type: A string to indicate template, (acq, sci, eng, cal)
+    :param template_type: A string to indicate the type of template,
+                          (acquisition, science, engineering, calibration)
     :type template_type: str
 
     :rtype: None
@@ -416,10 +418,7 @@ def ob_template_post(body, ob_id, template_type):  # noqa: E501
     if type(body) is not list:
         body = [body]
 
-    full_type = {'sci': 'science', 'acq': 'acquisition', 'eng': 'engineering',
-                 'cal': 'calibration'}
-
-    new_vals = {full_type[template_type]: body}
+    new_vals = {template_type: body}
 
     utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
@@ -434,7 +433,8 @@ def ob_template_put(body, ob_id, template_type):
     :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_type: A string to indicate template, (acq, sci, eng, cal)
+    :param template_type: A string to indicate the type of template,
+                          (acquisition, science, engineering, calibration)
     :type template_type: str
 
     :rtype: None
@@ -442,15 +442,12 @@ def ob_template_put(body, ob_id, template_type):
     if connexion.request.is_json:
         body = json.loads(json.dumps(connexion.request.get_json()))
 
-    full_type = {'sci': 'science', 'acq': 'acquisition', 'eng': 'engineering',
-                 'cal': 'calibration'}
-
     if type(body) is list:
         for val in body:
-            new_vals = {full_type[template_type]: val}
+            new_vals = {template_type: val}
             utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
     else:
-        new_vals = {full_type[template_type]: body}
+        new_vals = {template_type: body}
         utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 

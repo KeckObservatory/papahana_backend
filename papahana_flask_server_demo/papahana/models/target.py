@@ -7,6 +7,7 @@ from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
 from papahana.models.magnitude import Magnitude  # noqa: F401,E501
+import re  # noqa: F401,E501
 from papahana import util
 
 
@@ -15,7 +16,7 @@ class Target(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, ra: str=None, dec: str=None, equinox: float=None, frame: str=None, ra_offset: float=None, dec_offset: float=None, pm_ra: float=None, pm_dec: float=None, epoch: float=None, obstime: float=None, magnitude: Magnitude=None, wrap: str=None, dra: float=None, ddec: float=None, comment: str=None, template: bool=None):  # noqa: E501
+    def __init__(self, name: str=None, ra: str=None, dec: str=None, equinox: str='J2000', frame: str='Fk5', pa: float=0.0, pm_ra: float=0.0, pm_dec: float=0.0, epoch: float=2000.0, obstime: float=None, magnitude: Magnitude=None, dra: float=0.0, ddec: float=0.0, comment: str=None):  # noqa: E501
         """Target - a model defined in Swagger
 
         :param name: The name of this Target.  # noqa: E501
@@ -25,13 +26,11 @@ class Target(Model):
         :param dec: The dec of this Target.  # noqa: E501
         :type dec: str
         :param equinox: The equinox of this Target.  # noqa: E501
-        :type equinox: float
+        :type equinox: str
         :param frame: The frame of this Target.  # noqa: E501
         :type frame: str
-        :param ra_offset: The ra_offset of this Target.  # noqa: E501
-        :type ra_offset: float
-        :param dec_offset: The dec_offset of this Target.  # noqa: E501
-        :type dec_offset: float
+        :param pa: The pa of this Target.  # noqa: E501
+        :type pa: float
         :param pm_ra: The pm_ra of this Target.  # noqa: E501
         :type pm_ra: float
         :param pm_dec: The pm_dec of this Target.  # noqa: E501
@@ -42,35 +41,28 @@ class Target(Model):
         :type obstime: float
         :param magnitude: The magnitude of this Target.  # noqa: E501
         :type magnitude: Magnitude
-        :param wrap: The wrap of this Target.  # noqa: E501
-        :type wrap: str
         :param dra: The dra of this Target.  # noqa: E501
         :type dra: float
         :param ddec: The ddec of this Target.  # noqa: E501
         :type ddec: float
         :param comment: The comment of this Target.  # noqa: E501
         :type comment: str
-        :param template: The template of this Target.  # noqa: E501
-        :type template: bool
         """
         self.swagger_types = {
             'name': str,
             'ra': str,
             'dec': str,
-            'equinox': float,
+            'equinox': str,
             'frame': str,
-            'ra_offset': float,
-            'dec_offset': float,
+            'pa': float,
             'pm_ra': float,
             'pm_dec': float,
             'epoch': float,
             'obstime': float,
             'magnitude': Magnitude,
-            'wrap': str,
             'dra': float,
             'ddec': float,
-            'comment': str,
-            'template': bool
+            'comment': str
         }
 
         self.attribute_map = {
@@ -79,36 +71,30 @@ class Target(Model):
             'dec': 'dec',
             'equinox': 'equinox',
             'frame': 'frame',
-            'ra_offset': 'ra_offset',
-            'dec_offset': 'dec_offset',
+            'pa': 'PA',
             'pm_ra': 'pm_ra',
             'pm_dec': 'pm_dec',
             'epoch': 'epoch',
             'obstime': 'obstime',
             'magnitude': 'magnitude',
-            'wrap': 'wrap?',
             'dra': 'dra',
             'ddec': 'ddec',
-            'comment': 'comment?',
-            'template': 'template'
+            'comment': 'comment'
         }
         self._name = name
         self._ra = ra
         self._dec = dec
         self._equinox = equinox
         self._frame = frame
-        self._ra_offset = ra_offset
-        self._dec_offset = dec_offset
+        self._pa = pa
         self._pm_ra = pm_ra
         self._pm_dec = pm_dec
         self._epoch = epoch
         self._obstime = obstime
         self._magnitude = magnitude
-        self._wrap = wrap
         self._dra = dra
         self._ddec = ddec
         self._comment = comment
-        self._template = template
 
     @classmethod
     def from_dict(cls, dikt) -> 'Target':
@@ -191,25 +177,23 @@ class Target(Model):
         self._dec = dec
 
     @property
-    def equinox(self) -> float:
+    def equinox(self) -> str:
         """Gets the equinox of this Target.
 
 
         :return: The equinox of this Target.
-        :rtype: float
+        :rtype: str
         """
         return self._equinox
 
     @equinox.setter
-    def equinox(self, equinox: float):
+    def equinox(self, equinox: str):
         """Sets the equinox of this Target.
 
 
         :param equinox: The equinox of this Target.
-        :type equinox: float
+        :type equinox: str
         """
-        if equinox is None:
-            raise ValueError("Invalid value for `equinox`, must not be `None`")  # noqa: E501
 
         self._equinox = equinox
 
@@ -231,56 +215,29 @@ class Target(Model):
         :param frame: The frame of this Target.
         :type frame: str
         """
-        if frame is None:
-            raise ValueError("Invalid value for `frame`, must not be `None`")  # noqa: E501
 
         self._frame = frame
 
     @property
-    def ra_offset(self) -> float:
-        """Gets the ra_offset of this Target.
+    def pa(self) -> float:
+        """Gets the pa of this Target.
 
 
-        :return: The ra_offset of this Target.
+        :return: The pa of this Target.
         :rtype: float
         """
-        return self._ra_offset
+        return self._pa
 
-    @ra_offset.setter
-    def ra_offset(self, ra_offset: float):
-        """Sets the ra_offset of this Target.
+    @pa.setter
+    def pa(self, pa: float):
+        """Sets the pa of this Target.
 
 
-        :param ra_offset: The ra_offset of this Target.
-        :type ra_offset: float
+        :param pa: The pa of this Target.
+        :type pa: float
         """
-        if ra_offset is None:
-            raise ValueError("Invalid value for `ra_offset`, must not be `None`")  # noqa: E501
 
-        self._ra_offset = ra_offset
-
-    @property
-    def dec_offset(self) -> float:
-        """Gets the dec_offset of this Target.
-
-
-        :return: The dec_offset of this Target.
-        :rtype: float
-        """
-        return self._dec_offset
-
-    @dec_offset.setter
-    def dec_offset(self, dec_offset: float):
-        """Sets the dec_offset of this Target.
-
-
-        :param dec_offset: The dec_offset of this Target.
-        :type dec_offset: float
-        """
-        if dec_offset is None:
-            raise ValueError("Invalid value for `dec_offset`, must not be `None`")  # noqa: E501
-
-        self._dec_offset = dec_offset
+        self._pa = pa
 
     @property
     def pm_ra(self) -> float:
@@ -300,8 +257,6 @@ class Target(Model):
         :param pm_ra: The pm_ra of this Target.
         :type pm_ra: float
         """
-        if pm_ra is None:
-            raise ValueError("Invalid value for `pm_ra`, must not be `None`")  # noqa: E501
 
         self._pm_ra = pm_ra
 
@@ -323,8 +278,6 @@ class Target(Model):
         :param pm_dec: The pm_dec of this Target.
         :type pm_dec: float
         """
-        if pm_dec is None:
-            raise ValueError("Invalid value for `pm_dec`, must not be `None`")  # noqa: E501
 
         self._pm_dec = pm_dec
 
@@ -346,8 +299,6 @@ class Target(Model):
         :param epoch: The epoch of this Target.
         :type epoch: float
         """
-        if epoch is None:
-            raise ValueError("Invalid value for `epoch`, must not be `None`")  # noqa: E501
 
         self._epoch = epoch
 
@@ -369,8 +320,6 @@ class Target(Model):
         :param obstime: The obstime of this Target.
         :type obstime: float
         """
-        if obstime is None:
-            raise ValueError("Invalid value for `obstime`, must not be `None`")  # noqa: E501
 
         self._obstime = obstime
 
@@ -398,27 +347,6 @@ class Target(Model):
         self._magnitude = magnitude
 
     @property
-    def wrap(self) -> str:
-        """Gets the wrap of this Target.
-
-
-        :return: The wrap of this Target.
-        :rtype: str
-        """
-        return self._wrap
-
-    @wrap.setter
-    def wrap(self, wrap: str):
-        """Sets the wrap of this Target.
-
-
-        :param wrap: The wrap of this Target.
-        :type wrap: str
-        """
-
-        self._wrap = wrap
-
-    @property
     def dra(self) -> float:
         """Gets the dra of this Target.
 
@@ -436,8 +364,6 @@ class Target(Model):
         :param dra: The dra of this Target.
         :type dra: float
         """
-        if dra is None:
-            raise ValueError("Invalid value for `dra`, must not be `None`")  # noqa: E501
 
         self._dra = dra
 
@@ -459,8 +385,6 @@ class Target(Model):
         :param ddec: The ddec of this Target.
         :type ddec: float
         """
-        if ddec is None:
-            raise ValueError("Invalid value for `ddec`, must not be `None`")  # noqa: E501
 
         self._ddec = ddec
 
@@ -484,24 +408,3 @@ class Target(Model):
         """
 
         self._comment = comment
-
-    @property
-    def template(self) -> bool:
-        """Gets the template of this Target.
-
-
-        :return: The template of this Target.
-        :rtype: bool
-        """
-        return self._template
-
-    @template.setter
-    def template(self, template: bool):
-        """Sets the template of this Target.
-
-
-        :param template: The template of this Target.
-        :type template: bool
-        """
-
-        self._template = template

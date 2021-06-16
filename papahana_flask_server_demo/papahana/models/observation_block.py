@@ -6,11 +6,9 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
-from papahana.models.acquisition import Acquisition  # noqa: F401,E501
+from papahana.models.metadata import Metadata  # noqa: F401,E501
 from papahana.models.observation import Observation  # noqa: F401,E501
-from papahana.models.signature import Signature  # noqa: F401,E501
 from papahana.models.status import Status  # noqa: F401,E501
-from papahana.models.target import Target  # noqa: F401,E501
 from papahana import util
 
 
@@ -19,17 +17,13 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, signature: Signature=None, target: List[Target]=None, acquisition: Acquisition=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
+    def __init__(self, id: str=None, metadata: Metadata=None, observations: List[Observation]=None, associations: List[str]=None, observation_type: List[str]=None, priority: float=None, status: Status=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param id: The id of this ObservationBlock.  # noqa: E501
         :type id: str
-        :param signature: The signature of this ObservationBlock.  # noqa: E501
-        :type signature: Signature
-        :param target: The target of this ObservationBlock.  # noqa: E501
-        :type target: List[Target]
-        :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
-        :type acquisition: Acquisition
+        :param metadata: The metadata of this ObservationBlock.  # noqa: E501
+        :type metadata: Metadata
         :param observations: The observations of this ObservationBlock.  # noqa: E501
         :type observations: List[Observation]
         :param associations: The associations of this ObservationBlock.  # noqa: E501
@@ -45,9 +39,7 @@ class ObservationBlock(Model):
         """
         self.swagger_types = {
             'id': str,
-            'signature': Signature,
-            'target': List[Target],
-            'acquisition': Acquisition,
+            'metadata': Metadata,
             'observations': List[Observation],
             'associations': List[str],
             'observation_type': List[str],
@@ -58,9 +50,7 @@ class ObservationBlock(Model):
 
         self.attribute_map = {
             'id': 'id',
-            'signature': 'signature',
-            'target': 'target',
-            'acquisition': 'acquisition',
+            'metadata': 'metadata',
             'observations': 'observations',
             'associations': 'associations',
             'observation_type': 'observation_type',
@@ -69,9 +59,7 @@ class ObservationBlock(Model):
             'comment': 'comment'
         }
         self._id = id
-        self._signature = signature
-        self._target = target
-        self._acquisition = acquisition
+        self._metadata = metadata
         self._observations = observations
         self._associations = associations
         self._observation_type = observation_type
@@ -112,67 +100,25 @@ class ObservationBlock(Model):
         self._id = id
 
     @property
-    def signature(self) -> Signature:
-        """Gets the signature of this ObservationBlock.
+    def metadata(self) -> Metadata:
+        """Gets the metadata of this ObservationBlock.
 
 
-        :return: The signature of this ObservationBlock.
-        :rtype: Signature
+        :return: The metadata of this ObservationBlock.
+        :rtype: Metadata
         """
-        return self._signature
+        return self._metadata
 
-    @signature.setter
-    def signature(self, signature: Signature):
-        """Sets the signature of this ObservationBlock.
-
-
-        :param signature: The signature of this ObservationBlock.
-        :type signature: Signature
-        """
-
-        self._signature = signature
-
-    @property
-    def target(self) -> List[Target]:
-        """Gets the target of this ObservationBlock.
+    @metadata.setter
+    def metadata(self, metadata: Metadata):
+        """Sets the metadata of this ObservationBlock.
 
 
-        :return: The target of this ObservationBlock.
-        :rtype: List[Target]
-        """
-        return self._target
-
-    @target.setter
-    def target(self, target: List[Target]):
-        """Sets the target of this ObservationBlock.
-
-
-        :param target: The target of this ObservationBlock.
-        :type target: List[Target]
+        :param metadata: The metadata of this ObservationBlock.
+        :type metadata: Metadata
         """
 
-        self._target = target
-
-    @property
-    def acquisition(self) -> Acquisition:
-        """Gets the acquisition of this ObservationBlock.
-
-
-        :return: The acquisition of this ObservationBlock.
-        :rtype: Acquisition
-        """
-        return self._acquisition
-
-    @acquisition.setter
-    def acquisition(self, acquisition: Acquisition):
-        """Sets the acquisition of this ObservationBlock.
-
-
-        :param acquisition: The acquisition of this ObservationBlock.
-        :type acquisition: Acquisition
-        """
-
-        self._acquisition = acquisition
+        self._metadata = metadata
 
     @property
     def observations(self) -> List[Observation]:

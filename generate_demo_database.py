@@ -151,7 +151,7 @@ filled_sci_templates = [
               "instrument": "KCWI", "type": "science", "version": 0.1,
               "script": "KCWI_ifu_sci_stare"
         },
-        "properties": {
+        "parameters": {
             "det1_exptime": 30,
             "det1_nexp": 4,
             "det2_exptime": 24,
@@ -167,7 +167,7 @@ filled_sci_templates = [
             "version": 0.1,
             "script": "KCWI_ifu_sci_stare"
         },
-        "properties": {
+        "parameters": {
             "det1_exptime": 60.0,
             "det1_nexp": 2,
             "det2_exptime": 121.0,
@@ -189,7 +189,7 @@ filled_acq_templates = [{
         "type": "acquisition",
         "version": 0.1,
         "script": "KCWI_ifu_acq_direct"},
-    "properties": {
+    "parameters": {
         "wrap": "auto",
         "rotmode": "PA",
         "guider_po": "IFU",
@@ -241,7 +241,7 @@ def randStatus():
     for x in range(0, randInt(0,6)):
         executions.append(generate_random_executions())
 
-    schema = {'state': rstat, 'executions': executions}
+    schema = {'state': rstat, 'executions': executions, 'deleted': 0}
     return schema
 
 
@@ -415,6 +415,9 @@ def generate_metadata(maxArr):
     pi_name = randPI()
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
+        'version': 0.1,
+        'priority': randFloat(100),
+        'ob_type': 'science',
         'pi_id': pis[pi_name],
         'sem_id': str(randSemId()),
         'instrument': 'KCWI',
@@ -543,12 +546,10 @@ def generate_target():
 def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     schema = {
         'metadata': generate_metadata(maxArr),
-        'version': 0.1,
         'target': random.choice([None, generate_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
-        'science': generate_science(inst),
+        'observations': generate_science(inst),
         'associations': randArrStr(nLen, maxArr),
-        'priority': randFloat(100),
         'status': randStatus(),
         'time_constraints': randTimeConstraint(),
         'comment': optionalRandComment()

@@ -3,7 +3,7 @@ import pdb
 from generate_demo_database import read_mode, read_config
 from papahana_flask_server_demo.config import config_collection
 
-kcwi_acq_direct_template_properties = {
+kcwi_acq_direct_template_parameters = {
         "wrap": {
             "ui_name": "Rotator Wrap Position",
             "option": "list",
@@ -28,6 +28,22 @@ kcwi_acq_direct_template_properties = {
             "optionality": "required",
             "type": "string"
         },
+        "ra_offset": {
+            "ui_name": "The offset from coordinates to get to the target",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0.0,
+            "optionality": "optional",
+            "type": "float",
+        },
+        "dec_offset": {
+            "ui_name": "The offset from coordinates to get to the target",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0.0,
+            "optionality": "optional",
+            "type": "float",
+        },
         "guider_gs_ra": {
             "ui_name": "Guide Star Right Ascension",
             "option": "range",
@@ -48,10 +64,11 @@ kcwi_acq_direct_template_properties = {
             "ui_name": "Guide Star Selection Mode",
             "option": "list",
             "allowed": ["auto", "operator", "user"],
-            "default": "auto",
+            "default": None,
             "optionality": "required",
             "type": "string"
         }
+
 }  
 
 dither_schema = {
@@ -95,7 +112,7 @@ dither_schema = {
     ]
 }
 
-kcwi_ifu_sci_dither_properties = {
+kcwi_ifu_sci_dither_parameters = {
     "det1_exptime": {
         "ui_name": "Blue exposure time for individual exposures",
         "option": "range",
@@ -161,7 +178,7 @@ kcwi_ifu_sci_stare_parameters = {
         "option": "range",
         "allowed": [0.0, 3600.0],
         "default": None,
-        "optionality": "required",
+        "optionality": "optional",
         "type": "float",
     },
     "det2_nexp": {
@@ -169,7 +186,7 @@ kcwi_ifu_sci_stare_parameters = {
         "option": "range",
         "allowed": [0.0, 3600.0],
         "default": None,
-        "optionality": "required",
+        "optionality": "optional",
         "type": "integer",
     }
 }
@@ -179,11 +196,11 @@ kcwi_ifu_sci_dither_template = {
         "name": "KCWI_ifu_sci_dither",
         "ui_name": "KCWI dither",
         "instrument": "KCWI",
-        "type": "science",
+        "template_type": "science",
         "version": 0.1,
         "script": "KCWI_ifu_sci_stare"
     },
-    "properties": kcwi_ifu_sci_dither_properties
+    "parameters": kcwi_ifu_sci_dither_parameters
 
 }
 
@@ -192,11 +209,11 @@ kcwi_ifu_sci_stare_template = {
         "name": "KCWI_ifu_sci_stare",
         "ui_name": "KCWI stare",
         "instrument": "KCWI",
-        "type": "science",
+        "template_type": "science",
         "version": 0.1,
         "script": "KCWI_ifu_sci_stare"
     },
-    "properties": kcwi_ifu_sci_stare_parameters
+    "parameters": kcwi_ifu_sci_stare_parameters
 }
 
 kcwi_ifu_acq_direct_template = {
@@ -204,16 +221,16 @@ kcwi_ifu_acq_direct_template = {
         "name": "KCWI_ifu_acq_direct",
         "ui_name": "KCWI direct",
         "instrument": "KCWI",
-        "type": "acquisition",
+        "template_type": "acquisition",
         "version": 0.1,
         "script": "KCWI_ifu_acq_direct"
     },
-    "properties": kcwi_acq_direct_template_properties
+    "parameters": kcwi_acq_direct_template_parameters
 }
 
 #TODO: Fill with separate template
 kcwi_ifu_acq_offsetStar_template = kcwi_ifu_acq_direct_template.copy()
-kcwi_ifu_acq_offsetStar_template['name'] = 'KCWI_ifu_acq_offsetStar'
+kcwi_ifu_acq_offsetStar_template['metadata']['name'] = 'KCWI_ifu_acq_offsetStar'
 
 kcwi_instrument_package = {
     "instrument": "KCWI",

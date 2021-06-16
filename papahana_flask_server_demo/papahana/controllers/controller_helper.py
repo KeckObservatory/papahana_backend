@@ -40,6 +40,20 @@ def json_with_objectid(result):
     return cln_result
 
 
+def query_by_id(id):
+    """
+    query by string container_id
+
+    :param container_id: container identifier
+    :type container_id: str
+
+    :rtype: Dict{Query}
+    """
+    id = get_object_id(id)
+
+    return {"_id": id, "status.deleted": 0}
+
+
 def get_by_id(id, collect_name, cln_oid=True):
     """
     query by string container_id
@@ -51,9 +65,7 @@ def get_by_id(id, collect_name, cln_oid=True):
 
     :rtype: Dict{Query Result}
     """
-    id = get_object_id(id)
-
-    query = {"_id": id}
+    query = query_by_id(id)
     coll = config_collection(collect_name)
 
     results = list(coll.find(query))
@@ -78,6 +90,8 @@ def get_by_query(query, collect_name):
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
+    if "status.deleted" not in query:
+        query["status.deleted"] = 0
 
     return list(coll.find(query))
 
@@ -96,6 +110,8 @@ def get_fields_by_query(query, fields, collect_name):
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
+    if "status.deleted" not in query:
+        query["status.deleted"] = 0
 
     return list(coll.find(query, fields))
 
@@ -149,6 +165,25 @@ def insert_into_collection(doc, collect_name):
     return result
 
 
+def delete_from_collection(query, collect_name):
+    """
+    Delete document from a database collection.
+
+    :param query: the query used to find the document
+    :type query: dict
+    :param collect_name: the database collection.
+    :type collect_name: str
+    """
+    coll = config_collection(collect_name)
+
+    try:
+        coll.delete_one(query)
+        return 0
+    except Exception as err:
+        print(err)
+        return 1
+
+
 def delete_by_id(id, collect_name):
     """
     Delete a document in a database collection.
@@ -168,8 +203,7 @@ def delete_by_id(id, collect_name):
         coll.delete_one({'_id': id})
         return 0
     except Exception as err:
-        print(err)
-        return 1
+        abort(400, f'Error while deleting by id,  error: {err}.')
 
 
 def replace_doc(id, doc, collect_name):
@@ -233,39 +267,6 @@ def update_add_doc(query, new_vals, collect_name):
     coll.update_one(query, {"$push": new_vals})
 
 
-def delete_from_collection(query, collect_name):
-    """
-    Delete document from a database collection.
-
-    :param query: the query used to find the document
-    :type query: dict
-    :param collect_name: the database collection.
-    :type collect_name: str
-    """
-    coll = config_collection(collect_name)
-
-    try:
-        coll.delete_one(query)
-        return 0
-    except Exception as err:
-        print(err)
-        return 1
-
-
-def query_by_id(id):
-    """
-    query by string container_id
-
-    :param container_id: container identifier
-    :type container_id: str
-
-    :rtype: Dict{Query}
-    """
-    id = get_object_id(id)
-
-    return {"_id": id}
-
-
 def get_object_id(obj_id):
     """
     transform an ObjectId string to ObjectId
@@ -312,12 +313,12 @@ def calc_exec_time(block):
 
     :rtype: int
     """
-    if "properties" not in block:
+    if "parameters" not in block:
         return 0
 
     exp1 = 0
     exp2 = 0
-    sci_blk = block["properties"]
+    sci_blk = block["parameters"]
     if sci_blk.keys() >= {"det1_exptime", "det1_nexp"}:
         if sci_blk['det1_exptime'] and sci_blk['det1_nexp']:
             exp1 = sci_blk['det1_exptime'] * sci_blk['det1_nexp']
@@ -453,7 +454,7 @@ def obs_id_associated(sem_id, obs_id):
 
 
 #validation specific
-def check_required(properties, filled):
+def check_required(parameters, filled):
     """
     This trusts that the template keys have already been checked to exist.
     """
@@ -461,24 +462,24 @@ def check_required(properties, filled):
     type_map = {'integer': int, 'float': float, 'string': str, 'array': list,
                 'boolean': bool}
 
-    for key in properties:
-        if properties[key]['optionality'] != 'required':
+    for key in parameters:
+        if parameters[key]['optionality'] != 'required':
             continue
 
         if key not in filled or not filled[key]:
             abort(422, f"Observation Block is missing key {key}")
 
         ob_value = filled[key]
-        template_properties = properties[key]
+        template_parameters = parameters[key]
 
-        if not check_type(ob_value, template_properties['type'],
-                          type_map[template_properties['type']]):
+        if not check_type(ob_value, template_parameters['template_type'],
+                          type_map[template_parameters['template_type']]):
             abort(422, f"{ob_value} is not of type: "
-                       f"{template_properties['type']}.")
+                       f"{template_parameters['template_type']}.")
 
-        if not check_allowed(ob_value, template_properties):
+        if not check_allowed(ob_value, template_parameters):
             abort(422, f"{ob_value} is is not within values: "
-                       f"{template_properties['allowed']}")
+                       f"{template_parameters['allowed']}")
 
         return True
 
@@ -494,9 +495,9 @@ def check_type(val, key_type, key_py_type):
     return True
 
 
-def check_allowed(ob_value, template_properties):
-    allowed_type = template_properties['option']
-    allowed = template_properties['allowed']
+def check_allowed(ob_value, template_parameters):
+    allowed_type = template_parameters['option']
+    allowed = template_parameters['allowed']
 
     if allowed_type == 'range':
         if ob_value < allowed[0] or ob_value > allowed[1]:
