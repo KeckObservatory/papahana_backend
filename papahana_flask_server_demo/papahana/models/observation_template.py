@@ -16,25 +16,25 @@ class ObservationTemplate(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: List[ObservationMetadata]=None, template_index: TemplateIdSchema=None):  # noqa: E501
+    def __init__(self, metadata: List[ObservationMetadata]=None, template_id: TemplateIdSchema=None):  # noqa: E501
         """ObservationTemplate - a model defined in Swagger
 
         :param metadata: The metadata of this ObservationTemplate.  # noqa: E501
         :type metadata: List[ObservationMetadata]
-        :param template_index: The template_index of this ObservationTemplate.  # noqa: E501
-        :type template_index: TemplateIdSchema
+        :param template_id: The template_id of this ObservationTemplate.  # noqa: E501
+        :type template_id: TemplateIdSchema
         """
         self.swagger_types = {
             'metadata': List[ObservationMetadata],
-            'template_index': TemplateIdSchema
+            'template_id': TemplateIdSchema
         }
 
         self.attribute_map = {
             'metadata': 'metadata',
-            'template_index': 'template_index'
+            'template_id': 'template_id'
         }
         self._metadata = metadata
-        self._template_index = template_index
+        self._template_id = template_id
 
     @classmethod
     def from_dict(cls, dikt) -> 'ObservationTemplate':
@@ -69,22 +69,22 @@ class ObservationTemplate(Model):
         self._metadata = metadata
 
     @property
-    def template_index(self) -> TemplateIdSchema:
-        """Gets the template_index of this ObservationTemplate.
+    def template_id(self) -> TemplateIdSchema:
+        """Gets the template_id of this ObservationTemplate.
 
 
-        :return: The template_index of this ObservationTemplate.
+        :return: The template_id of this ObservationTemplate.
         :rtype: TemplateIdSchema
         """
-        return self._template_index
+        return self._template_id
 
-    @template_index.setter
-    def template_index(self, template_index: TemplateIdSchema):
-        """Sets the template_index of this ObservationTemplate.
+    @template_id.setter
+    def template_id(self, template_id: TemplateIdSchema):
+        """Sets the template_id of this ObservationTemplate.
 
 
-        :param template_index: The template_index of this ObservationTemplate.
-        :type template_index: TemplateIdSchema
+        :param template_id: The template_id of this ObservationTemplate.
+        :type template_id: TemplateIdSchema
         """
 
-        self._template_index = template_index
+        self._template_id = template_id

@@ -17,30 +17,30 @@ class ScienceTemplate(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: List[ObservationMetadata]=None, parameters: List[ScienceParameters]=None, template_index: TemplateIdSchema=None):  # noqa: E501
+    def __init__(self, metadata: ObservationMetadata=None, parameters: ScienceParameters=None, template_id: TemplateIdSchema=None):  # noqa: E501
         """ScienceTemplate - a model defined in Swagger
 
         :param metadata: The metadata of this ScienceTemplate.  # noqa: E501
-        :type metadata: List[ObservationMetadata]
+        :type metadata: ObservationMetadata
         :param parameters: The parameters of this ScienceTemplate.  # noqa: E501
-        :type parameters: List[ScienceParameters]
-        :param template_index: The template_index of this ScienceTemplate.  # noqa: E501
-        :type template_index: TemplateIdSchema
+        :type parameters: ScienceParameters
+        :param template_id: The template_id of this ScienceTemplate.  # noqa: E501
+        :type template_id: TemplateIdSchema
         """
         self.swagger_types = {
-            'metadata': List[ObservationMetadata],
-            'parameters': List[ScienceParameters],
-            'template_index': TemplateIdSchema
+            'metadata': ObservationMetadata,
+            'parameters': ScienceParameters,
+            'template_id': TemplateIdSchema
         }
 
         self.attribute_map = {
             'metadata': 'metadata',
             'parameters': 'parameters',
-            'template_index': 'template_index'
+            'template_id': 'template_id'
         }
         self._metadata = metadata
         self._parameters = parameters
-        self._template_index = template_index
+        self._template_id = template_id
 
     @classmethod
     def from_dict(cls, dikt) -> 'ScienceTemplate':
@@ -54,22 +54,22 @@ class ScienceTemplate(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def metadata(self) -> List[ObservationMetadata]:
+    def metadata(self) -> ObservationMetadata:
         """Gets the metadata of this ScienceTemplate.
 
 
         :return: The metadata of this ScienceTemplate.
-        :rtype: List[ObservationMetadata]
+        :rtype: ObservationMetadata
         """
         return self._metadata
 
     @metadata.setter
-    def metadata(self, metadata: List[ObservationMetadata]):
+    def metadata(self, metadata: ObservationMetadata):
         """Sets the metadata of this ScienceTemplate.
 
 
         :param metadata: The metadata of this ScienceTemplate.
-        :type metadata: List[ObservationMetadata]
+        :type metadata: ObservationMetadata
         """
         if metadata is None:
             raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
@@ -77,22 +77,22 @@ class ScienceTemplate(Model):
         self._metadata = metadata
 
     @property
-    def parameters(self) -> List[ScienceParameters]:
+    def parameters(self) -> ScienceParameters:
         """Gets the parameters of this ScienceTemplate.
 
 
         :return: The parameters of this ScienceTemplate.
-        :rtype: List[ScienceParameters]
+        :rtype: ScienceParameters
         """
         return self._parameters
 
     @parameters.setter
-    def parameters(self, parameters: List[ScienceParameters]):
+    def parameters(self, parameters: ScienceParameters):
         """Sets the parameters of this ScienceTemplate.
 
 
         :param parameters: The parameters of this ScienceTemplate.
-        :type parameters: List[ScienceParameters]
+        :type parameters: ScienceParameters
         """
         if parameters is None:
             raise ValueError("Invalid value for `parameters`, must not be `None`")  # noqa: E501
@@ -100,22 +100,22 @@ class ScienceTemplate(Model):
         self._parameters = parameters
 
     @property
-    def template_index(self) -> TemplateIdSchema:
-        """Gets the template_index of this ScienceTemplate.
+    def template_id(self) -> TemplateIdSchema:
+        """Gets the template_id of this ScienceTemplate.
 
 
-        :return: The template_index of this ScienceTemplate.
+        :return: The template_id of this ScienceTemplate.
         :rtype: TemplateIdSchema
         """
-        return self._template_index
+        return self._template_id
 
-    @template_index.setter
-    def template_index(self, template_index: TemplateIdSchema):
-        """Sets the template_index of this ScienceTemplate.
+    @template_id.setter
+    def template_id(self, template_id: TemplateIdSchema):
+        """Sets the template_id of this ScienceTemplate.
 
 
-        :param template_index: The template_index of this ScienceTemplate.
-        :type template_index: TemplateIdSchema
+        :param template_id: The template_id of this ScienceTemplate.
+        :type template_id: TemplateIdSchema
         """
 
-        self._template_index = template_index
+        self._template_id = template_id

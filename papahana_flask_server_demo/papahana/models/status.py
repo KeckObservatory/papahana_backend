@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
+from papahana.models.one_of_status_state import OneOfStatusState
 from papahana import util
 
 
@@ -14,18 +15,18 @@ class Status(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, state: str='started', executions: List[str]=None, deleted: bool=False):  # noqa: E501
+    def __init__(self, state: OneOfStatusState=None, executions: List[str]=None, deleted: bool=False):  # noqa: E501
         """Status - a model defined in Swagger
 
         :param state: The state of this Status.  # noqa: E501
-        :type state: str
+        :type state: OneOfStatusState
         :param executions: The executions of this Status.  # noqa: E501
         :type executions: List[str]
         :param deleted: The deleted of this Status.  # noqa: E501
         :type deleted: bool
         """
         self.swagger_types = {
-            'state': str,
+            'state': OneOfStatusState,
             'executions': List[str],
             'deleted': bool
         }
@@ -51,29 +52,23 @@ class Status(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def state(self) -> str:
+    def state(self) -> OneOfStatusState:
         """Gets the state of this Status.
 
 
         :return: The state of this Status.
-        :rtype: str
+        :rtype: OneOfStatusState
         """
         return self._state
 
     @state.setter
-    def state(self, state: str):
+    def state(self, state: OneOfStatusState):
         """Sets the state of this Status.
 
 
         :param state: The state of this Status.
-        :type state: str
+        :type state: OneOfStatusState
         """
-        allowed_values = ["started", "executed", "completed", "failed", "terminated", "stopped"]  # noqa: E501
-        if state not in allowed_values:
-            raise ValueError(
-                "Invalid value for `state` ({0}), must be one of {1}"
-                .format(state, allowed_values)
-            )
 
         self._state = state
 

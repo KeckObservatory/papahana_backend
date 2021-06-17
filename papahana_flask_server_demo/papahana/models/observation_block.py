@@ -20,13 +20,13 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObsBlockMetadata=None, target: List[Target]=None, acquisition: Acquisition=None, science: List[ScienceTemplate]=None, observation: List[ObservationTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[str]=None, comment: str=None):  # noqa: E501
+    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, science: List[ScienceTemplate]=None, observation: List[ObservationTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[str]=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param metadata: The metadata of this ObservationBlock.  # noqa: E501
         :type metadata: ObsBlockMetadata
         :param target: The target of this ObservationBlock.  # noqa: E501
-        :type target: List[Target]
+        :type target: Target
         :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
         :type acquisition: Acquisition
         :param science: The science of this ObservationBlock.  # noqa: E501
@@ -44,7 +44,7 @@ class ObservationBlock(Model):
         """
         self.swagger_types = {
             'metadata': ObsBlockMetadata,
-            'target': List[Target],
+            'target': Target,
             'acquisition': Acquisition,
             'science': List[ScienceTemplate],
             'observation': List[ObservationTemplate],
@@ -110,22 +110,22 @@ class ObservationBlock(Model):
         self._metadata = metadata
 
     @property
-    def target(self) -> List[Target]:
+    def target(self) -> Target:
         """Gets the target of this ObservationBlock.
 
 
         :return: The target of this ObservationBlock.
-        :rtype: List[Target]
+        :rtype: Target
         """
         return self._target
 
     @target.setter
-    def target(self, target: List[Target]):
+    def target(self, target: Target):
         """Sets the target of this ObservationBlock.
 
 
         :param target: The target of this ObservationBlock.
-        :type target: List[Target]
+        :type target: Target
         """
 
         self._target = target

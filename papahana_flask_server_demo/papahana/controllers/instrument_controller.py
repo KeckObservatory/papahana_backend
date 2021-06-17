@@ -1,8 +1,10 @@
 import connexion
 import six
 
+from papahana.models.instrument_enum import InstrumentEnum
 from papahana.models.instrument_package import InstrumentPackage
 from papahana import util
+
 from papahana.controllers import controller_helper as utils
 
 
@@ -16,6 +18,9 @@ def instrument_packages(instrument):
 
     :rtype: InstrumentPackage
     """
+    if connexion.request.is_json:
+        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
+
     return 'do some magic!'
 
 
@@ -31,6 +36,9 @@ def instrument_packages_ip_parameter(instrument, ip_version):
 
     :rtype: InstrumentPackage
     """
+    if connexion.request.is_json:
+        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
+
     query = {"instrument": instrument, "version": ip_version}
     results = utils.get_by_query(query, 'templateCollect')
 
@@ -52,6 +60,9 @@ def instrument_packages_ip_template(instrument, ip_version, template_name):
     """
     #TODO -- why does need instrument?  template_name is "KCWI_ifu_sci_stare"?
     # should it default to all templates and have name optional?
+    if connexion.request.is_json:
+        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
+
     query = {"name": template_name, "version": ip_version}
     packages = utils.get_by_query(query, 'templateCollect')
 

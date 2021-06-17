@@ -8,7 +8,8 @@ from papahana.models.acquisition_parameters import AcquisitionParameters
 from papahana.models.body import Body
 from papahana.models.body1 import Body1
 from papahana.models.container import Container
-from papahana.models.coordinate_schema import CoordinateSchema
+from papahana.models.date_schema import DateSchema
+from papahana.models.dec_schema import DecSchema
 from papahana.models.dither_schema import DitherSchema
 from papahana.models.finding_chart import FindingChart
 from papahana.models.instrument_enum import InstrumentEnum
@@ -18,11 +19,15 @@ from papahana.models.obs_block_metadata import ObsBlockMetadata
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.observation_metadata import ObservationMetadata
 from papahana.models.observation_template import ObservationTemplate
-from papahana.models.one_of_coordinate_schema import OneOfCoordinateSchema
+from papahana.models.one_of_dec_schema import OneOfDecSchema
+from papahana.models.one_of_instrument_enum import OneOfInstrumentEnum
+from papahana.models.one_of_ra_schema import OneOfRASchema
+from papahana.models.one_of_status_state import OneOfStatusState
 from papahana.models.one_of_template_id_schema import OneOfTemplateIdSchema
 from papahana.models.one_of_template_schema import OneOfTemplateSchema
 from papahana.models.one_ofbody import OneOfbody
 from papahana.models.one_ofbody1 import OneOfbody1
+from papahana.models.ra_schema import RASchema
 from papahana.models.science_parameters import ScienceParameters
 from papahana.models.science_template import ScienceTemplate
 from papahana.models.sem_id_schema import SemIdSchema

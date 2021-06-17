@@ -17,30 +17,30 @@ class Acquisition(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: List[ObservationMetadata]=None, parameters: List[AcquisitionParameters]=None, template_index: TemplateIdSchema=None):  # noqa: E501
+    def __init__(self, metadata: ObservationMetadata=None, parameters: AcquisitionParameters=None, template_id: TemplateIdSchema=None):  # noqa: E501
         """Acquisition - a model defined in Swagger
 
         :param metadata: The metadata of this Acquisition.  # noqa: E501
-        :type metadata: List[ObservationMetadata]
+        :type metadata: ObservationMetadata
         :param parameters: The parameters of this Acquisition.  # noqa: E501
-        :type parameters: List[AcquisitionParameters]
-        :param template_index: The template_index of this Acquisition.  # noqa: E501
-        :type template_index: TemplateIdSchema
+        :type parameters: AcquisitionParameters
+        :param template_id: The template_id of this Acquisition.  # noqa: E501
+        :type template_id: TemplateIdSchema
         """
         self.swagger_types = {
-            'metadata': List[ObservationMetadata],
-            'parameters': List[AcquisitionParameters],
-            'template_index': TemplateIdSchema
+            'metadata': ObservationMetadata,
+            'parameters': AcquisitionParameters,
+            'template_id': TemplateIdSchema
         }
 
         self.attribute_map = {
             'metadata': 'metadata',
             'parameters': 'parameters',
-            'template_index': 'template_index'
+            'template_id': 'template_id'
         }
         self._metadata = metadata
         self._parameters = parameters
-        self._template_index = template_index
+        self._template_id = template_id
 
     @classmethod
     def from_dict(cls, dikt) -> 'Acquisition':
@@ -54,22 +54,22 @@ class Acquisition(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def metadata(self) -> List[ObservationMetadata]:
+    def metadata(self) -> ObservationMetadata:
         """Gets the metadata of this Acquisition.
 
 
         :return: The metadata of this Acquisition.
-        :rtype: List[ObservationMetadata]
+        :rtype: ObservationMetadata
         """
         return self._metadata
 
     @metadata.setter
-    def metadata(self, metadata: List[ObservationMetadata]):
+    def metadata(self, metadata: ObservationMetadata):
         """Sets the metadata of this Acquisition.
 
 
         :param metadata: The metadata of this Acquisition.
-        :type metadata: List[ObservationMetadata]
+        :type metadata: ObservationMetadata
         """
         if metadata is None:
             raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
@@ -77,22 +77,22 @@ class Acquisition(Model):
         self._metadata = metadata
 
     @property
-    def parameters(self) -> List[AcquisitionParameters]:
+    def parameters(self) -> AcquisitionParameters:
         """Gets the parameters of this Acquisition.
 
 
         :return: The parameters of this Acquisition.
-        :rtype: List[AcquisitionParameters]
+        :rtype: AcquisitionParameters
         """
         return self._parameters
 
     @parameters.setter
-    def parameters(self, parameters: List[AcquisitionParameters]):
+    def parameters(self, parameters: AcquisitionParameters):
         """Sets the parameters of this Acquisition.
 
 
         :param parameters: The parameters of this Acquisition.
-        :type parameters: List[AcquisitionParameters]
+        :type parameters: AcquisitionParameters
         """
         if parameters is None:
             raise ValueError("Invalid value for `parameters`, must not be `None`")  # noqa: E501
@@ -100,22 +100,22 @@ class Acquisition(Model):
         self._parameters = parameters
 
     @property
-    def template_index(self) -> TemplateIdSchema:
-        """Gets the template_index of this Acquisition.
+    def template_id(self) -> TemplateIdSchema:
+        """Gets the template_id of this Acquisition.
 
 
-        :return: The template_index of this Acquisition.
+        :return: The template_id of this Acquisition.
         :rtype: TemplateIdSchema
         """
-        return self._template_index
+        return self._template_id
 
-    @template_index.setter
-    def template_index(self, template_index: TemplateIdSchema):
-        """Sets the template_index of this Acquisition.
+    @template_id.setter
+    def template_id(self, template_id: TemplateIdSchema):
+        """Sets the template_id of this Acquisition.
 
 
-        :param template_index: The template_index of this Acquisition.
-        :type template_index: TemplateIdSchema
+        :param template_id: The template_id of this Acquisition.
+        :type template_id: TemplateIdSchema
         """
 
-        self._template_index = template_index
+        self._template_id = template_id

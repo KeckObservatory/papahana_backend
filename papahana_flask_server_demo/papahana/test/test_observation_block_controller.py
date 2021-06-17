@@ -5,12 +5,27 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.observation_block import ObservationBlock  # noqa: E501
-from swagger_server.test import BaseTestCase
+from papahana.models.body import Body  # noqa: E501
+from papahana.models.body1 import Body1  # noqa: E501
+from papahana.models.observation import Observation  # noqa: E501
+from papahana.models.observation_block import ObservationBlock  # noqa: E501
+from papahana.models.template_id import TemplateId  # noqa: E501
+from papahana.test import BaseTestCase
+
+from papahana import util
+from config import config_collection
+import pymongo
 
 
 class TestObservationBlockController(BaseTestCase):
     """ObservationBlockController integration test stubs"""
+
+    def __init__(self):
+        mode = util.read_mode()
+        conf = util.read_config(mode)
+        coll = config_collection('obCollect', mode=mode, conf=conf)
+
+        self.ob_id = coll.find_one()
 
     def test_ob_delete(self):
         """Test case for ob_delete
@@ -154,7 +169,7 @@ class TestObservationBlockController(BaseTestCase):
         """
         query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
-            '/v0/obsBlocks/template/duplicate'.format(template_id='template_id_example'),
+            '/v0/obsBlocks/template/duplicate/{template_id}'.format(template_id=TemplateId()),
             method='POST',
             query_string=query_string)
         self.assert200(response,
@@ -193,7 +208,7 @@ class TestObservationBlockController(BaseTestCase):
         """
         query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
-            '/v0/obsBlocks/template/{template_id}'.format(template_id='template_id_example'),
+            '/v0/obsBlocks/template/{template_id}'.format(template_id=TemplateId()),
             method='DELETE',
             query_string=query_string)
         self.assert200(response,
@@ -206,7 +221,7 @@ class TestObservationBlockController(BaseTestCase):
         """
         query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
-            '/v0/obsBlocks/template/{template_id}/{file_parameter}'.format(template_id='template_id_example', file_parameter='file_parameter_example'),
+            '/v0/obsBlocks/template/{template_id}/{file_parameter}'.format(template_id=TemplateId(), file_parameter='file_parameter_example'),
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -217,10 +232,13 @@ class TestObservationBlockController(BaseTestCase):
 
         
         """
+        body = Object()
         query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
-            '/v0/obsBlocks/template/{template_id}/{file_parameter}'.format(template_id='template_id_example', file_parameter='file_parameter_example'),
+            '/v0/obsBlocks/template/{template_id}/{file_parameter}'.format(template_id=TemplateId(), file_parameter='file_parameter_example'),
             method='PUT',
+            data=json.dumps(body),
+            content_type='text/plain',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -232,7 +250,7 @@ class TestObservationBlockController(BaseTestCase):
         """
         query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
-            '/v0/obsBlocks/template/{template_id}'.format(template_id='template_id_example'),
+            '/v0/obsBlocks/template/{template_id}'.format(template_id=TemplateId()),
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -243,10 +261,13 @@ class TestObservationBlockController(BaseTestCase):
 
         
         """
+        body = Observation()
         query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
-            '/v0/obsBlocks/template/{template_id}'.format(template_id='template_id_example'),
+            '/v0/obsBlocks/template/{template_id}'.format(template_id=TemplateId()),
             method='PUT',
+            data=json.dumps(body),
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -256,10 +277,14 @@ class TestObservationBlockController(BaseTestCase):
 
         
         """
-        query_string = [('ob_id', 'ob_id_example')]
+        body = Body1()
+        query_string = [('ob_id', 'ob_id_example'),
+                        ('template_type', 'template_type_example')]
         response = self.client.open(
             '/v0/obsBlocks/template',
             method='POST',
+            data=json.dumps(body),
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -269,10 +294,14 @@ class TestObservationBlockController(BaseTestCase):
 
         
         """
-        query_string = [('ob_id', 'ob_id_example')]
+        body = Body()
+        query_string = [('ob_id', 'ob_id_example'),
+                        ('template_type', 'template_type_example')]
         response = self.client.open(
             '/v0/obsBlocks/template',
             method='PUT',
+            data=json.dumps(body),
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -295,8 +324,7 @@ class TestObservationBlockController(BaseTestCase):
 
         
         """
-        query_string = [('ob_id', 'ob_id_example'),
-                        ('sidereal', true)]
+        query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
             '/v0/obsBlocks/timeConstraints',
             method='GET',
@@ -309,11 +337,13 @@ class TestObservationBlockController(BaseTestCase):
 
         
         """
-        query_string = [('ob_id', 'ob_id_example'),
-                        ('sidereal', true)]
+        body = ['body_example']
+        query_string = [('ob_id', 'ob_id_example')]
         response = self.client.open(
             '/v0/obsBlocks/timeConstraints',
             method='PUT',
+            data=json.dumps(body),
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

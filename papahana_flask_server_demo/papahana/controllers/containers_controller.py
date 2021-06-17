@@ -2,19 +2,20 @@ import connexion
 import six
 import pymongo
 
-from papahana.models.container import Container  # noqa: E501
-from papahana.models.container_summary import ContainerSummary  # noqa: E501
-from papahana.models.observation_block import ObservationBlock  # noqa: E501
-from papahana.controllers import observation_block_controller
 from papahana.controllers import controller_helper as utils
+
+from papahana.models.container import Container  
+from papahana.models.observation_block import ObservationBlock  
+from papahana import util
+
 
 from config import config_collection
 from bson.objectid import ObjectId
 
 
-def containers_get(container_id):  # noqa: E501
+def containers_get(container_id):  
     """
-    Retrieves a specific container's information # noqa: E501
+    Retrieves a specific container's information
 
     error:
     http://vm-webtools.keck.hawaii.edu:50000/v0/containers?container_id=09ad6fc4062bf346f1b0437
@@ -34,7 +35,7 @@ def containers_get(container_id):  # noqa: E501
 
 def containers_post(body):
     """
-    Creates a container # noqa: E501
+    Creates a container 
 
     test:
     curl -v -H "Content-Type: application/json" -X POST -d '{"semester":"2030A"}' http://vm-webtools.keck:50000/v0/containers
@@ -45,9 +46,6 @@ def containers_post(body):
 
     :rtype: str: the ObjectID of the inserted document
     """
-    if connexion.request.is_json:
-        body = Container.from_dict(connexion.request.get_json())  # noqa: E501
-
     new_doc = {"name": body.name, "semester": body.semester,
                "ob_blocks": body.observation_blocks, "comment": body.comment}
 
@@ -56,13 +54,13 @@ def containers_post(body):
     return str(result.inserted_id)
 
 
-def containers_put(body, container_id):  # noqa: E501
+def containers_put(body, container_id):  
     """containers_put
 
     test :
     curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2024A","observation_blocks":["2","3"]}' 'http://vm-webtools.keck:50000/v0/containers?container_id=609ad6fc4062bf346f1b0437'
 
-    Overwrites a container # noqa: E501
+    Overwrites a container 
 
     :param body:
     :type body: dict | bytes
@@ -71,9 +69,6 @@ def containers_put(body, container_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = Container.from_dict(connexion.request.get_json())  # noqa: E501
-
     container_dict = body.to_dict()
 
     new_vals = {}
@@ -81,7 +76,7 @@ def containers_put(body, container_id):  # noqa: E501
         if val and key != 'container_id':
             new_vals[key] = val
 
-    query = utils.query_by_id(container_id)
+    query = utils.query_by_id(container_id, add_delete=False)
     utils.update_doc(query, new_vals, 'containerCollect')
 
 
@@ -95,11 +90,11 @@ def containers_delete(container_id):
 
     :rtype: None
     """
-    query = utils.query_by_id(container_id)
+    query = utils.query_by_id(container_id, add_delete=False)
     utils.delete_from_collection(query, 'containerCollect')
 
 
-def containers_append_put(body, container_id):  # noqa: E501
+def containers_append_put(body, container_id):
     """containers_append_put
 
     Appends a list of observation blocks to a container by id.
@@ -122,10 +117,11 @@ def containers_append_put(body, container_id):  # noqa: E501
         return
 
     new_vals = {"observation_blocks": unique_obs}
-    utils.update_doc(utils.query_by_id(container_id), new_vals, 'containerCollect')
+    utils.update_doc(utils.query_by_id(container_id, add_delete=False),
+                     new_vals, 'containerCollect')
 
 
-def containers_execution_times_get(container_id):  # noqa: E501
+def containers_execution_times_get(container_id):  
     """
     Calculate the total execution time of a container
 
@@ -144,7 +140,7 @@ def containers_execution_times_get(container_id):  # noqa: E501
     return total_time
 
 
-def containers_export_get(container_id):  # noqa: E501
+def containers_export_get(container_id):  
     """
     Retrieves a specific container information in a file format (default .json)
 
@@ -153,12 +149,12 @@ def containers_export_get(container_id):  # noqa: E501
 
     :rtype: Container
     """
-    query = utils.query_by_id(container_id)
+    query = utils.query_by_id(container_id, add_delete=False)
 
     return 'do some magic!'
 
 
-def containers_items_get(container_id):  # noqa: E501
+def containers_items_get(container_id):  
     """containers_items_get
 
     Retrieves the ordered list of observing blocks in a container.
@@ -179,9 +175,9 @@ def containers_items_get(container_id):  # noqa: E501
 
 
 # TODO this seems like it is the same as /containers_get
-def containers_items_summary_get(container_id):  # noqa: E501
+def containers_items_summary_get(container_id):  
     """
-    Retrieves a summary of container information # noqa: E501
+    Retrieves a summary of container information 
 
     :param container_id: container identifier
     :type container_id: str
@@ -192,7 +188,7 @@ def containers_items_summary_get(container_id):  # noqa: E501
     return 'do some magic!'
 
 
-def containers_schedule_too_post(body):  # noqa: E501
+def containers_schedule_too_post(body):  
     """
     Submits a container for Target of Opportunity (ToO) (all the elements)
 
@@ -203,10 +199,11 @@ def containers_schedule_too_post(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = [Container.from_dict(d) for d in connexion.request.get_json()]
+
     return 'do some magic!'
 
 
-def containers_verify_get(container_id):  # noqa: E501
+def containers_verify_get(container_id):  
     """
     Request verification of the elements of a container. Sends container summary
     as a successful response

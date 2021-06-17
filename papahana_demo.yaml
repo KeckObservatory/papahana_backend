@@ -663,7 +663,7 @@ paths:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: On success Returns the Target and Metadata of the observing block being requested.
+          description: Retrieves the list of templates associated with the OB.
           content:
             application/json:
               schema:
@@ -948,7 +948,7 @@ paths:
             schema:
               type: array
               items:
-                type: string
+                $ref: '#/components/schemas/DateSchema'
         required: true
       responses:
         "200":
@@ -1076,6 +1076,7 @@ paths:
       operationId: ob_upgrade
       parameters:
         - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/sem_id_not_required'
       responses:
         "200":
           description: On success the new version of the OB is returned, with a new unique ID.  If the upgrade fails (the New OB must pass verification), an error code is generated.
@@ -1142,8 +1143,7 @@ components:
         metadata:
           $ref: '#/components/schemas/ObsBlockMetadata'
         target:
-          items:
-            $ref: '#/components/schemas/Target'
+          $ref: '#/components/schemas/Target'
         acquisition:
           $ref: '#/components/schemas/Acquisition'
         science:
@@ -1216,7 +1216,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObservationMetadata'
-        template_index:
+        template_id:
           $ref: '#/components/schemas/TemplateIdSchema'
 
     ScienceTemplate:
@@ -1226,14 +1226,10 @@ components:
       type: object
       properties:
         metadata:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObservationMetadata'
+          $ref: '#/components/schemas/ObservationMetadata'
         parameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScienceParameters'
-        template_index:
+          $ref: '#/components/schemas/ScienceParameters'
+        template_id:
           $ref: '#/components/schemas/TemplateIdSchema'
 
     Acquisition:
@@ -1243,14 +1239,10 @@ components:
       type: object
       properties:
         metadata:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObservationMetadata'
+          $ref: '#/components/schemas/ObservationMetadata'
         parameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/AcquisitionParameters'
-        template_index:
+          $ref: '#/components/schemas/AcquisitionParameters'
+        template_id:
           $ref: '#/components/schemas/TemplateIdSchema'
 
     ObservationMetadata:
@@ -1315,9 +1307,9 @@ components:
         dec_offset:
           type: number
         guider_gs_ra:
-          $ref: '#/components/schemas/CoordinateSchema'
+          $ref: '#/components/schemas/RASchema'
         guider_gs_dec:
-          $ref: '#/components/schemas/CoordinateSchema'
+          $ref: '#/components/schemas/DecSchema'
         guider_gs_mode:
           type: string
           enum:
@@ -1361,9 +1353,9 @@ components:
         name:
           type: string
         ra:
-          $ref: '#/components/schemas/CoordinateSchema'
+          $ref: '#/components/schemas/RASchema'
         dec:
-          $ref: '#/components/schemas/CoordinateSchema'
+          $ref: '#/components/schemas/DecSchema'
         equinox:
           type: string
           default: "J2000"
@@ -1383,9 +1375,11 @@ components:
           type: number
           default: 2000.0
         obstime:
-          type: number
+          type: string
         magnitude:
-          $ref: '#/components/schemas/Magnitude'
+          type: array
+          items:
+            $ref: '#/components/schemas/Magnitude'
         dra:
           type: number
           default: 0.0
@@ -1414,13 +1408,13 @@ components:
       properties:
         state:
           type: string
-          enum:
-            - started
-            - executed
-            - completed
-            - failed
-            - terminated
-            - stopped
+          oneOf:
+            - pattern: '^[Ss]tarted$'
+            - pattern: '^[Ee]xecuted$'
+            - pattern: '^[Cc]ompleted$'
+            - pattern: '^[Ff]ailed$'
+            - pattern: '^[Tt]erminated$'
+            - pattern: '^[Ss]topped$'
           default: started
         executions:
           type: array
@@ -1462,48 +1456,50 @@ components:
 
     InstrumentEnum:
       type: string
-      enum:
-        - KCWI
-        - DEIMOS
-        - ESI
-        - HIRES
-        - LRIS
-        - MOSFIRE
-        - OSIRIS
-        - NIRES
-        - NIRC2
-        - kcwi
-        - deimos
-        - esi
-        - hires
-        - lris
-        - mosfire
-        - osiris
-        - nires
-        - nirc2
-        - DE
-        - DF
-        - EI
-        - HI
-        - KB
-        - KF
-        - LB
-        - LR
-        - MF
-        - OI
-        - OS
-        - NR
-        - NI
-        - NS
-        - N2
-        - NC
+      oneOf:
+        - pattern: '^[Kk][Cc][Ww][Ii]$'
+        - pattern: '^[Dd][Ee][Ii][Mm][Oo][Ss]'
+        - pattern: '^[Ee][Ss][Ii]$'
+        - pattern: '^[Hh][Ii][Rr][Ee][Ss]$'
+        - pattern: '^[Ll][Rr][Ii][Ss]$'
+        - pattern: '^[Mm][Oo][Ss][Ff][Ii][Rr][Ee]$'
+        - pattern: '^[Nn][Ii][Re][Ss]$'
+        - pattern: '^[Nn][Ii][Re][Cc]2$'
+        - enum:
+          - DE
+          - DF
+          - EI
+          - HI
+          - KB
+          - KF
+          - LB
+          - LR
+          - MF
+          - OI
+          - OS
+          - NR
+          - NI
+          - NS
+          - N2
+          - NC
 
-    CoordinateSchema:
+
+    RASchema:
       type: string
       oneOf:
         - pattern: '^\d{2}:\d{2}:\d{2}$'
         - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}$'
         - pattern: '^\d{2}:\d{2}:\d{2}.\d{2}$'
+
+    DecSchema:
+      type: string
+      oneOf:
+        - pattern: '^\d{2}:\d{2}:\d{2}$'
+        - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}$'
+        - pattern: '^\d{2}:\d{2}:\d{2}.\d{2}$'
+        - pattern: '^-\d{2}:\d{2}:\d{2}$'
+        - pattern: '^-\d{2}:\d{2}:\d{2}.\d{1}$'
+        - pattern: '^-\d{2}:\d{2}:\d{2}.\d{2}$'
 
     DitherSchema:
       required:
@@ -1534,6 +1530,10 @@ components:
       oneOf:
           - $ref: '#/components/schemas/ObservationTemplate'
           - $ref: '#/components/schemas/ScienceTemplate'
+
+    DateSchema:
+      type: string
+      pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
 
   parameters:
 

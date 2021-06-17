@@ -6,7 +6,8 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
-from papahana.models.coordinate_schema import CoordinateSchema  # noqa: F401,E501
+from papahana.models.dec_schema import DecSchema  # noqa: F401,E501
+from papahana.models.ra_schema import RASchema  # noqa: F401,E501
 from papahana import util
 
 
@@ -15,7 +16,7 @@ class AcquisitionParameters(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, wrap: str='auto', rotmode: str=None, guider_po: str=None, ra_offset: float=None, dec_offset: float=None, guider_gs_ra: CoordinateSchema=None, guider_gs_dec: CoordinateSchema=None, guider_gs_mode: str=None):  # noqa: E501
+    def __init__(self, wrap: str='auto', rotmode: str=None, guider_po: str=None, ra_offset: float=None, dec_offset: float=None, guider_gs_ra: RASchema=None, guider_gs_dec: DecSchema=None, guider_gs_mode: str=None):  # noqa: E501
         """AcquisitionParameters - a model defined in Swagger
 
         :param wrap: The wrap of this AcquisitionParameters.  # noqa: E501
@@ -29,9 +30,9 @@ class AcquisitionParameters(Model):
         :param dec_offset: The dec_offset of this AcquisitionParameters.  # noqa: E501
         :type dec_offset: float
         :param guider_gs_ra: The guider_gs_ra of this AcquisitionParameters.  # noqa: E501
-        :type guider_gs_ra: CoordinateSchema
+        :type guider_gs_ra: RASchema
         :param guider_gs_dec: The guider_gs_dec of this AcquisitionParameters.  # noqa: E501
-        :type guider_gs_dec: CoordinateSchema
+        :type guider_gs_dec: DecSchema
         :param guider_gs_mode: The guider_gs_mode of this AcquisitionParameters.  # noqa: E501
         :type guider_gs_mode: str
         """
@@ -41,8 +42,8 @@ class AcquisitionParameters(Model):
             'guider_po': str,
             'ra_offset': float,
             'dec_offset': float,
-            'guider_gs_ra': CoordinateSchema,
-            'guider_gs_dec': CoordinateSchema,
+            'guider_gs_ra': RASchema,
+            'guider_gs_dec': DecSchema,
             'guider_gs_mode': str
         }
 
@@ -200,43 +201,43 @@ class AcquisitionParameters(Model):
         self._dec_offset = dec_offset
 
     @property
-    def guider_gs_ra(self) -> CoordinateSchema:
+    def guider_gs_ra(self) -> RASchema:
         """Gets the guider_gs_ra of this AcquisitionParameters.
 
 
         :return: The guider_gs_ra of this AcquisitionParameters.
-        :rtype: CoordinateSchema
+        :rtype: RASchema
         """
         return self._guider_gs_ra
 
     @guider_gs_ra.setter
-    def guider_gs_ra(self, guider_gs_ra: CoordinateSchema):
+    def guider_gs_ra(self, guider_gs_ra: RASchema):
         """Sets the guider_gs_ra of this AcquisitionParameters.
 
 
         :param guider_gs_ra: The guider_gs_ra of this AcquisitionParameters.
-        :type guider_gs_ra: CoordinateSchema
+        :type guider_gs_ra: RASchema
         """
 
         self._guider_gs_ra = guider_gs_ra
 
     @property
-    def guider_gs_dec(self) -> CoordinateSchema:
+    def guider_gs_dec(self) -> DecSchema:
         """Gets the guider_gs_dec of this AcquisitionParameters.
 
 
         :return: The guider_gs_dec of this AcquisitionParameters.
-        :rtype: CoordinateSchema
+        :rtype: DecSchema
         """
         return self._guider_gs_dec
 
     @guider_gs_dec.setter
-    def guider_gs_dec(self, guider_gs_dec: CoordinateSchema):
+    def guider_gs_dec(self, guider_gs_dec: DecSchema):
         """Sets the guider_gs_dec of this AcquisitionParameters.
 
 
         :param guider_gs_dec: The guider_gs_dec of this AcquisitionParameters.
-        :type guider_gs_dec: CoordinateSchema
+        :type guider_gs_dec: DecSchema
         """
 
         self._guider_gs_dec = guider_gs_dec

@@ -40,7 +40,7 @@ def json_with_objectid(result):
     return cln_result
 
 
-def query_by_id(id):
+def query_by_id(id, add_delete=True):
     """
     query by string container_id
 
@@ -51,7 +51,10 @@ def query_by_id(id):
     """
     id = get_object_id(id)
 
-    return {"_id": id, "status.deleted": False}
+    if add_delete:
+        return {"_id": id, "status.deleted": False}
+    else:
+        return {"_id": id}
 
 
 def get_by_id(id, collect_name, cln_oid=True):
@@ -65,7 +68,11 @@ def get_by_id(id, collect_name, cln_oid=True):
 
     :rtype: Dict{Query Result}
     """
-    query = query_by_id(id)
+    if collect_name == 'obCollect':
+        query = query_by_id(id)
+    else:
+        query = query_by_id(id, add_delete=False)
+
     coll = config_collection(collect_name)
 
     results = list(coll.find(query))
@@ -90,7 +97,7 @@ def get_by_query(query, collect_name):
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
-    if "status.deleted" not in query:
+    if "status.deleted" not in query and collect_name == 'obCollect':
         query["status.deleted"] = False
 
     return list(coll.find(query))
@@ -110,7 +117,7 @@ def get_fields_by_query(query, fields, collect_name):
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
-    if "status.deleted" not in query:
+    if "status.deleted" not in query and collect_name == 'obCollect':
         query["status.deleted"] = False
 
     return list(coll.find(query, fields))
@@ -130,7 +137,10 @@ def get_fields_by_id(ob_id, fields, collect_name):
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
-    query = query_by_id(ob_id)
+    if collect_name == 'obCollect':
+        query = query_by_id(ob_id)
+    else:
+        query = query_by_id(ob_id, add_delete=False)
 
     results = list(coll.find(query, fields))
     if not results:
@@ -343,7 +353,7 @@ def template_indx_type(template_id):
         template_type = template_id[:3]
         template_indx = int(template_id[3:])
     except ValueError:
-        abort(400, "Invalid template_id.")
+        abort(400, f"Invalid template_id: {template_id}")
     except Exception as err:
         abort(400, f"Error with template_id: {err}")
 
@@ -454,7 +464,7 @@ def obs_id_associated(sem_id, obs_id):
 
 
 #validation specific
-def check_required(parameters, filled):
+def check_required_values(parameters, filled):
     """
     This trusts that the template keys have already been checked to exist.
     """
@@ -462,31 +472,30 @@ def check_required(parameters, filled):
     type_map = {'integer': int, 'float': float, 'string': str, 'array': list,
                 'boolean': bool}
 
-    for key in parameters:
-        if parameters[key]['optionality'] != 'required':
+    for param in parameters:
+        if parameters[param]['optionality'] != 'required':
             continue
 
-        if key not in filled or not filled[key]:
-            abort(422, f"Observation Block is missing key {key}")
+        if param not in filled or not filled[param]:
+            abort(422, f"Observation Block is missing parameter: {param}")
 
-        ob_value = filled[key]
-        template_parameters = parameters[key]
+        ob_value = filled[param]
+        parameter_properties = parameters[param]
 
-        if not check_type(ob_value, template_parameters['template_type'],
-                          type_map[template_parameters['template_type']]):
+        if not check_type(ob_value, type_map[parameter_properties['type']]):
             abort(422, f"{ob_value} is not of type: "
-                       f"{template_parameters['template_type']}.")
+                       f"{parameter_properties['type']}.")
 
-        if not check_allowed(ob_value, template_parameters):
+        if not check_allowed(ob_value, parameter_properties):
             abort(422, f"{ob_value} is is not within values: "
-                       f"{template_parameters['allowed']}")
+                       f"{parameter_properties['allowed']}")
 
         return True
 
 
-def check_type(val, key_type, key_py_type):
+def check_type(val, key_py_type):
     if not isinstance(val, key_py_type):
-        if key_type == 'float':
+        if key_py_type == float:
             if isinstance(val, int):
                 return True
 

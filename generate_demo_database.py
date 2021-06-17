@@ -241,7 +241,7 @@ def randStatus():
     for x in range(0, randInt(0,6)):
         executions.append(generate_random_executions())
 
-    schema = {'state': rstat, 'executions': executions, 'deleted': 0}
+    schema = {'state': rstat, 'executions': executions, 'deleted': False}
     return schema
 
 
@@ -391,7 +391,7 @@ def generate_semesters(nSem, nLen=5, maxLen=6):
 
 def generate_mag(nLen=2):
     return {'band': spectral_types[random.randint(0, len(spectral_types)-1)],
-            'mag': randFloat(nLen)}
+            'magnitude': randFloat(nLen)}
 
 
 def generate_mags(maxMags=2):
@@ -471,7 +471,7 @@ def generate_kcwi_science():
     for indx in range(0, n_templates):
         tmp_list = copy.deepcopy(filled_sci_templates)
         filled_template = random.choice(tmp_list)
-        filled_template['template_index'] = f'sci{indx}'
+        filled_template['template_id'] = f'sci{indx}'
         schema.append(filled_template)
 
     return schema
@@ -479,7 +479,7 @@ def generate_kcwi_science():
 
 def generate_kcwi_acquisiton(nLen, maxArr):
     acq = random.choice(filled_acq_templates)
-    acq['template_index'] = 'acq0'
+    acq['template_id'] = 'acq0'
     return acq
 
 
@@ -524,16 +524,16 @@ def generate_target():
         'name': randString(), 
         'ra': generate_ra(), 
         'dec': generate_dec(), 
-        'equinox': randFloat(), 
+        'equinox': 'J2000',
         'frame': randString(), 
         'ra_offset': randFloat(), 
         'dec_offset': randFloat(),
         'pa': randFloat(),
         'pm_ra': randFloat(), 
         'pm_dec': randFloat(), 
-        'epoch': randFloat(), 
-        'obstime': randFloat(), 
-        'mag': generate_mags(), 
+        'epoch': 2000.0,
+        'obstime': '2021-04-22 15:08:04',
+        'magnitude': generate_mags(),
         'wrap': wrap_str[random.randint(0, 1)],
         'd_ra': randFloat(), 
         'd_dec': randFloat(), 
@@ -548,7 +548,7 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         'metadata': generate_metadata(maxArr),
         'target': random.choice([None, generate_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
-        'observations': generate_science(inst),
+        'science': generate_science(inst),
         'associations': randArrStr(nLen, maxArr),
         'status': randStatus(),
         'time_constraints': randTimeConstraint(),

@@ -2,6 +2,7 @@ import pymongo
 import pdb
 from generate_demo_database import read_mode, read_config
 from papahana_flask_server_demo.config import config_collection
+from copy import deepcopy
 
 kcwi_acq_direct_template_parameters = {
         "wrap": {
@@ -229,7 +230,7 @@ kcwi_ifu_acq_direct_template = {
 }
 
 #TODO: Fill with separate template
-kcwi_ifu_acq_offsetStar_template = kcwi_ifu_acq_direct_template.copy()
+kcwi_ifu_acq_offsetStar_template = deepcopy(kcwi_ifu_acq_direct_template)
 kcwi_ifu_acq_offsetStar_template['metadata']['name'] = 'KCWI_ifu_acq_offsetStar'
 
 kcwi_instrument_package = {
@@ -252,7 +253,7 @@ kcwi_instrument_package = {
         }
     ],
     "templates":{
-        "acquisition": [ kcwi_ifu_acq_direct_template, kcwi_ifu_acq_offsetStar_template ],
+        "acquisition": [kcwi_ifu_acq_direct_template, kcwi_ifu_acq_offsetStar_template],
         "science": [ kcwi_ifu_sci_stare_template, kcwi_ifu_sci_dither_template ]
         # "configuration": [ kcwi_config_template ]
     },
