@@ -927,7 +927,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/DateSchema'
                 x-content-type: application/json
         "400":
           description: Invalid status value
@@ -1015,7 +1015,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/DateSchema'
                 x-content-type: application/json
         "400":
           description: Invalid status value
@@ -1164,7 +1164,8 @@ components:
         time_constraints:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/DateSchema'
+#          example: "2021-04-22 13:22:36"
         comment:
           type: string
           example:
@@ -1419,7 +1420,7 @@ components:
         executions:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/DateSchema'
           default: []
         deleted:
           type: boolean
@@ -1453,6 +1454,7 @@ components:
         - pattern: '^eng\d{2}$'
         - pattern: '^cal\d{1}$'
         - pattern: '^cal\d{2}$'
+      example: sci2
 
     InstrumentEnum:
       type: string
@@ -1490,6 +1492,7 @@ components:
         - pattern: '^\d{2}:\d{2}:\d{2}$'
         - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}$'
         - pattern: '^\d{2}:\d{2}:\d{2}.\d{2}$'
+      example: "12:32:14.4"
 
     DecSchema:
       type: string
@@ -1500,6 +1503,7 @@ components:
         - pattern: '^-\d{2}:\d{2}:\d{2}$'
         - pattern: '^-\d{2}:\d{2}:\d{2}.\d{1}$'
         - pattern: '^-\d{2}:\d{2}:\d{2}.\d{2}$'
+      example: "19:32:28.4"
 
     DitherSchema:
       required:
@@ -1525,6 +1529,7 @@ components:
     SemIdSchema:
       type: string
       pattern: '^\d{4}[AB]_[A-Z]\d{3}$'
+      example: "2021A_U123"
 
     TemplateSchema:
       oneOf:
@@ -1534,6 +1539,7 @@ components:
     DateSchema:
       type: string
       pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+      example: "2021-04-22 13:22:36"
 
   parameters:
 

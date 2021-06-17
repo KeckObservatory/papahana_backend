@@ -10,12 +10,14 @@ def config_collection(collection, mode=None, conf=None):
         with current_app.app_context():
             conf = current_app.config_params
             mode = current_app.mode
-    coll = create_collection(conf['dbName'], conf[collection], mode, port=conf['port'], ip=conf['ip'])
+
+    coll = create_collection(conf['dbName'], conf[collection],
+                             port=conf['port'], ip=conf['ip'])
     return coll
 
 
-def create_collection(dbName, collName, mode, port=27017, ip='127.0.0.1', remote=False, username='papahanauser',
-                      password=None):
+def create_collection(dbName, collName, port=27017, ip='127.0.0.1',
+                      remote=False, username='papahanauser', password=None):
     """ create_collection
 
     Creates and returns a mongodb collection object

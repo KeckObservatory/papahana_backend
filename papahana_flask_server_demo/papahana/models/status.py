@@ -5,8 +5,8 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from papahana.models.base_model_ import Model
 from papahana.models.one_of_status_state import OneOfStatusState
+from papahana.models.base_model_ import Model
 from papahana import util
 
 
