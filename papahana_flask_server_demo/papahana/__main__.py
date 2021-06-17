@@ -2,38 +2,16 @@ from flask import current_app
 import connexion
 import yaml
 
-
-def read_mode(config='config.live.yaml'):
-    with open(config) as file:
-        mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
-
-    if 'config' in mode_dict:
-        return mode_dict['config']
-
-    else:
-        return 'production'
-
-
-def read_config(mode, config='config.live.yaml'):
-    with open(config) as file:
-        config = yaml.load(file, Loader=yaml.FullLoader)[mode]
-
-    return config
-
-
-def read_urls(config='config.live.yaml'):
-    with open(config) as file:
-        urls = yaml.load(file, Loader=yaml.FullLoader)['apis']
-
-    return urls
+from papahana import util
 
 
 def create_app():
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.add_api('swagger.yaml')
-    mode = read_mode()
-    urls = read_urls()
-    config_params = read_config(mode)
+    mode = util.read_mode()
+    urls = util.read_urls()
+    config_params = util.read_config(mode)
+
     with app.app.app_context():
         current_app.config_params = config_params
         current_app.urls = urls

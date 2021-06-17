@@ -1,14 +1,22 @@
 import connexion
 from copy import deepcopy
-from flask import abort
-from io import StringIO
+from flask import abort, send_from_directory
 import json
+import pandas
 
-from papahana.models.observation_block import ObservationBlock
-from papahana.models.observation import Observation
 from papahana.controllers import controller_helper as utils
 
+from papahana.models.body import Body  
+from papahana.models.body1 import Body1  
+from papahana.models.date_schema import DateSchema  
+from papahana.models.observation_block import ObservationBlock  
+from papahana.models.sem_id_schema import SemIdSchema  
+from papahana.models.template_id_schema import TemplateIdSchema  
+from papahana.models.template_schema import TemplateSchema  
 from papahana import util
+
+# directory used for writing files to return
+OUT_DIR = "/tmp"
 
 
 def ob_get(ob_id):
@@ -20,7 +28,6 @@ def ob_get(ob_id):
 
     :rtype: ObservationBlock
     """
-
     return utils.get_by_id(ob_id, 'obCollect')
 
 
@@ -28,15 +35,13 @@ def ob_post(body):
     """
     Inserts an observation block.
 
-    curl -v -H "Content-Type: application/json" -X POST -d '{ "signature" : { "name" : "standard stars #8", "pi_id" : 8899, "sem_id" : "2019A_N020", "instrument" : "KCWI" }, "version" : 0.1, "target" : { "name" : "ndli", "ra" : "01 20 39", "dec" : "-41 45 44", "equinox" : 5.271497685479858, "frame" : "vfjw", "ra_offset" : 8.284293063826414, "dec_offset" : 0.526794111139437, "pa" : 9.340237658316866, "pm_ra" : 0.5265900313218896, "pm_dec" : 4.31815072224234, "epoch" : 8.842424493992965, "obstime" : 7.120039595910197, "mag" : [ { "band" : "V", "mag" : 0.5866992315816202 }, { "band" : "K", "mag" : 0.3795908856613399 } ], "wrap" : "south", "d_ra" : 3.833963780902916, "d_dec" : 4.009906121406269, "comment" : "I am one of the few honest people I have ever known." }, "acquisition" : { "name" : "KCWI_ifu_acq_direct", "instrument" : "KCWI", "type" : "acq", "version" : 0.1, "GUIDER_PO" : "IFU", "wrap" : "shortest", "rotmode" : "stationary", "GUIDER_GS_RA" : "14 03 15", "GUIDER_GS_DEC" : "+54 20 43", "GUIDER_GS_MODE" : "User", "index" : 0 }, "science" : [ { "name" : "KCWI_ifu_sci_test", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 1 }, { "name" : "KCWI_ifu_sci_test", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 2 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 3 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 4 } ], "associations" : [ "jpuzq", "ezoas", "ozjto" ], "priority" : 58.26288430222885, "status" : { "state" : "inqueue", "executions" : [ "2019-05-16 11:27:27", "2019-06-25 21:34:27", "2019-10-12 05:41:27", "2020-09-08 21:37:27", "2018-12-22 06:40:27" ] }, "comment" : "Here?s some money. Go see a star war." }' "http://vm-webtools.keck:50001/v0/obsBlocks"
+    curl -v -H "Content-Type: application/json" -X POST -d '{"metadata" : { "name" : "standard stars #4", "version" : 0.1, "priority" : 69e04133466, "ob_type" : "science", "pi_id" : 1144, "sem_id" : "2020B_U048", "instrument" : "KCWI" }, "target" : { "name" : "lnvi", "ra" : "21:34:39", "dec" : "-18:20:11", "equinox" :"J2000", "frame" : "xfgu", "ra_offset" : 0.6145587265886931, "dec_offset" : 9.726425379786754, "pa" : 2.9116975489580788, "pm_ra" : 5.8628238378551565, "pm_dec" : 8.752718320860637, "epoch" : 9.28885923053669, "obstime" : "2021-04-22 15:08:04", "magnitude" : [ { "band" : "K", "magnitude" : 1.398070734513925 }, { "band" : "K", "magnitude" : 0.38333014615183614 } ], "wrap" : "south", "d_ra" : 9.157978747082192, "d_dec" : 6.985677960034548, "comment" : "I?m a scholar. I enjoy scholarly pursuits." }, "acquisition" : { "metadata" : { "name" : "KCWI_ifu_acq_direct", "ui_name" : "KCWI direct", "instrument" : "KCWI", "type" : "acquisition", "version" : 0.1, "script" : "KCWI_ifu_acq_direct" }, "parameters" : { "wrap" : "auto", "rotmode" : "PA", "guider_po" : "IFU", "guider_gs_ra" : "12:44:55.6", "guider_gs_dec" : "55:22:19.9", "guider_gs_mode" : "auto" }, "template_index" : "acq0" }, "observations" : [ { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci0" }, { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci1" }, { "metadata" : { "name" : "KCWI_ifu_sci_dither", "ui_name" : "KCWI dither", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 60, "det1_nexp" : 2, "det2_exptime" : 121, "det2_nexp" : 4, "seq_ndither" : 4, "seq_ditarray" : [ [ 0, 0, "T", true ], [ 5, 5, "S", false ], [ 0, 0, "T", true ], [ 5, 5, "S", false ] ] }, "template_index" : "sci2" } ], "associations" : [ "aprce" ], "status" : { "state" : "Executed", "executions" : [ "2018-01-17 13:28:09" ], "deleted" : false }, "time_constraints" : [ "2021-05-01 08:00:00", "2021-06-01 10:00:00" ], "comment" : "Here?s some money. Go see a star warzz." }' "http://vm-webtools.keck:50001/v0/obsBlocks"
 
     :param body: Observation block to be added.
     :type body: dict | bytes
-    :rtype: str
-    """
-    if connexion.request.is_json:
-        body = connexion.request.get_json()
 
+    :rtype: str of new OB ID.
+    """
     result = utils.insert_into_collection(body, 'obCollect')
 
     return str(result)
@@ -44,8 +49,9 @@ def ob_post(body):
 
 def ob_put(body, ob_id):
     """
-    Updates the observation block with the new one
-    [webdev@vm-webtools ~]$ curl -v -H "Content-Type: application/json" -X PUT -d '{"signature.instrument": "KCWI-test"}' "http://vm-webtools.keck.hawaii.edu:50000/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
+    Updates the observation block with the new one.
+
+    curl -v -H "Content-Type: application/json" -X PUT -d '{"metadata" : { "name" : "standard stars #4", "version" : 0.1, "priority" : 60.22146304133466, "ob_type" : "science", "pi_id" : 1144, "sem_id" : "2020B_U048", "instrument" : "KCWI" }, "target" : { "name" : "lnvi", "ra" : "21:34:39", "dec" : "-83:20:11", "equinox" :"J2000", "frame" : "xfgu", "ra_offset" : 0.6145587265886931, "dec_offset" : 9.726425379786754, "pa" : 2.9116975489580788, "pm_ra" : 5.8628238378551565, "pm_dec" : 8.752718320860637, "epoch" : 9.28885923053669, "obstime" : "2021-04-22 15:08:04", "magnitude" : [ { "band" : "K", "magnitude" : 1.398070734513925 }, { "band" : "K", "magnitude" : 0.38333014615183614 } ], "wrap" : "south", "d_ra" : 9.157978747082192, "d_dec" : 6.985677960034548, "comment" : "I?m a scholar. I enjoy scholarly pursuits." }, "acquisition" : { "metadata" : { "name" : "KCWI_ifu_acq_direct", "ui_name" : "KCWI direct", "instrument" : "KCWI", "type" : "acquisition", "version" : 0.1, "script" : "KCWI_ifu_acq_direct" }, "parameters" : { "wrap" : "auto", "rotmode" : "PA", "guider_po" : "IFU", "guider_gs_ra" : "12:44:55.6", "guider_gs_dec" : "55:22:19.9", "guider_gs_mode" : "auto" }, "template_index" : "acq0" }, "observations" : [ { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci0" }, { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci1" }, { "metadata" : { "name" : "KCWI_ifu_sci_dither", "ui_name" : "KCWI dither", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 60, "det1_nexp" : 2, "det2_exptime" : 121, "det2_nexp" : 4, "seq_ndither" : 4, "seq_ditarray" : [ [ 0, 0, "T", true ], [ 5, 5, "S", false ], [ 0, 0, "T", true ], [ 5, 5, "S", false ] ] }, "template_index" : "sci2" } ], "associations" : [ "aprce" ], "status" : { "state" : "Executed", "executions" : [ "2018-01-17 13:28:09" ], "deleted" : false }, "time_constraints" : [ "2021-05-01 08:00:00", "2021-06-01 10:00:00" ], "comment" : "Here?s some money. Go see a star warzz." }' "http://vm-webtools.keck:50001/v0/obsBlocks?ob_id=60ca73b91cc2c42a39dedfae"
 
     :param body: Observation block replacing ob_id.
     :type body: dict | bytes
@@ -54,9 +60,6 @@ def ob_put(body, ob_id):
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = connexion.request.get_json()
-
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
 
@@ -64,21 +67,21 @@ def ob_delete(ob_id):
     """
     Removes the observation block
 
-    curl -v -H "Content-Type: application/json" -X DELETE "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
+    curl -v -X DELETE "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: None
     """
-    response = utils.delete_by_id(ob_id, 'obCollect')
+    utils.delete_by_id(ob_id, 'obCollect')
 
 
 def ob_duplicate(ob_id, sem_id=None):
     """
     Duplicate the OB, default is current semId.
 
-    curl -v -H "Content-Type: application/json" -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/duplicate?ob_id=609c27515ef7b19168a7f646"
+    curl -v -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/duplicate?ob_id=609c27515ef7b19168a7f646"
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -92,7 +95,7 @@ def ob_duplicate(ob_id, sem_id=None):
     del ob['_id']
 
     if sem_id:
-        ob['signature']['sem_id'] = sem_id
+        ob['metadata']['sem_id'] = sem_id
 
     result = utils.insert_into_collection(ob, 'obCollect')
 
@@ -118,36 +121,36 @@ def ob_executions(ob_id):
 
 
 #TODO should this only be the remaining execution time
-def ob_execution_time(ob_id):  # noqa: E501
+def ob_execution_time(ob_id):
     """
     http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/executionTime/?ob_id=2
 
-    Calculates the execution time. # noqa: E501
+    Calculates the execution time.
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: float
     """
-    fields = {"science.properties": 1, "_id": 0}
+    fields = {"science.parameters": 1, "_id": 0}
     ob_science = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
-    if not ob_science:
+    if not ob_science or 'science' not in ob_science:
         return 0
 
     total_tm = 0
-    sci_blks = ob_science['science']
-    for block in sci_blks:
+    for block in ob_science['science']:
         total_tm += utils.calc_exec_time(block)
 
     return total_tm
 
 
+#TODO this is only retrieving the OB
 def ob_export(ob_id):
     """
     http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/export/?ob_id=2
 
-    Exports an OB in human-readable format. # noqa: E501
+    Exports an OB in human-readable format. 
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -166,27 +169,30 @@ def ob_template_filled(ob_id):
 
     :rtype: bool
     """
-    fields = {"schema": 1, "_id": 0}
+    fields = {"parameters": 1, "_id": 0}
     templates = ob_template_get(ob_id)
+
     for filled in templates:
-        if filled.keys() < {"name", "version", "properties"}:
-            print("missing properties")
-            return False
+        if filled.keys() < {"metadata", "parameters"}:
+            abort(422, "The Observation Block Template is missing the keys: "
+                       "metadata or parameters.")
 
-        query = {"name": filled["name"], "version": filled["version"]}
-        schema = utils.get_fields_by_query(query, fields, 'templateCollect')
-        if not schema:
-            print("no schema field")
-            return False
+        metadata = filled["metadata"]
+        if metadata.keys() < {"name", "ui_name", "instrument", "template_type",
+                              "version", "script"}:
+            abort(422, "The Observation Block Template is missing one"
+                       "of the metadata keys.")
 
-        required = schema[0]['schema']['required']
-        properties = schema[0]['schema']['properties']
+        query = {"metadata.name": metadata['name'],
+                 "metadata.version": metadata['version']}
 
-        if 'properties' not in filled:
-            print("no properties field")
-            return False
+        template = utils.get_fields_by_query(query, fields, 'templateCollect')
+        if not template:
+            abort(422, f"No template found with name {metadata['name']} "
+                       f"and version {metadata['version']}.")
 
-        if not utils.check_required(required, properties, filled['properties']):
+        if not utils.check_required_values(template[0]['parameters'],
+                                           filled['parameters']):
             return False
 
     return True
@@ -220,100 +226,146 @@ def ob_template_get(ob_id):
     return template_list
 
 
-def ob_template_id_delete(ob_id, template_id):
-    """
-    Removes the specified template within the OB
-
-    :param ob_id: observation block id
-    :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
-
-    :rtype: None
-    """
-    ob = ob_get(ob_id)
-    if template_id == 0:
-        if 'acquisition' not in ob:
-            return
-        del ob['acquisition']
-    else:
-        if 'science' not in ob:
-            return
-        indx = template_id - 1
-        sci_templates = ob['science']
-
-        if len(sci_templates) < indx:
-            return
-        del sci_templates[indx]
-
-        for cnt in range(0, len(sci_templates)):
-            sci_templates[cnt]['index'] = cnt + 1
-
-        ob['science'] = sci_templates
-
-    utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
-
-
-def ob_template_id_file_get(ob_id, template_id, file_parameter):
-    """
-    Retrieves the specified template within the OB
-
-    :param ob_id: observation block id
-    :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
-    :param file_parameter: file paramter description here
-    :type file_parameter: str
-
-    :rtype: ObservationBlock
-    """
-    template = ob_template_id_get(ob_id, template_id)
-    file = StringIO(template)
-
-    return file.getvalue()
-
-
-def ob_template_id_file_put(ob_id, template_id, file_parameter):
-    """
-    Updates the specified template within the OB
-
-    :param ob_id: observation block id
-    :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
-    :param file_parameter: file paramter description here
-    :type file_parameter: str
-
-    :rtype: None
-    """
-    return 'do some magic!'
-
-
 def ob_template_id_get(ob_id, template_id):
     """
     Retrieves the specified template within the OB
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index of template within the OB, sci0, acq0.
+    :type template_id: str
 
     :rtype: Observation
     """
     ob = ob_get(ob_id)
+    template_indx, template_type = utils.template_indx_type(template_id)
+    templates = utils.get_templates(ob, template_type, template_indx)
 
-    if template_id == 0:
-        return ob['acquisition']
+    if type(templates) is not list:
+        return ob[template_type]
+    else:
+        return templates[template_indx]
 
-    template_indx = template_id - 1
-    if 'science' not in ob:
-        return {}
 
-    sci_templates = ob['science']
-    if sci_templates and len(sci_templates) > template_indx:
-        return sci_templates[template_indx]
+def ob_template_id_put(body, ob_id, template_id):
+    """
+    Updates the specified template within the OB
 
-    return {}
+    curl -v -H "Content-Type: application/json" -X PUT -d '{ "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }}' "http://vm-webtools.keck:50001/v0/obsBlocks/template/sci1?ob_id=60ca98c18c1db7c3bc60714d"
+
+    :param body:
+    :type body: dict | bytes
+    :param ob_id: observation block id
+    :type ob_id: str
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
+
+    :rtype: None
+    """
+    ob = ob_get(ob_id)
+    template_indx, template_type = utils.template_indx_type(template_id)
+    templates = utils.get_templates(ob, template_type, template_indx)
+
+    if type(templates) is list:
+        body['template_index'] = template_id
+        templates[template_indx] = body
+    else:
+        templates = body
+
+    new_vals = {template_type: templates}
+    utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
+
+
+#TODO open question -- currently does not allow deleting the last observation.
+def ob_template_id_delete(ob_id, template_id):
+    """
+    Removes the specified template within the OB
+
+    curl -X DELETE "http://vm-webtools.keck:50001/v0/obsBlocks/template/sci0?ob_id=60ca98c18c1db7c3bc607152"
+
+    :param ob_id: observation block id
+    :type ob_id: str
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
+
+    :rtype: None
+    """
+    ob = ob_get(ob_id)
+    template_indx, template_type = utils.template_indx_type(template_id)
+    templates = utils.get_templates(ob, template_type, template_indx)
+
+    if template_type not in ob:
+        return
+
+    # this is assumed to be an acquisition
+    if type(templates) is not list:
+        del ob[template_type]
+    else:
+        n_templates = len(templates)
+        if n_templates <= 1:
+            abort(400, "Not allowed to delete the last observation template.")
+        elif n_templates < template_indx:
+            return
+        del templates[template_indx]
+
+        for cnt in range(0, len(templates)):
+            templates[cnt]['template_id'] = f'{template_type[:3]}{cnt}'
+
+        ob[template_type] = templates
+
+    utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
+
+
+#TODO come back to types other then json
+#TODO think through cleanup
+def ob_template_id_file_get(ob_id, template_id, file_parameter):
+    """
+    Retrieves the specified template within the OB
+
+    :param ob_id: observation block id
+    :type ob_id: str
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
+    :param file_parameter: file paramter description here
+    :type file_parameter: str
+
+    :rtype: ObservationBlock
+    """
+    template = ob_template_id_get(ob_id, template_id)
+    docs = pandas.DataFrame(template)
+    filename = f"{ob_id}.{file_parameter}"
+    output = f"{OUT_DIR}/{filename}"
+
+    if file_parameter == 'json':
+        utils.write_json(template, output)
+    else:
+        file_writer = {'json': docs.to_json, 'csv': docs.to_csv,
+                       'html': docs.to_html, 'txt': docs.to_string}
+        file_writer[file_parameter](output)
+
+    return send_from_directory(OUT_DIR, f'{ob_id}.{file_parameter}',
+                               as_attachment=True)
+
+
+#TODO currently only working with JSON
+def ob_template_id_file_put(body, ob_id, template_id, file_parameter):
+    """
+    Updates the specified template within the OB
+
+    curl -X PUT "http://vm-webtools.keck:50001/v0/obsBlocks/template/sci3/json?ob_id=60c8eb93d131fb50a4b06f6f" --upload-file /tmp/60c8eb93d131fb50a4b06f6f.json
+
+    :param ob_id: observation block id
+    :type ob_id: str
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
+    :param file_parameter: file parameter description here
+    :type file_parameter: str
+
+    :rtype: None
+    """
+    json_data = json.loads(body.decode('ascii'))
+
+    ob_template_id_put(json_data, ob_id, template_id)
 
 
 def ob_template_duplicate(ob_id, template_id):
@@ -321,71 +373,34 @@ def ob_template_duplicate(ob_id, template_id):
     Generate a new copy of the template and add it to the list of templates in
     the OB.
 
-    curl -v -H "Content-Type: application/json" -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/template/duplicate/1?ob_id=60aec72417469e6111a54d78"
+    curl -v -H "Content-Type: application/json" -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/template/duplicate/sci1?ob_id=60aec72417469e6111a54d78"
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
+    :param template_id: index and type of template within the OB.
+    :type template_id: str
 
     :rtype: Observation
     """
-    if template_id == 0:
-        abort(404, 'Invalid template ID')
+    if 'sci' not in template_id:
+        abort(400, f'Invalid template_id: {template_id}, currently only '
+                   f'duplicating science templates is supported.')
 
     ob = ob_get(ob_id)
 
-    if 'science' not in ob or len(ob['science']) < template_id:
-        abort(404, 'Invalid template ID')
+    template_indx, templates = utils.get_templates_by_id(ob, template_id)
 
-    sci_templates = ob['science']
-    new_template = deepcopy(sci_templates[template_id - 1])
-    new_template['index'] = len(sci_templates) + 1
+    new_template = deepcopy(templates[template_indx])
+    new_template['template_index'] = f'sci{len(templates)}'
 
-    sci_templates.append(new_template)
-    utils.update_doc(utils.query_by_id(ob_id), {"science": sci_templates},
+    templates.append(new_template)
+    utils.update_doc(utils.query_by_id(ob_id), {"science": templates},
                      'obCollect')
 
     return new_template
 
 
-def ob_template_id_put(body, ob_id, template_id):
-    """
-    Updates the specified template within the OB
-
-    :param body:
-    :type body: dict | bytes
-    :param ob_id: observation block id
-    :type ob_id: str
-    :param template_id: index of template within the OB.
-    :type template_id: int
-
-    :rtype: None
-    """
-
-    if connexion.request.is_json:
-        body = json.loads(json.dumps(connexion.request.get_json()))
-
-    ob = ob_get(ob_id)
-    if template_id == 0:
-        key = 'acquisition'
-    else:
-        key = 'science'
-
-    if key not in ob or len(ob[key]) < template_id:
-        abort(404, 'Invalid template ID')
-
-    if template_id == 0:
-        templates = body
-    else:
-        templates = ob[key]
-        body['index'] = template_id
-        templates[template_id - 1] = body
-
-    utils.update_doc(utils.query_by_id(ob_id), {key: templates}, 'obCollect')
-
-
-def ob_template_post(body, ob_id, template_type):  # noqa: E501
+def ob_template_post(body, ob_id, template_type):
     """
     Creates the list of templates associated with the OB
 
@@ -395,21 +410,16 @@ def ob_template_post(body, ob_id, template_type):  # noqa: E501
     :type body: list or dict
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_type: A string to indicate template, (acq, sci, eng, cal)
+    :param template_type: A string to indicate the type of template,
+                          (acquisition, science, engineering, calibration)
     :type template_type: str
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = json.loads(json.dumps(connexion.request.get_json()))
-
     if type(body) is not list:
         body = [body]
 
-    full_type = {'sci': 'science', 'acq': 'acquisition', 'eng': 'engineering',
-                 'cal': 'calibration'}
-
-    new_vals = {full_type[template_type]: body}
+    new_vals = {template_type: body}
 
     utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
@@ -424,23 +434,18 @@ def ob_template_put(body, ob_id, template_type):
     :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_type: A string to indicate template, (acq, sci, eng, cal)
+    :param template_type: A string to indicate the type of template,
+                          (acquisition, science, engineering, calibration)
     :type template_type: str
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = json.loads(json.dumps(connexion.request.get_json()))
-
-    full_type = {'sci': 'science', 'acq': 'acquisition', 'eng': 'engineering',
-                 'cal': 'calibration'}
-
     if type(body) is list:
         for val in body:
-            new_vals = {full_type[template_type]: val}
+            new_vals = {template_type: val}
             utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
     else:
-        new_vals = {full_type[template_type]: body}
+        new_vals = {template_type: body}
         utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
@@ -496,21 +501,25 @@ def ob_time_constraint_put(body, ob_id):
                      'obCollect')
 
 
-def ob_upgrade(ob_id):
-    """ob_upgrade
-
+def ob_upgrade(ob_id, sem_id=None):
+    """
     When an instrument package changes, attempts to port an existing OB
-    to the new package, default is the current semId. # noqa: E501
+    to the new package, default is the current semId.
 
-    :param ob_id: observation block id
+    :param ob_id: observation block ObjectId
     :type ob_id: str
+    :param sem_id: program id including semester
+    :type sem_id: dict | bytes
 
     :rtype: ObservationBlock
     """
+    if connexion.request.is_json:
+        sem_id = SemIdSchema.from_dict(connexion.request.get_json())
+
     return 'do some magic!'
 
 
-def ob_schedule_put(ob_id):  # noqa: E501
+def ob_schedule_put(ob_id):  
     """
     On success updates an existing ob schedule.
 
@@ -525,9 +534,9 @@ def ob_schedule_put(ob_id):  # noqa: E501
     return 'do some magic!'
 
 
-def ob_schedule_get(ob_id):  # noqa: E501
+def ob_schedule_get(ob_id):  
     """
-    Retrieves scheduling information. # noqa: E501
+    Retrieves scheduling information. 
 
     :param ob_id: observation block id
     :type ob_id: str

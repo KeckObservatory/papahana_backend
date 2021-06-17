@@ -5,8 +5,8 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.instrument_package import InstrumentPackage  # noqa: E501
-from swagger_server.test import BaseTestCase
+from papahana.models.instrument_package import InstrumentPackage  # noqa: E501
+from papahana.test import BaseTestCase
 
 
 class TestTemplatesController(BaseTestCase):
@@ -18,7 +18,7 @@ class TestTemplatesController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/v0/instrumentPackages/{instrument}/{ip_version}/{template_name}'.format(instrument='instrument_example', ip_version=56, template_name='template_name_example'),
+            '/v0/instrumentPackages/{instrument}/{ip_version}/{template_name}'.format(instrument='instrument_example', ip_version=1.2, template_name='template_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

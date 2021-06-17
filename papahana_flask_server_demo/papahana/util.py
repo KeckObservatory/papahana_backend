@@ -2,6 +2,32 @@ import datetime
 
 import six
 import typing
+import yaml
+
+
+def read_mode(config='config.live.yaml'):
+    with open(config) as file:
+        mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
+
+    if 'config' in mode_dict:
+        return mode_dict['config']
+
+    else:
+        return 'production'
+
+
+def read_config(mode, config='config.live.yaml'):
+    with open(config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)[mode]
+
+    return config
+
+
+def read_urls(config='config.live.yaml'):
+    with open(config) as file:
+        urls = yaml.load(file, Loader=yaml.FullLoader)['apis']
+
+    return urls
 
 
 def _deserialize(data, klass):

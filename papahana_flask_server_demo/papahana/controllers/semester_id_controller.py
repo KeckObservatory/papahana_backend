@@ -5,9 +5,11 @@ from papahana.controllers import controller_helper as utils
 from papahana.controllers import containers_controller
 from papahana.controllers import observation_block_controller
 
-from papahana.models.observation_block import ObservationBlock
-from papahana.models.container import Container
-from papahana.models.target import Target
+
+from papahana.models.container import Container  
+from papahana.models.observation_block import ObservationBlock  
+from papahana.models.sem_id_schema import SemIdSchema  
+from papahana.models.target import Target  
 from papahana import util
 
 
@@ -22,9 +24,6 @@ def sem_id_get(obs_id):
 
     :rtype: List[str]
     """
-    if connexion.request.is_json:
-        obs_id = object.from_dict(connexion.request.get_json())
-
     semid_list = utils.get_proposal_ids(obs_id)
 
     return semid_list
@@ -41,9 +40,6 @@ def sem_id_proposal_get(sem_id, obs_id):
 
     :rtype: file
     """
-    if connexion.request.is_json:
-        obs_id = object.from_dict(connexion.request.get_json())
-
     #TODO get the pdf from the proposals API.
 
     return 'do some magic! sem_id_proposal_get'
@@ -60,9 +56,6 @@ def sem_id_semester_get(semester, obs_id):
 
     :rtype: List[str]
     """
-    if connexion.request.is_json:
-        obs_id = object.from_dict(connexion.request.get_json())
-
     semester_list = []
     sem_ids = utils.get_proposal_ids(obs_id)
     for semid in sem_ids:
@@ -149,16 +142,13 @@ def sem_id_submit_post(body, obs_id, sem_id):
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = ObservationBlock.from_dict(connexion.request.get_json())
-
     return 'do some magic! sem_id_submit_post'
 
 
 def sem_id_submit_put(obs_id, sem_id, body=None):
     """sem_id_submit_put
 
-    updates a program (OBs) # noqa: E501
+    updates a program (OBs) 
 
     :param sem_id: semester id
     :type sem_id: str
@@ -169,9 +159,6 @@ def sem_id_submit_put(obs_id, sem_id, body=None):
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = ObservationBlock.from_dict(connexion.request.get_json())
-
     return 'do some magic! sem_id_submit_put'
 
 

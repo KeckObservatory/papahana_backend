@@ -40,20 +40,39 @@ def json_with_objectid(result):
     return cln_result
 
 
+def query_by_id(id, add_delete=True):
+    """
+    query by string container_id
+
+    :param container_id: container identifier
+    :type container_id: str
+
+    :rtype: Dict{Query}
+    """
+    id = get_object_id(id)
+
+    if add_delete:
+        return {"_id": id, "status.deleted": False}
+    else:
+        return {"_id": id}
+
+
 def get_by_id(id, collect_name, cln_oid=True):
     """
     query by string container_id
 
     :param container_id: container identifier
     :type container_id: str
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: Dict{Query Result}
     """
-    id = get_object_id(id)
+    if collect_name == 'obCollect':
+        query = query_by_id(id)
+    else:
+        query = query_by_id(id, add_delete=False)
 
-    query = {"_id": id}
     coll = config_collection(collect_name)
 
     results = list(coll.find(query))
@@ -72,12 +91,14 @@ def get_by_query(query, collect_name):
 
     :param query: json query parameter
     :type query: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
+    if "status.deleted" not in query and collect_name == 'obCollect':
+        query["status.deleted"] = False
 
     return list(coll.find(query))
 
@@ -90,12 +111,14 @@ def get_fields_by_query(query, fields, collect_name):
     :type query: dict
     :param query: json field parameters
     :type query: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
+    if "status.deleted" not in query and collect_name == 'obCollect':
+        query["status.deleted"] = False
 
     return list(coll.find(query, fields))
 
@@ -108,13 +131,16 @@ def get_fields_by_id(ob_id, fields, collect_name):
     :type query: dict
     :param query: json field parameters
     :type query: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype: List[Dict{Query Result}]
     """
     coll = config_collection(collect_name)
-    query = query_by_id(ob_id)
+    if collect_name == 'obCollect':
+        query = query_by_id(ob_id)
+    else:
+        query = query_by_id(ob_id, add_delete=False)
 
     results = list(coll.find(query, fields))
     if not results:
@@ -129,7 +155,7 @@ def insert_into_collection(doc, collect_name):
 
     :param doc: the document to insert
     :type doc: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     rtype: document id
@@ -149,13 +175,32 @@ def insert_into_collection(doc, collect_name):
     return result
 
 
+def delete_from_collection(query, collect_name):
+    """
+    Delete document from a database collection.
+
+    :param query: the query used to find the document
+    :type query: dict
+    :param collect_name: the database collection.
+    :type collect_name: str
+    """
+    coll = config_collection(collect_name)
+
+    try:
+        coll.delete_one(query)
+        return 0
+    except Exception as err:
+        print(err)
+        return 1
+
+
 def delete_by_id(id, collect_name):
     """
     Delete a document in a database collection.
 
     :param id: the document id
     :type query: str / ObjectId
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype (int) 1 on error,  0 on success
@@ -168,8 +213,7 @@ def delete_by_id(id, collect_name):
         coll.delete_one({'_id': id})
         return 0
     except Exception as err:
-        print(err)
-        return 1
+        abort(400, f'Error while deleting by id,  error: {err}.')
 
 
 def replace_doc(id, doc, collect_name):
@@ -180,7 +224,7 @@ def replace_doc(id, doc, collect_name):
     :type query: str / ObjectId
     :param doc: the document used as a replacement.
     :type doc: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
 
     :rtype
@@ -205,7 +249,7 @@ def update_doc(query, new_vals, collect_name):
     :type query: dict
     :param new_vals: the key/val pair of new values to update.
     :type new_vals: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
     """
     coll = config_collection(collect_name)
@@ -217,13 +261,13 @@ def update_doc(query, new_vals, collect_name):
 
 def update_add_doc(query, new_vals, collect_name):
     """
-    Update a database collection document.
+    Add to a database collection document.
 
     :param query: the query used to find the document
     :type query: dict
     :param new_vals: the key/val pair of new values to update.
     :type new_vals: dict
-    :param collect_name: the database collection to update.
+    :param collect_name: the database collection.
     :type collect_name: str
     """
     coll = config_collection(collect_name)
@@ -231,39 +275,6 @@ def update_add_doc(query, new_vals, collect_name):
         del new_vals['_id']
 
     coll.update_one(query, {"$push": new_vals})
-
-
-def delete_from_collection(query, collect_name):
-    """
-    Delete document from a database collection.
-
-    :param query: the query used to find the document
-    :type query: dict
-    :param collect_name: the database collection to update.
-    :type collect_name: str
-    """
-    coll = config_collection(collect_name)
-
-    try:
-        coll.delete_one(query)
-        return 0
-    except Exception as err:
-        print(err)
-        return 1
-
-
-def query_by_id(id):
-    """
-    query by string container_id
-
-    :param container_id: container identifier
-    :type container_id: str
-
-    :rtype: Dict{Query}
-    """
-    id = get_object_id(id)
-
-    return {"_id": id}
 
 
 def get_object_id(obj_id):
@@ -312,12 +323,12 @@ def calc_exec_time(block):
 
     :rtype: int
     """
-    if "properties" not in block:
+    if "parameters" not in block:
         return 0
 
     exp1 = 0
     exp2 = 0
-    sci_blk = block["properties"]
+    sci_blk = block["parameters"]
     if sci_blk.keys() >= {"det1_exptime", "det1_nexp"}:
         if sci_blk['det1_exptime'] and sci_blk['det1_nexp']:
             exp1 = sci_blk['det1_exptime'] * sci_blk['det1_nexp']
@@ -328,6 +339,42 @@ def calc_exec_time(block):
             exp2 = sci_blk['det2_exptime'] * sci_blk['det2_nexp']
 
     return max(exp1, exp2)
+
+
+def get_templates_by_id(ob, template_id):
+    template_indx, template_type = template_indx_type(template_id)
+    templates = get_templates(ob, template_type, template_indx)
+
+    return template_indx, templates
+
+
+def template_indx_type(template_id):
+    try:
+        template_type = template_id[:3]
+        template_indx = int(template_id[3:])
+    except ValueError:
+        abort(400, f"Invalid template_id: {template_id}")
+    except Exception as err:
+        abort(400, f"Error with template_id: {err}")
+
+    type_map = {'sci': 'science', 'acq': 'acquisition',
+                'eng': 'engineering', 'cal': 'calibration'}
+
+    return template_indx, type_map[template_type]
+
+
+def get_templates(ob, template_type, template_indx):
+    if template_type not in ob or len(ob[template_type]) <= template_indx:
+        abort(400, 'Invalid template ID')
+
+    templates = ob[template_type]
+
+    return templates
+
+
+def write_json(dict_data, output):
+    with open(output, 'w') as fp:
+        json.dump(dict_data, fp)
 
 
 # Container specific helpers
@@ -417,44 +464,38 @@ def obs_id_associated(sem_id, obs_id):
 
 
 #validation specific
-def check_required(required, properties, filled):
+def check_required_values(parameters, filled):
+    """
+    This trusts that the template keys have already been checked to exist.
+    """
 
-    for key in required:
-        if key not in filled or not filled[key]:
-            print("incorrect key")
-            return False
+    type_map = {'integer': int, 'float': float, 'string': str, 'array': list,
+                'boolean': bool}
 
-        type_map = {'integer': int, 'number': float,
-                    'string': str, 'array': list}
+    for param in parameters:
+        if parameters[param]['optionality'] != 'required':
+            continue
 
-        key_props = properties[key]
-        key_py_type = type_map[key_props['type']]
-        if not check_type(filled[key], key_py_type, key_props['type']):
-            print("wrong type", str(key_py_type), filled[key], key_props['type'])
-            return False
+        if param not in filled or not filled[param]:
+            abort(422, f"Observation Block is missing parameter: {param}")
 
-        if not check_enum(key_props, filled, key):
-            print("incorrect value")
-            return False
+        ob_value = filled[param]
+        parameter_properties = parameters[param]
 
-        if key_py_type is float or key_py_type is int:
-            if 'maximum' in key_props and 'minimum' in key_props:
-                if (filled[key] > key_props['maximum'] or
-                        filled[key] < key_props['minimum']):
-                    print("out of range")
-                    return False
+        if not check_type(ob_value, type_map[parameter_properties['type']]):
+            abort(422, f"{ob_value} is not of type: "
+                       f"{parameter_properties['type']}.")
 
-        elif key_py_type is list:
-            req = key_props['items']['required']
-            props = key_props['items']['properties']
-            check_required(req, props, filled['items'])
+        if not check_allowed(ob_value, parameter_properties):
+            abort(422, f"{ob_value} is is not within values: "
+                       f"{parameter_properties['allowed']}")
 
         return True
 
 
-def check_type(val, key_py_type, key_type):
+def check_type(val, key_py_type):
     if not isinstance(val, key_py_type):
-        if key_type == 'number':
+        if key_py_type == float:
             if isinstance(val, int):
                 return True
 
@@ -463,9 +504,24 @@ def check_type(val, key_py_type, key_type):
     return True
 
 
-def check_enum(key_props, filled, key):
-    if 'enum' in key_props:
-        if filled[key] not in key_props['enum']:
+def check_allowed(ob_value, template_parameters):
+    allowed_type = template_parameters['option']
+    allowed = template_parameters['allowed']
+
+    if allowed_type == 'range':
+        if ob_value < allowed[0] or ob_value > allowed[1]:
+            return False
+
+    if allowed_type == 'list':
+        if ob_value not in allowed:
+            return False
+
+    if allowed_type == 'boolean':
+        if isinstance(ob_value, bool):
             return False
 
     return True
+
+
+
+

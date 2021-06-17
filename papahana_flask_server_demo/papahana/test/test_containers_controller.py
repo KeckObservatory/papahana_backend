@@ -5,9 +5,10 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.container import Container  # noqa: E501
-from swagger_server.models.container_summary import ContainerSummary  # noqa: E501
-from swagger_server.test import BaseTestCase
+from papahana.models.container import Container  # noqa: E501
+from papahana.models.container_summary import ContainerSummary  # noqa: E501
+from papahana.models.observation_block import ObservationBlock  # noqa: E501
+from papahana.test import BaseTestCase
 
 
 class TestContainersController(BaseTestCase):
@@ -148,17 +149,6 @@ class TestContainersController(BaseTestCase):
             method='POST',
             data=json.dumps(body),
             content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_containers_semid_get(self):
-        """Test case for containers_semid_get
-
-        
-        """
-        response = self.client.open(
-            '/v0/containers/{sem_id}'.format(sem_id='sem_id_example'),
-            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
