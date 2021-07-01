@@ -104,8 +104,7 @@ def ob_duplicate(ob_id, sem_id=None):
 
 def ob_executions(ob_id): 
     """
-    Retrieves the list of execution attempts for a specific OB
-    (for a specific night).
+    Retrieves the list of execution attempts for a specific OB.
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -320,7 +319,7 @@ def ob_template_id_delete(ob_id, template_id):
 #TODO think through cleanup
 def ob_template_id_file_get(ob_id, template_id, file_parameter):
     """
-    Retrieves the specified template within the OB
+    Returns the specified template within the OB as a file
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -329,7 +328,7 @@ def ob_template_id_file_get(ob_id, template_id, file_parameter):
     :param file_parameter: file paramter description here
     :type file_parameter: str
 
-    :rtype: ObservationBlock
+    :rtype: file
     """
     template = ob_template_id_get(ob_id, template_id)
     docs = pandas.DataFrame(template)
@@ -449,18 +448,6 @@ def ob_template_put(body, ob_id, template_type):
         utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
-def ob_template_supplement(ob_id):
-    """
-    Retrieves list of files.
-
-    :param ob_id: observation block id
-    :type ob_id: str
-
-    :rtype: None
-    """
-    return 'do some magic!'
-
-
 def ob_time_constraint_get(ob_id):
     """
     Retrieves the time constraints (from, to).
@@ -529,7 +516,7 @@ def ob_schedule_put(ob_id):
     :rtype: None
     """
 
-    #TODO need schedule constraints in db
+    #TODO need schedule  in db
 
     return 'do some magic!'
 
@@ -546,3 +533,14 @@ def ob_schedule_get(ob_id):
 
     return 'Need schedule information in db'
 
+
+def ob_template_supplement(ob_id):
+    """
+    Retrieves list of files.
+
+    :param ob_id: observation block id
+    :type ob_id: str
+
+    :rtype: None
+    """
+    return 'do some magic!'

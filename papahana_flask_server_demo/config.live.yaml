@@ -25,6 +25,15 @@ dev:
   instCollect: instrument_packages
   port: 27017
   ip: 10.96.0.228
+test:
+  dbName: papahana
+  obCollect: observation_blocks
+  containerCollect: containers
+  templateCollect: templates
+  instCollect: instrument_packages
+  port: 27017
+  ip: 10.96.0.228
+
 
 apis:
   proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php

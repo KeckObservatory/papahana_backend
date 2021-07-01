@@ -6,8 +6,8 @@ from flask import json
 from six import BytesIO
 
 from papahana.models.container import Container  # noqa: E501
-from papahana.models.container_summary import ContainerSummary  # noqa: E501
 from papahana.models.observation_block import ObservationBlock  # noqa: E501
+from papahana.models.sem_id_schema import SemIdSchema  # noqa: E501
 from papahana.test import BaseTestCase
 
 
@@ -172,7 +172,7 @@ class TestContainersController(BaseTestCase):
         """
         query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/containers'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/containers'.format(sem_id=SemIdSchema()),
             method='GET',
             query_string=query_string)
         self.assert200(response,

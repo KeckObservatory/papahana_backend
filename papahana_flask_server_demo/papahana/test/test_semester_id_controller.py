@@ -7,6 +7,7 @@ from six import BytesIO
 
 from papahana.models.container import Container  # noqa: E501
 from papahana.models.observation_block import ObservationBlock  # noqa: E501
+from papahana.models.sem_id_schema import SemIdSchema  # noqa: E501
 from papahana.models.target import Target  # noqa: E501
 from papahana.test import BaseTestCase
 
@@ -21,7 +22,7 @@ class TestSemesterIdController(BaseTestCase):
         """
         query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/containers'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/containers'.format(sem_id=SemIdSchema()),
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -47,7 +48,7 @@ class TestSemesterIdController(BaseTestCase):
         """
         query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/ob'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/ob'.format(sem_id=SemIdSchema()),
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -60,7 +61,7 @@ class TestSemesterIdController(BaseTestCase):
         """
         query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/proposal'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/proposal'.format(sem_id=SemIdSchema()),
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -87,7 +88,7 @@ class TestSemesterIdController(BaseTestCase):
         body = ObservationBlock()
         query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/submit'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/submit'.format(sem_id=SemIdSchema()),
             method='POST',
             data=json.dumps(body),
             content_type='application/json',
@@ -103,7 +104,7 @@ class TestSemesterIdController(BaseTestCase):
         body = ObservationBlock()
         query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/submit'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/submit'.format(sem_id=SemIdSchema()),
             method='PUT',
             data=json.dumps(body),
             content_type='application/json',
@@ -118,7 +119,7 @@ class TestSemesterIdController(BaseTestCase):
         """
         query_string = [('obs_id', 56)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/targets'.format(sem_id='sem_id_example'),
+            '/v0/semesterIds/{sem_id}/targets'.format(sem_id=SemIdSchema()),
             method='GET',
             query_string=query_string)
         self.assert200(response,

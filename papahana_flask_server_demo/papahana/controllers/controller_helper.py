@@ -288,9 +288,9 @@ def get_object_id(obj_id):
     try:
         id = bson.objectid.ObjectId(obj_id)
     except bson.errors.InvalidId:
-        abort(404, f'Invalid observation block id.')
+        abort(404, f'Invalid observation block id: {obj_id}')
     except Exception as err:
-        abort(404, f'Invalid observation block id. {err}')
+        abort(404, f'Invalid observation block id: {obj_id}, error: {err}')
 
     return id
 
@@ -365,7 +365,7 @@ def template_indx_type(template_id):
 
 def get_templates(ob, template_type, template_indx):
     if template_type not in ob or len(ob[template_type]) <= template_indx:
-        abort(400, 'Invalid template ID')
+        abort(400, f"Invalid template type, index: {template_type}, {template_indx}")
 
     templates = ob[template_type]
 
@@ -375,6 +375,8 @@ def get_templates(ob, template_type, template_indx):
 def write_json(dict_data, output):
     with open(output, 'w') as fp:
         json.dump(dict_data, fp)
+
+    fp.close()
 
 
 # Container specific helpers

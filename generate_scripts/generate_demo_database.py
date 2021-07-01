@@ -16,7 +16,7 @@ from getpass import getpass
 seed = 1984739
 random.seed(seed)
 import datetime
-from papahana_flask_server_demo.config import config_collection
+from ..papahana_flask_server_demo.config import config_collection
 
 INST_MAPPING = { 
                  'DEIMOS': {'DE', 'DF'},
@@ -174,8 +174,8 @@ filled_sci_templates = [
             "det2_nexp": 4,
             "seq_ndither": 4,
             "seq_ditarray": [
-                [0, 0, 'T', True], [5, 5, 'S', False],
-                [0, 0, 'T', True], [5, 5, 'S', False]
+                {"ra_offset": 0, "dec_offset": 0, "position": 'T', "guided": True}, {"ra_offset": 5, "dec_offset": 5, "position": 'S', "guided": False},
+                {"ra_offset": 0, "dec_offset": 0, "position": 'T', "guided": True}, {"ra_offset": 5, "dec_offset": 5, "position": 'S', "guided": False}
             ]
         }
     }

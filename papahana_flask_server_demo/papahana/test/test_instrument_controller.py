@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
+from papahana.models.instrument_enum import InstrumentEnum  # noqa: E501
 from papahana.models.instrument_package import InstrumentPackage  # noqa: E501
 from papahana.test import BaseTestCase
 
@@ -18,7 +19,7 @@ class TestInstrumentController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/v0/instrumentPackages/{instrument}'.format(instrument='instrument_example'),
+            '/v0/instrumentPackages/{instrument}'.format(instrument=InstrumentEnum()),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -29,7 +30,7 @@ class TestInstrumentController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/v0/instrumentPackages/{instrument}/{ip_version}/parameters'.format(instrument='instrument_example', ip_version=1.2),
+            '/v0/instrumentPackages/{instrument}/{ip_version}/parameters'.format(instrument=InstrumentEnum(), ip_version=1.2),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -40,7 +41,7 @@ class TestInstrumentController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/v0/instrumentPackages/{instrument}/{ip_version}/{template_name}'.format(instrument='instrument_example', ip_version=1.2, template_name='template_name_example'),
+            '/v0/instrumentPackages/{instrument}/{ip_version}/{template_name}'.format(instrument=InstrumentEnum(), ip_version=1.2, template_name='template_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

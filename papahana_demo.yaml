@@ -604,7 +604,7 @@ paths:
               $ref: '#/components/schemas/ObservationBlock'
         required: true
       responses:
-        "200":
+        "204":
           description: On a success replaces the given OB with the updated OB.
         "400":
           description: Invalid status value
@@ -645,7 +645,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
-        "200":
+        "204":
           description: On a success removes given OB from the database.
         "400":
           description: Invalid status value
@@ -723,7 +723,7 @@ paths:
 
         required: true
       responses:
-        "200":
+        "204":
           description: On success replaces the given templates with new list of templates.
         "400":
           description: Invalid status value
@@ -768,7 +768,7 @@ paths:
               $ref: '#/components/schemas/TemplateSchema'
         required: true
       responses:
-        "200":
+        "204":
           description: replaces the given Template within the OB with Template of id=templateId
         "400":
           description: Invalid status value
@@ -785,7 +785,7 @@ paths:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/template_id'
       responses:
-        "200":
+        "204":
           description: removes the template from the OB
         "400":
           description: Invalid status value
@@ -951,7 +951,7 @@ paths:
                 $ref: '#/components/schemas/DateSchema'
         required: true
       responses:
-        "200":
+        "204":
           description: On success updates an existing time constraint(s) of an OB.
         "400":
           description: Invalid input time constraints -- input must be an array.
@@ -1265,6 +1265,9 @@ components:
           type: string
           enum:
             - "acquisition"
+            - "science"
+            - "engineering"
+            - "calibration"
           default: "acquisition"
         version:
           type: number
@@ -1454,7 +1457,7 @@ components:
         - pattern: '^eng\d{2}$'
         - pattern: '^cal\d{1}$'
         - pattern: '^cal\d{2}$'
-      example: sci2
+      example: sci0
 
     InstrumentEnum:
       type: string
@@ -1507,15 +1510,15 @@ components:
 
     DitherSchema:
       required:
-        - ra
-        - dec
+        - ra_offset
+        - dec_offset
         - position
         - guided
       type: object
       properties:
-        ra:
+        ra_offset:
           type: number
-        dec:
+        dec_offset:
           type: number
         position:
           type: string
