@@ -153,7 +153,7 @@ class ObservationMetadata(Model):
         :param template_type: The template_type of this ObservationMetadata.
         :type template_type: str
         """
-        allowed_values = ["acquisition"]  # noqa: E501
+        allowed_values = ["acquisition", "science", "engineering", "calibration"]  # noqa: E501
         if template_type not in allowed_values:
             raise ValueError(
                 "Invalid value for `template_type` ({0}), must be one of {1}"

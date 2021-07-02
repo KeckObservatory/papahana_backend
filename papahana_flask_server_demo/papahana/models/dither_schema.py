@@ -14,33 +14,33 @@ class DitherSchema(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, ra: float=None, dec: float=None, position: str=None, guided: bool=None):  # noqa: E501
+    def __init__(self, ra_offset: float=None, dec_offset: float=None, position: str=None, guided: bool=None):  # noqa: E501
         """DitherSchema - a model defined in Swagger
 
-        :param ra: The ra of this DitherSchema.  # noqa: E501
-        :type ra: float
-        :param dec: The dec of this DitherSchema.  # noqa: E501
-        :type dec: float
+        :param ra_offset: The ra_offset of this DitherSchema.  # noqa: E501
+        :type ra_offset: float
+        :param dec_offset: The dec_offset of this DitherSchema.  # noqa: E501
+        :type dec_offset: float
         :param position: The position of this DitherSchema.  # noqa: E501
         :type position: str
         :param guided: The guided of this DitherSchema.  # noqa: E501
         :type guided: bool
         """
         self.swagger_types = {
-            'ra': float,
-            'dec': float,
+            'ra_offset': float,
+            'dec_offset': float,
             'position': str,
             'guided': bool
         }
 
         self.attribute_map = {
-            'ra': 'ra',
-            'dec': 'dec',
+            'ra_offset': 'ra_offset',
+            'dec_offset': 'dec_offset',
             'position': 'position',
             'guided': 'guided'
         }
-        self._ra = ra
-        self._dec = dec
+        self._ra_offset = ra_offset
+        self._dec_offset = dec_offset
         self._position = position
         self._guided = guided
 
@@ -56,50 +56,50 @@ class DitherSchema(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def ra(self) -> float:
-        """Gets the ra of this DitherSchema.
+    def ra_offset(self) -> float:
+        """Gets the ra_offset of this DitherSchema.
 
 
-        :return: The ra of this DitherSchema.
+        :return: The ra_offset of this DitherSchema.
         :rtype: float
         """
-        return self._ra
+        return self._ra_offset
 
-    @ra.setter
-    def ra(self, ra: float):
-        """Sets the ra of this DitherSchema.
+    @ra_offset.setter
+    def ra_offset(self, ra_offset: float):
+        """Sets the ra_offset of this DitherSchema.
 
 
-        :param ra: The ra of this DitherSchema.
-        :type ra: float
+        :param ra_offset: The ra_offset of this DitherSchema.
+        :type ra_offset: float
         """
-        if ra is None:
-            raise ValueError("Invalid value for `ra`, must not be `None`")  # noqa: E501
+        if ra_offset is None:
+            raise ValueError("Invalid value for `ra_offset`, must not be `None`")  # noqa: E501
 
-        self._ra = ra
+        self._ra_offset = ra_offset
 
     @property
-    def dec(self) -> float:
-        """Gets the dec of this DitherSchema.
+    def dec_offset(self) -> float:
+        """Gets the dec_offset of this DitherSchema.
 
 
-        :return: The dec of this DitherSchema.
+        :return: The dec_offset of this DitherSchema.
         :rtype: float
         """
-        return self._dec
+        return self._dec_offset
 
-    @dec.setter
-    def dec(self, dec: float):
-        """Sets the dec of this DitherSchema.
+    @dec_offset.setter
+    def dec_offset(self, dec_offset: float):
+        """Sets the dec_offset of this DitherSchema.
 
 
-        :param dec: The dec of this DitherSchema.
-        :type dec: float
+        :param dec_offset: The dec_offset of this DitherSchema.
+        :type dec_offset: float
         """
-        if dec is None:
-            raise ValueError("Invalid value for `dec`, must not be `None`")  # noqa: E501
+        if dec_offset is None:
+            raise ValueError("Invalid value for `dec_offset`, must not be `None`")  # noqa: E501
 
-        self._dec = dec
+        self._dec_offset = dec_offset
 
     @property
     def position(self) -> str:

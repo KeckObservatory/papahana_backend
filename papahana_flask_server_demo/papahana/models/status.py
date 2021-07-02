@@ -5,8 +5,8 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from papahana.models.one_of_status_state import OneOfStatusState
 from papahana.models.base_model_ import Model
+from papahana.models.date_schema import DateSchema  # noqa: F401,E501
 from papahana import util
 
 
@@ -15,19 +15,19 @@ class Status(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, state: OneOfStatusState=None, executions: List[str]=None, deleted: bool=False):  # noqa: E501
+    def __init__(self, state: OneOfStatusState=None, executions: List[DateSchema]=None, deleted: bool=False):  # noqa: E501
         """Status - a model defined in Swagger
 
         :param state: The state of this Status.  # noqa: E501
         :type state: OneOfStatusState
         :param executions: The executions of this Status.  # noqa: E501
-        :type executions: List[str]
+        :type executions: List[DateSchema]
         :param deleted: The deleted of this Status.  # noqa: E501
         :type deleted: bool
         """
         self.swagger_types = {
             'state': OneOfStatusState,
-            'executions': List[str],
+            'executions': List[DateSchema],
             'deleted': bool
         }
 
@@ -73,22 +73,22 @@ class Status(Model):
         self._state = state
 
     @property
-    def executions(self) -> List[str]:
+    def executions(self) -> List[DateSchema]:
         """Gets the executions of this Status.
 
 
         :return: The executions of this Status.
-        :rtype: List[str]
+        :rtype: List[DateSchema]
         """
         return self._executions
 
     @executions.setter
-    def executions(self, executions: List[str]):
+    def executions(self, executions: List[DateSchema]):
         """Sets the executions of this Status.
 
 
         :param executions: The executions of this Status.
-        :type executions: List[str]
+        :type executions: List[DateSchema]
         """
 
         self._executions = executions

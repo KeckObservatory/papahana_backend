@@ -7,6 +7,7 @@ from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
 from papahana.models.acquisition import Acquisition  # noqa: F401,E501
+from papahana.models.date_schema import DateSchema  # noqa: F401,E501
 from papahana.models.obs_block_metadata import ObsBlockMetadata  # noqa: F401,E501
 from papahana.models.observation_template import ObservationTemplate  # noqa: F401,E501
 from papahana.models.science_template import ScienceTemplate  # noqa: F401,E501
@@ -20,7 +21,7 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, science: List[ScienceTemplate]=None, observation: List[ObservationTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[str]=None, comment: str=None):  # noqa: E501
+    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, science: List[ScienceTemplate]=None, observation: List[ObservationTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[DateSchema]=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param metadata: The metadata of this ObservationBlock.  # noqa: E501
@@ -38,7 +39,7 @@ class ObservationBlock(Model):
         :param status: The status of this ObservationBlock.  # noqa: E501
         :type status: Status
         :param time_constraints: The time_constraints of this ObservationBlock.  # noqa: E501
-        :type time_constraints: List[str]
+        :type time_constraints: List[DateSchema]
         :param comment: The comment of this ObservationBlock.  # noqa: E501
         :type comment: str
         """
@@ -50,7 +51,7 @@ class ObservationBlock(Model):
             'observation': List[ObservationTemplate],
             'associations': List[str],
             'status': Status,
-            'time_constraints': List[str],
+            'time_constraints': List[DateSchema],
             'comment': str
         }
 
@@ -236,22 +237,22 @@ class ObservationBlock(Model):
         self._status = status
 
     @property
-    def time_constraints(self) -> List[str]:
+    def time_constraints(self) -> List[DateSchema]:
         """Gets the time_constraints of this ObservationBlock.
 
 
         :return: The time_constraints of this ObservationBlock.
-        :rtype: List[str]
+        :rtype: List[DateSchema]
         """
         return self._time_constraints
 
     @time_constraints.setter
-    def time_constraints(self, time_constraints: List[str]):
+    def time_constraints(self, time_constraints: List[DateSchema]):
         """Sets the time_constraints of this ObservationBlock.
 
 
         :param time_constraints: The time_constraints of this ObservationBlock.
-        :type time_constraints: List[str]
+        :type time_constraints: List[DateSchema]
         """
 
         self._time_constraints = time_constraints
