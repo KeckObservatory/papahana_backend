@@ -10,7 +10,6 @@ def read_mode(config='./config.live.yaml'):
 
     if 'config' in mode_dict:
         return mode_dict['config']
-
     else:
         return 'production'
 
