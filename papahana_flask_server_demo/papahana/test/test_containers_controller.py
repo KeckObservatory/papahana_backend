@@ -15,13 +15,13 @@ class TestContainersController(BaseTestCase):
 
     def setUp(self):
         """
-        Insert a new OB to work with
+        Insert a new Container to work with
         """
         self.container_id = self.insert_container(self.container)
 
     def tearDown(self):
         """
-        Remove the OB that was inserted at start of test
+        Remove the Container that was inserted at start of test
         """
         self.delete_container(self.container_id)
 

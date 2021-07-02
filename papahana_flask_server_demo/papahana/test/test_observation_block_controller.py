@@ -1,7 +1,7 @@
 # coding: utf-8
 from six import BytesIO
 
-from __future__ import absolute_import
+# from __future__ import absolute_import
 from flask import json
 from papahana.test import BaseTestCase
 from papahana.test.test_default_values import ObsBlocksTestDefaults

@@ -14,15 +14,31 @@ from papahana.test import BaseTestCase
 
 class TestSemesterIdController(BaseTestCase):
     """SemesterIdController integration test stubs"""
+    def setUp(self):
+        """
+        Insert a new OB to work with
+        """
+        self.container_id = self.insert_container(self.container)
+
+    def tearDown(self):
+        """
+        Remove the OB that was inserted at start of test
+        """
+        self.delete_container(self.container_id)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sem_id = '2020A_U169'
+        cls.obs_id = 2003
 
     def test_sem_id_containers_get(self):
         """Test case for sem_id_containers_get
 
-        
+        Retrieves all containers associated with a program.
         """
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
-            '/v0/semesterIds/{sem_id}/containers'.format(sem_id=SemIdSchema()),
+            f'/v0/semesterIds/{self.sem_id}/containers',
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -33,7 +49,7 @@ class TestSemesterIdController(BaseTestCase):
 
         retrieves all the sem_ids associated with an observer.
         """
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
             '/v0/semesterIds/',
             method='GET',
@@ -46,7 +62,7 @@ class TestSemesterIdController(BaseTestCase):
 
         Retrieves the ob_blocks for a sem_id.
         """
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
             '/v0/semesterIds/{sem_id}/ob'.format(sem_id=SemIdSchema()),
             method='GET',
@@ -59,7 +75,7 @@ class TestSemesterIdController(BaseTestCase):
 
         
         """
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
             '/v0/semesterIds/{sem_id}/proposal'.format(sem_id=SemIdSchema()),
             method='GET',
@@ -72,7 +88,7 @@ class TestSemesterIdController(BaseTestCase):
 
         retrieves all the sem_id associated with an observer for the semester.
         """
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
             '/v0/semesterIds/{semester}/semester/'.format(semester='semester_example'),
             method='GET',
@@ -86,7 +102,7 @@ class TestSemesterIdController(BaseTestCase):
         
         """
         body = ObservationBlock()
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
             '/v0/semesterIds/{sem_id}/submit'.format(sem_id=SemIdSchema()),
             method='POST',
@@ -102,7 +118,7 @@ class TestSemesterIdController(BaseTestCase):
         
         """
         body = ObservationBlock()
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
             '/v0/semesterIds/{sem_id}/submit'.format(sem_id=SemIdSchema()),
             method='PUT',
@@ -117,7 +133,7 @@ class TestSemesterIdController(BaseTestCase):
 
         
         """
-        query_string = [('obs_id', 56)]
+        query_string = [('obs_id', self.obs_id)]
         response = self.client.open(
             '/v0/semesterIds/{sem_id}/targets'.format(sem_id=SemIdSchema()),
             method='GET',

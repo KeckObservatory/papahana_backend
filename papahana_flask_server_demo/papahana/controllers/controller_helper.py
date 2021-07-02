@@ -1,10 +1,11 @@
-from config import config_collection
 import pymongo
 import bson
 import json
 import requests
 from flask import current_app, abort
 from bson import json_util
+
+from papahana.util import config_collection
 
 
 # Generalized

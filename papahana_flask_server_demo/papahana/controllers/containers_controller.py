@@ -1,17 +1,11 @@
 import connexion
-import six
-import pymongo
 
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import observation_block_controller
 
 from papahana.models.container import Container  
-from papahana.models.observation_block import ObservationBlock  
-from papahana import util
+from papahana.models.observation_block import ObservationBlock
 
-
-from config import config_collection
-from bson.objectid import ObjectId
 
 
 def containers_get(container_id):  
@@ -58,7 +52,7 @@ def containers_put(body, container_id):
     test :
     curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2024A","observation_blocks":["2","3"]}' 'http://vm-webtools.keck:50000/v0/containers?container_id=609ad6fc4062bf346f1b0437'
 
-    Overwrites a container 
+    Overwrites a container
 
     :param body:
     :type body: dict | bytes
