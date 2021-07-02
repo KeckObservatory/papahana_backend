@@ -3,6 +3,7 @@ import six
 import pymongo
 
 from papahana.controllers import controller_helper as utils
+from papahana.controllers import observation_block_controller
 
 from papahana.models.container import Container  
 from papahana.models.observation_block import ObservationBlock  
@@ -46,12 +47,9 @@ def containers_post(body):
 
     :rtype: str: the ObjectID of the inserted document
     """
-    new_doc = {"name": body.name, "semester": body.semester,
-               "ob_blocks": body.observation_blocks, "comment": body.comment}
+    result = utils.insert_into_collection(body, 'containerCollect')
 
-    result = utils.insert_into_collection(new_doc, 'containerCollect')
-
-    return str(result.inserted_id)
+    return str(result)
 
 
 def containers_put(body, container_id):  
@@ -69,7 +67,10 @@ def containers_put(body, container_id):
 
     :rtype: None
     """
-    container_dict = body.to_dict()
+    if type(body) is not dict:
+        container_dict = body.to_dict()
+    else:
+        container_dict = body
 
     new_vals = {}
     for key, val in container_dict.items():
@@ -98,9 +99,6 @@ def containers_append_put(body, container_id):
     """containers_append_put
 
     Appends a list of observation blocks to a container by id.
-
-    test (appends ob_id=9 to container_id=609306745ec7a7825e28af85):
-    curl -v -H "Content-Type: application/json" -X PUT -d '["9"]' 'http://vm-webtools.keck:50000/v0/containers/append?container_id=609306745ec7a7825e28af85'
 
     :param body:
     :type body: list | bytes
@@ -184,9 +182,10 @@ def containers_items_summary_get(container_id):
 
     :rtype: ContainerSummary
     """
-
-    return 'do some magic!'
-
+    try:
+        return utils.get_by_id(container_id, 'containerCollect')
+    except ValueError as err:
+        return err
 
 def containers_schedule_too_post(body):  
     """

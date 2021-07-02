@@ -1,5 +1,4 @@
 import datetime
-
 import six
 import typing
 import yaml

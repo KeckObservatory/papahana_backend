@@ -169,7 +169,7 @@ def ob_template_filled(ob_id):
     :rtype: bool
     """
     fields = {"parameters": 1, "_id": 0}
-    templates = ob_template_get(ob_id)
+    templates = ob_templates_get(ob_id)
 
     for filled in templates:
         if filled.keys() < {"metadata", "parameters"}:
@@ -197,7 +197,7 @@ def ob_template_filled(ob_id):
     return True
 
 
-def ob_template_get(ob_id):
+def ob_templates_get(ob_id):
     """
     Retrieves the list of templates associated with the OB
 
@@ -234,7 +234,7 @@ def ob_template_id_get(ob_id, template_id):
     :param template_id: index of template within the OB, sci0, acq0.
     :type template_id: str
 
-    :rtype: Observation
+    :rtype: Template
     """
     ob = ob_get(ob_id)
     template_indx, template_type = utils.template_indx_type(template_id)

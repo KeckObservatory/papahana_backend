@@ -77,7 +77,7 @@ def get_by_id(id, collect_name, cln_oid=True):
 
     results = list(coll.find(query))
     if not results:
-        abort(404, f'No Observation Block found.')
+        abort(404, f'No results in: {collect_name} for id: {id}')
 
     if cln_oid:
         return json_with_objectid(results[0])
@@ -389,8 +389,8 @@ def get_ob_list(container_id):
     """
     results = get_by_id(container_id, 'containerCollect')
 
-    if results and type(results) is list:
-        ob_list = results[0]['observation_blocks']
+    if results:
+        ob_list = results['observation_blocks']
     else:
         ob_list = []
 

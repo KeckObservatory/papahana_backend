@@ -281,7 +281,7 @@ paths:
               $ref: '#/components/schemas/Container'
         required: true
       responses:
-        "201":
+        "204":
           description: OK
         "401":
           description: Unauthorized
@@ -301,7 +301,7 @@ paths:
               $ref: '#/components/schemas/Container'
         required: true
       responses:
-        "201":
+        "200":
           description: OK
         "401":
           description: Unauthorized
@@ -342,7 +342,7 @@ paths:
                 type: string
         required: true
       responses:
-        "201":
+        "204":
           description: OK
         "400":
           description: Invalid status value
@@ -465,7 +465,7 @@ paths:
                 $ref: '#/components/schemas/Container'
         required: true
       responses:
-        "200":
+        "204":
           description: OK
         "400":
           description: Invalid status value
@@ -658,7 +658,7 @@ paths:
       tags:
         - Observation Block
       description: Retrieves the list of templates associated with the OB
-      operationId: ob_template_get
+      operationId: ob_templates_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
@@ -1413,12 +1413,18 @@ components:
         state:
           type: string
           oneOf:
+            - pattern: '^[Pp]artially defined$'
+            - pattern: '^[Dd]efined$'
+            - pattern: '^[Rr]eview$'
+            - pattern: '^[Rr]ejected$'
+            - pattern: '^[Dd]raft$'
             - pattern: '^[Ss]tarted$'
             - pattern: '^[Ee]xecuted$'
             - pattern: '^[Cc]ompleted$'
             - pattern: '^[Ff]ailed$'
             - pattern: '^[Tt]erminated$'
             - pattern: '^[Ss]topped$'
+            - pattern: '^[Dd]one$'
           default: started
         executions:
           type: array

@@ -1,8 +1,10 @@
 # coding: utf-8
+from six import BytesIO
 
 from __future__ import absolute_import
 from flask import json
 from papahana.test import BaseTestCase
+from papahana.test.test_default_values import ObsBlocksTestDefaults
 
 
 class TestObservationBlockController(BaseTestCase):
@@ -12,7 +14,7 @@ class TestObservationBlockController(BaseTestCase):
         """
         Insert a new OB to work with
         """
-        self.ob_id = self.insert_ob()
+        self.ob_id = self.insert_ob(self.ob)
 
     def tearDown(self):
         """
@@ -25,173 +27,43 @@ class TestObservationBlockController(BaseTestCase):
         """
         called once before running all test methods
         """
+        cls.defaults = ObsBlocksTestDefaults('test')
         cls.template_id = 'sci0'
-        cls.date_schema_1 = "2021-04-22 13:22:36"
-        cls.date_schema_2 = "2021-12-07 07:07:24"
         cls.file_parameter = "json"
+        cls.ob = cls.defaults.get_example_ob(0)
+        cls.filled_template = cls.defaults.get_filled_template()
 
-        cls.ob = {"metadata":
-                      {"name": "standard stars #9",
-                       "version": 0.1,
-                       "priority": 70.8112646283874,
-                       "ob_type": "science",
-                       "pi_id": 7766,
-                       "sem_id": "2019A_U124",
-                       "instrument": "KCWI"},
-                  "acquisition": {
-                      "metadata": {
-                          "name": "KCWI_ifu_acq_direct",
-                          "ui_name": "KCWI direct",
-                          "instrument": "KCWI",
-                          "type": "acquisition",
-                          "version": 0.1,
-                          "script": "KCWI_ifu_acq_direct"},
-                      "parameters": {
-                          "wrap": "auto",
-                           "rotmode": "PA",
-                           "guider_po": "IFU",
-                           "guider_gs_ra": "12:44:55.6",
-                           "guider_gs_dec": "55:22:19.9",
-                           "guider_gs_mode": "auto"},
-                      "template_id": "acq0"
-                  },
-                  "science": [
-                      {"metadata": {
-                          "name": "KCWI_ifu_sci_dither",
-                          "ui_name": "KCWI dither",
-                          "instrument": "KCWI",
-                          "type": "science",
-                          "version": 0.1,
-                          "script": "KCWI_ifu_sci_stare"
-                      },
-                       "parameters": {
-                           "det1_exptime": 60,
-                           "det1_nexp": 2,
-                           "det2_exptime": 121,
-                           "det2_nexp": 4,
-                           "seq_ndither": 4,
-                           "seq_ditarray": [{"ra_offset": 0.0, "dec_offset": 0.0, "position": "T", "guided": True}, {"ra_offset": 5.0, "dec_offset": 5.0, "position": "T", "guided": True}, {"ra_offset": 5.0, "dec_offset": 5.0, "position": "T", "guided": True}, {"ra_offset": 0.0, "dec_offset": 0.0, "position": "T", "guided": True}]},
-                       "template_id": "sci0"
-                       },
-                      {"metadata": {
-                          "name": "KCWI_ifu_sci_dither",
-                          "ui_name": "KCWI dither",
-                          "instrument": "KCWI",
-                          "type": "science",
-                          "version": 0.1,
-                          "script": "KCWI_ifu_sci_stare"},
-                       "parameters": {
-                           "det1_exptime": 60,
-                           "det1_nexp": 2,
-                           "det2_exptime": 121,
-                           "det2_nexp": 4,
-                           "seq_ndither": 4,
-                           "seq_ditarray": [
-                               {"ra_offset": 0.0, "dec_offset": 0.0, "position": "T", "guided": True},
-                               {"ra_offset": 5.0, "dec_offset": 5.0, "position": "T", "guided": True},
-                               {"ra_offset": 5.0, "dec_offset": 5.0, "position": "T", "guided": True},
-                               {"ra_offset": 0.0, "dec_offset": 0.0, "position": "T", "guided": True}
-                           ]},
-                       "template_id": "sci1"}
-                  ],
-                  "associations": ["TBD"],
-                  "status": {
-                      "state": "Started",
-                      "executions": ["2018-04-13 16:38:13", "2020-03-22 07:05:13"],
-                      "deleted": False
-                  },
-                  "time_constraints": ["2021-05-01 08:00:00", "2021-06-01 10:00:00"],
-                  "comment": "This is a Test!  Only a Test!"
-                  }
-
-        cls.filled_template = {
-            "metadata": {
-                "name": "KCWI_ifu_sci_stare",
-                "ui_name": "KCWI stare",
-                "instrument": "KCWI",
-                "template_type": "science",
-                "version": 0.1,
-                "script": "KCWI_ifu_sci_stare"},
-            "parameters": {
-                "det1_exptime": 30.2,
-                "det1_nexp": 4,
-                "det2_exptime": 40.1,
-                "det2_nexp": 5
-            }
-        }
-
-        cls.unfilled_template = {
-            "metadata": {
-                "name": "KCWI_ifu_sci_stare",
-                "ui_name": "KCWI stare",
-                "instrument": "KCWI",
-                "template_type": "science",
-                "version": 0.1,
-                "script": "KCWI_ifu_sci_stare"},
-            "parameters": {
-                "det1_exptime": {
-                    "ui_name": "Blue exposure time",
-                    "option": "range",
-                    "allowed": [0, 3600],
-                    "default": None,
-                    "optionality": "required",
-                    "type": "float"
-                },
-                "det1_nexp": {
-                    "ui_name": "Blue number of exposures",
-                    "option": "range",
-                    "allowed": [0, 3600],
-                    "default": None,
-                    "optionality": "required",
-                    "type": "integer"
-                },
-                "det2_exptime": {
-                    "ui_name": "Red exposure time",
-                    "option": "range",
-                    "allowed": [0, 3600],
-                    "default": None,
-                    "optionality": "optional",
-                    "type": "float"
-                },
-                "det2_nexp": {
-                    "ui_name": "Blue number of exposures",
-                    "option": "range",
-                "allowed": [0, 3600],
-                "default": None,
-                "optionality": "optional",
-                "type": "integer"
-                }
-            }
-        }
-        
-    # Helpers
-    def insert_ob(self):
-        body = self.ob
-        response = self.client.open(
-            '/v0/obsBlocks',
-            method='POST',
-            data=json.dumps(body),
-            content_type='application/json')
-
-        ob_id = response.data.decode('utf-8').replace("\n", "").replace('"', '')
-
-        return ob_id
-
-    def delete_ob(self, ob_id):
+    def get_ob(self, ob_id):
         query_string = [('ob_id', ob_id)]
         response = self.client.open(
             '/v0/obsBlocks',
-            method='DELETE',
+            method='GET',
             query_string=query_string)
 
-    def delete_ob_by_reponse(self, response):
-        ob_id = response.data.decode('utf-8').replace("\n", "").replace('"', '')
+        return response
 
-        query_string = [('ob_id', self.ob_id)]
-        response = self.client.open(
-            '/v0/obsBlocks',
-            method='DELETE',
-            query_string=query_string)
+    def parse_id(self, response):
+        return response.data.decode('utf-8').replace("\n", "").replace('"', '')
+
+    def check_template(self, new_template, template_id):
+        orig_template = None
+
+        id_map = {'acq': 'acquisition', 'sci': 'science',
+                  'cal': 'calibration', 'eng': 'engineering'}
+
+        orig_templates = self.ob[id_map[template_id[:3]]]
+        if type(orig_templates) is not list:
+            orig_templates = [orig_templates]
+
+        for template in orig_templates:
+            if template['template_id'] == template_id:
+                orig_template = template
+                break
+
+        assert orig_template
+        assert(new_template.keys() == orig_template.keys())
+        for key in orig_template:
+            assert(new_template[key] == orig_template[key])
 
     # TESTS
     def test_ob_post(self):
@@ -209,7 +81,11 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-        self.delete_ob_by_reponse(response)
+        # confirm the OB exists in the db
+        self.assert200(self.get_ob(self.parse_id(response)),
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+        self.delete_ob(self.parse_id(response))
 
     def test_ob_delete(self):
         """Test case for ob_delete
@@ -224,6 +100,10 @@ class TestObservationBlockController(BaseTestCase):
         self.assert_status(response, 204,
                            'Response body is : ' + response.data.decode('utf-8'))
 
+        # confirm the OB does not exist in the db
+        self.assert404(self.get_ob(self.parse_id(response)),
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_ob_duplicate(self):
         """Test case for ob_duplicate
 
@@ -237,7 +117,11 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-        self.delete_ob_by_reponse(response)
+        # confirm the new OB exists in the db
+        self.assert200(self.get_ob(self.parse_id(response)),
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+        self.delete_ob(self.parse_id(response))
 
     def test_ob_execution_time(self):
         """Test case for ob_execution_time
@@ -251,6 +135,8 @@ class TestObservationBlockController(BaseTestCase):
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
+
+        # TODO add check for the execution times
 
     def test_ob_executions(self):
         """Test case for ob_executions
@@ -268,10 +154,12 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        # TODO add check for the execution times
+
     def test_ob_export(self):
         """Test case for ob_export
 
-        insert,  get,  and delete and OB.
+        get OB,  confirm it is the same as inserted
         """
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
@@ -281,10 +169,15 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        # confirm the retrieve OB is the same as inserted
+        result_ob = json.loads(response.data.decode('utf-8'))
+        del result_ob['_id']
+        assert(result_ob == self.ob)
+
     def test_ob_get(self):
         """Test case for ob_get
 
-        Insert,  retrieve,  delete for cleanup
+        get OB,  confirm it is the same as inserted
         """
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
@@ -294,25 +187,37 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        # confirm the retrieve OB is the same as inserted
+        result_ob = json.loads(response.data.decode('utf-8'))
+        del result_ob['_id']
+        assert(result_ob == self.ob)
+
     def test_ob_put(self):
         """Test case for ob_put
 
-        insert an OB,  update it with the new one, delete ob
+        update it with the inserted OB, confirm the update
         """
         query_string = [('ob_id', self.ob_id)]
+        new_ob = self.defaults.get_example_ob(1)
         response = self.client.open(
             '/v0/obsBlocks',
             method='PUT',
-            data=json.dumps(self.ob),
+            data=json.dumps(new_ob),
             content_type='application/json',
             query_string=query_string)
         self.assert_status(response, 204,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        # confirm the new OB was inserted
+        response = self.get_ob(self.ob_id)
+        result_ob = json.loads(response.data.decode('utf-8'))
+        del result_ob['_id']
+        assert(result_ob == new_ob)
+
     def test_ob_template_duplicate(self):
         """ Test case for ob_template_duplicate
 
-        insert ob,  duplicate template in ob,  delete ob
+        duplicate template in ob,  check to see the list increased by one.
         """
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
@@ -322,10 +227,16 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        # confirm the number of templates increased by one
+        response = self.get_ob(self.ob_id)
+        result_ob = json.loads(response.data.decode('utf-8'))
 
+        orig_ob = self.defaults.get_example_ob(0)
+        assert(len(orig_ob['science'])+1 == len(result_ob['science']))
 
     def test_ob_template_filled(self):
         """Test case for ob_template_filled
+
         insert OB,  check all required parameters are filled, delete
         """
         query_string = [('ob_id', self.ob_id)]
@@ -336,10 +247,13 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        # TODO check broken OBs for false
+        # check that parameters have been filled
+        assert('true' in response.data.decode('utf-8'))
 
+    def test_ob_templates_get(self):
+        """Test case for ob_templates_get
 
-    def test_ob_template_get(self):
-        """Test case for ob_template_get
         insert OB,  get template, delete
         """
         query_string = [('ob_id', self.ob_id)]
@@ -350,12 +264,16 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-
+        # check the templates against the originals
+        template_list = json.loads(response.data.decode('utf-8'))
+        for i in range(0, len(template_list)):
+            template = template_list[i]
+            self.check_template(template, template['template_id'])
 
     def test_ob_template_id_delete(self):
         """Test case for ob_template_id_delete
 
-        insert ob,  remove specific template,  delete ob
+        remove specific template,  confirm the template list decreased by 1
         """
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
@@ -366,12 +284,17 @@ class TestObservationBlockController(BaseTestCase):
         self.assert_status(response, 204,
                            'Response body is : ' + response.data.decode('utf-8'))
 
+        # confirm the number of templates decreased by one
+        response = self.get_ob(self.ob_id)
+        result_ob = json.loads(response.data.decode('utf-8'))
 
+        orig_ob = self.defaults.get_example_ob(0)
+        assert(len(orig_ob['science'])-1 == len(result_ob['science']))
 
     def test_ob_template_id_get(self):
         """Test case for ob_template_id_get
 
-        insert ob,  get specific template,  delete ob
+        get specific template, confirm it is the correct template
         """
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
@@ -380,6 +303,19 @@ class TestObservationBlockController(BaseTestCase):
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
+
+        #confirm it is the correct template
+        new_template = json.loads(response.data.decode('utf-8'))
+        self.check_template(new_template, self.template_id)
+        # for template in self.ob['science']:
+        #     if template['template_id'] == self.template_id:
+        #         orig_template = template
+        #         break
+        #
+        # template = json.loads(response.data.decode('utf-8'))
+        # assert(template.keys() == orig_template.keys())
+        # for key in orig_template:
+        #     assert(template[key] == orig_template[key])
 
     def test_ob_template_id_put(self):
         """Test case for ob_template_id_put
@@ -398,10 +334,12 @@ class TestObservationBlockController(BaseTestCase):
         self.assert_status(response, 204,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        #TODO confirm the template matches the filled_template
+
     def test_ob_template_post(self):
         """Test case for ob_template_post
 
-        create ob,  insert template list,  delete ob
+        insert template list
         """
         body = [self.filled_template, self.filled_template]
 
@@ -446,24 +384,24 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_ob_template_id_file_put(self):
-        """Test case for ob_template_id_file_put
-
-
-        """
-        filename = 'test_template_file.json'
-        body = open(filename)
-        # file = (BytesIO(b'my file contents'), "file_name.jpg")
-        query_string = [('ob_id', self.ob_id)]
-
-        response = self.client.open(
-            f'/v0/obsBlocks/template/{self.template_id}/{self.file_parameter}',
-            method='PUT',
-            data=json.dumps(body),
-            content_type='text/plain',
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+    # def test_ob_template_id_file_put(self):
+    #     """Test case for ob_template_id_file_put
+    #
+    #
+    #     """
+    #     filename = 'test_template_file.json'
+    #     body = open(filename)
+    #     # file = (BytesIO(b'my file contents'), "file_name.jpg")
+    #     query_string = [('ob_id', self.ob_id)]
+    #
+    #     response = self.client.open(
+    #         f'/v0/obsBlocks/template/{self.template_id}/{self.file_parameter}',
+    #         method='PUT',
+    #         data=json.dumps(body),
+    #         content_type='text/plain',
+    #         query_string=query_string)
+    #     self.assert200(response,
+    #                    'Response body is : ' + response.data.decode('utf-8'))
 
     def test_ob_time_constraint_get(self):
         """Test case for ob_time_constraint_get
@@ -478,22 +416,30 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        time_constraints = json.loads(response.data.decode('utf-8'))
+        assert(time_constraints == self.ob['time_constraints'])
+
     def test_ob_time_constraint_put(self):
         """Test case for ob_time_constraint_put
 
         create ob,  replace the time constraints, delete ob
         """
-        body = [self.date_schema_1, self.date_schema_2]
+        new_time_constraints = self.defaults.get_example_time_constraints(-1)
 
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
             '/v0/obsBlocks/timeConstraints',
             method='PUT',
-            data=json.dumps(body),
+            data=json.dumps(new_time_constraints),
             content_type='application/json',
             query_string=query_string)
         self.assert_status(response, 204,
                            'Response body is : ' + response.data.decode('utf-8'))
+
+        # confirm the new constraints are in the ob
+        response = self.get_ob(self.ob_id)
+        result_ob = json.loads(response.data.decode('utf-8'))
+        assert(result_ob['time_constraints'] == new_time_constraints)
 
     # def test_ob_upgrade(self):
     #     """Test case for ob_upgrade

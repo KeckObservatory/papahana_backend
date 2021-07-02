@@ -26,7 +26,7 @@ dev:
   port: 27017
   ip: 10.96.0.228
 test:
-  dbName: papahana
+  dbName: papahana_test
   obCollect: observation_blocks
   containerCollect: containers
   templateCollect: templates

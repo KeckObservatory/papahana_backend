@@ -16,7 +16,10 @@ from getpass import getpass
 seed = 1984739
 random.seed(seed)
 import datetime
-from ..papahana_flask_server_demo.config import config_collection
+import argparse
+
+import generate_utils as utils
+from papahana_flask_server_demo.config import config_collection
 
 INST_MAPPING = { 
                  'DEIMOS': {'DE', 'DF'},
@@ -559,77 +562,43 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     return schema
 
 
-def read_mode(config='config.live.yaml'):
-    with open(config) as file:
-        mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
-
-    mode = mode_dict['config']
-
-    return mode
-
-
-def read_config(mode, config='config.live.yaml'):
-    with open(config) as file:
-        config = yaml.load(file, Loader=yaml.FullLoader)[mode]
-
-    return config
-
-
 if __name__=='__main__':
+    args = utils.parse_args()
+    mode = args.mode
+
     seed = 1984739
     random.seed(seed)
-    dbName = 'papahana'
-    mode = 'dev'
-    
+
+    config = utils.read_config(mode)
+    print(f"Using {config['dbName']} database")
+
     # Create ob_blocks collection
-    collName = 'ob_blocks'
-    remote = True # run on remote server (n)
-    mode = read_mode()
-    config = read_config(mode)
-    coll = config_collection('obCollect', mode=mode, conf=config)
+    print("...generating OBs")
+    coll = config_collection('obCollect', conf=config)
     coll.drop()
-    coll.create_index([('metadata.pi', pymongo.DESCENDING)])
-    coll.create_index([('metadata.semester', pymongo.DESCENDING)])
-    coll.create_index([('metadata.program', pymongo.DESCENDING)])
     nLen = 5
     maxArr = 5
     inst = 'KCWI'
     ob_blocks = []
-    print("...generating OBs")
     for idx in range(NOBS):
         doc = generate_observation_block(nLen, maxArr, inst)
         result = coll.insert_one(doc)
         ob_blocks.append(str(result.inserted_id))
 
     # Create containers collection
-    collName = 'containers'
-    remote = True # run on remote server (n)
-    coll = config_collection('containerCollect', mode=mode, conf=config)
-    coll.drop()
     print("...generating containers")
+    coll = config_collection('containerCollect', conf=config)
+    coll.drop()
     nContainers = 20
     container_list = []
     for idx in range(nContainers):
         doc = generate_container(ob_blocks)
         result = coll.insert_one(doc)
-
         container_list.append(str(result.inserted_id))
 
-    # # create Template collection
-    # collName = 'templates'
-    # remote = True # run on remote server (n)
-    # coll = config_collection('templateCollect', mode=mode, conf=config)
-    # coll.drop()
-    # print("...generating templates")
-    # for template in science_templates:
-    #     result = coll.insert_one(template)
-    #
-    # for template in acquisition_templates:
-    #     result = coll.insert_one(template)
-
-    colName = 'instrument_packages'
-    coll = config_collection('instCollect', mode=mode, conf=config)
-    coll.drop()
+    # Create Instrument collection
     print("...generating instrument package")
+    coll = config_collection('instCollect', conf=config)
+    coll.drop()
     ip = generate_inst_package()
     result = coll.insert_one(ip)

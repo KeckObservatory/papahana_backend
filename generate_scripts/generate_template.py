@@ -1,5 +1,5 @@
-import pymongo
-import pdb
+import argparse
+
 from generate_demo_database import read_mode, read_config
 from papahana_flask_server_demo.config import config_collection
 from copy import deepcopy
@@ -258,18 +258,33 @@ kcwi_instrument_package = {
         # "configuration": [ kcwi_config_template ]
     },
 }
+def parse_args():
+    """
+    Parse the command line arguments.
+
+    :return: <obj> commandline arguments
+    """
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--mode", "-m", type=str,
+                        default='dev',
+                        help="The configuration to read")
+
+    return parser.parse_args()
+
 
 if __name__=="__main__":
-   # pdb.set_trace()
-   dbName = 'papahana' 
-   mode = read_mode()
-   config = read_config(mode)
-   coll = config_collection('templateCollect', mode=mode, conf=config)
-   coll.drop()
-   print('adding templates to collection')
-   templates = [ kcwi_ifu_acq_offsetStar_template,
+    args = parse_args()
+    mode = args.mode
+
+    config = read_config(mode)
+    coll = config_collection('templateCollect', mode=mode, conf=config)
+    coll.drop()
+    print(f"Using {config['dbName']} database.")
+    print('...adding templates to collection')
+    templates = [ kcwi_ifu_acq_offsetStar_template,
                  kcwi_ifu_acq_direct_template,
                  kcwi_ifu_sci_stare_template,
                  kcwi_ifu_sci_dither_template
                ]
-   result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)
+    result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)
