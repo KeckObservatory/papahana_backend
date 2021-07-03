@@ -440,6 +440,7 @@ def query_proposals_api(cmd_url):
     url = urls['proposalApi'] + cmd_url
 
     response = requests.get(url)
+    response.close()
     try:
         result = json.loads(response.content)
         return result
