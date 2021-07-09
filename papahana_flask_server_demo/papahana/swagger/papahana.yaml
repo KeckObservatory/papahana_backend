@@ -502,7 +502,7 @@ paths:
     get:
       tags:
       - Instrument
-      description: Retrieves the the available instrument packages for an instrument.
+      description: Retrieves the available instrument packages for an instrument.
       operationId: instrument_packages
       parameters:
       - $ref: '#/components/parameters/instrument'
@@ -512,7 +512,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstrumentPackage'
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
         "404":
@@ -542,7 +544,7 @@ paths:
           description: Group not found
       x-swagger-router-controller: Instrument
       x-openapi-router-controller: papahana.controllers.instrument_controller
-  /instrumentPackages/{instrument}/{ip_version}/{template_name}:
+  /instrumentPackages/{instrument}/{ip_version}/templates:
     get:
       tags:
       - Instrument
@@ -1112,7 +1114,17 @@ paths:
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
+#security:
+#  - bearerAuth: []
+
 components:
+
+#  securitySchemes:
+#    bearerAuth:
+#      type: http
+#      scheme: bearer
+#      bearerFormat: JWT
+#      x-bearerInfoFunc: authorization_controller.decode_token
 
   schemas:
 
@@ -1146,15 +1158,15 @@ components:
           $ref: '#/components/schemas/Target'
         acquisition:
           $ref: '#/components/schemas/Acquisition'
-        science:
+        sequences:
           type: array
           items:
             $ref: '#/components/schemas/ScienceTemplate'
         # TODO add calibration and eng templates here
-        observation:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObservationTemplate'
+#        observation:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/ObservationTemplate'
         associations:
           type: array
           items:
@@ -1268,7 +1280,7 @@ components:
             - "science"
             - "engineering"
             - "calibration"
-          default: "acquisition"
+          default: "science"
         version:
           type: number
         script:
@@ -1457,13 +1469,9 @@ components:
       oneOf:
         - pattern: '^acq\d{1}$'
         - pattern: '^acq\d{2}$'
-        - pattern: '^sci\d{1}$'
-        - pattern: '^sci\d{2}$'
-        - pattern: '^eng\d{1}$'
-        - pattern: '^eng\d{2}$'
-        - pattern: '^cal\d{1}$'
-        - pattern: '^cal\d{2}$'
-      example: sci0
+        - pattern: '^seq\d{1}$'
+        - pattern: '^seq\d{2}$'
+      example: seq0
 
     InstrumentEnum:
       type: string
@@ -1673,18 +1681,7 @@ components:
       explode: false
       schema:
         $ref: '#/components/schemas/TemplateIdSchema'
-      example: sci2
-
-    template_name:
-      name: template_name
-      in: path
-      description: template name description goes here
-      required: true
-      style: simple
-      explode: false
-      schema:
-        type: string
-      example: "KCWI_ifu_sci_stare"
+      example: seq2
 
     file_parameter:
       name: file_parameter
@@ -1701,6 +1698,17 @@ components:
           - html
           - txt
       example: json
+
+    template_name:
+      name: template_name
+      in: query
+      description: template name description goes here
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+      example: "KCWI_ifu_sci_stare"
 
     container_id:
       name: container_id

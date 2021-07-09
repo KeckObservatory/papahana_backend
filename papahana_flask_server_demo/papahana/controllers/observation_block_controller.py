@@ -35,8 +35,6 @@ def ob_post(body):
     """
     Inserts an observation block.
 
-    curl -v -H "Content-Type: application/json" -X POST -d '{"metadata" : { "name" : "standard stars #4", "version" : 0.1, "priority" : 69e04133466, "ob_type" : "science", "pi_id" : 1144, "sem_id" : "2020B_U048", "instrument" : "KCWI" }, "target" : { "name" : "lnvi", "ra" : "21:34:39", "dec" : "-18:20:11", "equinox" :"J2000", "frame" : "xfgu", "ra_offset" : 0.6145587265886931, "dec_offset" : 9.726425379786754, "pa" : 2.9116975489580788, "pm_ra" : 5.8628238378551565, "pm_dec" : 8.752718320860637, "epoch" : 9.28885923053669, "obstime" : "2021-04-22 15:08:04", "magnitude" : [ { "band" : "K", "magnitude" : 1.398070734513925 }, { "band" : "K", "magnitude" : 0.38333014615183614 } ], "wrap" : "south", "d_ra" : 9.157978747082192, "d_dec" : 6.985677960034548, "comment" : "I?m a scholar. I enjoy scholarly pursuits." }, "acquisition" : { "metadata" : { "name" : "KCWI_ifu_acq_direct", "ui_name" : "KCWI direct", "instrument" : "KCWI", "type" : "acquisition", "version" : 0.1, "script" : "KCWI_ifu_acq_direct" }, "parameters" : { "wrap" : "auto", "rotmode" : "PA", "guider_po" : "IFU", "guider_gs_ra" : "12:44:55.6", "guider_gs_dec" : "55:22:19.9", "guider_gs_mode" : "auto" }, "template_index" : "acq0" }, "observations" : [ { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci0" }, { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci1" }, { "metadata" : { "name" : "KCWI_ifu_sci_dither", "ui_name" : "KCWI dither", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 60, "det1_nexp" : 2, "det2_exptime" : 121, "det2_nexp" : 4, "seq_ndither" : 4, "seq_ditarray" : [ [ 0, 0, "T", true ], [ 5, 5, "S", false ], [ 0, 0, "T", true ], [ 5, 5, "S", false ] ] }, "template_index" : "sci2" } ], "associations" : [ "aprce" ], "status" : { "state" : "Executed", "executions" : [ "2018-01-17 13:28:09" ], "deleted" : false }, "time_constraints" : [ "2021-05-01 08:00:00", "2021-06-01 10:00:00" ], "comment" : "Here?s some money. Go see a star warzz." }' "http://vm-webtools.keck:50001/v0/obsBlocks"
-
     :param body: Observation block to be added.
     :type body: dict | bytes
 
@@ -51,8 +49,6 @@ def ob_put(body, ob_id):
     """
     Updates the observation block with the new one.
 
-    curl -v -H "Content-Type: application/json" -X PUT -d '{"metadata" : { "name" : "standard stars #4", "version" : 0.1, "priority" : 60.22146304133466, "ob_type" : "science", "pi_id" : 1144, "sem_id" : "2020B_U048", "instrument" : "KCWI" }, "target" : { "name" : "lnvi", "ra" : "21:34:39", "dec" : "-83:20:11", "equinox" :"J2000", "frame" : "xfgu", "ra_offset" : 0.6145587265886931, "dec_offset" : 9.726425379786754, "pa" : 2.9116975489580788, "pm_ra" : 5.8628238378551565, "pm_dec" : 8.752718320860637, "epoch" : 9.28885923053669, "obstime" : "2021-04-22 15:08:04", "magnitude" : [ { "band" : "K", "magnitude" : 1.398070734513925 }, { "band" : "K", "magnitude" : 0.38333014615183614 } ], "wrap" : "south", "d_ra" : 9.157978747082192, "d_dec" : 6.985677960034548, "comment" : "I?m a scholar. I enjoy scholarly pursuits." }, "acquisition" : { "metadata" : { "name" : "KCWI_ifu_acq_direct", "ui_name" : "KCWI direct", "instrument" : "KCWI", "type" : "acquisition", "version" : 0.1, "script" : "KCWI_ifu_acq_direct" }, "parameters" : { "wrap" : "auto", "rotmode" : "PA", "guider_po" : "IFU", "guider_gs_ra" : "12:44:55.6", "guider_gs_dec" : "55:22:19.9", "guider_gs_mode" : "auto" }, "template_index" : "acq0" }, "observations" : [ { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci0" }, { "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }, "template_index" : "sci1" }, { "metadata" : { "name" : "KCWI_ifu_sci_dither", "ui_name" : "KCWI dither", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 60, "det1_nexp" : 2, "det2_exptime" : 121, "det2_nexp" : 4, "seq_ndither" : 4, "seq_ditarray" : [ [ 0, 0, "T", true ], [ 5, 5, "S", false ], [ 0, 0, "T", true ], [ 5, 5, "S", false ] ] }, "template_index" : "sci2" } ], "associations" : [ "aprce" ], "status" : { "state" : "Executed", "executions" : [ "2018-01-17 13:28:09" ], "deleted" : false }, "time_constraints" : [ "2021-05-01 08:00:00", "2021-06-01 10:00:00" ], "comment" : "Here?s some money. Go see a star warzz." }' "http://vm-webtools.keck:50001/v0/obsBlocks?ob_id=60ca73b91cc2c42a39dedfae"
-
     :param body: Observation block replacing ob_id.
     :type body: dict | bytes
     :param ob_id: observation block id
@@ -60,14 +56,12 @@ def ob_put(body, ob_id):
 
     :rtype: None
     """
-    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
+    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect', clear=True)
 
 
 def ob_delete(ob_id):
     """
     Removes the observation block
-
-    curl -v -X DELETE "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks?ob_id=609c27515ef7b19168a7f646"
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -80,8 +74,6 @@ def ob_delete(ob_id):
 def ob_duplicate(ob_id, sem_id=None):
     """
     Duplicate the OB, default is current semId.
-
-    curl -v -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/duplicate?ob_id=609c27515ef7b19168a7f646"
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -122,8 +114,6 @@ def ob_executions(ob_id):
 #TODO should this only be the remaining execution time
 def ob_execution_time(ob_id):
     """
-    http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/executionTime/?ob_id=2
-
     Calculates the execution time.
 
     :param ob_id: observation block id
@@ -131,14 +121,14 @@ def ob_execution_time(ob_id):
 
     :rtype: float
     """
-    fields = {"science.parameters": 1, "_id": 0}
-    ob_science = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    fields = {"sequences.parameters": 1, "_id": 0}
+    ob_seq = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
-    if not ob_science or 'science' not in ob_science:
+    if not ob_seq or 'sequences' not in ob_seq:
         return 0
 
     total_tm = 0
-    for block in ob_science['science']:
+    for block in ob_seq['sequences']:
         total_tm += utils.calc_exec_time(block)
 
     return total_tm
@@ -147,8 +137,6 @@ def ob_execution_time(ob_id):
 #TODO this is only retrieving the OB
 def ob_export(ob_id):
     """
-    http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/export/?ob_id=2
-
     Exports an OB in human-readable format. 
 
     :param ob_id: observation block id
@@ -201,26 +189,21 @@ def ob_templates_get(ob_id):
     """
     Retrieves the list of templates associated with the OB
 
-    curl -v -H "Content-Type: application/json" -X GET "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/template/0?ob_id=60adc652e7781dfbc33d2f18"
-
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: List[Observation]
     """
-    ob = ob_get(ob_id)
+    fields = {"_id": 0, "sequences": 1, "acquisition": 1}
+    ob_templates = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
     template_list = []
-    for key in ['acquisition', 'science', 'engineering', 'calibration']:
-        if key not in ob:
-            continue
+    if "acquisition" in ob_templates:
+        template_list.append(ob_templates["acquisition"])
 
-        templates = ob[key]
-        if type(templates) is list:
-            for template in templates:
-                template_list.append(template)
-        else:
-            template_list.append(templates)
+    if "sequences" in ob_templates:
+        for seq in ob_templates["sequences"]:
+            template_list.append(seq)
 
     return template_list
 
@@ -231,7 +214,7 @@ def ob_template_id_get(ob_id, template_id):
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB, sci0, acq0.
+    :param template_id: index of template within the OB, seq0, acq0.
     :type template_id: str
 
     :rtype: Template
@@ -249,8 +232,6 @@ def ob_template_id_get(ob_id, template_id):
 def ob_template_id_put(body, ob_id, template_id):
     """
     Updates the specified template within the OB
-
-    curl -v -H "Content-Type: application/json" -X PUT -d '{ "metadata" : { "name" : "KCWI_ifu_sci_stare", "ui_name" : "KCWI stare", "instrument" : "KCWI", "type" : "science", "version" : 0.1, "script" : "KCWI_ifu_sci_stare" }, "parameters" : { "det1_exptime" : 30, "det1_nexp" : 4, "det2_exptime" : 24, "det2_nexp" : 6 }}' "http://vm-webtools.keck:50001/v0/obsBlocks/template/sci1?ob_id=60ca98c18c1db7c3bc60714d"
 
     :param body:
     :type body: dict | bytes
@@ -279,8 +260,6 @@ def ob_template_id_put(body, ob_id, template_id):
 def ob_template_id_delete(ob_id, template_id):
     """
     Removes the specified template within the OB
-
-    curl -X DELETE "http://vm-webtools.keck:50001/v0/obsBlocks/template/sci0?ob_id=60ca98c18c1db7c3bc607152"
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -351,8 +330,6 @@ def ob_template_id_file_put(body, ob_id, template_id, file_parameter):
     """
     Updates the specified template within the OB
 
-    curl -X PUT "http://vm-webtools.keck:50001/v0/obsBlocks/template/sci3/json?ob_id=60c8eb93d131fb50a4b06f6f" --upload-file /tmp/60c8eb93d131fb50a4b06f6f.json
-
     :param ob_id: observation block id
     :type ob_id: str
     :param template_id: index and type of template within the OB.
@@ -372,8 +349,6 @@ def ob_template_duplicate(ob_id, template_id):
     Generate a new copy of the template and add it to the list of templates in
     the OB.
 
-    curl -v -H "Content-Type: application/json" -X POST "http://vm-webtools.keck.hawaii.edu:50001/v0/obsBlocks/template/duplicate/sci1?ob_id=60aec72417469e6111a54d78"
-
     :param ob_id: observation block id
     :type ob_id: str
     :param template_id: index and type of template within the OB.
@@ -381,19 +356,21 @@ def ob_template_duplicate(ob_id, template_id):
 
     :rtype: Observation
     """
-    if 'sci' not in template_id:
-        abort(400, f'Invalid template_id: {template_id}, currently only '
-                   f'duplicating science templates is supported.')
+    if 'seq' not in template_id:
+        abort(400, f'Invalid template_id: {template_id}, currently '
+                   f'duplicating acquisition templates is NOT supported.')
 
     ob = ob_get(ob_id)
 
     template_indx, templates = utils.get_templates_by_id(ob, template_id)
 
     new_template = deepcopy(templates[template_indx])
-    new_template['template_index'] = f'sci{len(templates)}'
+
+    #todo this isn't right anymore
+    new_template['template_index'] = f'seq{len(templates)}'
 
     templates.append(new_template)
-    utils.update_doc(utils.query_by_id(ob_id), {"science": templates},
+    utils.update_doc(utils.query_by_id(ob_id), {"sequences": templates},
                      'obCollect')
 
     return new_template
@@ -402,8 +379,6 @@ def ob_template_duplicate(ob_id, template_id):
 def ob_template_post(body, ob_id, template_type):
     """
     Creates the list of templates associated with the OB
-
-    curl -v -H "Content-Type: application/json" -X POST -d '[ { "name" : "KCWI_ifu_sci_stare", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 1200, "DET1_NEXP" : 2, "DET2_EXPTIME" : 1200, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "index" : 1 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 2 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 3 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 4 } ]' "http://vm-webtools.keck:50001/v0/obsBlocks/template?ob_id=60bab915ddb1146b87136414&template_type=sci"
 
     :param body:
     :type body: list or dict
@@ -426,8 +401,6 @@ def ob_template_post(body, ob_id, template_type):
 def ob_template_put(body, ob_id, template_type):
     """
     Updates the list of templates associated with the OB
-
-    curl -v -H "Content-Type: application/json" -X PUT -d '[ { "name" : "KCWI_ifu_sci_stare", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 1200, "DET1_NEXP" : 2, "DET2_EXPTIME" : 1200, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "index" : 1 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 2 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 3 }, { "name" : "KCWI_ifu_sci_dither", "instrument" : "KCWI", "type" : "sci", "version" : 0.1, "DET1_EXPTIME" : 60, "DET1_NEXP" : 2, "DET2_EXPTIME" : 60, "DET2_NEXT" : 2, "CFG_CAM1_GRATING" : "BM", "CFG_CAM1_CWAVE" : 4500, "CFG_SLICER" : "Medium", "SEQ_NDITHER" : 3, "SEQ_DITARRAY" : [ [ 0, 0, "T", "Guided" ], [ 5, 5, "T", "Guided" ], [ -10, -10, "T", "Guided" ] ], "index" : 4 } ]' "http://vm-webtools.keck:50001/v0/obsBlocks/template?ob_id=60bab915ddb1146b87136414&template_type=sci"
 
     :param body:
     :type body: dict | bytes
@@ -471,8 +444,6 @@ def ob_time_constraint_get(ob_id):
 def ob_time_constraint_put(body, ob_id):
     """
     Create / replace the time constraints (from, to).
-
-    curl -v -H "Content-Type: application/json" -X PUT -d '["2021-05-01 08:00:11", "2021-05-01 08:00:22"]' "http://vm-webtools.keck:50001/v0/obsBlocks/timeConstraints?ob_id=60bfddd9ae0bf221a676bf33"
 
     :param body:
     :type body: list

@@ -16,12 +16,14 @@ def instrument_packages(instrument):
     :param instrument: instrument used to make observation
     :type instrument: str
 
-    :rtype: InstrumentPackage
+    :rtype: [InstrumentPackage]
     """
     if connexion.request.is_json:
         instrument = InstrumentEnum.from_dict(connexion.request.get_json())
 
-    return 'do some magic!'
+    query = {'instrument': instrument}
+
+    return utils.get_by_query(query, 'templateCollect')
 
 
 def instrument_packages_ip_parameter(instrument, ip_version):
@@ -40,14 +42,15 @@ def instrument_packages_ip_parameter(instrument, ip_version):
         instrument = InstrumentEnum.from_dict(connexion.request.get_json())
 
     query = {"instrument": instrument, "version": ip_version}
-    results = utils.get_by_query(query, 'templateCollect')
+    fields ={"_id": 0, "optical_parameters": 1, "guider": 1,
+             "common_inst_params": 1, "pointing_origins": 1}
 
-    return results
+    return utils.get_fields_by_query(query, fields, 'ipCollect')
 
 
-def instrument_packages_ip_template(instrument, ip_version, template_name):
+def instrument_packages_ip_template(instrument, ip_version, template_name=None):
     """
-    Retrieves the specified instrument package template signature
+    Retrieves the specified instrument package template metadata
 
     :param instrument: instrument used to make observation
     :type instrument: str
@@ -58,12 +61,25 @@ def instrument_packages_ip_template(instrument, ip_version, template_name):
 
     :rtype: InstrumentPackage
     """
-    #TODO -- why does need instrument?  template_name is "KCWI_ifu_sci_stare"?
-    # should it default to all templates and have name optional?
-    if connexion.request.is_json:
-        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
+    # if connexion.request.is_json:
+    #     instrument = InstrumentEnum.from_dict(connexion.request.get_json())
 
-    query = {"name": template_name, "version": ip_version}
-    packages = utils.get_by_query(query, 'templateCollect')
+    if template_name:
+        return {template_name: get_template_metadata(template_name, ip_version)}
 
-    return packages
+    query = {"instrument": instrument.upper(), "version": ip_version}
+    fields = {"template_names": 1, "_id": 0}
+    templates = utils.get_fields_by_query(query, fields, 'ipCollect')
+
+    metadata = {}
+    for template_name in templates["template_names"]:
+        metadata[template_name] = get_template_metadata(template_name, ip_version)
+
+    return metadata
+
+
+def get_template_metadata(template_name, ip_version):
+    query = {"metadata.name": template_name, "version": ip_version}
+    fields = {"metadata": 1, "_id": 0}
+
+    return utils.get_fields_by_query(query, fields, 'templateCollect')

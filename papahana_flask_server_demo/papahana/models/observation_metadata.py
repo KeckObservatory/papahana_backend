@@ -15,7 +15,7 @@ class ObservationMetadata(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, ui_name: str=None, instrument: InstrumentEnum=None, template_type: str='acquisition', version: float=None, script: str=None):  # noqa: E501
+    def __init__(self, name: str=None, ui_name: str=None, instrument: InstrumentEnum=None, template_type: str='science', version: float=None, script: str=None):  # noqa: E501
         """ObservationMetadata - a model defined in Swagger
 
         :param name: The name of this ObservationMetadata.  # noqa: E501

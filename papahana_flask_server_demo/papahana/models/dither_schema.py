@@ -14,7 +14,7 @@ class DitherSchema(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, ra_offset: float=None, dec_offset: float=None, position: str=None, guided: bool=None):  # noqa: E501
+    def __init__(self, ra_offset: float=None, dec_offset: float=None, position: str=None, guided: float=None):  # noqa: E501
         """DitherSchema - a model defined in Swagger
 
         :param ra_offset: The ra_offset of this DitherSchema.  # noqa: E501
@@ -24,13 +24,13 @@ class DitherSchema(Model):
         :param position: The position of this DitherSchema.  # noqa: E501
         :type position: str
         :param guided: The guided of this DitherSchema.  # noqa: E501
-        :type guided: bool
+        :type guided: float
         """
         self.swagger_types = {
             'ra_offset': float,
             'dec_offset': float,
             'position': str,
-            'guided': bool
+            'guided': float
         }
 
         self.attribute_map = {
@@ -129,22 +129,22 @@ class DitherSchema(Model):
         self._position = position
 
     @property
-    def guided(self) -> bool:
+    def guided(self) -> float:
         """Gets the guided of this DitherSchema.
 
 
         :return: The guided of this DitherSchema.
-        :rtype: bool
+        :rtype: float
         """
         return self._guided
 
     @guided.setter
-    def guided(self, guided: bool):
+    def guided(self, guided: float):
         """Sets the guided of this DitherSchema.
 
 
         :param guided: The guided of this DitherSchema.
-        :type guided: bool
+        :type guided: float
         """
         if guided is None:
             raise ValueError("Invalid value for `guided`, must not be `None`")  # noqa: E501

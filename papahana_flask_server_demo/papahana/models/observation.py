@@ -5,9 +5,8 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from papahana.models.base_model_ import Model
-from papahana.models.instrument_enum import InstrumentEnum  # noqa: F401,E501
-from papahana import util
+from swagger_server.models.base_model_ import Model
+from swagger_server import util
 
 
 class Observation(Model):
@@ -15,18 +14,18 @@ class Observation(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, instrument: InstrumentEnum=None, index: int=None, name: str=None):  # noqa: E501
+    def __init__(self, instrument: str=None, index: int=None, name: str=None):  # noqa: E501
         """Observation - a model defined in Swagger
 
         :param instrument: The instrument of this Observation.  # noqa: E501
-        :type instrument: InstrumentEnum
+        :type instrument: str
         :param index: The index of this Observation.  # noqa: E501
         :type index: int
         :param name: The name of this Observation.  # noqa: E501
         :type name: str
         """
         self.swagger_types = {
-            'instrument': InstrumentEnum,
+            'instrument': str,
             'index': int,
             'name': str
         }
@@ -52,22 +51,22 @@ class Observation(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def instrument(self) -> InstrumentEnum:
+    def instrument(self) -> str:
         """Gets the instrument of this Observation.
 
 
         :return: The instrument of this Observation.
-        :rtype: InstrumentEnum
+        :rtype: str
         """
         return self._instrument
 
     @instrument.setter
-    def instrument(self, instrument: InstrumentEnum):
+    def instrument(self, instrument: str):
         """Sets the instrument of this Observation.
 
 
         :param instrument: The instrument of this Observation.
-        :type instrument: InstrumentEnum
+        :type instrument: str
         """
         if instrument is None:
             raise ValueError("Invalid value for `instrument`, must not be `None`")  # noqa: E501

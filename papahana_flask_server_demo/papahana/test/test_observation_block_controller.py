@@ -28,7 +28,7 @@ class TestObservationBlockController(BaseTestCase):
         called once before running all test methods
         """
         cls.defaults = ObsBlocksTestDefaults('test')
-        cls.template_id = 'sci0'
+        cls.template_id = 'seq0'
         cls.file_parameter = "json"
         cls.ob = cls.defaults.get_example_ob(0)
         cls.filled_template = cls.defaults.get_filled_template()
@@ -46,15 +46,17 @@ class TestObservationBlockController(BaseTestCase):
         return response.data.decode('utf-8').replace("\n", "").replace('"', '')
 
     def check_template(self, new_template, template_id):
-        orig_template = None
 
-        id_map = {'acq': 'acquisition', 'sci': 'science',
-                  'cal': 'calibration', 'eng': 'engineering'}
+        if template_id[:3] == 'acq':
+            template_type = 'acquisition'
+        else:
+            template_type = 'sequences'
 
-        orig_templates = self.ob[id_map[template_id[:3]]]
+        orig_templates = self.ob[template_type]
         if type(orig_templates) is not list:
             orig_templates = [orig_templates]
 
+        orig_template = None
         for template in orig_templates:
             if template['template_id'] == template_id:
                 orig_template = template
@@ -198,11 +200,13 @@ class TestObservationBlockController(BaseTestCase):
         update it with the inserted OB, confirm the update
         """
         query_string = [('ob_id', self.ob_id)]
-        new_ob = self.defaults.get_example_ob(1)
+
+        replacement_ob = self.defaults.get_example_ob(1)
+
         response = self.client.open(
             '/v0/obsBlocks',
             method='PUT',
-            data=json.dumps(new_ob),
+            data=json.dumps(replacement_ob),
             content_type='application/json',
             query_string=query_string)
         self.assert_status(response, 204,
@@ -211,8 +215,10 @@ class TestObservationBlockController(BaseTestCase):
         # confirm the new OB was inserted
         response = self.get_ob(self.ob_id)
         result_ob = json.loads(response.data.decode('utf-8'))
+
         del result_ob['_id']
-        assert(result_ob == new_ob)
+
+        assert(result_ob == replacement_ob)
 
     def test_ob_template_duplicate(self):
         """ Test case for ob_template_duplicate
@@ -232,7 +238,7 @@ class TestObservationBlockController(BaseTestCase):
         result_ob = json.loads(response.data.decode('utf-8'))
 
         orig_ob = self.defaults.get_example_ob(0)
-        assert(len(orig_ob['science'])+1 == len(result_ob['science']))
+        assert(len(orig_ob['sequences']) + 1 == len(result_ob['sequences']))
 
     def test_ob_template_filled(self):
         """Test case for ob_template_filled
@@ -289,7 +295,7 @@ class TestObservationBlockController(BaseTestCase):
         result_ob = json.loads(response.data.decode('utf-8'))
 
         orig_ob = self.defaults.get_example_ob(0)
-        assert(len(orig_ob['science'])-1 == len(result_ob['science']))
+        assert(len(orig_ob['sequences'])-1 == len(result_ob['sequences']))
 
     def test_ob_template_id_get(self):
         """Test case for ob_template_id_get
@@ -307,7 +313,7 @@ class TestObservationBlockController(BaseTestCase):
         #confirm it is the correct template
         new_template = json.loads(response.data.decode('utf-8'))
         self.check_template(new_template, self.template_id)
-        # for template in self.ob['science']:
+        # for template in self.ob['sequences']:
         #     if template['template_id'] == self.template_id:
         #         orig_template = template
         #         break
@@ -323,7 +329,6 @@ class TestObservationBlockController(BaseTestCase):
         insert OB, updates the specified template in OB, delete OB
         """
         body = self.filled_template
-
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
             f'/v0/obsBlocks/template/{self.template_id}',

@@ -24,25 +24,29 @@ def sem_id_get(obs_id):
 
     :rtype: List[str]
     """
+    # authenticate,
+    #   use a master id in check_obs_id or check == authenticated obs_id
+    # check_obs_id
+
     semid_list = utils.get_proposal_ids(obs_id)
 
     return semid_list
 
 
-# def sem_id_proposal_get(sem_id, obs_id):
-#     """
-#     retrieves the proposal associated with the program.
-#
-#     :param sem_id: semester id
-#     :type sem_id: str
-#     :param obs_id: observer id
-#     :type obs_id: int
-#
-#     :rtype: file
-#     """
-#     #TODO get the pdf from the proposals API.
-#
-#     return 'do some magic! sem_id_proposal_get'
+def sem_id_proposal_get(sem_id, obs_id):
+    """
+    retrieves the proposal associated with the program.
+
+    :param sem_id: semester id
+    :type sem_id: str
+    :param obs_id: observer id
+    :type obs_id: int
+
+    :rtype: file
+    """
+    #TODO get the pdf from the proposals API.
+
+    return 'do some magic! sem_id_proposal_get'
 
 
 def sem_id_semester_get(semester, obs_id):
@@ -127,40 +131,40 @@ def sem_id_targets_get(sem_id, obs_id):
     return all_targets
 
 
-# def sem_id_submit_post(body, obs_id, sem_id):
-#     """
-#     Submits OBs for a program.  Uses the obsid in the authentication
-#     header and provided semId to retrieve the proposal file
-#     associated with the program
-#
-#     :param body:
-#     :type body: dict | bytes
-#     :param sem_id: semester id
-#     :type sem_id: str
-#     :param obs_id: observer id
-#     :type obs_id: int
-#
-#     :rtype: None
-#     """
-#     return 'do some magic! sem_id_submit_post'
-#
-#
-# def sem_id_submit_put(obs_id, sem_id, body=None):
-#     """sem_id_submit_put
-#
-#     updates a program (OBs)
-#
-#     :param sem_id: semester id
-#     :type sem_id: str
-#     :param obs_id: observer id
-#     :type obs_id: int
-#     :param body:
-#     :type body: dict | bytes
-#
-#     :rtype: None
-#     """
-#     return 'do some magic! sem_id_submit_put'
-#
+def sem_id_submit_post(body, obs_id, sem_id):
+    """
+    Submits OBs for a program.  Uses the obsid in the authentication
+    header and provided semId to retrieve the proposal file
+    associated with the program
+
+    :param body:
+    :type body: dict | bytes
+    :param sem_id: semester id
+    :type sem_id: str
+    :param obs_id: observer id
+    :type obs_id: int
+
+    :rtype: None
+    """
+    return 'do some magic! sem_id_submit_post'
+
+
+def sem_id_submit_put(obs_id, sem_id, body=None):
+    """sem_id_submit_put
+
+    updates a program (OBs)
+
+    :param sem_id: semester id
+    :type sem_id: str
+    :param obs_id: observer id
+    :type obs_id: int
+    :param body:
+    :type body: dict | bytes
+
+    :rtype: None
+    """
+    return 'do some magic! sem_id_submit_put'
+
 
 
 

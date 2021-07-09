@@ -19,7 +19,7 @@ import datetime
 import argparse
 
 import generate_utils as utils
-from papahana_flask_server_demo.config import config_collection
+from papahana import util as papahana_util
 
 INST_MAPPING = { 
                  'DEIMOS': {'DE', 'DF'},
@@ -166,7 +166,7 @@ filled_sci_templates = [
             "name": "KCWI_ifu_sci_dither",
             "ui_name": "KCWI dither",
             "instrument": "KCWI",
-            "type": "science",
+            "template_type": "science",
             "version": 0.1,
             "script": "KCWI_ifu_sci_stare"
         },
@@ -419,7 +419,7 @@ def generate_metadata(maxArr):
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
         'version': 0.1,
-        'priority': randFloat(100),
+        'priority': randInt(100),
         'ob_type': 'science',
         'pi_id': pis[pi_name],
         'sem_id': str(randSemId()),
@@ -474,7 +474,7 @@ def generate_kcwi_science():
     for indx in range(0, n_templates):
         tmp_list = copy.deepcopy(filled_sci_templates)
         filled_template = random.choice(tmp_list)
-        filled_template['template_id'] = f'sci{indx}'
+        filled_template['template_id'] = f'seq{indx}'
         schema.append(filled_template)
 
     return schema
@@ -551,7 +551,7 @@ def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
         'metadata': generate_metadata(maxArr),
         'target': random.choice([None, generate_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
-        'science': generate_science(inst),
+        'sequences': generate_science(inst),
         'associations': randArrStr(nLen, maxArr),
         'status': randStatus(),
         'time_constraints': randTimeConstraint(),
@@ -574,7 +574,7 @@ if __name__=='__main__':
 
     # Create ob_blocks collection
     print("...generating OBs")
-    coll = config_collection('obCollect', conf=config)
+    coll = papahana_util.config_collection('obCollect', conf=config)
     coll.drop()
     nLen = 5
     maxArr = 5
@@ -587,7 +587,7 @@ if __name__=='__main__':
 
     # Create containers collection
     print("...generating containers")
-    coll = config_collection('containerCollect', conf=config)
+    coll = papahana_util.config_collection('containerCollect', conf=config)
     coll.drop()
     nContainers = 20
     container_list = []
@@ -598,7 +598,7 @@ if __name__=='__main__':
 
     # Create Instrument collection
     print("...generating instrument package")
-    coll = config_collection('instCollect', conf=config)
+    coll = papahana_util.config_collection('ipCollect', conf=config)
     coll.drop()
     ip = generate_inst_package()
     result = coll.insert_one(ip)

@@ -242,7 +242,7 @@ def replace_doc(id, doc, collect_name):
     return result
 
 
-def update_doc(query, new_vals, collect_name):
+def update_doc(query, new_vals, collect_name, clear=False):
     """
     Update a database collection document.
 
@@ -252,12 +252,43 @@ def update_doc(query, new_vals, collect_name):
     :type new_vals: dict
     :param collect_name: the database collection.
     :type collect_name: str
+    :param clear: remove all fields that are not in new_vals
+    :type collect_name: bool
     """
     coll = config_collection(collect_name)
-    if '_id' in new_vals.keys():
+
+    fields_to_update = new_vals.keys()
+
+    if clear:
+        doc = list(coll.find(query))
+        if doc:
+            for field in doc[0].keys():
+                if field == '_id' or field in fields_to_update:
+                    continue
+                coll.update_one(query, {"$unset": {field: 1}})
+
+    if '_id' in fields_to_update:
         del new_vals['_id']
 
     coll.update_one(query, {"$set": new_vals})
+
+
+# def replace_doc(query, new_vals, collect_name):
+#     """
+#     Update a every field in a database collection document.
+#
+#     :param query: the query used to find the document
+#     :type query: dict
+#     :param new_vals: the key/val pair of new values to update.
+#     :type new_vals: dict
+#     :param collect_name: the database collection.
+#     :type collect_name: str
+#     """
+#     coll = config_collection(collect_name)
+#     if '_id' in new_vals.keys():
+#         del new_vals['_id']
+#
+#     coll.update_one(query, {"$set": new_vals})
 
 
 def update_add_doc(query, new_vals, collect_name):
@@ -351,20 +382,23 @@ def get_templates_by_id(ob, template_id):
 
 def template_indx_type(template_id):
     try:
-        template_type = template_id[:3]
+        template_str = template_id[:3]
         template_indx = int(template_id[3:])
     except ValueError:
         abort(400, f"Invalid template_id: {template_id}")
     except Exception as err:
         abort(400, f"Error with template_id: {err}")
 
-    type_map = {'sci': 'science', 'acq': 'acquisition',
-                'eng': 'engineering', 'cal': 'calibration'}
+    if template_str == 'acq':
+        template_type = 'acquisition'
+    else:
+        template_type = 'sequences'
 
-    return template_indx, type_map[template_type]
+    return template_indx, template_type
 
 
 def get_templates(ob, template_type, template_indx):
+
     if template_type not in ob or len(ob[template_type]) <= template_indx:
         abort(400, f"Invalid template type, index: {template_type}, {template_indx}")
 

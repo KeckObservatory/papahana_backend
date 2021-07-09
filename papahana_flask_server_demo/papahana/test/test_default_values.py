@@ -62,10 +62,10 @@ class ObsBlocksTestDefaults:
 
     def get_filled_template(self):
         for ob in self.ob_list:
-            if 'science' in ob:
-                return ob['science'][0]
+            if 'sequences' in ob:
+                return ob['sequences'][0]
 
-        return "ERROR no OBs with science templates defined"
+        return "ERROR no OBs with sequence templates defined"
 
     def get_example_time_constraints(self, indx):
         ob = self.get_example_ob(indx)

@@ -9,7 +9,6 @@ from papahana.models.base_model_ import Model
 from papahana.models.acquisition import Acquisition  # noqa: F401,E501
 from papahana.models.date_schema import DateSchema  # noqa: F401,E501
 from papahana.models.obs_block_metadata import ObsBlockMetadata  # noqa: F401,E501
-from papahana.models.observation_template import ObservationTemplate  # noqa: F401,E501
 from papahana.models.science_template import ScienceTemplate  # noqa: F401,E501
 from papahana.models.status import Status  # noqa: F401,E501
 from papahana.models.target import Target  # noqa: F401,E501
@@ -21,7 +20,7 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, science: List[ScienceTemplate]=None, observation: List[ObservationTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[DateSchema]=None, comment: str=None):  # noqa: E501
+    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, sequences: List[ScienceTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[DateSchema]=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param metadata: The metadata of this ObservationBlock.  # noqa: E501
@@ -30,10 +29,8 @@ class ObservationBlock(Model):
         :type target: Target
         :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
         :type acquisition: Acquisition
-        :param science: The science of this ObservationBlock.  # noqa: E501
-        :type science: List[ScienceTemplate]
-        :param observation: The observation of this ObservationBlock.  # noqa: E501
-        :type observation: List[ObservationTemplate]
+        :param sequences: The sequences of this ObservationBlock.  # noqa: E501
+        :type sequences: List[ScienceTemplate]
         :param associations: The associations of this ObservationBlock.  # noqa: E501
         :type associations: List[str]
         :param status: The status of this ObservationBlock.  # noqa: E501
@@ -47,8 +44,7 @@ class ObservationBlock(Model):
             'metadata': ObsBlockMetadata,
             'target': Target,
             'acquisition': Acquisition,
-            'science': List[ScienceTemplate],
-            'observation': List[ObservationTemplate],
+            'sequences': List[ScienceTemplate],
             'associations': List[str],
             'status': Status,
             'time_constraints': List[DateSchema],
@@ -59,8 +55,7 @@ class ObservationBlock(Model):
             'metadata': 'metadata',
             'target': 'target',
             'acquisition': 'acquisition',
-            'science': 'science',
-            'observation': 'observation',
+            'sequences': 'sequences',
             'associations': 'associations',
             'status': 'status',
             'time_constraints': 'time_constraints',
@@ -69,8 +64,7 @@ class ObservationBlock(Model):
         self._metadata = metadata
         self._target = target
         self._acquisition = acquisition
-        self._science = science
-        self._observation = observation
+        self._sequences = sequences
         self._associations = associations
         self._status = status
         self._time_constraints = time_constraints
@@ -153,46 +147,25 @@ class ObservationBlock(Model):
         self._acquisition = acquisition
 
     @property
-    def science(self) -> List[ScienceTemplate]:
-        """Gets the science of this ObservationBlock.
+    def sequences(self) -> List[ScienceTemplate]:
+        """Gets the sequences of this ObservationBlock.
 
 
-        :return: The science of this ObservationBlock.
+        :return: The sequences of this ObservationBlock.
         :rtype: List[ScienceTemplate]
         """
-        return self._science
+        return self._sequences
 
-    @science.setter
-    def science(self, science: List[ScienceTemplate]):
-        """Sets the science of this ObservationBlock.
+    @sequences.setter
+    def sequences(self, sequences: List[ScienceTemplate]):
+        """Sets the sequences of this ObservationBlock.
 
 
-        :param science: The science of this ObservationBlock.
-        :type science: List[ScienceTemplate]
+        :param sequences: The sequences of this ObservationBlock.
+        :type sequences: List[ScienceTemplate]
         """
 
-        self._science = science
-
-    @property
-    def observation(self) -> List[ObservationTemplate]:
-        """Gets the observation of this ObservationBlock.
-
-
-        :return: The observation of this ObservationBlock.
-        :rtype: List[ObservationTemplate]
-        """
-        return self._observation
-
-    @observation.setter
-    def observation(self, observation: List[ObservationTemplate]):
-        """Sets the observation of this ObservationBlock.
-
-
-        :param observation: The observation of this ObservationBlock.
-        :type observation: List[ObservationTemplate]
-        """
-
-        self._observation = observation
+        self._sequences = sequences
 
     @property
     def associations(self) -> List[str]:
