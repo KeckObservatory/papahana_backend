@@ -515,3 +515,45 @@ def ob_template_supplement(ob_id):
     :rtype: None
     """
     return 'do some magic!'
+
+def ob_last_version(ob_id):  # noqa: E501
+    """ob_last_version
+
+    Retrieves the last saved version an OB. # noqa: E501
+
+    :param ob_id: observation block ObjectId
+    :type ob_id: str
+
+    :rtype: ObservationBlock
+    """
+    return 'do some magic!'
+
+def ob_revisions(ob_id, revision_n=None):  # noqa: E501
+    """ob_revisions
+
+    Retrieves the last ten revisions,  unless the number of revisions is specified # noqa: E501
+
+    :param ob_id: observation block ObjectId
+    :type ob_id: str
+    :param revision_n: The number of revisions to return
+    :type revision_n: int
+
+    :rtype: ObservationBlock
+    """
+    return 'do some magic!'
+
+def ob_revision_index(ob_id, revision_index):  # noqa: E501
+    """ob_revision_index
+
+    Retrieves the nth (revision_index) revision # noqa: E501
+
+    :param ob_id: observation block ObjectId
+    :type ob_id: str
+    :param revision_index: The index of the single revision to return.
+    :type revision_index: int
+
+    :rtype: ObservationBlock
+    """
+    return 'do some magic!'
+
+

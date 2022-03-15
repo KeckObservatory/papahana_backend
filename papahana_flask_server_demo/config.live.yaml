@@ -4,7 +4,9 @@ mode:
 local:
   dbName: papahana 
   obCollect: observation_blocks
+  observerCollect: observer
   containerCollect: containers
+  scriptCollect: scripts
   templateCollect: templates
   ipCollect: instrument_packages
   port: 27017
@@ -12,23 +14,29 @@ local:
 demo:
   dbName: papahana 
   obCollect: observation_blocks
+  observerCollect: observer
   containerCollect: containers
+  scriptCollect: scripts
   templateCollect: templates
   ipCollect: instrument_packages
   ip: 127.0.0.1
   port: 27017
 dev:
-  dbName: papahana
+  dbName: papahana_test
   obCollect: observation_blocks
+  observerCollect: observer
   containerCollect: containers
+  scriptCollect: scripts
   templateCollect: templates
   ipCollect: instrument_packages
   port: 27017
-  ip: 10.96.0.228
+  ip: 128.171.96.113
 test:
   dbName: papahana_test
   obCollect: observation_blocks
+  observerCollect: observer
   containerCollect: containers
+  scriptCollect: scripts
   templateCollect: templates
   ipCollect: instrument_packages
   port: 27017
