@@ -7,9 +7,8 @@ from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
 from papahana.models.date_schema import DateSchema  # noqa: F401,E501
-from papahana import util
-
 from papahana.models.one_of_status_state import OneOfStatusState  # noqa: F401,E501
+from papahana import util
 
 
 class Status(Model):

@@ -1728,7 +1728,7 @@ components:
       style: simple
       explode: false
       schema:
-        $ref: '#/components/schemas/TemplateIdSchema'
+        type: integer
       example: seq2
 
     file_parameter:
@@ -1967,6 +1967,7 @@ components:
       required:
         - name
         - version
+        - priority
         - ob_type
         - pi_id
         - sem_id
@@ -1984,7 +1985,7 @@ components:
             - calibration
             - engineering
         priority:
-          type: number
+          type: integer
         pi_id:
           type: integer
         sem_id:
@@ -2009,8 +2010,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObservationMetadata'
-        template_id:
-          $ref: '#/components/schemas/TemplateIdSchema'
 
     ScienceTemplate:
       required:
@@ -2022,8 +2021,6 @@ components:
           $ref: '#/components/schemas/ObservationMetadata'
         parameters:
           $ref: '#/components/schemas/ScienceParameters'
-        template_id:
-          $ref: '#/components/schemas/TemplateIdSchema'
 
     Acquisition:
       required:
@@ -2035,8 +2032,6 @@ components:
           $ref: '#/components/schemas/ObservationMetadata'
         parameters:
           $ref: '#/components/schemas/AcquisitionParameters'
-        template_id:
-          $ref: '#/components/schemas/TemplateIdSchema'
 
     ObservationMetadata:
       required:
@@ -2045,6 +2040,7 @@ components:
         - instrument
         - version
         - script
+        - sequece_number
       type: object
       properties:
         name:
@@ -2062,77 +2058,38 @@ components:
             - "calibration"
           default: "science"
         version:
-          type: number
+          type: string
         script:
           type: string
+        sequece_number:
+          type: integer
       example:
         name: KCWI_ifu_acq_offsetStar
         ui_name: KCWI direct
         instrument: KCWI
         template_type: acquisition
-        version: 0.1
+        version: 0.1.1
         script: KCWI_ifu_acq_offsetStar
+        sequence_number: 0
 
     AcquisitionParameters:
       required:
-        - rotmode
-        - guider_po
-        - guider_gs_mode
+        - tcs_coord_po
       type: object
       properties:
-        wrap:
+        tcs_coord_po:
           type: string
-          enum:
-            - "south"
-            - "north"
-            - "auto"
-          default: "auto"
-        rotmode:
-          type: string
-          enum:
-            - "PA"
-            - "stationary"
-            - "vertical_angle"
-        guider_po:
-          type: string
-          enum:
-            - "REF"
-            - "IFU"
-        ra_offset:
-          type: number
-        dec_offset:
-          type: number
-        guider_gs_ra:
-          $ref: '#/components/schemas/RASchema'
-        guider_gs_dec:
-          $ref: '#/components/schemas/DecSchema'
-        guider_gs_mode:
-          type: string
-          enum:
-            - "auto"
-            - "operator"
-            - "user"
 
     ScienceParameters:
       required:
-        - det1_exptime
-        - det1_nexp
+        - det1_exp_time
+        - det1_exp_number
       type: object
       properties:
-        det1_exptime:
+        det1_exp_time:
           type: number
-        det1_nexp:
+        det1_exp_number:
           type: integer
-        det2_exptime:
-          type: number
-        det2_nexp:
-          type: integer
-        seq_ndither:
-          type: integer
-        seq_ditarray:
-          type: array
-          items:
-            $ref: '#/components/schemas/DitherSchema'
 
     # TODO add IP template description
     InstrumentPackage:
@@ -2140,66 +2097,115 @@ components:
     # TODO add observer list schema
     ObserverList:
       description: Observer List description goes here
+
     Target:
       required:
-      - name
-      - ra
-      - dec
-      - magnitude
+      - metadata
+      - parameters
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/TargetMetadata'
+        parameters:
+          $ref: '#/components/schemas/TargetParameters'
+    TargetMetadata:
+      required:
+        - name
+        - ui_name
+        - template_type
+        - version
       type: object
       properties:
         name:
           type: string
-        ra:
-          $ref: '#/components/schemas/RASchema'
-        dec:
-          $ref: '#/components/schemas/DecSchema'
-        equinox:
+        ui_name:
           type: string
-          default: "J2000"
-        frame:
+        template_type:
           type: string
-          default: "Fk5"
-        PA:
-          type: number
-          default: 0.0
-        pm_ra:
-          type: number
-          default: 0.0
-        pm_dec:
-          type: number
-          default: 0.0
-        epoch:
-          type: number
-          default: 2000.0
-        obstime:
-          type: string
-        magnitude:
-          type: array
-          items:
-            $ref: '#/components/schemas/Magnitude'
-        dra:
-          type: number
-          default: 0.0
-        ddec:
-          type: number
-          default: 0.0
-        comment:
+          enum:
+            - "target"
+          default: "target"
+        version:
           type: string
       example:
-        name: A Stellar Galaxy
-        ra: '15:01:01'
-        dec: '20:00:02.2'
-        equinox: J2000
-        frame: Fk5
-        PA: -90.0
-        pm_ra: 5.96
-        pm_dec: 5.6373
-        obstime: 2021-04-22 15:08:04
-        comment: comment
-        magnitude:
-          magnitude: 14.5
-          band: J
+        name: multi_object_target
+        ui_name: Multi-Object Spectroscopy Target
+        instrument: KCWI
+        version: 0.1.1
+
+    TargetParameters:
+      required:
+        - target_info_name
+        - target_coord_ra
+        - target_coord_dec
+      type: object
+      properties:
+        target_info_name:
+          type: string
+        target_coord_ra:
+          $ref: '#/components/schemas/RASchema'
+        target_coord_dec:
+          $ref: '#/components/schemas/DecSchema'
+      example:
+        target_info_name: super bright star
+        target_coord_ra: 23:55:05
+        target_coord_dec: -02:13:50
+
+#       name:
+#          type: string
+#        ra:
+#          $ref: '#/components/schemas/RASchema'
+#        dec:
+#          $ref: '#/components/schemas/DecSchema'
+#        equinox:
+#          type: string
+#          default: "J2000"
+#        frame:
+#          type: string
+#          default: "Fk5"
+#        PA:
+#          type: number
+#          default: 0.0
+#        pm_ra:
+#          type: number
+#          default: 0.0
+#        pm_dec:
+#          type: number
+#          default: 0.0
+#        epoch:
+#          type: number
+#          default: 2000.0
+#        obstime:
+#          type: string
+#        magnitude:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/Magnitude'
+#        dra:
+#          type: number
+#          default: 0.0
+#        ddec:
+#          type: number
+#          default: 0.0
+#        comment:
+#          type: string
+#      example:
+#        name: A Stellar Galaxy
+#        ra: '15:01:01'
+#        dec: '20:00:02.2'
+#        equinox: J2000
+#        frame: Fk5
+#        PA: -90.0
+#        pm_ra: 5.96
+#        pm_dec: 5.6373
+#        obstime: 2021-04-22 15:08:04
+#        comment: comment
+#        magnitude:
+#          magnitude: 14.5
+#          band: J
+#
+
+
 
     Status:
       type: object
@@ -2245,15 +2251,6 @@ components:
 
     FindingChart:
       description: Finding chart description goes here
-
-    TemplateIdSchema:
-      type: string
-      oneOf:
-        - pattern: '^acq\d{1}$'
-        - pattern: '^acq\d{2}$'
-        - pattern: '^seq\d{1}$'
-        - pattern: '^seq\d{2}$'
-      example: seq0
 
     InstrumentEnum:
       type: string
