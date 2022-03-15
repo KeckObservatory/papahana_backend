@@ -3,23 +3,23 @@
 import yaml
 
 import numpy as np
-import os
-import pymongo
 import random
 import string
 from itertools import product
-import pprint
 import pdb
 from functools import wraps
 import urllib
-from getpass import getpass
 seed = 1984739
 random.seed(seed)
 import datetime
 import argparse
 
 import generate_utils as utils
+import generate_template
 from papahana import util as papahana_util
+
+import bson
+
 
 INST_MAPPING = { 
                  'DEIMOS': {'DE', 'DF'},
@@ -44,6 +44,11 @@ pis = {
     "George Bluth Sr.": 1144,
     "Lucille Bluth": 7644,
 }
+
+keck_ids = [
+    5555, 7766, 8877, 8655, 2613, 3342,
+    8899, 7799, 8765, 9998, 1144, 7644
+]
 
 observers = [
     "Narrator",
@@ -87,24 +92,17 @@ observers = [
 ]
 
 comments = [
-    "Here?s some money. Go see a star war.",
-    "I don?t understand the question and I won?t respond to it.",
-    "I am one of the few honest people I have ever known.",
-    "I?m a scholar. I enjoy scholarly pursuits.",
-    "I?ve made a huge tiny mistake.",
-    "I hear the jury?s still out on science.",
+    "Conditions = seeing < 1 arcsecond,  clear",
+    "Observe at midnight",
+    "Observe on the first run of the semester.",
+    "Observing remotely in 2022B",
+    "Calibration Stars",
+    "High Priority",
 ]
 
 wrap_str = ['north', 'south']
 
-status = [
-    "Started",
-    "Executed",
-    "Completed",
-    "Failed",
-    "Terminated",
-    "Stopped",
-]
+status = [0, 1, 2, 3, 4]
 
 timeConstraint = [
     None, ['2021-01-01 08:00:00', '2021-01-01 10:00:00'],
@@ -150,15 +148,19 @@ kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 filled_sci_templates = [
     {
         "metadata": {
-            "name": "KCWI_ifu_sci_stare", "ui_name": "KCWI stare",
-              "instrument": "KCWI", "type": "science", "version": 0.1,
-              "script": "KCWI_ifu_sci_stare"
+            "name": "KCWI_ifu_sci_stare",
+            "ui_name": "KCWI stare",
+            "instrument": "KCWI",
+            "template_type": "science",
+            "version": "0.1.0",
+            "script": "KCWI_ifu_sci_stare",
+            "sequence_number": 1
         },
         "parameters": {
-            "det1_exptime": 30,
-            "det1_nexp": 4,
-            "det2_exptime": 24,
-            "det2_nexp": 6
+            "det1_exp_time": 30,
+            "det1_exp_number": 4,
+            "det2_exp_time": 24,
+            "det2_exp_number": 6
         }
     },
     {
@@ -168,17 +170,24 @@ filled_sci_templates = [
             "instrument": "KCWI",
             "template_type": "science",
             "version": 0.1,
-            "script": "KCWI_ifu_sci_stare"
+            "script": "KCWI_ifu_sci_stare",
+            "sequence_number": 1
         },
         "parameters": {
-            "det1_exptime": 60.0,
-            "det1_nexp": 2,
+            "det1_exp_time": 60.0,
+            "det1_exp_number": 2,
             "det2_exptime": 121.0,
-            "det2_nexp": 4,
-            "seq_ndither": 4,
-            "seq_ditarray": [
-                {"ra_offset": 0, "dec_offset": 0, "position": 'T', "guided": True}, {"ra_offset": 5, "dec_offset": 5, "position": 'S', "guided": False},
-                {"ra_offset": 0, "dec_offset": 0, "position": 'T', "guided": True}, {"ra_offset": 5, "dec_offset": 5, "position": 'S', "guided": False}
+            "det2_exp_number": 4,
+            "seq_dither_number": 4,
+            "seq_dither_pattern": [
+                {"seq_dither_ra_offset": 0, "seq_dither_dec_offset": 0,
+                 "seq_dither_position": 'T', "seq_dither_guided": True},
+                {"seq_dither_ra_offset": 5, "seq_dither_dec_offset": 5,
+                 "seq_dither_position": 'S', "seq_dither_guided": False},
+                {"seq_dither_ra_offset": 0, "seq_dither_dec_offset": 0,
+                 "seq_dither_position": 'T', "seq_dither_guided": True},
+                {"seq_dither_ra_offset": 5, "seq_dither_dec_offset": 5,
+                 "seq_dither_position": 'S', "seq_dither_guided": False}
             ]
         }
     }
@@ -190,15 +199,19 @@ filled_acq_templates = [{
         "ui_name": "KCWI direct",
         "instrument": "KCWI",
         "type": "acquisition",
-        "version": 0.1,
-        "script": "KCWI_ifu_acq_direct"},
+        "version": "0.1.1",
+        "script": "KCWI_ifu_acq_direct",
+        "sequence_number" : 0},
     "parameters": {
-        "wrap": "auto",
-        "rotmode": "PA",
-        "guider_po": "IFU",
-        "guider_gs_ra": "12:44:55.6",
-        "guider_gs_dec": '55:22:19.9',
-        "guider_gs_mode": "auto"}
+        "rot_cfg_wrap": "auto",
+        "rot_cfg_mode": "PA",
+        "tcs_coord_po": "IFU",
+        "tcs_coord_raoff": "0",
+        "tcs_coord_decoff": '1',
+        "guider1_coord_ra": "12:44:55.6",
+        "guider1_coord_dec": '55:22:19.9',
+        "guider1_coord_mode": 'operator'
+    }
 }]
 
 containers = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
@@ -215,12 +228,16 @@ randString = lambda x=4: ''.join(random.choice(letters) for i in range(x))
 randFloat = lambda mag=10: mag * random.uniform(0,1)
 randBool = lambda: bool(random.choice([0,1, None]))
 randInt = lambda lr=0, ur=100: random.randint(lr, ur)
+randSamllInt = lambda lr=0, ur=10: random.randint(lr, ur)
+randStatusInt = lambda lr=0, ur=4: random.randint(lr, ur)
 randArrStr = lambda x=1, y=1: [randString(x) for _ in range(random.randint(1, y)) ]
 optionalRandString = lambda x=4: random.choice([None, randString(x)])
 optionalRandArrString = lambda x, y=1: random.choice([None, randArrStr(x, y)])
 sampleInst = lambda: random.choice(list(INST_MAPPING.keys()))
+
 randPI = lambda: random.choice(list(pis))
 randObserver = lambda: random.choice(observers)
+randKeckId = lambda: random.choice(keck_ids)
 randSemester = lambda: random.choice(semesters)
 randSemId = lambda: random.choice(sem_ids)
 randPIList = lambda x=1: lambda x=1: list(np.random.choice(list(pis), size=random.randint(1, x), replace=False))
@@ -238,13 +255,19 @@ arcSeconds = z_fill_number(randInt(0, 60))
 decDeg = z_fill_number(randInt(0, 90))
 elevation = random.choice(['+', '-'])
 
+
 def randStatus():
-    rstat = random.choice(status)
     executions = []
     for x in range(0, randInt(0,6)):
         executions.append(generate_random_executions())
 
-    schema = {'state': rstat, 'executions': executions, 'deleted': False}
+    schema = {'state': randInt(0,4),
+              'priority': randInt(0,100),
+              'current_seq': randInt(0,10),
+              'current_step': randInt(0,10),
+              'current_exp': randInt(0,10),
+              'executions': executions,
+              'deleted': False}
     return schema
 
 
@@ -268,73 +291,160 @@ def generate_container(ob_blocks):
 
     return schema
 
+# todo add two versions,  link object id to the templates
 
-def generate_inst_package():
+def generate_inst_package(template_list):
+
+    # for on_id in ob_blocks:
+    #     template_name =
 
     schema = {
-        "instrument": "KCWI",
-        "version": 0.1,
-        "modes": ["ifu", "img"],
-        "cameras": [
-            {
-                "name": "BLUE",
-                "type": "spectrograph",
-                "detector": "4kx4k EE2V",
-                "identifier": "CAM1"
-            },
-            {
-                "name": "RED",
-                "type": "spectrograph",
-                "detector": "None",
-                "identifier": "CAM2"
-            }],
-        "templates": {
-            "acquisition": [
-                {"name": "KCWI_ifu_acq_direct",
-                 "version": "0.1"},
-                {"name": "KCWI_ifu_acq_offsetStar",
-                 "version": 0.1}],
-            "science": [
-                {"name": "KCWI_ifu_sci_stare",
-                 "version": "0.1"},
-                {"name": "KCWI_ifu_sci_dither",
-                 "version": 0.1}]
+        "metadata": {
+            "name": "kcwi_instrument_package",
+            "ui_name": "KCWI Instrument Package",
+            "version": "0.1.0",
+            "instrument": "KCWI",
+            "observing_modes": ["imaging", "ifu"]
         },
-        "configuration_parameters": [
-            {"parameter": "CFG.CAM1.GRATING",
-             "ui_string": "Blue Grating",
-             "values": ["BL","BM","BH1","BH2"],
-             "range": None,
-             "type": "dropdown",
-             "required": True},
-            {"parameter": "CFG.CAM1.CWAVE",
-             "ui_string": "Blue Central Wavelength",
-             "values": None,
-             "range": [3500,6500],
-             "type": "continuum",
-             "required": True},
-            {"parameter": "CFG.CAM2.GRATING",
-             "ui_string": "Red Grating",
-             "values": ["RL","RM","RH1","RH2"],
-             "range": None,
-             "type": "dropdown",
-             "required": False},
-            {"parameter": "CFG.CAM2.CWAVE",
-             "ui_string": "Red Central Wavelength",
-             "values": None,
-             "range": [6500,10000],
-             "type": "continuum",
-             "required": False},
-            {"parameter": "CFG.SLICER",
-             "ui_string": "Image Slicer",
-             "values": ["Small", "Medium", "Large"],
-             "range": None,
-             "type": "dropdown",
-             "required": True}]
+        "optical_parameters" : {
+            "field_of_view" : [1200, 1200],
+            "slit_length" : 4
+        },
+        "guider" : {
+            "name" : "Guider",
+            "fov" : [120, 120],
+            "pixel_scale" : 0.17,
+            "pa_offset" : 'null',
+            "read_noise" : 'null',
+            "gain" : 'null',
+            "zero_points" : 'null',
+            "sensitivity" : 'null',
+            "filters" : 'null'
+        },
+        "configurable_elements" : [
+            "inst_cfg_slicer",
+            "inst_cfg_hatch",
+            "inst_cfg_calib",
+            "inst_cfg_polarimeter",
+            "inst_cfg_ifu",
+            "inst_cfg1_filter",
+            "inst_cfg1_grating",
+            "inst_cfg1_blockingfilter",
+            "inst_cfg2_filter",
+            "inst_cfg2_grating",
+            "inst_cfg2_blockingfilter",
+            "inst_ns_mask",
+            "inst_ns_direction",
+            "inst_kmirror_mode",
+            "inst_kmirror_angle",
+            "inst_det1_focus",
+            "inst_det2_focus",
+            "inst_wavelengt1_central",
+            "inst_wavelength1_peak"
+            "inst_wavelength2_central",
+            "inst_wavelength2_peak"
+            "det1_mode_binning",
+            "det1_mode_amp",
+            "det1_mode_read",
+            "det1_mode_gain",
+            "det2_mode_binning",
+            "det2_mode_amp",
+            "det2_mode_read",
+            "det2_mode_gain",
+        ],
+        "pointing_origins" : [
+            "IFU",
+            "REF",
+            "Imaging"
+        ],
+        "template_list": parse_templates_version(template_list),
+        # "common_parameters": ObjectId("61203d3a86574cd1da879135")
+        "event_table" : 'null',
+        "comment" : "A KCWI Instrument Package"
     }
 
     return schema
 
+
+def parse_templates(template_list):
+    schema = {}
+    for template in template_list:
+        # obj_id = bson.objectid.ObjectId(template["_id"])
+        obj_id = str(template["_id"])
+        schema[template["metadata"]["name"]] = obj_id
+
+    return schema
+
+
+def parse_templates_version(template_list):
+    schema = {}
+    for template in template_list:
+        # obj_id = bson.objectid.ObjectId(template["_id"])
+        version = template["metadata"]["version"]
+        schema[template["metadata"]["name"]] = version
+
+    return schema
+
+def generate_observer_collection():
+    n_obs = 15
+
+    keck_id_list = set()
+    for obs in range(0, n_obs):
+        keck_id_list.add(randKeckId())
+
+    for obs_id in keck_id_list:
+        akey = randInt(10000000, 100000000)
+        doc = {'keck_id': obs_id, "api_key": akey}
+        print('doc', doc)
+        _ = coll.insert_one(doc)
+
+    return
+
+
+def generate_common_parameters():
+    schema = {"metadata":
+                  {"name": "kcwi_common_parameters",
+                   "ui_name": "KCWI Common parameters",
+                   "instrument": "KCWI",
+                   "template_type": "common_parameters",
+                   "version": "0.1.1", },
+              "instrument_parameters": {
+                  "inst_cfg_slicer": "slicer1",
+                  "inst_cfg_blockingfilter": "filter1",
+                  "inst_cfg_calib": "Sky",
+                  "inst_cfg_hatch": "open",
+                  "inst_cfg_polarimeter": "Sky",
+                  "inst_cfg_ifu": "Large",
+                  "inst_cfg1_filter": "Large",
+                  "inst_cfg2_filter": "Medium",
+                  "inst_cfg1_grating": "BH3",
+                  "inst_cfg2_grating": "RH3",
+                  "inst_ns_mask": "open",
+                  "inst_ns_direction": 1,
+                  "inst_kmirror_mode": "Tracking",
+                  "inst_kmirror_angle": 122,
+                  "inst_wavelength1_central": 450,
+                  "inst_wavelength2_central": 789,
+                  "inst_wavelength1_peak": 470,
+                  "inst_wavelength2_peak": 800
+              },
+            "detector_parameters": {
+                  "det1_mode_binning": '1x1',
+                  "det2_mode_binning": '1x1',
+                  "det1_mode_amp": 0,
+                  "det2_mode_amp": 5,
+                  "det1_mode_read": 0,
+                  "det2_mode_read": 1,
+                  "det1_mode_gain": 2,
+                  "det2_mode_gain": 5
+            },
+            "tcs_parameters": {
+
+            }
+
+    }
+
+    return schema
 
 def random_dates():
     start_date = datetime.date(2018, 1, 1)
@@ -393,8 +503,8 @@ def generate_semesters(nSem, nLen=5, maxLen=6):
 
 
 def generate_mag(nLen=2):
-    return {'band': spectral_types[random.randint(0, len(spectral_types)-1)],
-            'magnitude': randFloat(nLen)}
+    return {'target_info_band': spectral_types[random.randint(0, len(spectral_types)-1)],
+            'target_info_mag': randFloat(nLen)}
 
 
 def generate_mags(maxMags=2):
@@ -418,7 +528,7 @@ def generate_metadata(maxArr):
     pi_name = randPI()
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
-        'version': 0.1,
+        'version': '0.1.0',
         'priority': randInt(100),
         'ob_type': 'science',
         'pi_id': pis[pi_name],
@@ -474,7 +584,7 @@ def generate_kcwi_science():
     for indx in range(0, n_templates):
         tmp_list = copy.deepcopy(filled_sci_templates)
         filled_template = random.choice(tmp_list)
-        filled_template['template_id'] = f'seq{indx}'
+        filled_template['metadata']['sequence_number'] = indx+1
         schema.append(filled_template)
 
     return schema
@@ -482,7 +592,7 @@ def generate_kcwi_science():
 
 def generate_kcwi_acquisiton(nLen, maxArr):
     acq = random.choice(filled_acq_templates)
-    acq['template_id'] = 'acq0'
+
     return acq
 
 
@@ -521,27 +631,48 @@ def generate_random_executions():
     return random_date
 
 
+
 @remove_none_values_in_dict
-def generate_target():
+def generate_sidereal_target():
     schema = {
-        'name': randString(), 
-        'ra': generate_ra(), 
-        'dec': generate_dec(), 
-        'equinox': 'J2000',
-        'frame': randString(), 
-        'ra_offset': randFloat(), 
-        'dec_offset': randFloat(),
-        'pa': randFloat(),
-        'pm_ra': randFloat(), 
-        'pm_dec': randFloat(), 
-        'epoch': 2000.0,
-        'obstime': '2021-04-22 15:08:04',
-        'magnitude': generate_mags(),
-        'wrap': wrap_str[random.randint(0, 1)],
-        'd_ra': randFloat(), 
-        'd_dec': randFloat(), 
-        'comment': optionalRandComment()
+        "metadata": {
+            "name": "multi_object_target",
+            "ui_name": "Multi-Object Spectroscopy Target",
+            "template_type": "target",
+            "version": "0.1.1"
+        },
+        "parameters": {
+            'target_info_name': randString(),
+            'target_coord_ra': generate_ra(),
+            'target_coord_dec': generate_dec(),
+            'rot_cfg_pa': randFloat(),
+            'target_coord_pm_ra': randFloat(),
+            'target_coord_pm_dec': randFloat(),
+            'target_coord_epoch': '2000',
+            'target_coord_frame': 'FK5',
+            'seq_constraint_obstime':  '2021-04-22 15:08:04',
+            'target_info_magnitude': generate_mag(),
+            'target_info_comment': optionalRandComment()
+        }
     }
+
+    return schema
+
+
+@remove_none_values_in_dict
+def generate_nonsidereal_target():
+    schema = generate_sidereal_target()
+    schema['target_coord_dra'] = randFloat()
+    schema['target_coord_ddec']: randFloat()
+
+    return schema
+
+@remove_none_values_in_dict
+def generate_mos_target():
+    schema = generate_sidereal_target()
+    schema['inst_cfg_mask_name'] = "Science Mask 101"
+    schema['inst_cfg_mask_barcode'] = "H01830928"
+
     return schema
 
 
@@ -549,18 +680,35 @@ def generate_target():
 def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
     schema = {
         'metadata': generate_metadata(maxArr),
-        'target': random.choice([None, generate_target()]),
+        'target': random.choice([None, generate_sidereal_target(),
+                                 generate_nonsidereal_target(),
+                                 generate_mos_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
-        'sequences': generate_science(inst),
+        'observations': generate_science(inst),
         'associations': randArrStr(nLen, maxArr),
         'status': randStatus(),
-        'time_constraints': randTimeConstraint(),
+        'common_parameters': generate_common_parameters(),
         'comment': optionalRandComment()
     }
     if _id:
         schema['_id'] = _id
     return schema
 
+
+def generate_scripts(script_name, stype):
+
+    schema = {
+        'metadata': {
+            'name': script_name,
+            'version': '0.1.0',
+            'instrument': 'KCWI',
+            'script_type': stype,
+            'comment': optionalRandComment()
+        },
+        'script': {'TBD': 'TBD'}
+    }
+
+    return schema
 
 if __name__=='__main__':
     args = utils.parse_args()
@@ -572,7 +720,7 @@ if __name__=='__main__':
     config = utils.read_config(mode)
     print(f"Using {config['dbName']} database")
 
-    # Create ob_blocks collection
+    # # Create ob_blocks collection
     print("...generating OBs")
     coll = papahana_util.config_collection('obCollect', conf=config)
     coll.drop()
@@ -596,9 +744,39 @@ if __name__=='__main__':
         result = coll.insert_one(doc)
         container_list.append(str(result.inserted_id))
 
-    # Create Instrument collection
+    # generate templates - returns [{'_id': ObjectId('622ff5db24d4e9afb8e2872c'), 'metadata': {'name': 'KCWI_ifu_acq_offsetStar'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872d'), 'metadata': {'name': 'KCWI_ifu_acq_direct'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872e'), 'metadata': {'name': 'KCWI_ifu_sci_stare'}},
+    template_list = generate_template.generate_templates()
+    print(template_list)
+
+    # # Create Instrument collection
     print("...generating instrument package")
     coll = papahana_util.config_collection('ipCollect', conf=config)
     coll.drop()
-    ip = generate_inst_package()
+    ip = generate_inst_package(template_list)
     result = coll.insert_one(ip)
+
+    # Create script collection
+    print("...generating scripts")
+    script_names = {'KCWI_ifu_acq_direct': 'acquisition',
+                    'KCWI_ifu_acq_direct': 'acquisition',
+                    'KCWI_ifu_sci_stare': 'science',
+                    'KCWI_ifu_sci_stare': 'science'}
+
+    coll = papahana_util.config_collection('scriptCollect', conf=config)
+    coll.drop()
+    for name, stype in script_names.items():
+        script_schema = generate_scripts(name, stype)
+        result = coll.insert_one(script_schema)
+
+
+    # Create observer collection
+    print("...generating observers")
+
+    coll = papahana_util.config_collection('observerCollect', conf=config)
+    coll.drop()
+    generate_observer_collection()
+
+    # for idx in range(NOBS):
+    #     doc = generate_observer_collection()
+    #     result = coll.insert_one(doc)
+
