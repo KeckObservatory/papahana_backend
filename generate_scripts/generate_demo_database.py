@@ -385,6 +385,7 @@ def parse_templates_version(template_list):
 
     return schema
 
+
 def generate_observer_collection():
     n_obs = 15
 
@@ -393,8 +394,13 @@ def generate_observer_collection():
         keck_id_list.add(randKeckId())
 
     for obs_id in keck_id_list:
+        sem_id_list = []
+        for indx in range(0,randInt(2,10)):
+            sem_id_list.append(randSemId())
+
+        print(sem_id_list)
         akey = randInt(10000000, 100000000)
-        doc = {'keck_id': obs_id, "api_key": akey}
+        doc = {'keck_id': obs_id, "api_key": akey, "associations": sem_id_list}
         print('doc', doc)
         _ = coll.insert_one(doc)
 
@@ -626,7 +632,7 @@ def generate_random_executions():
     random_time = datetime.datetime.now().replace(hour=random.randint(0, 23),
                                                   minute=random.randint(0, 59))
 
-    random_date = f'{(rdate)} {random_time.strftime("%H:%M:%S")}'
+    random_date = f'{rdate} {random_time.strftime("%H:%M:%S")}'
 
     return random_date
 

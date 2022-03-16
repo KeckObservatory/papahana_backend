@@ -134,7 +134,7 @@ def instrument_packages_scripts(instrument, ip_version=None, script_name=None):
             scripts.append(inst_utils.get_by_script_name(script_name,
                                                          script_ver))
         except KeyError:
-            pass
+            continue
 
     return scripts
 
