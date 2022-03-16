@@ -188,21 +188,22 @@ def ob_template_filled(ob_id):
 def ob_templates_get(ob_id):
     """
     Retrieves the list of templates associated with the OB
+    /obsBlocks/template
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: List[Observation]
     """
-    fields = {"_id": 0, "sequences": 1, "acquisition": 1}
+    fields = {"_id": 0, "observations": 1, "acquisition": 1}
     ob_templates = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
     template_list = []
     if "acquisition" in ob_templates:
         template_list.append(ob_templates["acquisition"])
 
-    if "sequences" in ob_templates:
-        for seq in ob_templates["sequences"]:
+    if "observations" in ob_templates:
+        for seq in ob_templates["observations"]:
             template_list.append(seq)
 
     return template_list
