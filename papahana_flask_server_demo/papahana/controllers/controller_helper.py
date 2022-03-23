@@ -347,76 +347,6 @@ def clean_objectid(docs):
     return cln_docs
 
 
-# Observation Block specific
-def calc_exec_time(block):
-    """
-    calculate the total time to execute all observing blocks by exp. time.
-    Excludes any read out time and overheads.
-
-    :param block: The observing Block document.
-    :type block: Dict
-
-    :rtype: int
-    """
-    if "parameters" not in block:
-        return 0
-
-    exp1 = 0
-    exp2 = 0
-    sci_blk = block["parameters"]
-    if sci_blk.keys() >= {"det1_exptime", "det1_nexp"}:
-        if sci_blk['det1_exptime'] and sci_blk['det1_nexp']:
-            exp1 = sci_blk['det1_exptime'] * sci_blk['det1_nexp']
-
-    if sci_blk.keys() >= {"det1_exptime", "det2_exptime",
-                          "det1_nexp", "det2_nexp"}:
-        if sci_blk['det2_exptime'] and sci_blk['det2_nexp']:
-            exp2 = sci_blk['det2_exptime'] * sci_blk['det2_nexp']
-
-    return max(exp1, exp2)
-
-
-def get_templates_by_id(ob, template_id):
-    template_indx, template_type = template_indx_type(template_id)
-    templates = get_templates(ob, template_type, template_indx)
-
-    return template_indx, templates
-
-
-def template_indx_type(template_id):
-    try:
-        template_str = template_id[:3]
-        template_indx = int(template_id[3:])
-    except ValueError:
-        abort(400, f"Invalid template_id: {template_id}")
-    except Exception as err:
-        abort(400, f"Error with template_id: {err}")
-
-    if template_str == 'acq':
-        template_type = 'acquisition'
-    else:
-        template_type = 'sequences'
-
-    return template_indx, template_type
-
-
-def get_templates(ob, template_type, template_indx):
-
-    if template_type not in ob or len(ob[template_type]) <= template_indx:
-        abort(400, f"Invalid template type, index: {template_type}, {template_indx}")
-
-    templates = ob[template_type]
-
-    return templates
-
-
-def write_json(dict_data, output):
-    with open(output, 'w') as fp:
-        json.dump(dict_data, fp)
-
-    fp.close()
-
-
 # Container specific helpers
 def get_ob_list(container_id):
     """
@@ -544,6 +474,9 @@ def check_type(val, key_py_type):
 
     return True
 
+# ---------------------------------
+# Observation Block Specific Utils
+# ---------------------------------
 
 def check_allowed(ob_value, template_parameters):
     allowed_type = template_parameters['option']
@@ -606,6 +539,7 @@ def zero_parameters(params, param_set):
             params[param_name] = 0
 
     return params
+
 
 def get_observable_range():
     return [None, None]
@@ -727,84 +661,3 @@ def restrict2observable(min_ra, max_ra):
         max_ra = observable_range[1]
 
     return min_ra, max_ra
-
-#
-# # ---------------------------------
-# # Instrument Package Specific Utils
-# # ---------------------------------
-# def get_ip_template(template_name, template_ver=None):
-#     """
-#     Get the template by name and optionally template_version
-#     """
-#     if not template_ver:
-#         query = {"metadata.name": template_name}
-#         template_ver = most_recent_version(query, 'templateCollect')
-#
-#     query = {"metadata.name": template_name, "metadata.version": template_ver}
-#     templates = get_by_query(query, 'templateCollect')
-#
-#     if not templates:
-#         return {}
-#
-#     return json_with_objectid(templates[0])
-#
-#
-# def most_recent_version(query, collection):
-#     fields = {'metadata.version': 1}
-#     results = get_fields_by_query(query, fields, collection)
-#     version = '0.0.0'
-#     for result in results:
-#         new_version = result['metadata']['version']
-#         if new_version > version:
-#             version = new_version
-#
-#     return version
-#
-#
-# def get_template_metadata(template_name, template_ver=None):
-#     query = {"metadata.name": template_name}
-#     # query = query = query_by_id(template_name, add_delete=False)
-#     fields = {"metadata": 1, "_id": 0}
-#
-#     template_i = 0
-#     template_version = '0.0.0'
-#     templates = get_fields_by_query(query, fields, 'templateCollect')
-#     # template = get_ip_template(template_name, ip_version=ip_version)
-#
-#     if not templates:
-#         return {}
-#
-#     for indx, template in enumerate(templates):
-#         if template['metadata']['version'] > template_version:
-#             template_version = template['metadata']['version']
-#             template_i = indx
-#
-#     return templates[template_i]
-#
-#
-# def get_template_info(instrument, ip_version, template_name, func):
-#     if not ip_version:
-#         query = {'metadata.instrument': instrument}
-#         ip_version = most_recent_version(query, 'ipCollect')
-#
-#     # get the instrument package,  with references to templates (name, version)
-#     query = {"metadata.instrument": instrument.upper(), "metadata.version": ip_version}
-#     fields = {"template_list": 1, "_id": 0}
-#     package_list = get_fields_by_query(query, fields, 'ipCollect')
-#
-#     if not package_list:
-#         return {}
-#
-#     # only one result for a version
-#     template_info = package_list[0]
-#
-#     info = {}
-#     for tmp_name, tmp_ver in template_info["template_list"].items():
-#         info[tmp_name] = func(tmp_name, tmp_ver)
-#         if template_name and tmp_name == template_name:
-#             return {template_name: info[tmp_name]}
-#
-#     return info
-
-
-

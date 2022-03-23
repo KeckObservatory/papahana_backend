@@ -1,197 +1,75 @@
 #!/usr/bin/python
 # -*- coding: latin-1 -*-
-import yaml
 
-import numpy as np
 import random
 import string
-from itertools import product
-import pdb
 from functools import wraps
-import urllib
 seed = 1984739
 random.seed(seed)
 import datetime
-import argparse
 
 import generate_utils as utils
+import generate_random_utils as random_utils
 import generate_template
 from papahana import util as papahana_util
-
-import bson
-
-
-INST_MAPPING = { 
-                 'DEIMOS': {'DE', 'DF'},
-                 'ESI': {'EI'},
-                 'HIRES': {'HI'},
-                 'KCWI': {'KB', 'KF'}, 
-                 'LRIS': {'LB', 'LR'},
-                 'MOSFIRE': {'MF'},
-                 'OSIRIS': {'OI', 'OS'},
-                 'NIRES': {'NR', 'NI', 'NS'},
-                 'NIRC2': {'N2', 'NC'},
-                }
-
-pis = {
-    "Michael Bluth": 5555,
-    "Lindsay Bluth-Fünke": 7766,
-    "Gob Bluth": 8877,
-    "George Michael Bluth": 8899,
-    "Maeby Fünke": 7799,
-    "Buster Bluth": 8765,
-    "Tobias Fünke": 9998,
-    "George Bluth Sr.": 1144,
-    "Lucille Bluth": 7644,
-}
-
-keck_ids = [
-    5555, 7766, 8877, 8655, 2613, 3342,
-    8899, 7799, 8765, 9998, 1144, 7644
-]
-
-observers = [
-    "Narrator",
-    "Oscar Bluth",
-    "Lucille Austero",
-    "Barry Zuckerkorn",
-    "Kitty Sanchez",
-    "Steve Holt",
-    "Lupe",
-    "Annyong Bluth",
-    "Carl Weathers",
-    "Maggie Lizer",
-    "Stefan Gentles",
-    "Marta Estrella",
-    "Cindi Lightballoon",
-    "John Beard",
-    "Ann Veal",
-    "Wayne Jarvis",
-    "Dr. Fishman",
-    "Stan Sitwell",
-    "Sally Sitwell",
-    "Mort Meyers",
-    "Starla",
-    "Tony Wonder",
-    "Gene Parmesan",
-    "Terry Veal",
-    "Rita Leeds",
-    "Larry Middleman",
-    "Bob Loblaw",
-    "Ron Howard",
-    "DeBrie Bardeaux",
-    "Rebel Alley",
-    "Herbert Love",
-    "Marky Bark",
-    "Argyle Austero",
-    "Paul 'P-Hound' Huan",
-    "Mark Cherry",
-    "Murphy Brown Fünke",
-    "Lottie Dottie Da",
-    "Dusty Radler"
-]
-
-comments = [
-    "Conditions = seeing < 1 arcsecond,  clear",
-    "Observe at midnight",
-    "Observe on the first run of the semester.",
-    "Observing remotely in 2022B",
-    "Calibration Stars",
-    "High Priority",
-]
-
-wrap_str = ['north', 'south']
-
-status = [0, 1, 2, 3, 4]
-
-timeConstraint = [
-    None, ['2021-01-01 08:00:00', '2021-01-01 10:00:00'],
-    ['2021-02-02 09:00:00', '2021-02-03 18:00:00'],
-    ['2021-05-01 08:00:00', '2021-06-01 10:00:00'],
-    ['2021-06-01 08:00:00', '2021-06-07 10:00:00']
-]
-
-spectral_types = ['V', 'R', 'I', 'J', 'H', 'K']
-
-sem_ids = [
-  "2017A_U033",
-  "2017A_U050",
-  "2017B_U042",
-  "2017B_U043",
-  "2018A_U042",
-  "2018A_U043",
-  "2018A_U044",
-  "2018A_U045",
-  "2018B_U016",
-  "2018B_U064",
-  "2019A_N020",
-  "2019A_U123",
-  "2019A_U124",
-  "2019B_U158",
-  "2019B_U159",
-  "2019B_U160",
-  "2020A_N028",
-  "2020A_U169",
-  "2020B_U048",
-  "2020B_U049",
-  "2020B_U082",
-  "2020B_N133",
-  "2021A_U046",
-  "2021A_U073",
-  "2021A_N140",
-  "2021B_U056",
-  "2021B_N057"
-]
+from bson.objectid import ObjectId
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
-filled_sci_templates = [
-    {
-        "metadata": {
-            "name": "KCWI_ifu_sci_stare",
-            "ui_name": "KCWI stare",
-            "instrument": "KCWI",
-            "template_type": "science",
-            "version": "0.1.0",
-            "script": "KCWI_ifu_sci_stare",
-            "sequence_number": 1
+
+def filled_sci_templates(template_list):
+    templates_version = parse_templates_version(template_list)
+
+
+    sci_templates = [
+        {
+            "metadata": {
+                "name": "KCWI_ifu_sci_stare",
+                "ui_name": "KCWI stare",
+                "instrument": "KCWI",
+                "template_type": "science",
+                "version": templates_version["KCWI_ifu_sci_stare"],
+                "script": "KCWI_ifu_sci_stare",
+                "sequence_number": 1
+            },
+            "parameters": {
+                "det1_exp_time": 30,
+                "det1_exp_number": 4,
+                "det2_exp_time": 24,
+                "det2_exp_number": 5
+            }
         },
-        "parameters": {
-            "det1_exp_time": 30,
-            "det1_exp_number": 4,
-            "det2_exp_time": 24,
-            "det2_exp_number": 6
+        {
+            "metadata": {
+                "name": "KCWI_ifu_sci_dither",
+                "ui_name": "KCWI dither",
+                "instrument": "KCWI",
+                "template_type": "science",
+                "version": templates_version["KCWI_ifu_sci_dither"],
+                "script": "KCWI_ifu_sci_dither",
+                "sequence_number": 1
+            },
+            "parameters": {
+                "det1_exp_time": 60.0,
+                "det1_exp_number": 12,
+                "det2_exp_time": 121.0,
+                "det2_exp_number": 6,
+                "seq_dither_number": 4,
+                "seq_dither_pattern": [
+                    {"seq_dither_ra_offset": 0, "seq_dither_dec_offset": 0,
+                     "seq_dither_position": 'T', "seq_dither_guided": True},
+                    {"seq_dither_ra_offset": 5, "seq_dither_dec_offset": 5,
+                     "seq_dither_position": 'S', "seq_dither_guided": False},
+                    {"seq_dither_ra_offset": 0, "seq_dither_dec_offset": 0,
+                     "seq_dither_position": 'T', "seq_dither_guided": True},
+                    {"seq_dither_ra_offset": 5, "seq_dither_dec_offset": 5,
+                     "seq_dither_position": 'S', "seq_dither_guided": False}
+                ]
+            }
         }
-    },
-    {
-        "metadata": {
-            "name": "KCWI_ifu_sci_dither",
-            "ui_name": "KCWI dither",
-            "instrument": "KCWI",
-            "template_type": "science",
-            "version": 0.1,
-            "script": "KCWI_ifu_sci_stare",
-            "sequence_number": 1
-        },
-        "parameters": {
-            "det1_exp_time": 60.0,
-            "det1_exp_number": 2,
-            "det2_exptime": 121.0,
-            "det2_exp_number": 4,
-            "seq_dither_number": 4,
-            "seq_dither_pattern": [
-                {"seq_dither_ra_offset": 0, "seq_dither_dec_offset": 0,
-                 "seq_dither_position": 'T', "seq_dither_guided": True},
-                {"seq_dither_ra_offset": 5, "seq_dither_dec_offset": 5,
-                 "seq_dither_position": 'S', "seq_dither_guided": False},
-                {"seq_dither_ra_offset": 0, "seq_dither_dec_offset": 0,
-                 "seq_dither_position": 'T', "seq_dither_guided": True},
-                {"seq_dither_ra_offset": 5, "seq_dither_dec_offset": 5,
-                 "seq_dither_position": 'S', "seq_dither_guided": False}
-            ]
-        }
-    }
-]
+    ]
+
+    return sci_templates
 
 filled_acq_templates = [{
     "metadata": {
@@ -214,65 +92,25 @@ filled_acq_templates = [{
     }
 }]
 
-containers = ['Army', 'The Alliance of Magicians', 'Tantamount Studios', 'Orange County Prison', 'Milford School', 'Dr. Fünke\'s 100% Natural Good-Time Family-Band Solution']
-NOBS = 100 # number of observation blocks
-randContainerName = lambda: random.choice(containers)
-randOBIds = lambda x=5: [int(x) for x in list(np.random.choice( range(0,NOBS+1), size=random.randint(0, x), replace=False))]
-
-
-semesters = [str(x)+y for x, y in product(range(2019,2022), ['A', 'B'])]
-letters = string.ascii_lowercase
-
-# random generators 
-randString = lambda x=4: ''.join(random.choice(letters) for i in range(x))
-randFloat = lambda mag=10: mag * random.uniform(0,1)
-randBool = lambda: bool(random.choice([0,1, None]))
-randInt = lambda lr=0, ur=100: random.randint(lr, ur)
-randSamllInt = lambda lr=0, ur=10: random.randint(lr, ur)
-randStatusInt = lambda lr=0, ur=4: random.randint(lr, ur)
-randArrStr = lambda x=1, y=1: [randString(x) for _ in range(random.randint(1, y)) ]
-optionalRandString = lambda x=4: random.choice([None, randString(x)])
-optionalRandArrString = lambda x, y=1: random.choice([None, randArrStr(x, y)])
-sampleInst = lambda: random.choice(list(INST_MAPPING.keys()))
-
-randPI = lambda: random.choice(list(pis))
-randObserver = lambda: random.choice(observers)
-randKeckId = lambda: random.choice(keck_ids)
-randSemester = lambda: random.choice(semesters)
-randSemId = lambda: random.choice(sem_ids)
-randPIList = lambda x=1: lambda x=1: list(np.random.choice(list(pis), size=random.randint(1, x), replace=False))
-randObserverList = lambda x=1: list(np.random.choice(observers, size=random.randint(1, x), replace=False))
-randComment = lambda: random.choice(comments)
-optionalRandComment = lambda: random.choice([None, randComment()])
-randSemesterList = lambda x=3: list(np.random.choice(semesters, size=random.randint(0, x), replace=False))
-# randStatus = lambda: random.choice(status)
-rand_kcwi_science = lambda: random.choice(kcwi_science)
-z_fill_number = lambda x, zf=2: str(x).zfill(2)
-raDeg = z_fill_number(randInt(0, 360))
-arcMinutes = z_fill_number(randInt(0, 60))
-arcSeconds = z_fill_number(randInt(0, 60))
-
-decDeg = z_fill_number(randInt(0, 90))
-elevation = random.choice(['+', '-'])
-
 
 def randStatus():
     executions = []
-    for x in range(0, randInt(0,6)):
+    for x in range(0, random_utils.randInt(0,6)):
         executions.append(generate_random_executions())
 
-    schema = {'state': randInt(0,4),
-              'priority': randInt(0,100),
-              'current_seq': randInt(0,10),
-              'current_step': randInt(0,10),
-              'current_exp': randInt(0,10),
+    schema = {'state': random_utils.randInt(0,4),
+              'priority': random_utils.randInt(0,100),
+              'current_seq': random_utils.randInt(0, 6),
+              'current_step': random_utils.randInt(0, 4),
+              'current_exp_det1': random_utils.randInt(0, 4),
+              'current_exp_det2': random_utils.randInt(0, 4),
               'executions': executions,
               'deleted': False}
     return schema
 
 
 def randTimeConstraint():
-    return random.choice(timeConstraint)
+    return random.choice(random_utils.timeConstraint)
 
 
 def generate_container(ob_blocks):
@@ -283,16 +121,16 @@ def generate_container(ob_blocks):
         ob_set.update({ob_blocks[ob_val]})
 
     schema = {
-        "sem_id": randSemId(),
-        "name": randContainerName(),
+        "sem_id": random_utils.randSemId(),
+        "name": random_utils.randContainerName(),
         "observation_blocks": list(ob_set),
-        "comment": randComment()
+        "comment": random_utils.randComment()
     }
 
     return schema
 
-# todo add two versions,  link object id to the templates
 
+# todo add two versions
 def generate_inst_package(template_list):
 
     # for on_id in ob_blocks:
@@ -369,7 +207,6 @@ def generate_inst_package(template_list):
 def parse_templates(template_list):
     schema = {}
     for template in template_list:
-        # obj_id = bson.objectid.ObjectId(template["_id"])
         obj_id = str(template["_id"])
         schema[template["metadata"]["name"]] = obj_id
 
@@ -379,30 +216,42 @@ def parse_templates(template_list):
 def parse_templates_version(template_list):
     schema = {}
     for template in template_list:
-        # obj_id = bson.objectid.ObjectId(template["_id"])
         version = template["metadata"]["version"]
         schema[template["metadata"]["name"]] = version
 
     return schema
 
 
-def generate_observer_collection():
+
+def generate_observer_collection(coll):
     n_obs = 15
 
     keck_id_list = set()
     for obs in range(0, n_obs):
-        keck_id_list.add(randKeckId())
+        keck_id_list.add(random_utils.randKeckId())
 
     for obs_id in keck_id_list:
         sem_id_list = []
-        for indx in range(0,randInt(2,10)):
-            sem_id_list.append(randSemId())
+        for indx in range(0,random_utils.randInt(2,10)):
+            sem_id_list.append(random_utils.randSemId())
 
         print(sem_id_list)
-        akey = randInt(10000000, 100000000)
+        akey = random_utils.randInt(10000000, 100000000)
         doc = {'keck_id': obs_id, "api_key": akey, "associations": sem_id_list}
-        print('doc', doc)
         _ = coll.insert_one(doc)
+
+    # create admin observer
+    coll = papahana_util.config_collection('obCollect', conf=config)
+
+    fields = {'metadata.sem_id': 1, '_id': 0}
+    sem_ids = list(coll.find({}, fields))
+    assoc_list = []
+    for result in sem_ids:
+        assoc_list.append(result['metadata']['sem_id'])
+
+    coll = papahana_util.config_collection('observerCollect', conf=config)
+    doc = {'keck_id': 0000, "api_key": akey, "associations": assoc_list}
+    _ = coll.insert_one(doc)
 
     return
 
@@ -465,17 +314,17 @@ def random_dates():
 
 
 def generate_ra():
-    raDeg = z_fill_number(randInt(0, 24))
-    arcMinutes = z_fill_number(randInt(0, 60))
-    arcSeconds = z_fill_number(randInt(0, 60))
+    raDeg = random_utils.z_fill_number(random_utils.randInt(0, 24))
+    arcMinutes = random_utils.z_fill_number(random_utils.randInt(0, 60))
+    arcSeconds = random_utils.z_fill_number(random_utils.randInt(0, 60))
     ra = ":".join([raDeg, arcMinutes, arcSeconds])
     return ra
 
 
 def generate_dec():
-    arcMinutes = z_fill_number(randInt(0, 60))
-    arcSeconds = z_fill_number(randInt(0, 60))
-    decDeg = z_fill_number(randInt(0, 90))
+    arcMinutes = random_utils.z_fill_number(random_utils.randInt(0, 60))
+    arcSeconds = random_utils.z_fill_number(random_utils.randInt(0, 60))
+    decDeg = random_utils.z_fill_number(random_utils.randInt(0, 90))
     elevation = random.choice(['+', '-'])
     dec = elevation+":".join([decDeg, arcMinutes, arcSeconds])
     return dec
@@ -499,48 +348,48 @@ def remove_none_values_in_dict(method):
 def generate_semester(sem, nLen, maxLen=6):
     return {'_id': sem,
             'semester': sem,
-            'obs_id': randObserverList(maxLen), 
-            'comment': optionalRandComment()
+            'obs_id': random_utils.randObserverList(maxLen),
+            'comment': random_utils.optionalRandComment()
            }
 
 
 def generate_semesters(nSem, nLen=5, maxLen=6):
-    return [ generate_semester(sem, nLen, maxLen) for sem in semesters[0:nSem] ]
+    return [generate_semester(sem, nLen, maxLen) for sem in random_utils.semesters[0:nSem]]
 
 
 def generate_mag(nLen=2):
-    return {'target_info_band': spectral_types[random.randint(0, len(spectral_types)-1)],
-            'target_info_mag': randFloat(nLen)}
+    return {'target_info_band': random_utils.spectral_types[random.randint(0, len(random_utils.spectral_types)-1)],
+            'target_info_mag': random_utils.randFloat(nLen)}
 
 
 def generate_mags(maxMags=2):
-    return [ generate_mag() for _ in range( random.randint( 1, maxMags ) ) ]
+    return [ generate_mag() for _ in range(random.randint(1, maxMags)) ]
 
 
 @remove_none_values_in_dict
 def generate_observation(nLen, maxArr):
     '''not used atm'''
     schema = {
-        'instrument': sampleInst(),
-        'exposure_sequences': randArrStr(nLen, maxArr),
-        'associations': randArrStr(nLen, maxArr),
-        'comment': optionalRandComment()
+        'instrument': random_utils.sampleInst(),
+        'exposure_sequences': random_utils.randArrStr(nLen, maxArr),
+        'associations': random_utils.randArrStr(nLen, maxArr),
+        'comment': random_utils.optionalRandComment()
     }
     return schema
 
 
 @remove_none_values_in_dict
 def generate_metadata(maxArr):
-    pi_name = randPI()
+    pi_name = random_utils.randPI()
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
         'version': '0.1.0',
-        'priority': randInt(100),
+        'priority': random_utils.randInt(100),
         'ob_type': 'science',
-        'pi_id': pis[pi_name],
-        'sem_id': str(randSemId()),
+        'pi_id': random_utils.pis[pi_name],
+        'sem_id': str(random_utils.randSemId()),
         'instrument': 'KCWI',
-        'comment': optionalRandComment()
+        'comment': random_utils.optionalRandComment()
     }
     return schema
 
@@ -549,10 +398,10 @@ def generate_metadata(maxArr):
 def generate_program(container_list):
     observers = []
     for i in range(0, random.randint(0, 9)):
-        pi_name = randPI()
-        observers.append(pis[pi_name])
+        pi_name = random_utils.randPI()
+        observers.append(random_utils.pis[pi_name])
 
-    pi_name = str(randPI())
+    pi_name = str(random_utils.randPI())
     while pi_name in observers:
         observers.remove(pi_name)
 
@@ -564,9 +413,9 @@ def generate_program(container_list):
 
     schema = {
         'name': 'Program #' + str(random.randint(0, 99)),
-        'sem_id': str(randSemId()),
+        'sem_id': str(random_utils.randSemId()),
         'container_list': list(ob_set),
-        'comment': optionalRandComment()
+        'comment': random_utils.optionalRandComment()
     }
     return schema
 
@@ -582,13 +431,14 @@ def generate_dither():
     return schema
 
 
-def generate_kcwi_science():
+def generate_kcwi_science(template_list):
     import copy
 
     schema = []
     n_templates = random.randint(0, 5)
     for indx in range(0, n_templates):
-        tmp_list = copy.deepcopy(filled_sci_templates)
+        filed_sci = filled_sci_templates(template_list)
+        tmp_list = copy.deepcopy(filed_sci)
         filled_template = random.choice(tmp_list)
         filled_template['metadata']['sequence_number'] = indx+1
         schema.append(filled_template)
@@ -602,27 +452,20 @@ def generate_kcwi_acquisiton(nLen, maxArr):
     return acq
 
 
-def generate_science(inst='KCWI'):
-    if inst=='KCWI':
-        schema = generate_kcwi_science()
-    else:
-        schema = generate_kcwi_science() # fill this in later
-    return schema
-
 
 def generate_acquisition(nLen, maxArr, inst='KCWI'):
     if inst=='KCWI':
         schema = generate_kcwi_acquisiton(nLen, maxArr)
     else:
         schema = {
-            'instrument_setup': randString(),
-            'acquisition_method': randString(),
-            'guider_selection': optionalRandString(),
-            'ao_modes': optionalRandArrString(nLen, maxArr),
-            'offset_stars': optionalRandArrString(nLen, maxArr),
-            'slitmasks': optionalRandArrString(nLen, maxArr),
-            'position_angles': optionalRandArrString(nLen, maxArr),
-            'comment': optionalRandComment()
+            'instrument_setup': random_utils.randString(),
+            'acquisition_method': random_utils.randString(),
+            'guider_selection': random_utils.optionalRandString(),
+            'ao_modes': random_utils.optionalRandArrString(nLen, maxArr),
+            'offset_stars': random_utils.optionalRandArrString(nLen, maxArr),
+            'slitmasks': random_utils.optionalRandArrString(nLen, maxArr),
+            'position_angles': random_utils.optionalRandArrString(nLen, maxArr),
+            'comment': random_utils.optionalRandComment()
         }
     return schema
 
@@ -648,17 +491,17 @@ def generate_sidereal_target():
             "version": "0.1.1"
         },
         "parameters": {
-            'target_info_name': randString(),
+            'target_info_name': random_utils.randString(),
             'target_coord_ra': generate_ra(),
             'target_coord_dec': generate_dec(),
-            'rot_cfg_pa': randFloat(),
-            'target_coord_pm_ra': randFloat(),
-            'target_coord_pm_dec': randFloat(),
+            'rot_cfg_pa': random_utils.randFloat(),
+            'target_coord_pm_ra': random_utils.randFloat(),
+            'target_coord_pm_dec': random_utils.randFloat(),
             'target_coord_epoch': '2000',
             'target_coord_frame': 'FK5',
             'seq_constraint_obstime':  '2021-04-22 15:08:04',
             'target_info_magnitude': generate_mag(),
-            'target_info_comment': optionalRandComment()
+            'target_info_comment': random_utils.optionalRandComment()
         }
     }
 
@@ -668,8 +511,8 @@ def generate_sidereal_target():
 @remove_none_values_in_dict
 def generate_nonsidereal_target():
     schema = generate_sidereal_target()
-    schema['target_coord_dra'] = randFloat()
-    schema['target_coord_ddec']: randFloat()
+    schema['target_coord_dra'] = random_utils.randFloat()
+    schema['target_coord_ddec']: random_utils.randFloat()
 
     return schema
 
@@ -683,18 +526,18 @@ def generate_mos_target():
 
 
 @remove_none_values_in_dict
-def generate_observation_block(nLen, maxArr, inst='KCWI', _id=None):
+def generate_observation_block(nLen, maxArr, template_list, inst='KCWI', _id=None):
     schema = {
         'metadata': generate_metadata(maxArr),
         'target': random.choice([None, generate_sidereal_target(),
                                  generate_nonsidereal_target(),
                                  generate_mos_target()]),
         'acquisition': generate_acquisition(nLen, maxArr, inst),
-        'observations': generate_science(inst),
-        'associations': randArrStr(nLen, maxArr),
+        'observations': generate_kcwi_science(template_list),
+        'associations': random_utils.randArrStr(nLen, maxArr),
         'status': randStatus(),
         'common_parameters': generate_common_parameters(),
-        'comment': optionalRandComment()
+        'comment': random_utils.optionalRandComment()
     }
     if _id:
         schema['_id'] = _id
@@ -709,12 +552,75 @@ def generate_scripts(script_name, stype):
             'version': '0.1.0',
             'instrument': 'KCWI',
             'script_type': stype,
-            'comment': optionalRandComment()
+            'comment': random_utils.optionalRandComment()
         },
         'script': {'TBD': 'TBD'}
     }
 
     return schema
+
+
+def make_status_realistic(ob):
+    coll = papahana_util.config_collection('obCollect', conf=config)
+    fields = {'observations.metadata.sequence_number': 1}
+
+    ob_info = list(coll.find({"_id": ObjectId(ob)}, fields))
+    # if ob_info:
+    #     ob_info = ob_info[0]
+    print("ob info", ob_info)
+
+    for ob_seq in ob_info:
+        print("onseq", ob_seq)
+        oid = ob_seq['_id']
+        seq_n = 0
+        for seq in ob_seq['observations']:
+            print("seq", seq)
+            cur_n = seq['metadata']['sequence_number']
+            if cur_n > seq_n:
+                seq_n = cur_n
+
+        current_seq = random_utils.randInt(0,seq_n)
+        coll.update_one({'_id': oid}, {'$set': {'status.current_seq': current_seq}})
+
+        fields = {'observations': 1}
+        observations = list(coll.find({"_id": ObjectId(ob)}, fields))
+        if observations:
+            observations = observations[0]
+
+        # update the step, exp_n to match the sequence
+        n_steps = 0
+        n_exp_det1 = 0
+        n_exp_det2 = 0
+        for obs in observations['observations']:
+
+            cur_n = obs['metadata']['sequence_number']
+            if cur_n == current_seq:
+                try:
+                    n_exp_det1 = obs['parameters']['det1_exp_number']
+                except:
+                    pass
+
+                if 'det2_exp_number' in obs['parameters']:
+                    n_exp_det2 = obs['parameters']['det2_exp_number']
+
+
+                if 'seq_dither_number' in obs['parameters']:
+                    n_steps = obs['parameters']['seq_dither_number']
+
+                break
+
+        # zero based
+        current_step = random_utils.randInt(0, max(n_steps-1, 0))
+        current_exp_det1 = random_utils.randInt(0, max(n_exp_det1-1, 0))
+        current_exp_det2 = random_utils.randInt(0, max(n_exp_det2-1, 0))
+
+        coll.update_one({'_id': oid},
+                        {'$set': {'status.current_step': current_step}})
+        coll.update_one({'_id': oid},
+                        {'$set': {'status.current_exp_det1': current_exp_det1}})
+        coll.update_one({'_id': oid},
+                        {'$set': {'status.current_exp_det2': current_exp_det2}})
+
 
 if __name__=='__main__':
     args = utils.parse_args()
@@ -726,6 +632,11 @@ if __name__=='__main__':
     config = utils.read_config(mode)
     print(f"Using {config['dbName']} database")
 
+
+    # generate templates - returns [{'_id': ObjectId('622ff5db24d4e9afb8e2872c'), ..]
+    template_list = generate_template.generate_templates()
+    print(template_list)
+
     # # Create ob_blocks collection
     print("...generating OBs")
     coll = papahana_util.config_collection('obCollect', conf=config)
@@ -734,10 +645,13 @@ if __name__=='__main__':
     maxArr = 5
     inst = 'KCWI'
     ob_blocks = []
-    for idx in range(NOBS):
-        doc = generate_observation_block(nLen, maxArr, inst)
+    for idx in range(random_utils.NOBS):
+        doc = generate_observation_block(nLen, maxArr, template_list, inst)
         result = coll.insert_one(doc)
         ob_blocks.append(str(result.inserted_id))
+
+    for ob in ob_blocks:
+        make_status_realistic(ob)
 
     # Create containers collection
     print("...generating containers")
@@ -750,9 +664,9 @@ if __name__=='__main__':
         result = coll.insert_one(doc)
         container_list.append(str(result.inserted_id))
 
-    # generate templates - returns [{'_id': ObjectId('622ff5db24d4e9afb8e2872c'), 'metadata': {'name': 'KCWI_ifu_acq_offsetStar'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872d'), 'metadata': {'name': 'KCWI_ifu_acq_direct'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872e'), 'metadata': {'name': 'KCWI_ifu_sci_stare'}},
-    template_list = generate_template.generate_templates()
-    print(template_list)
+    # # generate templates - returns [{'_id': ObjectId('622ff5db24d4e9afb8e2872c'), 'metadata': {'name': 'KCWI_ifu_acq_offsetStar'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872d'), 'metadata': {'name': 'KCWI_ifu_acq_direct'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872e'), 'metadata': {'name': 'KCWI_ifu_sci_stare'}},
+    # template_list = generate_template.generate_templates()
+    # print(template_list)
 
     # # Create Instrument collection
     print("...generating instrument package")
@@ -780,7 +694,7 @@ if __name__=='__main__':
 
     coll = papahana_util.config_collection('observerCollect', conf=config)
     coll.drop()
-    generate_observer_collection()
+    generate_observer_collection(coll)
 
     # for idx in range(NOBS):
     #     doc = generate_observer_collection()

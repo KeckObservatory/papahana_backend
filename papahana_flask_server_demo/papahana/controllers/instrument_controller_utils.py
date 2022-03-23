@@ -36,10 +36,6 @@ def get_template_metadata(template_name, template_ver=None):
 
     return utils.json_with_objectid(metadata[0])
 
-#
-# def get_scripts(script_name, ip_version=None):
-#     get_template_metadata()
-
 
 def get_template_info(instrument, ip_version, template_name, func):
     if not ip_version:
@@ -54,14 +50,18 @@ def get_template_info(instrument, ip_version, template_name, func):
     if not package_list:
         return {}
 
+    # if template_name:
+    #     template_name = template_name.lower()
+
     # only one result for a version
     template_info = package_list[0]
 
     info = {}
     for tmp_name, tmp_ver in template_info["template_list"].items():
-        info[tmp_name] = func(tmp_name, tmp_ver)
-        if template_name and tmp_name == template_name:
-            return {template_name: info[tmp_name]}
+        if not template_name:
+            info[tmp_name] = func(tmp_name, tmp_ver)
+        elif tmp_name == template_name:
+            return {template_name: func(tmp_name, tmp_ver)}
 
     return info
 

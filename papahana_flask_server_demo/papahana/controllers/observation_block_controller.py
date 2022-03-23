@@ -5,6 +5,7 @@ import json
 import pandas
 
 from papahana.controllers import controller_helper as utils
+from papahana.controllers import observation_block_controller_utils as ob_utils
 
 from papahana.models.body import Body  
 from papahana.models.body1 import Body1  
@@ -111,33 +112,50 @@ def ob_executions(ob_id):
     return ob["status"]["executions"]
 
 
-#TODO should this only be the remaining execution time
 def ob_execution_time(ob_id):
     """
-    Calculates the execution time.
+    Calculates the execution time.  Only uncompleted sequence steps are
+    used in the calculation.  If the OB is Aborted or Complete,  it will
+    return 0.
+        /obsBlocks/executionTime
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: float
     """
-    fields = {"sequences.parameters": 1, "_id": 0}
-    ob_seq = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    fields = {"observations": 1, "_id": 0, "status": 1}
+    ob_info = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
-    if not ob_seq or 'sequences' not in ob_seq:
-        return 0
+    if not ob_info or 'observations' not in ob_info:
+        return 0.0
 
-    total_tm = 0
-    for block in ob_seq['sequences']:
-        total_tm += utils.calc_exec_time(block)
+    # The OB either has a state of Complete=3 or aborted=4.
+    if ob_info['status']['state'] >= 3:
+        return 0.0
+
+    # take into account what sequences have been completed
+    current_seq = ob_info['status']['current_seq']
+
+    total_tm = 0.0
+    for obs in ob_info['observations']:
+        ob_seq = obs['metadata']['sequence_number']
+
+        if ob_seq >= current_seq:
+            # takes into account the step and exposure number
+            total_tm += ob_utils.calc_dither_time(obs)
+
+    # return time in minutes
+    total_tm /= 60.0
 
     return total_tm
 
 
-#TODO this is only retrieving the OB
+#TODO this is only retrieving the OB -- does it need more?
 def ob_export(ob_id):
     """
     Exports an OB in human-readable format. 
+        /obsBlocks/export
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -147,9 +165,10 @@ def ob_export(ob_id):
     return utils.get_by_id(ob_id, 'obCollect')
 
 
-def ob_template_filled(ob_id):
+def ob_sequence_filled(ob_id):
     """
     Verify that the required parameters have been filled in.
+        /obsBlocks/completelyFilledIn
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -157,15 +176,15 @@ def ob_template_filled(ob_id):
     :rtype: bool
     """
     fields = {"parameters": 1, "_id": 0}
-    templates = ob_templates_get(ob_id)
+    observations = ob_sequences_get(ob_id)
 
-    for filled in templates:
+    for filled in observations:
         if filled.keys() < {"metadata", "parameters"}:
             abort(422, "The Observation Block Template is missing the keys: "
                        "metadata or parameters.")
 
         metadata = filled["metadata"]
-        if metadata.keys() < {"name", "ui_name", "instrument", "template_type",
+        if metadata.keys() < {"name", "ui_name", "instrument", "type",
                               "version", "script"}:
             abort(422, "The Observation Block Template is missing one"
                        "of the metadata keys.")
@@ -185,10 +204,10 @@ def ob_template_filled(ob_id):
     return True
 
 
-def ob_templates_get(ob_id):
+def ob_sequences_get(ob_id):
     """
-    Retrieves the list of templates associated with the OB
-    /obsBlocks/template
+    Retrieves the list of sequences associated with the OB
+        /obsBlocks/sequences
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -196,127 +215,140 @@ def ob_templates_get(ob_id):
     :rtype: List[Observation]
     """
     fields = {"_id": 0, "observations": 1, "acquisition": 1}
-    ob_templates = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    ob_sequences = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
-    template_list = []
-    if "acquisition" in ob_templates:
-        template_list.append(ob_templates["acquisition"])
+    sequence_list = []
+    if "acquisition" in ob_sequences:
+        sequence_list.append(ob_sequences["acquisition"])
 
-    if "observations" in ob_templates:
-        for seq in ob_templates["observations"]:
-            template_list.append(seq)
+    if "observations" in ob_sequences:
+        for seq in ob_sequences["observations"]:
+            sequence_list.append(seq)
 
-    return template_list
+    return sequence_list
 
 
-def ob_template_id_get(ob_id, template_id):
+def ob_sequence_id_get(ob_id, sequence_number):
     """
-    Retrieves the specified template within the OB
+    Retrieves the specified sequence within the OB
+        /obsBlocks/sequence/id
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index of template within the OB, seq0, acq0.
-    :type template_id: str
+    :param sequence_number: index of template within the OB, seq0, acq0.
+    :type sequence_number: str
 
     :rtype: Template
     """
-    ob = ob_get(ob_id)
-    template_indx, template_type = utils.template_indx_type(template_id)
-    templates = utils.get_templates(ob, template_type, template_indx)
+    fields = {"_id": 0, "observations": 1, "acquisition": 1}
+    ob_sequences = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
-    if type(templates) is not list:
-        return ob[template_type]
-    else:
-        return templates[template_indx]
+    sequence = ob_utils.get_sequence(ob_sequences, sequence_number)
+
+    return sequence
 
 
-def ob_template_id_put(body, ob_id, template_id):
+def ob_sequence_id_put(body, ob_id, sequence_number):
     """
     Updates the specified template within the OB
+        /obsBlocks/sequence/id
 
     :param body:
     :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index and type of template within the OB.
-    :type template_id: str
+    :param sequence_number: index and type of template within the OB.
+    :type sequence_number: str
 
     :rtype: None
     """
     ob = ob_get(ob_id)
-    template_indx, template_type = utils.template_indx_type(template_id)
-    templates = utils.get_templates(ob, template_type, template_indx)
+    observations = ob_utils.get_sequence(ob, sequence_number, return_all=True)
 
-    if type(templates) is list:
-        body['template_index'] = template_id
-        templates[template_indx] = body
+    if not observations:
+        return
+
+    # observations will be a list,  and acquisition is not
+    if type(observations) is list:
+        body['metadata']['sequence_number'] = sequence_number
+
+        obs_type = 'observations'
+        obs_indx = 0
+        for indx, obs in enumerate(observations):
+            if obs['metadata']['sequence_number'] == sequence_number:
+                obs_indx = indx
+                break
+
+        observations[obs_indx] = body
     else:
-        templates = body
+        obs_type = 'acquisition'
+        observations = body
 
-    new_vals = {template_type: templates}
+    new_vals = {obs_type: observations}
     utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
+#TODO COME BACK -- nothing below here updated 20220322
+
 #TODO open question -- currently does not allow deleting the last observation.
-def ob_template_id_delete(ob_id, template_id):
+def ob_sequence_id_delete(ob_id, sequence_number):
     """
     Removes the specified template within the OB
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index and type of template within the OB.
-    :type template_id: str
+    :param sequence_number: index and type of template within the OB.
+    :type sequence_number: str
 
     :rtype: None
     """
     ob = ob_get(ob_id)
-    template_indx, template_type = utils.template_indx_type(template_id)
-    templates = utils.get_templates(ob, template_type, template_indx)
+    observations = utils.get_sequence(ob, sequence_number)
 
-    if template_type not in ob:
+    if obs_type not in ob:
         return
 
     # this is assumed to be an acquisition
-    if type(templates) is not list:
-        del ob[template_type]
+    if type(observations) is not list:
+        del ob[obs_type]
     else:
-        n_templates = len(templates)
-        if n_templates <= 1:
+        n_obs = len(observations)
+        if n_obs <= 1:
             abort(400, "Not allowed to delete the last observation template.")
-        elif n_templates < template_indx:
+        elif n_obs < obs_indx:
             return
-        del templates[template_indx]
+        del observations[obs_indx]
 
-        for cnt in range(0, len(templates)):
-            templates[cnt]['template_id'] = f'{template_type[:3]}{cnt}'
+        for cnt in range(0, len(observations)):
+            observations[cnt]['sequence_number'] = f'{obs_type[:3]}{cnt}'
 
-        ob[template_type] = templates
+        ob[obs_type] = observations
 
     utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
 
 
 #TODO come back to types other then json
 #TODO think through cleanup
-def ob_template_id_file_get(ob_id, template_id, file_parameter):
+def ob_sequence_id_file_get(ob_id, sequence_number, file_parameter):
     """
     Returns the specified template within the OB as a file
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index and type of template within the OB.
-    :type template_id: str
+    :param sequence_number: index and type of template within the OB.
+    :type sequence_number: str
     :param file_parameter: file paramter description here
     :type file_parameter: str
 
     :rtype: file
     """
-    template = ob_template_id_get(ob_id, template_id)
+    template = ob_sequence_id_get(ob_id, sequence_number)
     docs = pandas.DataFrame(template)
     filename = f"{ob_id}.{file_parameter}"
     output = f"{OUT_DIR}/{filename}"
 
     if file_parameter == 'json':
-        utils.write_json(template, output)
+        ob_utils.write_json(template, output)
     else:
         file_writer = {'json': docs.to_json, 'csv': docs.to_csv,
                        'html': docs.to_html, 'txt': docs.to_string}
@@ -327,14 +359,15 @@ def ob_template_id_file_get(ob_id, template_id, file_parameter):
 
 
 #TODO currently only working with JSON
-def ob_template_id_file_put(body, ob_id, template_id, file_parameter):
+def ob_sequence_id_file_put(body, ob_id, sequence_number, file_parameter):
     """
     Updates the specified template within the OB
+        /obsBlocks/sequence/{sequence_number}/{file_parameter}
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index and type of template within the OB.
-    :type template_id: str
+    :param sequence_number: index and type of template within the OB.
+    :type sequence_number: str
     :param file_parameter: file parameter description here
     :type file_parameter: str
 
@@ -342,83 +375,85 @@ def ob_template_id_file_put(body, ob_id, template_id, file_parameter):
     """
     json_data = json.loads(body.decode('ascii'))
 
-    ob_template_id_put(json_data, ob_id, template_id)
+    ob_sequence_id_put(json_data, ob_id, sequence_number)
 
 
-def ob_template_duplicate(ob_id, template_id):
+def ob_sequence_duplicate(ob_id, sequence_number):
     """
     Generate a new copy of the template and add it to the list of templates in
     the OB.
+        /obsBlocks/sequence/duplicate/{sequence_number}
 
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_id: index and type of template within the OB.
-    :type template_id: str
+    :param sequence_number: index and type of template within the OB.
+    :type sequence_number: str
 
     :rtype: Observation
     """
-    if 'seq' not in template_id:
-        abort(400, f'Invalid template_id: {template_id}, currently '
-                   f'duplicating acquisition templates is NOT supported.')
+    if sequence_number == 0:
+        abort(400, f'Invalid sequence_number: {sequence_number}, currently '
+                   f'duplicating acquisition sequence is NOT supported.')
 
     ob = ob_get(ob_id)
 
-    template_indx, templates = utils.get_templates_by_id(ob, template_id)
+    # TODO return the template number
+    observation = ob_utils.get_sequence(ob, sequence_number)
 
-    new_template = deepcopy(templates[template_indx])
+    new_template = deepcopy(observation)
 
     #todo this isn't right anymore
-    new_template['template_index'] = f'seq{len(templates)}'
+    new_sequence['template_index'] = f'seq{len(observations)}'
 
-    templates.append(new_template)
-    utils.update_doc(utils.query_by_id(ob_id), {"sequences": templates},
+    observations.append(new_sequence)
+    utils.update_doc(utils.query_by_id(ob_id), {"sequences": observations},
                      'obCollect')
 
-    return new_template
+    return new_sequence
 
 
-def ob_template_post(body, ob_id, template_type):
+def ob_sequence_post(body, ob_id, obs_type):
     """
-    Creates the list of templates associated with the OB
+    Creates the list of observations associated with the OB
 
     :param body:
     :type body: list or dict
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_type: A string to indicate the type of template,
+    :param obs_type: A string to indicate the type of template,
                           (acquisition, science, engineering, calibration)
-    :type template_type: str
+    :type obs_type: str
 
     :rtype: None
     """
     if type(body) is not list:
         body = [body]
 
-    new_vals = {template_type: body}
+    new_vals = {obs_type: body}
 
     utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
-def ob_template_put(body, ob_id, template_type):
+def ob_sequence_put(body, ob_id, obs_type):
     """
-    Updates the list of templates associated with the OB
+    Updates the list of observations associated with the OB
 
     :param body:
     :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
-    :param template_type: A string to indicate the type of template,
+    :param obs_type: A string to indicate the type of template,
                           (acquisition, science, engineering, calibration)
-    :type template_type: str
+    :type obs_type: str
 
     :rtype: None
     """
     if type(body) is list:
         for val in body:
-            new_vals = {template_type: val}
+            new_vals = {obs_type: val}
             utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
     else:
-        new_vals = {template_type: body}
+        new_vals = {obs_type: body}
         utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
@@ -434,7 +469,7 @@ def ob_time_constraint_get(ob_id):
     fields = {"time_constraints": 1}
     results = utils.get_fields_by_id(ob_id, fields, 'obCollect')
     if not results:
-        abort(404, f'Observation block id not found')
+        abort(422, f'Observation block id not found')
 
     if 'time_constraints' not in results:
         return []
@@ -506,7 +541,7 @@ def ob_schedule_get(ob_id):
     return 'Need schedule information in db'
 
 
-def ob_template_supplement(ob_id):
+def ob_sequence_supplement(ob_id):
     """
     Retrieves list of files.
 

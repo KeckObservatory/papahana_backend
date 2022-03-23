@@ -36,15 +36,13 @@ def sem_id_get(obs_id):
     return semid_list
 
 
-def sem_id_proposal_get(sem_id, obs_id):
+def sem_id_proposal_get(sem_id):
     """
     retrieves the proposal associated with the program.
     /semesterIds/{sem_id}/proposal
 
     :param sem_id: semester id
     :type sem_id: str
-    :param obs_id: observer id
-    :type obs_id: int
 
     :rtype: file
     """
@@ -74,19 +72,17 @@ def sem_id_semester_get(semester, obs_id):
     return semester_list
 
 
-def sem_id_ob_get(sem_id, obs_id):
+def sem_id_ob_get(sem_id):
     """
     Retrieves the ob_blocks for a sem_id
-
+        /semesterIds/{sem_id}/ob
     :param sem_id: semester id
     :type sem_id: str
-    :param obs_id: observer id
-    :type obs_id: int
 
     :rtype: List[ObservationBlock]
     """
-    if not utils.obs_id_associated(sem_id, obs_id):
-        return []
+    # if not utils.obs_id_associated(sem_id, obs_id):
+    #     return []
 
     query = {"metadata.sem_id": sem_id}
     ob_blocks = utils.get_by_query(query, 'obCollect')
@@ -94,7 +90,7 @@ def sem_id_ob_get(sem_id, obs_id):
     return utils.list_with_objectid(ob_blocks)
 
 
-def sem_id_containers_get(sem_id, obs_id):
+def sem_id_containers_get(sem_id):
     """
     Retrieves all containers associated with a program
     /semesterIds/{sem_id}/containers
@@ -108,8 +104,8 @@ def sem_id_containers_get(sem_id, obs_id):
 
     :rtype: List[Container]
     """
-    if not utils.obs_id_associated(sem_id, obs_id):
-        return []
+    # if not utils.obs_id_associated(sem_id, obs_id):
+    #     return []
 
     query = {"sem_id": sem_id}
     containers = utils.get_by_query(query, 'containerCollect')
@@ -117,18 +113,16 @@ def sem_id_containers_get(sem_id, obs_id):
     return utils.list_with_objectid(containers)
 
 
-def sem_id_targets_get(sem_id, obs_id):
+def sem_id_targets_get(sem_id):
     """
     Retrieves all the targets associated with a program.
 
     :param sem_id: semester id
     :type sem_id: str
-    :param obs_id: observer id
-    :type obs_id: int
 
     :rtype: List[Target]
     """
-    ob_blocks = sem_id_ob_get(sem_id, obs_id)
+    ob_blocks = sem_id_ob_get(sem_id)
 
     all_targets = []
     for ob_block in ob_blocks:
@@ -138,7 +132,7 @@ def sem_id_targets_get(sem_id, obs_id):
     return all_targets
 
 
-def sem_id_submit_post(body, obs_id, sem_id):
+def sem_id_submit_post(body, sem_id):
     """
     Submits OBs for a program.  Uses the obsid in the authentication
     header and provided semId to retrieve the proposal file
@@ -148,23 +142,19 @@ def sem_id_submit_post(body, obs_id, sem_id):
     :type body: dict | bytes
     :param sem_id: semester id
     :type sem_id: str
-    :param obs_id: observer id
-    :type obs_id: int
 
     :rtype: None
     """
     return 'do some magic! sem_id_submit_post'
 
 
-def sem_id_submit_put(obs_id, sem_id, body=None):
+def sem_id_submit_put(body):
     """sem_id_submit_put
 
     updates a program (OBs)
 
     :param sem_id: semester id
     :type sem_id: str
-    :param obs_id: observer id
-    :type obs_id: int
     :param body:
     :type body: dict | bytes
 

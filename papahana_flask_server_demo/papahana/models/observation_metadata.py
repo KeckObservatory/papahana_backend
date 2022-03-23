@@ -15,7 +15,7 @@ class ObservationMetadata(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, ui_name: str=None, instrument: InstrumentEnum=None, template_type: str='science', version: str=None, script: str=None, sequece_number: int=None):  # noqa: E501
+    def __init__(self, name: str=None, ui_name: str=None, instrument: InstrumentEnum=None, template_type: str='science', version: float=None, script: str=None):  # noqa: E501
         """ObservationMetadata - a model defined in Swagger
 
         :param name: The name of this ObservationMetadata.  # noqa: E501
@@ -27,20 +27,17 @@ class ObservationMetadata(Model):
         :param template_type: The template_type of this ObservationMetadata.  # noqa: E501
         :type template_type: str
         :param version: The version of this ObservationMetadata.  # noqa: E501
-        :type version: str
+        :type version: float
         :param script: The script of this ObservationMetadata.  # noqa: E501
         :type script: str
-        :param sequece_number: The sequece_number of this ObservationMetadata.  # noqa: E501
-        :type sequece_number: int
         """
         self.swagger_types = {
             'name': str,
             'ui_name': str,
             'instrument': InstrumentEnum,
             'template_type': str,
-            'version': str,
-            'script': str,
-            'sequece_number': int
+            'version': float,
+            'script': str
         }
 
         self.attribute_map = {
@@ -49,8 +46,7 @@ class ObservationMetadata(Model):
             'instrument': 'instrument',
             'template_type': 'template_type',
             'version': 'version',
-            'script': 'script',
-            'sequece_number': 'sequece_number'
+            'script': 'script'
         }
         self._name = name
         self._ui_name = ui_name
@@ -58,7 +54,6 @@ class ObservationMetadata(Model):
         self._template_type = template_type
         self._version = version
         self._script = script
-        self._sequece_number = sequece_number
 
     @classmethod
     def from_dict(cls, dikt) -> 'ObservationMetadata':
@@ -168,22 +163,22 @@ class ObservationMetadata(Model):
         self._template_type = template_type
 
     @property
-    def version(self) -> str:
+    def version(self) -> float:
         """Gets the version of this ObservationMetadata.
 
 
         :return: The version of this ObservationMetadata.
-        :rtype: str
+        :rtype: float
         """
         return self._version
 
     @version.setter
-    def version(self, version: str):
+    def version(self, version: float):
         """Sets the version of this ObservationMetadata.
 
 
         :param version: The version of this ObservationMetadata.
-        :type version: str
+        :type version: float
         """
         if version is None:
             raise ValueError("Invalid value for `version`, must not be `None`")  # noqa: E501
@@ -212,26 +207,3 @@ class ObservationMetadata(Model):
             raise ValueError("Invalid value for `script`, must not be `None`")  # noqa: E501
 
         self._script = script
-
-    @property
-    def sequece_number(self) -> int:
-        """Gets the sequece_number of this ObservationMetadata.
-
-
-        :return: The sequece_number of this ObservationMetadata.
-        :rtype: int
-        """
-        return self._sequece_number
-
-    @sequece_number.setter
-    def sequece_number(self, sequece_number: int):
-        """Sets the sequece_number of this ObservationMetadata.
-
-
-        :param sequece_number: The sequece_number of this ObservationMetadata.
-        :type sequece_number: int
-        """
-        if sequece_number is None:
-            raise ValueError("Invalid value for `sequece_number`, must not be `None`")  # noqa: E501
-
-        self._sequece_number = sequece_number
