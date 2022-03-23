@@ -131,7 +131,7 @@ paths:
       operationId: sem_id_ob_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
+#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -157,7 +157,7 @@ paths:
       operationId: sem_id_proposal_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
+#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: returns the pdf or ps file of the proposal.
@@ -181,7 +181,7 @@ paths:
       operationId: sem_id_targets_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
+#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: array of targets
@@ -208,7 +208,7 @@ paths:
       operationId: sem_id_containers_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
+#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -237,7 +237,7 @@ paths:
       operationId: sem_id_submit_post
       parameters:
         - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
+#        - $ref: '#/components/parameters/obs_id'
       requestBody:
         content:
           application/json:
@@ -263,7 +263,7 @@ paths:
       operationId: sem_id_submit_put
       parameters:
         - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/obs_id'
+#        - $ref: '#/components/parameters/obs_id'
       requestBody:
         content:
           application/json:
@@ -988,12 +988,12 @@ paths:
 #      /obsBlocks/scripts
 #      /obsBlocks/executionTimeRemaining
 
-  /obsBlocks/template:
+  /obsBlocks/sequences:
     get:
       tags:
         - Observation Block
       description: Retrieves the list of templates associated with the OB
-      operationId: ob_templates_get
+      operationId: ob_sequences_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
@@ -1015,7 +1015,7 @@ paths:
       tags:
         - Observation Block
       description: Creates the list of templates associated with the OB
-      operationId: ob_template_post
+      operationId: ob_sequence_post
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/template_type'
@@ -1042,7 +1042,7 @@ paths:
       tags:
         - Observation Block
       description: Updates the list of templates associated with the OB
-      operationId: ob_template_put
+      operationId: ob_sequence_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/template_type'
@@ -1066,15 +1066,15 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-  /obsBlocks/template/{template_id}:
+  /obsBlocks/sequence/id:
     get:
       tags:
         - Observation Block
-      description: Retrieves the specified template within the OB
-      operationId: ob_template_id_get
+      description: Retrieves the specified observation within the OB
+      operationId: ob_sequence_id_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/sequence_number'
       responses:
         "200":
           description: Retrieves and returns the Template of the observing block being requested
@@ -1091,11 +1091,11 @@ paths:
     put:
       tags:
         - Observation Block
-      description: Updates the specified template within the OB
-      operationId: ob_template_id_put
+      description: Updates the specified observation within the OB
+      operationId: ob_sequence_id_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/sequence_number'
       requestBody:
         content:
           application/json:
@@ -1104,7 +1104,7 @@ paths:
         required: true
       responses:
         "204":
-          description: replaces the given Template within the OB with Template of id=templateId
+          description: replaces the given Template within the OB with Template of id=sequence_number
         "400":
           description: Invalid status value
         "404":
@@ -1114,29 +1114,29 @@ paths:
     delete:
       tags:
         - Observation Block
-      description: Removes the specified template within the OB
-      operationId: ob_template_id_delete
+      description: Removes the specified observation within the OB
+      operationId: ob_sequence_id_delete
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/sequence_number'
       responses:
         "204":
-          description: removes the template from the OB
+          description: removes the observation from the OB
         "400":
           description: Invalid status value
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-  /obsBlocks/template/{template_id}/{file_parameter}:
+  /obsBlocks/sequence/{file_parameter}:
     get:
       tags:
         - Observation Block
-      description: Retrieves the specified template within the OB
-      operationId: ob_template_id_file_get
+      description: Retrieves the specified observation within the OB
+      operationId: ob_sequence_id_file_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/sequence_number'
         - $ref: '#/components/parameters/file_parameter'
       responses:
         "200":
@@ -1154,11 +1154,11 @@ paths:
     put:
       tags:
         - Observation Block
-      description: Updates the specified template within the OB
-      operationId: ob_template_id_file_put
+      description: Updates the specified observation within the OB
+      operationId: ob_sequence_id_file_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/sequence_number'
         - $ref: '#/components/parameters/file_parameter'
       requestBody:
         content:
@@ -1169,22 +1169,22 @@ paths:
         required: true
       responses:
         "200":
-          description: replaces the given Template within the OB with Template of id=templateId
+          description: replaces the given Template within the OB with Template of id=sequence_number
         "400":
           description: Invalid status value
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-  /obsBlocks/template/duplicate/{template_id}:
+  /obsBlocks/sequence/duplicate:
     post:
       tags:
         - Observation Block
-      description: Generate a new copy of the template and add it to the list of templates in the OB.
-      operationId: ob_template_duplicate
+      description: Generate a new copy of the observation and add it to the list of observations in the OB.
+      operationId: ob_sequence_duplicate
       parameters:
         - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/template_id'
+        - $ref: '#/components/parameters/sequence_number'
       responses:
         "200":
           description: returns a copy of the Template within the OB.
@@ -1203,7 +1203,7 @@ paths:
       tags:
         - Observation Block
       description: Verify that the required parameters have been filled in.
-      operationId: ob_template_filled
+      operationId: ob_sequence_filled
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
@@ -1227,7 +1227,7 @@ paths:
       tags:
         - Observation Block
       description: Retrieves list of files.
-      operationId: ob_template_supplement
+      operationId: ob_sequence_supplement
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
@@ -1242,7 +1242,7 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
+        "422":
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
@@ -1266,7 +1266,7 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
+        "422":
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
@@ -1368,7 +1368,7 @@ paths:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: On success returns an estimated execution time for an OB.
+          description: On success returns an estimated execution time for an OB in minutes.
           content:
             application/json:
               schema:
@@ -1448,11 +1448,30 @@ paths:
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
   # observer section
+  /observers/semesterIds:
+    get:
+      tags:
+        - Observers
+      description: view the list of semester IDs (programs) that the observers are associated.
+      operationId: observer_semid
+      responses:
+        "200":
+          description: On success a TBD text version of the OB is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObserverList'
+        "400":
+          description: Invalid Program Semester ID (sem_id).
+        "422":
+          description: Program Semester ID (sem_id) not found.
+      x-swagger-router-controller: Observer
+      x-openapi-router-controller: papahana.controllers.observers_controller
   /observers/{sem_id}/view:
     get:
       tags:
         - Observers
-      description: view the list of observers associated with the sem_id (program).  The list will include user’s name,  Keck ID,  and institute.
+      description: view the list of observers associated with the sem_id (program).  The list will include user’s Keck ID
       operationId: observer_view
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -1473,7 +1492,8 @@ paths:
     get:
       tags:
         - Observers
-      description: Get the apikey for the autheticated observer.
+      description: Get the apikey for the autheticated observer.  Requires the browser
+                   to be logged in via the keck login page.
       operationId: observer_apikey
       responses:
         "200":
@@ -1486,6 +1506,26 @@ paths:
           description: Invalid Program Semester ID (sem_id).
         "422":
           description: Program Semester ID (sem_id) not found.
+      x-swagger-router-controller: Observer
+      x-openapi-router-controller: papahana.controllers.observers_controller
+  /observers/keckid/{api_key}:
+    get:
+      tags:
+        - Observers
+      description: Get the Keck ID associated with the API Key.  The API Key is a
+                   required parameter.
+      operationId: observer_keckid
+      parameters:
+        - $ref: '#/components/parameters/api_key'
+      responses:
+        "200":
+          description: Returns the associated observer (Keck) ID for the API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apikey'
+        "422":
+          description: Invalid API Key.
       x-swagger-router-controller: Observer
       x-openapi-router-controller: papahana.controllers.observers_controller
 
@@ -1631,10 +1671,21 @@ components:
         pattern: '^\d{4}[AB]$'
       example: 2021A
 
+    api_key:
+      name: api_key
+      in: path
+      description: The API key.
+      required: true
+      style: simple
+      explode: true
+      schema:
+        type: integer
+      example: 0456976544
+
     keck_id:
       name: keck_id
       in: path
-      description: semester id
+      description: Observer Keck ID.
       required: true
       style: simple
       explode: true
@@ -1720,16 +1771,16 @@ components:
         type: string
       example: KCWI_ifu_sci_stare
 
-    template_id:
-      name: template_id
-      in: path
-      description: index of template within the OB.
+    sequence_number:
+      name: sequence_number
+      in: query
+      description: The index of the sequence within the OB.
       required: true
-      style: simple
+      style: form
       explode: false
       schema:
         type: integer
-      example: seq2
+      example: 0
 
     file_parameter:
       name: file_parameter
@@ -1928,6 +1979,7 @@ components:
           type: string
 
     ObservationBlock:
+
       required:
         - metadata
       type: object
@@ -1943,10 +1995,6 @@ components:
           items:
             $ref: '#/components/schemas/ScienceTemplate'
         # TODO add calibration and eng templates here
-#        observation:
-#          type: array
-#          items:
-#            $ref: '#/components/schemas/ObservationTemplate'
         associations:
           type: array
           items:
@@ -1977,7 +2025,7 @@ components:
         name:
           type: string
         version:
-          type: number
+          type: string
         ob_type:
           type: string
           enum:
@@ -2040,7 +2088,7 @@ components:
         - instrument
         - version
         - script
-        - sequece_number
+        - sequence_number
       type: object
       properties:
         name:
@@ -2061,7 +2109,7 @@ components:
           type: string
         script:
           type: string
-        sequece_number:
+        sequence_number:
           type: integer
       example:
         name: KCWI_ifu_acq_offsetStar
@@ -2211,21 +2259,21 @@ components:
       type: object
       properties:
         state:
-          type: string
-          oneOf:
-            - pattern: '^[Pp]artially defined$'
-            - pattern: '^[Dd]efined$'
-            - pattern: '^[Rr]eview$'
-            - pattern: '^[Rr]ejected$'
-            - pattern: '^[Dd]raft$'
-            - pattern: '^[Ss]tarted$'
-            - pattern: '^[Ee]xecuted$'
-            - pattern: '^[Cc]ompleted$'
-            - pattern: '^[Ff]ailed$'
-            - pattern: '^[Tt]erminated$'
-            - pattern: '^[Ss]topped$'
-            - pattern: '^[Dd]one$'
-          default: started
+          type: integer
+#          oneOf:
+#            - pattern: '^[Pp]artially defined$'
+#            - pattern: '^[Dd]efined$'
+#            - pattern: '^[Rr]eview$'
+#            - pattern: '^[Rr]ejected$'
+#            - pattern: '^[Dd]raft$'
+#            - pattern: '^[Ss]tarted$'
+#            - pattern: '^[Ee]xecuted$'
+#            - pattern: '^[Cc]ompleted$'
+#            - pattern: '^[Ff]ailed$'
+#            - pattern: '^[Tt]erminated$'
+#            - pattern: '^[Ss]topped$'
+#            - pattern: '^[Dd]one$'
+#          default: started
         executions:
           type: array
           items:
