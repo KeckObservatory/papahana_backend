@@ -112,8 +112,8 @@ def check_apikey_auth(api_key, required_scopes):
 #     from base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
 #     from Crypto.Cipher import AES
 #
-#     secret_key = '7fm20dm'
-#     secret_iv = '03ye2GK9l18'
+#     secret_key =
+#     secret_iv =
 #
 #     key = hashlib.sha256(secret_key.encode('utf-8')).hexdigest()[:32].encode("utf-8")
 #     iv = hashlib.sha256(secret_iv.encode('utf-8')).hexdigest()[:16].encode("utf-8")
