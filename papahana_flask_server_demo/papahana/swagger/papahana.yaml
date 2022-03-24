@@ -34,6 +34,7 @@ tags:
 
 paths:
 
+
 #  /example/{required_parameter}/more/:
 
     # get/post/put/delete
@@ -71,6 +72,23 @@ paths:
 #      x-swagger-router-controller: Observer
 #      x-openapi-router-controller: papahana.controllers.observers_controller
 
+  /login:
+    summary: login to get a cookie
+    get:
+      security: []
+      tags:
+        - Observers
+      operationId: login
+      responses:
+        '200':
+          description: OK
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              example: ODB-API=46557084; Path=/; HttpOnly
+      x-swagger-router-controller: Observer
+      x-openapi-router-controller: papahana.controllers.observers_controller
 
   /semesterIds/:
     summary: Retrieves all the sem_ids associated with an observer
@@ -1599,21 +1617,18 @@ paths:
 #                type: string
 #                example: JSESSIONID=abcde12345; Path=/; HttpOnly
 #
-#security:
-#  - ApiKeyAuth: []     # use the same name as under securitySchemes
+security:
+  - ApiKeyAuth: []     # use the same name as under securitySchemes
 #  - ApiKeyUrl: []
 
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: cookie
+      name: ODB-API
+      x-apikeyInfoFunc: papahana.controllers.authorization_controller.check_apikey_auth
 
-#  securitySchemes:
-#    ApiKeyAuth:        # arbitrary name for the security scheme
-#      type: apiKey
-#      in: cookie       # can be "header", "query" or "cookie"
-#      name: odb_id  # name of the header, query parameter or cookie
-#      # need to implement this function for connexion
-#      # https://connexion.readthedocs.io/en/latest/security.html#apikey-authentication
-#      x-apikeyInfoFunc: papahana.controllers.authorization_controller.decrypt_key
-#
 #    ApiKeyUrl:        # arbitrary name for the security scheme
 #      type: apiKey
 #      in: query       # can be "header", "query" or "cookie"

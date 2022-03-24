@@ -29,17 +29,3 @@ def is_associated(keck_id, sem_id):
     return False
 
 
-def is_authorized(api_key, keck_id):
-    query = {'keck_id': keck_id, 'api_key': api_key}
-    fields = {'keck_id': 1, '_id': 0, 'api_key': 1}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
-
-    if results:
-        try:
-            return (results['api_key'] == api_key and
-                    results['keck_id'] == keck_id)
-        except KeyError:
-            return False
-
-    return False
-

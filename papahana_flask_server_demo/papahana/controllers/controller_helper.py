@@ -48,8 +48,10 @@ def query_by_id(obj_id, add_delete=True):
     """
     query by string container_id
 
-    :param container_id: container identifier
-    :type container_id: str
+    :param obj_id: object id string
+    :type obj_id: str
+    :param cln_oid: restrict results to exclude status=deleted.
+    :type cln_oid: bool
 
     :rtype: Dict{Query}
     """
@@ -65,10 +67,12 @@ def get_by_id(id, collect_name, cln_oid=True):
     """
     query by string container_id
 
-    :param container_id: container identifier
-    :type container_id: str
+    :param id: object id string
+    :type id: str
     :param collect_name: the database collection.
     :type collect_name: str
+    :param cln_oid: set to True to change object id to string in results.
+    :type cln_oid: bool
 
     :rtype: Dict{Query Result}
     """

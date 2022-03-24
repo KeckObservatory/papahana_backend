@@ -1,5 +1,8 @@
 import connexion
 import six
+from flask import request, make_response, redirect, g
+from secure_cookie.cookie import SecureCookie
+
 
 from papahana.models.apikey import Apikey
 from papahana.models.observer_list import ObserverList  
@@ -8,11 +11,24 @@ from papahana import util
 
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import observers_controller_utils as obs_utils
+from papahana.controllers import authorization_controller as auth_utils
 
 # TODO use for testing
 # TMP_KECKID = 1883 # real PI (for external APIs)
 TMP_KECKID = 1883
-TMP_APIKEY = 99689645
+
+
+# TODO move this to be combined with the authentication server
+def login():
+    """login
+        /login
+
+    :rtype: Cookie
+    """
+    url = 'observers/apikey'
+    res = auth_utils.set_apikey_cookie(url)
+
+    return res
 
 
 def observer_apikey():
@@ -24,16 +40,12 @@ def observer_apikey():
 
     :rtype: Apikey
     """
-    # undefined
-    # keck_id = 8899
-
-    # TODO replace with deserialize cookie
-    # John
-    keck_id = 1883
+    keck_id = g.user
 
     query = {"keck_id": keck_id}
     fields = {'api_key': 1, '_id': 0}
     results = utils.get_fields_by_query(query, fields, 'observerCollect')
+
     if not results:
         return {}
 

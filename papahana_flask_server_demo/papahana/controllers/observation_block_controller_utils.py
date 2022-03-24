@@ -1,4 +1,8 @@
-from flask import abort
+from flask import abort, g
+import json
+
+from papahana.controllers import controller_helper as utils
+from papahana.controllers import authorization_controller as auth_utils
 
 
 def calc_exp_time(obs):
@@ -108,4 +112,19 @@ def write_json(dict_data, output):
         json.dump(dict_data, fp)
 
     fp.close()
+
+
+def check_ob_id_allowed(ob_id):
+    ob = utils.get_by_id(ob_id, 'obCollect')
+    check_ob_allowed(ob)
+
+
+def check_ob_allowed(ob):
+    sem_id = ob['metadata']['sem_id']
+    if not auth_utils.is_authorized_semid(sem_id):
+        abort(401, f'Observer with Keck ID {g.user} is not authorized to access'
+                   f' OB - the semester ID does not match allowed programs.')
+
+
+
 

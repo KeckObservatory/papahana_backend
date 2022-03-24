@@ -1,8 +1,9 @@
-from flask import current_app
+from flask import current_app, g
 import connexion
 import yaml
 
 from papahana import util
+from papahana.controllers import authorization_controller as auth_utils
 
 
 def create_app():
@@ -22,7 +23,15 @@ def create_app():
 
 def main():
     app = create_app()
-    app.run(port=50001)
+
+    # @app.app.before_request
+    # def before_request():
+    #     g.user = auth_utils.is_authorized()
+    #
+    #     print(f'before request - user {g.user}')
+    #     print(f'before request - auth {g.authorized}')
+
+    app.run(port=50002)
 
 
 if __name__ == '__main__':

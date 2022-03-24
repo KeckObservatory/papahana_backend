@@ -1,10 +1,11 @@
 import connexion
 from copy import deepcopy
-from flask import abort, send_from_directory
+from flask import abort, send_from_directory, g
 import json
 import pandas
 
 from papahana.controllers import controller_helper as utils
+# from papahana.controllers import authorization_controller as auth_utils
 from papahana.controllers import observation_block_controller_utils as ob_utils
 
 from papahana.models.body import Body  
@@ -23,13 +24,19 @@ OUT_DIR = "/tmp"
 def ob_get(ob_id):
     """
     Retrieves the general parameters of an OB.
+        /obsBlocks
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: ObservationBlock
     """
-    return utils.get_by_id(ob_id, 'obCollect')
+    print("user", g.user)
+    # will return one result,  and throw 404 if not found
+    ob = utils.get_by_id(ob_id, 'obCollect')
+    ob_utils.check_ob_allowed(ob)
+
+    return ob
 
 
 def ob_post(body):
@@ -41,6 +48,7 @@ def ob_post(body):
 
     :rtype: str of new OB ID.
     """
+    ob_utils.check_ob_allowed(body)
     result = utils.insert_into_collection(body, 'obCollect')
 
     return str(result)
@@ -57,6 +65,9 @@ def ob_put(body, ob_id):
 
     :rtype: None
     """
+    # check that access is allowed to the ob being replaced.
+    ob_utils.check_ob_id_allowed(ob_id)
+
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect', clear=True)
 
 
@@ -69,6 +80,9 @@ def ob_delete(ob_id):
 
     :rtype: None
     """
+    # check that access is allowed to the ob being replaced.
+    ob_utils.check_ob_id_allowed(ob_id)
+
     utils.delete_by_id(ob_id, 'obCollect')
 
 
@@ -84,6 +98,7 @@ def ob_duplicate(ob_id, sem_id=None):
     :rtype: str
     """
     ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
+    ob_utils.check_ob_allowed(ob)
 
     del ob['_id']
 
