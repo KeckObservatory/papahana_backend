@@ -12,6 +12,7 @@ import generate_utils as utils
 import generate_random_utils as random_utils
 import generate_template
 from papahana import util as papahana_util
+from papahana.controllers import authorization_controller as auth_utils
 from bson.objectid import ObjectId
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
@@ -235,8 +236,9 @@ def generate_observer_collection(coll):
         for indx in range(0,random_utils.randInt(2,10)):
             sem_id_list.append(random_utils.randSemId())
 
-        print(sem_id_list)
-        akey = random_utils.randInt(10000000, 100000000)
+        akey = auth_utils.generate_api_key()
+        # akey = auth_utils.hash_key(akey)
+
         doc = {'keck_id': obs_id, "api_key": akey, "associations": sem_id_list}
         _ = coll.insert_one(doc)
 
@@ -250,7 +252,10 @@ def generate_observer_collection(coll):
         assoc_list.append(result['metadata']['sem_id'])
 
     coll = papahana_util.config_collection('observerCollect', conf=config)
-    doc = {'keck_id': 0000, "api_key": akey, "associations": assoc_list}
+    akey = auth_utils.generate_api_key()
+    # akey = auth_utils.hash_key(akey)
+
+    doc = {'keck_id': -1, "api_key": akey, "associations": assoc_list}
     _ = coll.insert_one(doc)
 
     return
@@ -565,16 +570,11 @@ def make_status_realistic(ob):
     fields = {'observations.metadata.sequence_number': 1}
 
     ob_info = list(coll.find({"_id": ObjectId(ob)}, fields))
-    # if ob_info:
-    #     ob_info = ob_info[0]
-    print("ob info", ob_info)
 
     for ob_seq in ob_info:
-        print("onseq", ob_seq)
         oid = ob_seq['_id']
         seq_n = 0
         for seq in ob_seq['observations']:
-            print("seq", seq)
             cur_n = seq['metadata']['sequence_number']
             if cur_n > seq_n:
                 seq_n = cur_n
@@ -630,12 +630,10 @@ if __name__=='__main__':
     random.seed(seed)
 
     config = utils.read_config(mode)
-    print(f"Using {config['dbName']} database")
-
 
     # generate templates - returns [{'_id': ObjectId('622ff5db24d4e9afb8e2872c'), ..]
+    print("...generating templates")
     template_list = generate_template.generate_templates()
-    print(template_list)
 
     # # Create ob_blocks collection
     print("...generating OBs")
@@ -663,10 +661,6 @@ if __name__=='__main__':
         doc = generate_container(ob_blocks)
         result = coll.insert_one(doc)
         container_list.append(str(result.inserted_id))
-
-    # # generate templates - returns [{'_id': ObjectId('622ff5db24d4e9afb8e2872c'), 'metadata': {'name': 'KCWI_ifu_acq_offsetStar'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872d'), 'metadata': {'name': 'KCWI_ifu_acq_direct'}}, {'_id': ObjectId('622ff5db24d4e9afb8e2872e'), 'metadata': {'name': 'KCWI_ifu_sci_stare'}},
-    # template_list = generate_template.generate_templates()
-    # print(template_list)
 
     # # Create Instrument collection
     print("...generating instrument package")
@@ -696,7 +690,4 @@ if __name__=='__main__':
     coll.drop()
     generate_observer_collection(coll)
 
-    # for idx in range(NOBS):
-    #     doc = generate_observer_collection()
-    #     result = coll.insert_one(doc)
 
