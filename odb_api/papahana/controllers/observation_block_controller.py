@@ -5,15 +5,15 @@ import json
 import pandas
 
 from papahana.controllers import controller_helper as utils
-# from papahana.controllers import authorization_controller as auth_utils
-from papahana.controllers import observation_block_controller_utils as ob_utils
+from papahana.controllers import observation_block_utils as ob_utils
+from papahana.controllers import observers_utils as obs_utils
+
 
 from papahana.models.body import Body  
 from papahana.models.body1 import Body1  
 from papahana.models.date_schema import DateSchema  
 from papahana.models.observation_block import ObservationBlock  
-from papahana.models.sem_id_schema import SemIdSchema  
-from papahana.models.template_id_schema import TemplateIdSchema  
+from papahana.models.sem_id_schema import SemIdSchema
 from papahana.models.template_schema import TemplateSchema  
 from papahana import util
 
@@ -31,7 +31,6 @@ def ob_get(ob_id):
 
     :rtype: ObservationBlock
     """
-    print("user", g.user)
     # will return one result,  and throw 404 if not found
     ob = utils.get_by_id(ob_id, 'obCollect')
     ob_utils.check_ob_allowed(ob)
@@ -104,6 +103,11 @@ def ob_duplicate(ob_id, sem_id=None):
 
     if sem_id:
         ob['metadata']['sem_id'] = sem_id
+    else:
+        sem_id = ob['metadata']['sem_id']
+
+    if not obs_utils.is_associated(sem_id):
+        abort(401, f"Unauthorized to access Program: {sem_id}")
 
     result = utils.insert_into_collection(ob, 'obCollect')
 
@@ -513,7 +517,7 @@ def ob_time_constraint_put(body, ob_id):
 def ob_upgrade(ob_id, sem_id=None):
     """
     When an instrument package changes, attempts to port an existing OB
-    to the new package, default is the current semId.
+    to the new package, default is the current sem_id.
 
     :param ob_id: observation block ObjectId
     :type ob_id: str
@@ -524,6 +528,13 @@ def ob_upgrade(ob_id, sem_id=None):
     """
     if connexion.request.is_json:
         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
+
+    # TODO add function to get sem_id
+    # if not sem_id:
+    #     sem_id = #get sem_id from ob
+    # if not obs_utils.is_associated(sem_id):
+    #     abort(401, f"Unauthorized to access Program: {sem_id}")
+
 
     return 'do some magic!'
 

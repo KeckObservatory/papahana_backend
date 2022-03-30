@@ -8,7 +8,6 @@ from typing import List, Dict  # noqa: F401
 from papahana.models.base_model_ import Model
 from papahana.models.acquisition_parameters import AcquisitionParameters  # noqa: F401,E501
 from papahana.models.observation_metadata import ObservationMetadata  # noqa: F401,E501
-from papahana.models.template_id_schema import TemplateIdSchema  # noqa: F401,E501
 from papahana import util
 
 
@@ -17,30 +16,25 @@ class Acquisition(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObservationMetadata=None, parameters: AcquisitionParameters=None, template_id: TemplateIdSchema=None):  # noqa: E501
+    def __init__(self, metadata: ObservationMetadata=None, parameters: AcquisitionParameters=None):  # noqa: E501
         """Acquisition - a model defined in Swagger
 
         :param metadata: The metadata of this Acquisition.  # noqa: E501
         :type metadata: ObservationMetadata
         :param parameters: The parameters of this Acquisition.  # noqa: E501
         :type parameters: AcquisitionParameters
-        :param template_id: The template_id of this Acquisition.  # noqa: E501
-        :type template_id: TemplateIdSchema
         """
         self.swagger_types = {
             'metadata': ObservationMetadata,
-            'parameters': AcquisitionParameters,
-            'template_id': TemplateIdSchema
+            'parameters': AcquisitionParameters
         }
 
         self.attribute_map = {
             'metadata': 'metadata',
-            'parameters': 'parameters',
-            'template_id': 'template_id'
+            'parameters': 'parameters'
         }
         self._metadata = metadata
         self._parameters = parameters
-        self._template_id = template_id
 
     @classmethod
     def from_dict(cls, dikt) -> 'Acquisition':
@@ -98,24 +92,3 @@ class Acquisition(Model):
             raise ValueError("Invalid value for `parameters`, must not be `None`")  # noqa: E501
 
         self._parameters = parameters
-
-    @property
-    def template_id(self) -> TemplateIdSchema:
-        """Gets the template_id of this Acquisition.
-
-
-        :return: The template_id of this Acquisition.
-        :rtype: TemplateIdSchema
-        """
-        return self._template_id
-
-    @template_id.setter
-    def template_id(self, template_id: TemplateIdSchema):
-        """Sets the template_id of this Acquisition.
-
-
-        :param template_id: The template_id of this Acquisition.
-        :type template_id: TemplateIdSchema
-        """
-
-        self._template_id = template_id

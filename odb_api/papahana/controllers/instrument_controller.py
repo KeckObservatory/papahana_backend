@@ -6,7 +6,7 @@ from papahana.models.instrument_package import InstrumentPackage
 from papahana import util
 
 from papahana.controllers import controller_helper as utils
-from papahana.controllers import instrument_controller_utils as inst_utils
+from papahana.controllers import instrument_utils as inst_utils
 
 
 def instrument_packages(instrument):

@@ -14,33 +14,6 @@ from flask import current_app, request, g
 TMP_KECKID = 0
 
 
-# def is_associated(sem_id, keck_id=None):
-#     if not keck_id:
-#         # TODO read cookie
-#         keck_id = TMP_KECKID
-#
-#     return obs_utils.is_associated(keck_id, sem_id)
-
-
-# def is_authorized():
-#     """
-#     sets the session global variable 'authorized'
-#     """
-#     apikey = request.cookies.get('ODB-API')
-#
-#     query = {'api_key': apikey}
-#     fields = {'keck_id': 1, '_id': 0}
-#     results = utils.get_fields_by_query(query, fields, 'observerCollect')
-#
-#     if not results:
-#         g.authorized = False
-#         return None
-#
-#     g.authorized = True
-#
-#     return results[0]
-
-
 def read_mode(config='./config.live.yaml'):
     with open(config) as file:
         mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
@@ -63,6 +36,16 @@ def read_urls(config='./config.live.yaml'):
         urls = yaml.load(file, Loader=yaml.FullLoader)['apis']
 
     return urls
+
+
+def read_secret(config='./config.live.yaml'):
+    with open(config) as file:
+        mode_dict = yaml.load(file, Loader=yaml.FullLoader)['apikey']
+
+    try:
+        return mode_dict['secret_key']
+    except KeyError:
+        return None
 
 
 def config_collection(collection, conf=None):

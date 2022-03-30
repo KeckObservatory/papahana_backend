@@ -17,17 +17,17 @@ class ObsBlockMetadata(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, version: float=None, ob_type: str=None, priority: float=None, pi_id: int=None, sem_id: SemIdSchema=None, instrument: InstrumentEnum=None, comment: str=None):  # noqa: E501
+    def __init__(self, name: str=None, version: str=None, ob_type: str=None, priority: int=None, pi_id: int=None, sem_id: SemIdSchema=None, instrument: InstrumentEnum=None, comment: str=None):  # noqa: E501
         """ObsBlockMetadata - a model defined in Swagger
 
         :param name: The name of this ObsBlockMetadata.  # noqa: E501
         :type name: str
         :param version: The version of this ObsBlockMetadata.  # noqa: E501
-        :type version: float
+        :type version: str
         :param ob_type: The ob_type of this ObsBlockMetadata.  # noqa: E501
         :type ob_type: str
         :param priority: The priority of this ObsBlockMetadata.  # noqa: E501
-        :type priority: float
+        :type priority: int
         :param pi_id: The pi_id of this ObsBlockMetadata.  # noqa: E501
         :type pi_id: int
         :param sem_id: The sem_id of this ObsBlockMetadata.  # noqa: E501
@@ -39,9 +39,9 @@ class ObsBlockMetadata(Model):
         """
         self.swagger_types = {
             'name': str,
-            'version': float,
+            'version': str,
             'ob_type': str,
-            'priority': float,
+            'priority': int,
             'pi_id': int,
             'sem_id': SemIdSchema,
             'instrument': InstrumentEnum,
@@ -102,22 +102,22 @@ class ObsBlockMetadata(Model):
         self._name = name
 
     @property
-    def version(self) -> float:
+    def version(self) -> str:
         """Gets the version of this ObsBlockMetadata.
 
 
         :return: The version of this ObsBlockMetadata.
-        :rtype: float
+        :rtype: str
         """
         return self._version
 
     @version.setter
-    def version(self, version: float):
+    def version(self, version: str):
         """Sets the version of this ObsBlockMetadata.
 
 
         :param version: The version of this ObsBlockMetadata.
-        :type version: float
+        :type version: str
         """
         if version is None:
             raise ValueError("Invalid value for `version`, must not be `None`")  # noqa: E501
@@ -152,23 +152,25 @@ class ObsBlockMetadata(Model):
         self._ob_type = ob_type
 
     @property
-    def priority(self) -> float:
+    def priority(self) -> int:
         """Gets the priority of this ObsBlockMetadata.
 
 
         :return: The priority of this ObsBlockMetadata.
-        :rtype: float
+        :rtype: int
         """
         return self._priority
 
     @priority.setter
-    def priority(self, priority: float):
+    def priority(self, priority: int):
         """Sets the priority of this ObsBlockMetadata.
 
 
         :param priority: The priority of this ObsBlockMetadata.
-        :type priority: float
+        :type priority: int
         """
+        if priority is None:
+            raise ValueError("Invalid value for `priority`, must not be `None`")  # noqa: E501
 
         self._priority = priority
 

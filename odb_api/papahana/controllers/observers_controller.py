@@ -5,30 +5,29 @@ from secure_cookie.cookie import SecureCookie
 
 
 from papahana.models.apikey import Apikey
-from papahana.models.observer_list import ObserverList  
-from papahana.models.sem_id_schema import SemIdSchema  
+from papahana.controllers import authorization_utils as auth_utils
+from papahana.models.observer_list import ObserverList
+from papahana.models.sem_id_schema import SemIdSchema
 from papahana import util
 
 from papahana.controllers import controller_helper as utils
-from papahana.controllers import observers_controller_utils as obs_utils
-from papahana.controllers import authorization_controller as auth_utils
+from papahana.controllers import observers_utils as obs_utils
 
 # TODO use for testing
 # TMP_KECKID = 1883 # real PI (for external APIs)
 TMP_KECKID = 1883
 
 
-# TODO move this to be combined with the authentication server
-def login():
-    """login
-        /login
-
-    :rtype: Cookie
-    """
-    url = 'observers/apikey'
-    res = auth_utils.set_apikey_cookie(url)
-
-    return res
+# def login():
+#     """login
+#         /login
+#
+#     :rtype: Cookie
+#     """
+#     url = 'observers/apikey'
+#     res = auth_utils.set_apikey_cookie(url)
+#
+#     return res
 
 
 def observer_apikey():
@@ -40,16 +39,24 @@ def observer_apikey():
 
     :rtype: Apikey
     """
-    keck_id = g.user
+    # TODO not sure if should come from cookie or generated
+    # keck_id = g.user
+    #
+    # query = {"keck_id": keck_id}
+    # fields = {'api_key': 1, '_id': 0}
+    # results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    #
+    # if not results:
+    #     return {}
+    #
+    # ret_val = {'ODB-API-KEY': results[0]['api_key'],
+    #            'ODB-API-UID': scrampled_uid}
 
-    query = {"keck_id": keck_id}
-    fields = {'api_key': 1, '_id': 0}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    scrampled_uid = request.cookies.get('ODB-API-UID')
+    scrambled_api_key = request.cookies.get('ODB-API-KEY')
 
-    if not results:
-        return {}
-
-    return results[0]
+    return {'USER': g.user, 'ODB-API-KEY': scrambled_api_key,
+            'ODB-API-UID': scrampled_uid}
 
 
 def observer_keckid(api_key):
@@ -70,6 +77,7 @@ def observer_keckid(api_key):
     return results[0]
 
 
+@auth_utils.confirm_associated
 def observer_view(sem_id):
     """observer_view
         /observers/{sem_id}/view
@@ -106,10 +114,7 @@ def observer_semid():
 
     :rtype: ObserverList
     """
-
-    #TODO get id from cookie
-    # keck_id = 7799
-    keck_id = TMP_KECKID
+    keck_id = g.user
 
     query = {'keck_id': keck_id}
     fields = {'keck_id': 1, '_id': 0, 'associations': 1}
@@ -133,36 +138,6 @@ def observer_semid():
     # TODO will also need to go out and check schedule
 
     return results
-#
-# def add_association(keck_id, sem_id):
-#     from papahana.util import config_collection
-#
-#     coll = config_collection('observerCollect')
-#     _ = coll.update_one({"keck_id": keck_id}, {"$addToSet": {"associations": sem_id}})
-#
-#
-# def is_associated(keck_id, sem_id):
-#     query = {'keck_id': keck_id}
-#     fields = {'keck_id': 1, '_id': 0, 'associations': 1}
-#
-#     results = utils.get_fields_by_query(query, fields, 'observerCollect')
-#     if results:
-#         for assoc_sem_id in results[0]['associations']:
-#             if assoc_sem_id == sem_id:
-#                 return True
-#
-#     proposal_sem_ids = utils.get_proposal_ids(keck_id)
-#
-#     if type(proposal_sem_ids) is not list:
-#         return False
-#
-#     for assoc_sem_id in proposal_sem_ids:
-#         if assoc_sem_id == sem_id:
-#             return True
-#
-#     return False
-#
-
 
 
 # def update_associations(sem_id):

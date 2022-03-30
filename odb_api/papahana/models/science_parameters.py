@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
-from papahana.models.dither_schema import DitherSchema  # noqa: F401,E501
 from papahana import util
 
 
@@ -15,45 +14,25 @@ class ScienceParameters(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, det1_exptime: float=None, det1_nexp: int=None, det2_exptime: float=None, det2_nexp: int=None, seq_ndither: int=None, seq_ditarray: List[DitherSchema]=None):  # noqa: E501
+    def __init__(self, det1_exp_time: float=None, det1_exp_number: int=None):  # noqa: E501
         """ScienceParameters - a model defined in Swagger
 
-        :param det1_exptime: The det1_exptime of this ScienceParameters.  # noqa: E501
-        :type det1_exptime: float
-        :param det1_nexp: The det1_nexp of this ScienceParameters.  # noqa: E501
-        :type det1_nexp: int
-        :param det2_exptime: The det2_exptime of this ScienceParameters.  # noqa: E501
-        :type det2_exptime: float
-        :param det2_nexp: The det2_nexp of this ScienceParameters.  # noqa: E501
-        :type det2_nexp: int
-        :param seq_ndither: The seq_ndither of this ScienceParameters.  # noqa: E501
-        :type seq_ndither: int
-        :param seq_ditarray: The seq_ditarray of this ScienceParameters.  # noqa: E501
-        :type seq_ditarray: List[DitherSchema]
+        :param det1_exp_time: The det1_exp_time of this ScienceParameters.  # noqa: E501
+        :type det1_exp_time: float
+        :param det1_exp_number: The det1_exp_number of this ScienceParameters.  # noqa: E501
+        :type det1_exp_number: int
         """
         self.swagger_types = {
-            'det1_exptime': float,
-            'det1_nexp': int,
-            'det2_exptime': float,
-            'det2_nexp': int,
-            'seq_ndither': int,
-            'seq_ditarray': List[DitherSchema]
+            'det1_exp_time': float,
+            'det1_exp_number': int
         }
 
         self.attribute_map = {
-            'det1_exptime': 'det1_exptime',
-            'det1_nexp': 'det1_nexp',
-            'det2_exptime': 'det2_exptime',
-            'det2_nexp': 'det2_nexp',
-            'seq_ndither': 'seq_ndither',
-            'seq_ditarray': 'seq_ditarray'
+            'det1_exp_time': 'det1_exp_time',
+            'det1_exp_number': 'det1_exp_number'
         }
-        self._det1_exptime = det1_exptime
-        self._det1_nexp = det1_nexp
-        self._det2_exptime = det2_exptime
-        self._det2_nexp = det2_nexp
-        self._seq_ndither = seq_ndither
-        self._seq_ditarray = seq_ditarray
+        self._det1_exp_time = det1_exp_time
+        self._det1_exp_number = det1_exp_number
 
     @classmethod
     def from_dict(cls, dikt) -> 'ScienceParameters':
@@ -67,131 +46,47 @@ class ScienceParameters(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def det1_exptime(self) -> float:
-        """Gets the det1_exptime of this ScienceParameters.
+    def det1_exp_time(self) -> float:
+        """Gets the det1_exp_time of this ScienceParameters.
 
 
-        :return: The det1_exptime of this ScienceParameters.
+        :return: The det1_exp_time of this ScienceParameters.
         :rtype: float
         """
-        return self._det1_exptime
+        return self._det1_exp_time
 
-    @det1_exptime.setter
-    def det1_exptime(self, det1_exptime: float):
-        """Sets the det1_exptime of this ScienceParameters.
+    @det1_exp_time.setter
+    def det1_exp_time(self, det1_exp_time: float):
+        """Sets the det1_exp_time of this ScienceParameters.
 
 
-        :param det1_exptime: The det1_exptime of this ScienceParameters.
-        :type det1_exptime: float
+        :param det1_exp_time: The det1_exp_time of this ScienceParameters.
+        :type det1_exp_time: float
         """
-        if det1_exptime is None:
-            raise ValueError("Invalid value for `det1_exptime`, must not be `None`")  # noqa: E501
+        if det1_exp_time is None:
+            raise ValueError("Invalid value for `det1_exp_time`, must not be `None`")  # noqa: E501
 
-        self._det1_exptime = det1_exptime
+        self._det1_exp_time = det1_exp_time
 
     @property
-    def det1_nexp(self) -> int:
-        """Gets the det1_nexp of this ScienceParameters.
+    def det1_exp_number(self) -> int:
+        """Gets the det1_exp_number of this ScienceParameters.
 
 
-        :return: The det1_nexp of this ScienceParameters.
+        :return: The det1_exp_number of this ScienceParameters.
         :rtype: int
         """
-        return self._det1_nexp
+        return self._det1_exp_number
 
-    @det1_nexp.setter
-    def det1_nexp(self, det1_nexp: int):
-        """Sets the det1_nexp of this ScienceParameters.
+    @det1_exp_number.setter
+    def det1_exp_number(self, det1_exp_number: int):
+        """Sets the det1_exp_number of this ScienceParameters.
 
 
-        :param det1_nexp: The det1_nexp of this ScienceParameters.
-        :type det1_nexp: int
+        :param det1_exp_number: The det1_exp_number of this ScienceParameters.
+        :type det1_exp_number: int
         """
-        if det1_nexp is None:
-            raise ValueError("Invalid value for `det1_nexp`, must not be `None`")  # noqa: E501
+        if det1_exp_number is None:
+            raise ValueError("Invalid value for `det1_exp_number`, must not be `None`")  # noqa: E501
 
-        self._det1_nexp = det1_nexp
-
-    @property
-    def det2_exptime(self) -> float:
-        """Gets the det2_exptime of this ScienceParameters.
-
-
-        :return: The det2_exptime of this ScienceParameters.
-        :rtype: float
-        """
-        return self._det2_exptime
-
-    @det2_exptime.setter
-    def det2_exptime(self, det2_exptime: float):
-        """Sets the det2_exptime of this ScienceParameters.
-
-
-        :param det2_exptime: The det2_exptime of this ScienceParameters.
-        :type det2_exptime: float
-        """
-
-        self._det2_exptime = det2_exptime
-
-    @property
-    def det2_nexp(self) -> int:
-        """Gets the det2_nexp of this ScienceParameters.
-
-
-        :return: The det2_nexp of this ScienceParameters.
-        :rtype: int
-        """
-        return self._det2_nexp
-
-    @det2_nexp.setter
-    def det2_nexp(self, det2_nexp: int):
-        """Sets the det2_nexp of this ScienceParameters.
-
-
-        :param det2_nexp: The det2_nexp of this ScienceParameters.
-        :type det2_nexp: int
-        """
-
-        self._det2_nexp = det2_nexp
-
-    @property
-    def seq_ndither(self) -> int:
-        """Gets the seq_ndither of this ScienceParameters.
-
-
-        :return: The seq_ndither of this ScienceParameters.
-        :rtype: int
-        """
-        return self._seq_ndither
-
-    @seq_ndither.setter
-    def seq_ndither(self, seq_ndither: int):
-        """Sets the seq_ndither of this ScienceParameters.
-
-
-        :param seq_ndither: The seq_ndither of this ScienceParameters.
-        :type seq_ndither: int
-        """
-
-        self._seq_ndither = seq_ndither
-
-    @property
-    def seq_ditarray(self) -> List[DitherSchema]:
-        """Gets the seq_ditarray of this ScienceParameters.
-
-
-        :return: The seq_ditarray of this ScienceParameters.
-        :rtype: List[DitherSchema]
-        """
-        return self._seq_ditarray
-
-    @seq_ditarray.setter
-    def seq_ditarray(self, seq_ditarray: List[DitherSchema]):
-        """Sets the seq_ditarray of this ScienceParameters.
-
-
-        :param seq_ditarray: The seq_ditarray of this ScienceParameters.
-        :type seq_ditarray: List[DitherSchema]
-        """
-
-        self._seq_ditarray = seq_ditarray
+        self._det1_exp_number = det1_exp_number

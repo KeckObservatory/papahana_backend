@@ -1,9 +1,12 @@
 import connexion
 import six
 
+from flask import g, abort
+
 from papahana.controllers import controller_helper as utils
-from papahana.controllers import containers_controller
-from papahana.controllers import observation_block_controller
+from papahana.controllers import authorization_utils as auth_utils
+from papahana.controllers import observers_controller as obs_cont
+# from papahana.controllers import observation_block_controller
 
 
 from papahana.models.container import Container  
@@ -15,27 +18,21 @@ from papahana.models.target import Target
 from papahana import util
 
 
-def sem_id_get(obs_id):
+def sem_id_get():
     """
     Retrieves all the sem_ids associated with an observer
     /semesterIds/
 
-    http://vm-webtools.keck.hawaii.edu:50001/v0/semesterIds/?obs_id=2003
-
-    :param obs_id: observer id
-    :type obs_id: int
-
     :rtype: List[str]
     """
-    # authenticate,
-    #   use a master id in check_obs_id or check == authenticated obs_id
     # check_obs_id
-
+    obs_id = g.user
     semid_list = utils.get_proposal_ids(obs_id)
 
     return semid_list
 
 
+@auth_utils.confirm_associated
 def sem_id_proposal_get(sem_id):
     """
     retrieves the proposal associated with the program.
@@ -51,77 +48,79 @@ def sem_id_proposal_get(sem_id):
     return 'do some magic! sem_id_proposal_get'
 
 
-def sem_id_semester_get(semester, obs_id):
+def sem_id_semester_get(semester):
     """
      retrieves all the sem_id associated with an observer for the semester.
      /semesterIds/{semester}/semester/
 
     :param semester: semester id
     :type semester: str
-    :param obs_id: observer id
-    :type obs_id: int
 
     :rtype: List[str]
     """
-    semester_list = []
+    obs_id = g.user
+
+    # check the database first
+    semester_list = obs_cont.observer_semid()
+
+    # check the proposals api
     sem_ids = utils.get_proposal_ids(obs_id)
     for semid in sem_ids:
         if semester in semid:
             semester_list.append(semid)
 
-    return semester_list
+    # TODO check the schedule
+
+    return set(semester_list)
 
 
+@auth_utils.confirm_associated
 def sem_id_ob_get(sem_id):
     """
     Retrieves the ob_blocks for a sem_id
         /semesterIds/{sem_id}/ob
+
     :param sem_id: semester id
     :type sem_id: str
 
     :rtype: List[ObservationBlock]
     """
-    # if not utils.obs_id_associated(sem_id, obs_id):
-    #     return []
-
     query = {"metadata.sem_id": sem_id}
     ob_blocks = utils.get_by_query(query, 'obCollect')
 
     return utils.list_with_objectid(ob_blocks)
 
 
+@auth_utils.confirm_associated
 def sem_id_containers_get(sem_id):
     """
-    Retrieves all containers associated with a program
-    /semesterIds/{sem_id}/containers
-
-    http://vm-webtools.keck.hawaii.edu:50001/v0/semesterIds/2020A_U169/containers?obs_id=2003
+    Retrieves all containers associated with a program.  The Semester Id
+    is a required parameter.
+        /semesterIds/{sem_id}/containers
 
     :param sem_id: semester id
     :type sem_id: str
-    :param obs_id: observer id
-    :type obs_id: int
 
     :rtype: List[Container]
     """
-    # if not utils.obs_id_associated(sem_id, obs_id):
-    #     return []
-
     query = {"sem_id": sem_id}
     containers = utils.get_by_query(query, 'containerCollect')
 
     return utils.list_with_objectid(containers)
 
 
+@auth_utils.confirm_associated
 def sem_id_targets_get(sem_id):
     """
     Retrieves all the targets associated with a program.
+        /semesterIds/{sem_id}/targets
 
     :param sem_id: semester id
     :type sem_id: str
 
     :rtype: List[Target]
     """
+
     ob_blocks = sem_id_ob_get(sem_id)
 
     all_targets = []
@@ -132,6 +131,7 @@ def sem_id_targets_get(sem_id):
     return all_targets
 
 
+@auth_utils.confirm_associated
 def sem_id_submit_post(body, sem_id):
     """
     Submits OBs for a program.  Uses the obsid in the authentication
@@ -148,7 +148,8 @@ def sem_id_submit_post(body, sem_id):
     return 'do some magic! sem_id_submit_post'
 
 
-def sem_id_submit_put(body):
+@auth_utils.confirm_associated
+def sem_id_submit_put(sem_id, body=None):
     """sem_id_submit_put
 
     updates a program (OBs)
@@ -163,7 +164,9 @@ def sem_id_submit_put(body):
     return 'do some magic! sem_id_submit_put'
 
 
-# new controllers
+# ----- new controllers -----
+
+@auth_utils.confirm_associated
 def sem_id_ob_full(sem_id):  
     """sem_id_ob_full
        /semesterIds/{sem_id}/ob/full
@@ -181,15 +184,16 @@ def sem_id_ob_full(sem_id):
     if connexion.request.is_json:
         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
 
-    # db.observation_blocks.find({'metadata.sem_id': '2019B_U158'})
     query = {"metadata.sem_id": sem_id}
     containers = utils.get_by_query(query, 'obCollect')
 
     return utils.list_with_objectid(containers)
 
 
+@auth_utils.confirm_associated
 def sem_id_ob_full_cal(sem_id, instrument=None):
     """sem_id_ob_full_cal
+        /semesterIds/{sem_id}/ob/full/calibration
 
     Retrieves all the calibration observation blocks in their entirety for a
     given program.  Excludes completed observation blocks.
@@ -212,6 +216,7 @@ def sem_id_ob_full_cal(sem_id, instrument=None):
     return utils.list_with_objectid(matching_ob)
 
 
+@auth_utils.confirm_associated
 def sem_id_ob_full_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
                        ob_priority=None, min_priority=None, max_priority=None,
                        min_duration=None, max_duration=None, state=None,
@@ -281,6 +286,7 @@ def sem_id_ob_full_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
     return utils.list_with_objectid(matching_ob)
 
 
+@auth_utils.confirm_associated
 def sem_id_ob_metadata(sem_id, instrument=None,  min_ra=None, max_ra=None,
                        ob_priority=None, min_priority=None, max_priority=None,
                        min_duration=None, max_duration=None, state=None,
@@ -350,6 +356,7 @@ def sem_id_ob_metadata(sem_id, instrument=None,  min_ra=None, max_ra=None,
     return utils.list_with_objectid(matching_ob)
 
 
+@auth_utils.confirm_associated
 def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
                       ob_priority=None, min_priority=None, max_priority=None,
                       min_duration=None, max_duration=None, state=None,
