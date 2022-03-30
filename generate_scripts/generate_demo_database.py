@@ -12,7 +12,7 @@ import generate_utils as utils
 import generate_random_utils as random_utils
 import generate_template
 from papahana import util as papahana_util
-from papahana.controllers import authorization_controller as auth_utils
+from papahana.controllers import authorization_utils as auth_utils
 from bson.objectid import ObjectId
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
@@ -227,6 +227,9 @@ def parse_templates_version(template_list):
 def generate_observer_collection(coll):
     n_obs = 15
 
+    # Lucas, Tyler
+    keck_admin = [4769, 4866]
+
     keck_id_list = set()
     for obs in range(0, n_obs):
         keck_id_list.add(random_utils.randKeckId())
@@ -236,8 +239,7 @@ def generate_observer_collection(coll):
         for indx in range(0,random_utils.randInt(2,10)):
             sem_id_list.append(random_utils.randSemId())
 
-        akey = auth_utils.generate_api_key()
-        # akey = auth_utils.hash_key(akey)
+        akey = auth_utils.generate_new_api_key()
 
         doc = {'keck_id': obs_id, "api_key": akey, "associations": sem_id_list}
         _ = coll.insert_one(doc)
@@ -252,11 +254,12 @@ def generate_observer_collection(coll):
         assoc_list.append(result['metadata']['sem_id'])
 
     coll = papahana_util.config_collection('observerCollect', conf=config)
-    akey = auth_utils.generate_api_key()
+    akey = auth_utils.generate_new_api_key()
     # akey = auth_utils.hash_key(akey)
 
-    doc = {'keck_id': -1, "api_key": akey, "associations": assoc_list}
-    _ = coll.insert_one(doc)
+    for admin_id in keck_admin:
+        doc = {'keck_id': admin_id, "api_key": akey, "associations": assoc_list}
+        _ = coll.insert_one(doc)
 
     return
 
