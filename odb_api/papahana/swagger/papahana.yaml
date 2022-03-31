@@ -72,23 +72,23 @@ paths:
 #      x-swagger-router-controller: Observer
 #      x-openapi-router-controller: papahana.controllers.observers_controller
 
-  /login:
-    summary: login to get a cookie
-    get:
-      security: []
-      tags:
-        - Observers
-      operationId: login
-      responses:
-        '200':
-          description: OK
-          headers:
-            Set-Cookie:
-              schema:
-                type: string
-              example: ODB-API=46557084; Path=/; HttpOnly
-      x-swagger-router-controller: Observer
-      x-openapi-router-controller: papahana.controllers.observers_controller
+#  /login:
+#    summary: login to get a cookie
+#    get:
+#      security: []
+#      tags:
+#        - Observers
+#      operationId: login
+#      responses:
+#        '200':
+#          description: OK
+#          headers:
+#            Set-Cookie:
+#              schema:
+#                type: string
+#              example: ODB-API=46557084; Path=/; HttpOnly
+#      x-swagger-router-controller: Observer
+#      x-openapi-router-controller: papahana.controllers.observers_controller
 
   /semesterIds/:
     summary: Retrieves all the sem_ids associated with an observer
@@ -96,8 +96,6 @@ paths:
       tags:
         - Semester Id
       operationId: sem_id_get
-      parameters:
-        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -123,7 +121,6 @@ paths:
       operationId: sem_id_semester_get
       parameters:
         - $ref: '#/components/parameters/semester_path'
-        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -149,7 +146,6 @@ paths:
       operationId: sem_id_ob_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -175,7 +171,6 @@ paths:
       operationId: sem_id_proposal_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: returns the pdf or ps file of the proposal.
@@ -199,7 +194,6 @@ paths:
       operationId: sem_id_targets_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: array of targets
@@ -222,11 +216,11 @@ paths:
       tags:
         - Containers
         - Semester Id
-      description: Retrieves all containers associated with a program
+      description: Retrieves all containers associated with a program.  The Semester Id is a required
+                   parameter.
       operationId: sem_id_containers_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
-#        - $ref: '#/components/parameters/obs_id'
       responses:
         "200":
           description: OK
@@ -255,7 +249,6 @@ paths:
       operationId: sem_id_submit_post
       parameters:
         - $ref: '#/components/parameters/sem_id'
-#        - $ref: '#/components/parameters/obs_id'
       requestBody:
         content:
           application/json:
@@ -281,7 +274,6 @@ paths:
       operationId: sem_id_submit_put
       parameters:
         - $ref: '#/components/parameters/sem_id'
-#        - $ref: '#/components/parameters/obs_id'
       requestBody:
         content:
           application/json:
@@ -1547,6 +1539,26 @@ paths:
       x-swagger-router-controller: Observer
       x-openapi-router-controller: papahana.controllers.observers_controller
 
+#  /observers/keckid/update_cookie:
+#    get:
+#      tags:
+#        - Authorization
+#      description: Update the API Key Cookie
+#      operationId: update_cookie
+#      parameters:
+#        - $ref: '#/components/parameters/api_key'
+#      responses:
+#        "200":
+#          description: Returns the associated observer (Keck) ID for the API key.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/apikey'
+#        "422":
+#          description: Invalid API Key.
+#      x-swagger-router-controller: Authorization
+#      x-openapi-router-controller: papahana.controllers.authorization_controller.
+
 #  /observers/{sem_id}/add/{keck_id}:
 #    get:
 #      tags:
@@ -1618,16 +1630,27 @@ paths:
 #                example: JSESSIONID=abcde12345; Path=/; HttpOnly
 #
 security:
+#  - cookieAuth: []     # use the same name as under securitySchemes
   - ApiKeyAuth: []     # use the same name as under securitySchemes
 #  - ApiKeyUrl: []
 
 components:
   securitySchemes:
+#    cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
+#      type: "apiKey"
+#      in: "cookie"
+#      name: "ODB-API"  # cookie name
+#      x-apikeyInfoFunc: papahana.controllers.authorization_controller.ApiKeyAuth
+
     ApiKeyAuth:
       type: apiKey
       in: cookie
-      name: ODB-API
+      name: ODB-API-KEY
       x-apikeyInfoFunc: papahana.controllers.authorization_controller.check_apikey_auth
+
+##      x-apikeyInfoFunc: papahana.controllers.authorization_controller.check_ApiKeyAuth
+#      x-tokenInfoFunc: papahana.controllers.authorization_controller.ApiKeyAuth
+##      x-apikeyInfoFunc: papahana.controllers.authorization_controller.checkApikeyAuth
 
 #    ApiKeyUrl:        # arbitrary name for the security scheme
 #      type: apiKey
