@@ -72,26 +72,13 @@ paths:
 #      x-swagger-router-controller: Observer
 #      x-openapi-router-controller: papahana.controllers.observers_controller
 
-#  /login:
-#    summary: login to get a cookie
-#    get:
-#      security: []
-#      tags:
-#        - Observers
-#      operationId: login
-#      responses:
-#        '200':
-#          description: OK
-#          headers:
-#            Set-Cookie:
-#              schema:
-#                type: string
-#              example: ODB-API=46557084; Path=/; HttpOnly
-#      x-swagger-router-controller: Observer
-#      x-openapi-router-controller: papahana.controllers.observers_controller
 
-  /semesterIds/:
-    summary: Retrieves all the sem_ids associated with an observer
+# -------------------------------------------------------------------------------
+# Semester ID Section
+# -------------------------------------------------------------------------------
+
+  /semesterIds:
+    summary: Retrieves all the Semester IDs (sem_ids) associated with an observer.
     get:
       tags:
         - Semester Id
@@ -109,12 +96,14 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Observation Id not found.
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
+
   /semesterIds/{semester}/semester/:
-    summary: retrieves sem_id of a given semester for an obs_id.
+    summary: Retrieves programs (Semester IDs) of a given semester for an obs_id.
+             The Semester ID is a required parameter.
     get:
       tags:
         - Semester Id
@@ -134,12 +123,14 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Observation or Semester ID not found.
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
+
   /semesterIds/{sem_id}/ob:
-    summary: retrieve the ob_block information of a given semester ID.
+    summary: Retrieves the Observation Block (OB) information of a given program / semester ID.
+             The Semester ID is a required parameter.
     get:
       tags:
         - Semester Id
@@ -159,15 +150,17 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Observation or Semester ID not found
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
+
   /semesterIds/{sem_id}/proposal:
     get:
       tags:
         - Semester Id
-      description: retrieves the proposal associated with the program.
+      description: Retrieves the proposal associated with the program.
+                   The Semester ID is a required parameter.
       operationId: sem_id_proposal_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -182,15 +175,17 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Program not found.
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
+
   /semesterIds/{sem_id}/targets:
     get:
       tags:
         - Semester Id
-      description: Retrieves all the targets associated with a program.
+      description: Retrieves all the targets associated with a program (Semester ID).
+                   The Semester ID is a required parameter.
       operationId: sem_id_targets_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -207,17 +202,18 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Program not found.
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
+
   /semesterIds/{sem_id}/containers:
     get:
       tags:
         - Containers
         - Semester Id
-      description: Retrieves all containers associated with a program.  The Semester Id is a required
-                   parameter.
+      description: Retrieves all containers associated with a program.  The Semester ID
+                   is a required parameter.
       operationId: sem_id_containers_get
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -234,8 +230,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -243,9 +239,7 @@ paths:
     post:
       tags:
         - Semester Id
-      description: Submits a program (OBs).  Uses the obsid in the authentication \
-                    header and provided semId to retrieve the proposal file \
-                    associated with the program
+      description: Submits a program (OBs).  The Semester ID is a required parameter.
       operationId: sem_id_submit_post
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -262,8 +256,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Observation ID not found.
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -286,12 +280,11 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Observation ID not found.
+        "422":
+          description: Observation ID (Keck ID) not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
-  # new routes
   /semesterIds/{sem_id}/ob/metadata:
    get:
       tags:
@@ -362,61 +355,12 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
-  /semesterIds/{sem_id}/ob/full:
+  /semesterIds/{sem_id}/ob/sequences:
    get:
       tags:
         - Semester Id
-      description: Retrieves all the observation blocks in their entirety for a given program. Excludes completed observation blocks.
-      operationId: sem_id_ob_full
-      parameters:
-        - $ref: '#/components/parameters/sem_id'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "422":
-          description: Invalid parameter
-      x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semester_id_controller
-
-  /semesterIds/{sem_id}/ob/full/calibration:
-   get:
-      tags:
-        - Semester Id
-      description: Retrieves all the calibration observation blocks in their entirety for a given program.  Excludes completed observation blocks.
-      operationId: sem_id_ob_full_cal
-      parameters:
-        - $ref: '#/components/parameters/sem_id'
-        - $ref: '#/components/parameters/instrument_optional'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "422":
-          description: Invalid parameter
-      x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semester_id_controller
-
-  /semesterIds/{sem_id}/ob/full/science:
-   get:
-      tags:
-        - Semester Id
-      description: Retrieves all the science observation blocks in their entirety for a given program that are observable for the night.  Excludes completed observation blocks.
-      operationId: sem_id_ob_full_sci
+      description: Retrieves all the target components associated with a program.
+      operationId: sem_id_ob_sequence
       parameters:
         - $ref: '#/components/parameters/sem_id'
         - $ref: '#/components/parameters/min_ra'
@@ -446,6 +390,69 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
+  /semesterIds/{sem_id}/ob/calibration:
+   get:
+      tags:
+        - Semester Id
+      description: Retrieves all the calibration observation blocks in their entirety for a given program.  Excludes completed observation blocks.
+      operationId: sem_id_ob_cal
+      parameters:
+        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/instrument_optional'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Invalid parameter
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
+
+  /semesterIds/{sem_id}/ob/science:
+   get:
+      tags:
+        - Semester Id
+      description: Retrieves all the science observation blocks in their entirety for a given program that are observable for the night.  Excludes completed observation blocks.
+      operationId: sem_id_ob_sci
+      parameters:
+        - $ref: '#/components/parameters/sem_id'
+        - $ref: '#/components/parameters/min_ra'
+        - $ref: '#/components/parameters/max_ra'
+        - $ref: '#/components/parameters/instrument_optional'
+        - $ref: '#/components/parameters/ob_priority'
+        - $ref: '#/components/parameters/min_priority'
+        - $ref: '#/components/parameters/max_priority'
+        - $ref: '#/components/parameters/min_duration'
+        - $ref: '#/components/parameters/max_duration'
+        - $ref: '#/components/parameters/state'
+        - $ref: '#/components/parameters/observable'
+        - $ref: '#/components/parameters/completed'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Invalid parameter
+      x-swagger-router-controller: SemesterId
+      x-openapi-router-controller: papahana.controllers.semester_id_controller
+
+# -------------------------------------------------------------------------------
+# Container Section
+# -------------------------------------------------------------------------------
 
   /containers:
     get:
@@ -466,8 +473,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
     put:
@@ -551,8 +558,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/executionTimes:
@@ -576,8 +583,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/items:
@@ -602,8 +609,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/items/summary:
@@ -625,8 +632,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/verify:
@@ -649,8 +656,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/scheduleToO:
@@ -674,8 +681,8 @@ paths:
           description: Invalid status value
         "401":
           description: Unauthorized
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
   /containers/export:
@@ -696,10 +703,14 @@ paths:
                 $ref: '#/components/schemas/Container'
         "400":
           description: Invalid status value
-        "404":
-          description: Container not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
+# -------------------------------------------------------------------------------
+# Instrument Packages Section
+# -------------------------------------------------------------------------------
 
   /instrumentPackages/{instrument}:
     get:
@@ -1456,8 +1467,10 @@ paths:
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-
+      
+  # -------------------------------------------------------------------------------
   # observer section
+  # -------------------------------------------------------------------------------
   /observers/semesterIds:
     get:
       tags:

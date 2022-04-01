@@ -27,9 +27,14 @@ def sem_id_get():
     """
     # check_obs_id
     obs_id = g.user
-    semid_list = utils.get_proposal_ids(obs_id)
+    # check the database first
+    semester_list = obs_cont.observer_semid()
 
-    return semid_list
+    semid_list = utils.get_proposal_ids(obs_id)
+    if semid_list and type(semid_list) == 'list':
+        semester_list['associations'] += semid_list
+
+    return semester_list
 
 
 @auth_utils.confirm_associated
@@ -166,34 +171,34 @@ def sem_id_submit_put(sem_id, body=None):
 
 # ----- new controllers -----
 
+# @auth_utils.confirm_associated
+# def sem_id_ob_metadata(sem_id):
+#     """
+#        /semesterIds/{sem_id}/ob/metadata
+#
+#     sem_id" : "2019B_U158",
+#
+#     Retrieves all the observation blocks in their entirety for a given program.
+#     Excludes completed observation blocks.
+#
+#     :param sem_id: semester id
+#     :type sem_id: dict | bytes
+#
+#     :rtype: List
+#     """
+#     if connexion.request.is_json:
+#         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
+#
+#     query = {"metadata.sem_id": sem_id}
+#     containers = utils.get_by_query(query, 'obCollect')
+#
+#     return utils.list_with_objectid(containers)
+
+
 @auth_utils.confirm_associated
-def sem_id_ob_full(sem_id):  
-    """sem_id_ob_full
-       /semesterIds/{sem_id}/ob/full
-
-    sem_id" : "2019B_U158",
-
-    Retrieves all the observation blocks in their entirety for a given program.
-    Excludes completed observation blocks.
-
-    :param sem_id: semester id
-    :type sem_id: dict | bytes
-
-    :rtype: List
+def sem_id_ob_cal(sem_id, instrument=None):
     """
-    if connexion.request.is_json:
-        sem_id = SemIdSchema.from_dict(connexion.request.get_json())
-
-    query = {"metadata.sem_id": sem_id}
-    containers = utils.get_by_query(query, 'obCollect')
-
-    return utils.list_with_objectid(containers)
-
-
-@auth_utils.confirm_associated
-def sem_id_ob_full_cal(sem_id, instrument=None):
-    """sem_id_ob_full_cal
-        /semesterIds/{sem_id}/ob/full/calibration
+        /semesterIds/{sem_id}/ob/calibration
 
     Retrieves all the calibration observation blocks in their entirety for a
     given program.  Excludes completed observation blocks.
@@ -217,13 +222,13 @@ def sem_id_ob_full_cal(sem_id, instrument=None):
 
 
 @auth_utils.confirm_associated
-def sem_id_ob_full_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
+def sem_id_ob_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
                        ob_priority=None, min_priority=None, max_priority=None,
                        min_duration=None, max_duration=None, state=None,
                        observable=None, completed=None):
-    """sem_id_ob_full_sci
+    """
 
-        /semesterIds/{sem_id}/ob/full/science
+        /semesterIds/{sem_id}/ob/science
 
     Retrieves all the science observation blocks in their entirety for a given 
     program that are observable for the night.  Excludes completed observation 
@@ -411,6 +416,48 @@ def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
                                      observable, completed)
 
     return utils.list_with_objectid(matching_ob)
+
+def sem_id_ob_sequence(sem_id, min_ra=None, max_ra=None, instrument=None, ob_priority=None, min_priority=None, max_priority=None, min_duration=None, max_duration=None, state=None, observable=None, completed=None):  # noqa: E501
+    """sem_id_ob_sequence
+
+    Retrieves all the target components associated with a program. # noqa: E501
+
+    :param sem_id: semester id
+    :type sem_id: dict | bytes
+    :param min_ra: the minimum right ascension
+    :type min_ra: dict | bytes
+    :param max_ra: the maximum right ascension
+    :type max_ra: dict | bytes
+    :param instrument: restrict results to a specific Instrument
+    :type instrument: dict | bytes
+    :param ob_priority: return results with a given priority.
+    :type ob_priority: int
+    :param min_priority: only return results with priority greater than or equal to minimum.
+    :type min_priority: int
+    :param max_priority: only return results with priority less than to max.
+    :type max_priority: int
+    :param min_duration: only return results that have a duration greater than or equal to the min_duration.  The duration unit is minutes.
+    :type min_duration: float
+    :param max_duration: only return results that have a duration less than or equal to the max_duration.  The duration unit is minutes.
+    :type max_duration: float
+    :param state: return OBs of a certain state,  the possible states are defined in ‘Defined Types’.
+    :type state: str
+    :param observable: only return results that are observable for current UT to sunrise.  The duration is not taken into consideration. Default is false (0),  use observable&#x3D;1 for only OBs that are observable.
+    :type observable: bool
+    :param completed: return results that are completed.  The default is false (0),  use completed&#x3D;1 for only OBs that are observable.
+    :type completed: bool
+
+    :rtype: List
+    """
+    if connexion.request.is_json:
+        sem_id = SemIdSchema.from_dict(connexion.request.get_json())  # noqa: E501
+    if connexion.request.is_json:
+        min_ra = RASchema.from_dict(connexion.request.get_json())  # noqa: E501
+    if connexion.request.is_json:
+        max_ra = RASchema.from_dict(connexion.request.get_json())  # noqa: E501
+    if connexion.request.is_json:
+        instrument = InstrumentEnum.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 
 

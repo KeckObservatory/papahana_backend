@@ -254,10 +254,9 @@ def generate_observer_collection(coll):
         assoc_list.append(result['metadata']['sem_id'])
 
     coll = papahana_util.config_collection('observerCollect', conf=config)
-    akey = auth_utils.generate_new_api_key()
-    # akey = auth_utils.hash_key(akey)
 
     for admin_id in keck_admin:
+        akey = auth_utils.generate_new_api_key()
         doc = {'keck_id': admin_id, "api_key": akey, "associations": assoc_list}
         _ = coll.insert_one(doc)
 

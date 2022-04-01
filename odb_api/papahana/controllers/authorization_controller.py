@@ -13,10 +13,6 @@ def check_apikey_auth(api_key, required_scopes):
     """
     function called for the security,  must have a return value
     """
-    # TODO check if the WWW3 cookie exists,  get Keck ID,  add the new cookie
-    # raise OAuthProblem('API Key not found -- TEST', type(api_key), api_key)
-
-    # TODO use cookie to double check identity
     scrambled_api_key = request.cookies.get('ODB-API-KEY')
     scrampled_uid = request.cookies.get('ODB-API-UID')
     keck_id = int(auth_utils.decrypt_encoded_str(scrampled_uid))
