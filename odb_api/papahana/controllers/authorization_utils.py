@@ -19,10 +19,11 @@ def generate_api_key(keck_id):
     query = {'keck_id': keck_id}
     fields = {'api_key': 1, '_id': 0}
 
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
     if not results:
         doc = {'keck_id': keck_id, 'api_key': '', 'associations': ''}
-        utils.insert_into_collection(doc, 'observerCollect')
+        utils.insert_into_collection(doc, 'observerCollect', db_name='obs_db')
     else:
         try:
             key = results[0]['api_key']
@@ -37,7 +38,7 @@ def generate_api_key(keck_id):
     query = {'keck_id': keck_id}
     fields = {'api_key': new_key}
 
-    utils.update_doc(query, fields, 'observerCollect')
+    utils.update_doc(query, fields, 'observerCollect', db_name='obs_db')
 
     return new_key
 
@@ -102,7 +103,8 @@ def decrypt_encoded_str(encoded_str):
 def get_admin_key():
     query = {'keck_id': -1}
     fields = {'api_key': 1, '_id': 0}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
     print("get_admin", results)
 
     return results[0]['api_key']
@@ -118,12 +120,19 @@ def generate_new_api_key():
     return hashlib.sha256(os.urandom(32)).hexdigest()
 
 
-def confirm_associated(func):
+def check_sem_id_associated(sem_id):
+    if not sem_id or not obs_utils.is_semid_associated(sem_id):
+        abort(401, f"Unauthorized to access Program: {sem_id}")
+
+
+def confirm_sem_id_associated(func):
     def inner(sem_id):
-        if not obs_utils.is_associated(sem_id):
+        if not obs_utils.is_semid_associated(sem_id):
             abort(401, f"Unauthorized to access Program: {sem_id}")
         return func(sem_id)
     return inner
+
+
 
 
 

@@ -101,7 +101,7 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
-  /semesterIds/{semester}/semester/:
+  /semesterIds/{semester}/semester:
     summary: Retrieves programs (Semester IDs) of a given semester for an obs_id.
              The Semester ID is a required parameter.
     get:
@@ -355,12 +355,12 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
-  /semesterIds/{sem_id}/ob/sequences:
+  /semesterIds/{sem_id}/ob/observations:
    get:
       tags:
         - Semester Id
       description: Retrieves all the target components associated with a program.
-      operationId: sem_id_ob_sequence
+      operationId: sem_id_ob_observations
       parameters:
         - $ref: '#/components/parameters/sem_id'
         - $ref: '#/components/parameters/min_ra'

@@ -7,6 +7,7 @@ import pandas
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import observation_block_utils as ob_utils
 from papahana.controllers import observers_utils as obs_utils
+from papahana.controllers import authorization_utils as auth_utils
 
 
 from papahana.models.body import Body  
@@ -33,7 +34,7 @@ def ob_get(ob_id):
     """
     # will return one result,  and throw 404 if not found
     ob = utils.get_by_id(ob_id, 'obCollect')
-    ob_utils.check_ob_allowed(ob)
+    auth_utils.check_sem_id_associated(ob['metadata']['sem_id'])
 
     return ob
 
@@ -47,7 +48,8 @@ def ob_post(body):
 
     :rtype: str of new OB ID.
     """
-    ob_utils.check_ob_allowed(body)
+    auth_utils.check_sem_id_associated(body['metadata']['sem_id'])
+
     result = utils.insert_into_collection(body, 'obCollect')
 
     return str(result)
@@ -65,7 +67,12 @@ def ob_put(body, ob_id):
     :rtype: None
     """
     # check that access is allowed to the ob being replaced.
-    ob_utils.check_ob_id_allowed(ob_id)
+    ob = ob_get(ob_id)
+    if not ob:
+        abort(422, f'Observation Block id: {ob_id} not found.')
+
+    # check the update OB is associated
+    auth_utils.check_sem_id_associated(body['metadata']['sem_id'])
 
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect', clear=True)
 
@@ -79,8 +86,10 @@ def ob_delete(ob_id):
 
     :rtype: None
     """
-    # check that access is allowed to the ob being replaced.
-    ob_utils.check_ob_id_allowed(ob_id)
+    # check that access is allowed to delete the ob
+    ob = ob_get(ob_id)
+    if not ob:
+        abort(422, f'Observation Block id: {ob_id} not found.')
 
     utils.delete_by_id(ob_id, 'obCollect')
 
@@ -96,8 +105,8 @@ def ob_duplicate(ob_id, sem_id=None):
 
     :rtype: str
     """
-    ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
-    ob_utils.check_ob_allowed(ob)
+    # check that access is allowed to duplicate
+    ob = ob_get(ob_id)
 
     del ob['_id']
 
@@ -106,8 +115,8 @@ def ob_duplicate(ob_id, sem_id=None):
     else:
         sem_id = ob['metadata']['sem_id']
 
-    if not obs_utils.is_associated(sem_id):
-        abort(401, f"Unauthorized to access Program: {sem_id}")
+    # check the update OB is associated
+    auth_utils.check_sem_id_associated(sem_id)
 
     result = utils.insert_into_collection(ob, 'obCollect')
 
@@ -117,13 +126,15 @@ def ob_duplicate(ob_id, sem_id=None):
 def ob_executions(ob_id): 
     """
     Retrieves the list of execution attempts for a specific OB.
+        /obsBlocks/executions
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: List[str]
     """
-    ob = utils.get_by_id(ob_id, 'obCollect', cln_oid=False)
+    # get and check access is allowed
+    ob = ob_get(ob_id)
 
     if "status" not in ob or "executions" not in ob["status"]:
         return []
@@ -143,8 +154,11 @@ def ob_execution_time(ob_id):
 
     :rtype: float
     """
-    fields = {"observations": 1, "_id": 0, "status": 1}
+    fields = {"observations": 1, "_id": 0, "status": 1, "metadata.sem_id": 1}
     ob_info = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+
+    # check the OB is associated
+    auth_utils.check_sem_id_associated(ob_info['metadata']['sem_id'])
 
     if not ob_info or 'observations' not in ob_info:
         return 0.0
@@ -181,7 +195,7 @@ def ob_export(ob_id):
 
     :rtype: ObservationBlock
     """
-    return utils.get_by_id(ob_id, 'obCollect')
+    return ob_get(ob_id)
 
 
 def ob_sequence_filled(ob_id):
@@ -233,8 +247,11 @@ def ob_sequences_get(ob_id):
 
     :rtype: List[Observation]
     """
-    fields = {"_id": 0, "observations": 1, "acquisition": 1}
+    fields = {"_id": 0, "observations": 1, "acquisition": 1, 'metadata.sem_id': 1}
     ob_sequences = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+
+    # check the OB is associated
+    auth_utils.check_sem_id_associated(ob_sequences['metadata']['sem_id'])
 
     sequence_list = []
     if "acquisition" in ob_sequences:
@@ -259,8 +276,11 @@ def ob_sequence_id_get(ob_id, sequence_number):
 
     :rtype: Template
     """
-    fields = {"_id": 0, "observations": 1, "acquisition": 1}
+    fields = {"_id": 0, "observations": 1, "acquisition": 1, "metadata.sem_id": 1}
     ob_sequences = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+
+    # check the OB is associated
+    auth_utils.check_sem_id_associated(ob_sequences['metadata']['sem_id'])
 
     sequence = ob_utils.get_sequence(ob_sequences, sequence_number)
 
@@ -485,8 +505,12 @@ def ob_time_constraint_get(ob_id):
 
     :rtype: List[str]
     """
-    fields = {"time_constraints": 1}
+    fields = {"time_constraints": 1, "metadata.sem_id": 1}
     results = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+
+    # check the OB is associated
+    auth_utils.check_sem_id_associated(results['metadata']['sem_id'])
+
     if not results:
         abort(422, f'Observation block id not found')
 
@@ -510,6 +534,11 @@ def ob_time_constraint_put(body, ob_id):
     if not isinstance(body, list):
         abort(400, 'Invalid input type -- time constraints must be an array.')
 
+    # check that access is allowed to the ob being replaced.
+    ob = ob_get(ob_id)
+    if not ob:
+        abort(422, f'Observation Block id: {ob_id} not found.')
+
     utils.update_doc(utils.query_by_id(ob_id), {"time_constraints": body},
                      'obCollect')
 
@@ -529,12 +558,18 @@ def ob_upgrade(ob_id, sem_id=None):
     if connexion.request.is_json:
         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
 
-    # TODO add function to get sem_id
-    # if not sem_id:
-    #     sem_id = #get sem_id from ob
-    # if not obs_utils.is_associated(sem_id):
-    #     abort(401, f"Unauthorized to access Program: {sem_id}")
+    # check that access is allowed to the ob being replaced.
+    ob = ob_get(ob_id)
+    if not ob:
+        abort(422, f'Observation Block id: {ob_id} not found.')
 
+    if not sem_id:
+        sem_id = ob['metadata']['sem_id']
+
+    # check the OB is associated
+    auth_utils.check_sem_id_associated(sem_id)
+
+    # TODO find the new package,  port,  etc
 
     return 'do some magic!'
 
@@ -578,6 +613,7 @@ def ob_sequence_supplement(ob_id):
     """
     return 'do some magic!'
 
+
 def ob_last_version(ob_id):  # noqa: E501
     """ob_last_version
 
@@ -589,6 +625,7 @@ def ob_last_version(ob_id):  # noqa: E501
     :rtype: ObservationBlock
     """
     return 'do some magic!'
+
 
 def ob_revisions(ob_id, revision_n=None):  # noqa: E501
     """ob_revisions
@@ -603,6 +640,7 @@ def ob_revisions(ob_id, revision_n=None):  # noqa: E501
     :rtype: ObservationBlock
     """
     return 'do some magic!'
+
 
 def ob_revision_index(ob_id, revision_index):  # noqa: E501
     """ob_revision_index

@@ -81,6 +81,12 @@ sem_ids = ["2017A_U033", "2017A_U050",  "2017B_U042",  "2017B_U043",
            "2020B_U082",  "2020B_N133",  "2021A_U046",  "2021A_U073",
            "2021A_N140",  "2021B_U056",  "2021B_N057"]
 
+sem_id_tail = ["_U033", "_U050",  "_U042",  "_U043", "_U042",  "_U043",
+               "_U044",  "_U045", "_U016",  "_U064",  "_N020",  "_U123",
+               "_U124",  "_U158",  "_U159",  "_U160", "_N028",  "_U169",
+               "_U048",  "_U049", "_U082",  "_N133",  "_U046",  "_U073",
+               "_N140",  "_U056",  "_N057"]
+
 randContainerName = lambda: random.choice(containers)
 
 
@@ -103,6 +109,7 @@ randPI = lambda: random.choice(list(pis))
 randObserver = lambda: random.choice(observers)
 randKeckId = lambda: random.choice(keck_ids)
 randSemId = lambda: random.choice(sem_ids)
+randSemIdTail = lambda: random.choice(sem_id_tail)
 randObserverList = lambda x=1: list(np.random.choice(observers, size=random.randint(1, x), replace=False))
 randComment = lambda: random.choice(comments)
 optionalRandComment = lambda: random.choice([None, randComment()])

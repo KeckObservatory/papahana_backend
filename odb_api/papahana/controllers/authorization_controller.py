@@ -30,7 +30,8 @@ def check_apikey_auth(api_key, required_scopes):
 
         query = {'api_key': api_key}
         fields = {'keck_id': 1, '_id': 0}
-        results = utils.get_fields_by_query(query, fields, 'observerCollect')
+        results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                            db_name='obs_db')
         if not results:
             raise OAuthProblem('API Key not found')
 

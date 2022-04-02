@@ -68,7 +68,7 @@ def calc_dither_time(obs):
     seq_blk = obs["parameters"]
 
     if 'seq_dither_number' in seq_blk:
-        n_offsets = len(seq_blk['seq_dither_number'])
+        n_offsets = seq_blk['seq_dither_number']
     else:
         n_offsets = 1
 

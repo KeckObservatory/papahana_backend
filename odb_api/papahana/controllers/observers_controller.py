@@ -44,7 +44,7 @@ def observer_apikey():
     #
     # query = {"keck_id": keck_id}
     # fields = {'api_key': 1, '_id': 0}
-    # results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    # results = utils.get_fields_by_query(query, fields, 'observerCollect', db_name='obs_db')
     #
     # if not results:
     #     return {}
@@ -70,14 +70,15 @@ def observer_keckid(api_key):
     """
     query = {'api_key': api_key}
     fields = {'keck_id': 1, '_id': 0}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
     if not results:
         return {}
 
     return results[0]
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def observer_view(sem_id):
     """observer_view
         /observers/{sem_id}/view
@@ -95,7 +96,8 @@ def observer_view(sem_id):
 
     query = {'associations': sem_id}
     fields = {'keck_id': 1, '_id': 0}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
     if not results:
         return {}
 
@@ -119,7 +121,8 @@ def observer_semid():
     query = {'keck_id': keck_id}
     fields = {'keck_id': 1, '_id': 0, 'associations': 1}
 
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
     if results:
         results = results[0]
     else:

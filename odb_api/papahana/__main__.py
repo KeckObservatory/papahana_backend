@@ -10,10 +10,9 @@ from papahana.controllers import authorization_controller as auth_utils
 def create_app():
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.add_api('papahana.yaml')
-    # _ = CORS(app.app, allow_credentials=True)
-
     CORS(app.app, supports_credentials=True,
-         resources={r"*": {"origins": ["https://www3build.keck.hawaii.edu", "https://www3.keck.hawaii.edu"],
+         resources={r"*": {"origins": ["https://www3build.keck.hawaii.edu",
+                                       "https://www3.keck.hawaii.edu"],
                            "allow_headers": "*", "expose_headers": "*"}})
 
     mode = util.read_mode()
@@ -31,17 +30,13 @@ def create_app():
 
 def main():
     app = create_app()
-
+    
     # @app.app.after_request
-    # def allow_cors_reponse(response):
-    #     print('coring')
-    #     # response.headers.set("Content-Type", "application/json")
-    #     response.headers.set('Access-Control-Allow-Credentials', 'true')
-    #     # response.headers.set('Access-Control-Allow-Origin', 'https://www3build.keck.hawaii.edu')
-    #     # response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    #     # response.headers.set('Access-Control-Allow-Methods', 'GET, POST')
-    #     # response.headers.set('Access-Control-Allow-Methods', 'GET, POST', 'PUT', 'DELETE')
-    #     return response
+    # def update_cookie(response):
+    #     try:
+    #         response.set_cookie('ODB-API-KEY', max_age=86400)
+    #     except:
+    #         pass
 
     app.run(port=50002)
 

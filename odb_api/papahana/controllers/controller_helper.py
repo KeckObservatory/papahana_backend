@@ -7,15 +7,12 @@ from bson import json_util
 
 from papahana.util import config_collection
 
-
 # Generalized
 def list_with_objectid(results):
     """
     unwrap a list of dictionaries that include ObjectIds
-
     :param results: the results
     :type results: dict
-
     :rtype : List[Dict{Query Result}]
     """
     if not results:
@@ -31,10 +28,8 @@ def json_with_objectid(result):
     """
     work with the ObjectID to make it json serializable.  Also unnest the
     $oid from _id to make the id = result['_id]
-
     :param result: the results
     :type result: dict
-
     :rtype : Dict{Query Result}
     """
     cln_result = json.loads(json_util.dumps(result))
@@ -47,12 +42,10 @@ def json_with_objectid(result):
 def query_by_id(obj_id, add_delete=True):
     """
     query by string container_id
-
     :param obj_id: object id string
     :type obj_id: str
     :param cln_oid: restrict results to exclude status=deleted.
     :type cln_oid: bool
-
     :rtype: Dict{Query}
     """
     obj_id = get_object_id(obj_id)
@@ -63,17 +56,15 @@ def query_by_id(obj_id, add_delete=True):
         return {"_id": obj_id}
 
 
-def get_by_id(id, collect_name, cln_oid=True):
+def get_by_id(id, collect_name, db_name=None, cln_oid=True):
     """
     query by string container_id
-
     :param id: object id string
     :type id: str
     :param collect_name: the database collection.
     :type collect_name: str
     :param cln_oid: set to True to change object id to string in results.
     :type cln_oid: bool
-
     :rtype: Dict{Query Result}
     """
     if collect_name == 'obCollect':
@@ -81,7 +72,7 @@ def get_by_id(id, collect_name, cln_oid=True):
     else:
         query = query_by_id(id, add_delete=False)
 
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=None)
 
     results = list(coll.find(query))
     if not results:
@@ -93,58 +84,52 @@ def get_by_id(id, collect_name, cln_oid=True):
     return results[0]
 
 
-def get_by_query(query, collect_name):
+def get_by_query(query, collect_name, db_name=None):
     """
     query the database by input query pararmeters for all fields in a document.
-
     :param query: json query parameter
     :type query: dict
     :param collect_name: the database collection.
     :type collect_name: str
-
     :rtype: List[Dict{Query Result}]
     """
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=None)
     if "status.deleted" not in query and collect_name == 'obCollect':
         query["status.deleted"] = False
 
     return list(coll.find(query))
 
 
-def get_fields_by_query(query, fields, collect_name):
+def get_fields_by_query(query, fields, collect_name, db_name=None):
     """
     query the database by input query parameters for input fields.
-
     :param query: json query parameters
     :type query: dict
     :param query: json field parameters
     :type query: dict
     :param collect_name: the database collection.
     :type collect_name: str
-
     :rtype: List[Dict{Query Result}]
     """
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=db_name)
     if "status.deleted" not in query and collect_name == 'obCollect':
         query["status.deleted"] = False
 
     return list(coll.find(query, fields))
 
 
-def get_fields_by_id(ob_id, fields, collect_name):
+def get_fields_by_id(ob_id, fields, collect_name, db_name=None):
     """
     query the database by ObjectId for input fields.
-
     :param query: json query parameters
     :type query: dict
     :param query: json field parameters
     :type query: dict
     :param collect_name: the database collection.
     :type collect_name: str
-
     :rtype: List[Dict{Query Result}]
     """
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=db_name)
     if collect_name == 'obCollect':
         query = query_by_id(ob_id)
     else:
@@ -157,18 +142,16 @@ def get_fields_by_id(ob_id, fields, collect_name):
     return results[0]
 
 
-def insert_into_collection(doc, collect_name):
+def insert_into_collection(doc, collect_name, db_name=None):
     """
     Add a new document to a collection.
-
     :param doc: the document to insert
     :type doc: dict
     :param collect_name: the database collection.
     :type collect_name: str
-
     rtype: document id
     """
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=None)
 
     if "_id" in doc:
         del doc["_id"]
@@ -183,16 +166,15 @@ def insert_into_collection(doc, collect_name):
     return result
 
 
-def delete_from_collection(query, collect_name):
+def delete_from_collection(query, collect_name, db_name=None):
     """
     Delete document from a database collection.
-
     :param query: the query used to find the document
     :type query: dict
     :param collect_name: the database collection.
     :type collect_name: str
     """
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=None)
 
     try:
         coll.delete_one(query)
@@ -202,20 +184,18 @@ def delete_from_collection(query, collect_name):
         return 1
 
 
-def delete_by_id(obj_id, collect_name):
+def delete_by_id(obj_id, collect_name, db_name=None):
     """
     Delete a document in a database collection.
-
     :param id: the document id
     :type query: str / ObjectId
     :param collect_name: the database collection.
     :type collect_name: str
-
     :rtype (int) 1 on error,  0 on success
     """
     obj_id = get_object_id(obj_id)
 
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=None)
 
     try:
         coll.delete_one({'_id': obj_id})
@@ -224,22 +204,20 @@ def delete_by_id(obj_id, collect_name):
         abort(400, f'Error while deleting by id,  error: {err}.')
 
 
-def replace_doc(obj_id, doc, collect_name):
+def replace_doc(obj_id, doc, collect_name, db_name=None):
     """
     Replace a document in a database collection.
-
     :param id: the document id
     :type query: str / ObjectId
     :param doc: the document used as a replacement.
     :type doc: dict
     :param collect_name: the database collection.
     :type collect_name: str
-
     :rtype
     """
     obj_id = get_object_id(obj_id)
 
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=None)
 
     try:
         result = coll.replace_one({'_id': obj_id}, doc)
@@ -249,10 +227,9 @@ def replace_doc(obj_id, doc, collect_name):
     return result
 
 
-def update_doc(query, new_vals, collect_name, clear=False):
+def update_doc(query, new_vals, collect_name, db_name=None, clear=False):
     """
     Update a database collection document.
-
     :param query: the query used to find the document
     :type query: dict
     :param new_vals: the key/val pair of new values to update.
@@ -262,7 +239,7 @@ def update_doc(query, new_vals, collect_name, clear=False):
     :param clear: remove all fields that are not in new_vals
     :type collect_name: bool
     """
-    coll = config_collection(collect_name)
+    coll = config_collection(collect_name, db_name=db_name)
 
     fields_to_update = new_vals.keys()
 
@@ -280,28 +257,9 @@ def update_doc(query, new_vals, collect_name, clear=False):
     coll.update_one(query, {"$set": new_vals})
 
 
-# def replace_doc(query, new_vals, collect_name):
-#     """
-#     Update a every field in a database collection document.
-#
-#     :param query: the query used to find the document
-#     :type query: dict
-#     :param new_vals: the key/val pair of new values to update.
-#     :type new_vals: dict
-#     :param collect_name: the database collection.
-#     :type collect_name: str
-#     """
-#     coll = config_collection(collect_name)
-#     if '_id' in new_vals.keys():
-#         del new_vals['_id']
-#
-#     coll.update_one(query, {"$set": new_vals})
-
-
 def update_add_doc(query, new_vals, collect_name):
     """
     Add to a database collection document.
-
     :param query: the query used to find the document
     :type query: dict
     :param new_vals: the key/val pair of new values to update.
@@ -321,7 +279,6 @@ def get_object_id(obj_id):
     transform an ObjectId string to ObjectId
     :param obj_id: ObjectId string
     :type obj_id: str
-
     :rtype: ObjectId
     """
     try:
@@ -337,10 +294,8 @@ def get_object_id(obj_id):
 def clean_objectid(docs):
     """
     change ObjectId to string in the result documents so it can be json serialized.
-
     :param docs: A list of query docs.
     :type docs: List[Dict]
-
     :rtype: ObjectId
     """
     cln_docs = []
@@ -356,7 +311,6 @@ def get_ob_list(container_id):
     """
     :param container_id: container identifier
     :type container_id: str
-
     :rtype: List[str]
     """
     results = get_by_id(container_id, 'containerCollect')
@@ -422,12 +376,10 @@ def query_proposals_api(cmd_url):
 def obs_id_associated(sem_id, obs_id):
     """
     Check that an observer id is associated with a semester id.
-
     :param sem_id: semester id
     :type sem_id: str
     :param obs_id: observer id
     :type obs_id: int
-
     """
     sem_ids = get_proposal_ids(obs_id)
 
@@ -504,10 +456,8 @@ def check_allowed(ob_value, template_parameters):
 def calc_duration(ob_id):
     """
     Determine the duration of an observation block.
-
     :param ob_id: observation block ObjectId
     :type: dict
-
     :rtype: float (minutes)
     """
     query = query_by_id(ob_id)
@@ -532,7 +482,6 @@ def calc_duration(ob_id):
 def zero_parameters(params, param_set):
     """
     Determine the duration of an observation block.
-
     :param params: the dictionary of parameters
     :rtype: dict
     :param param_set: a set of parameter names (dict keys) to check.
@@ -589,7 +538,6 @@ def odt_ob_query(query, fields, instrument, min_ra, max_ra, ob_priority,
     :param completed: return results that are completed.  The default is false,
                       use completed for only OBs that are observable.
     :type completed: bool
-
     :rtype: List
     """
 

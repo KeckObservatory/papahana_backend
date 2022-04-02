@@ -1,47 +1,56 @@
 mode:
   config: dev 
 
-local:
-  dbName: papahana 
-  obCollect: observation_blocks
-  observerCollect: observer
-  containerCollect: containers
-  scriptCollect: scripts
-  templateCollect: templates
-  ipCollect: instrument_packages
-  port: 27017
-  ip: 
-demo:
-  dbName: papahana 
-  obCollect: observation_blocks
-  observerCollect: observer
-  containerCollect: containers
-  scriptCollect: scripts
-  templateCollect: templates
-  ipCollect: instrument_packages
-  ip:
-  port: 27017
-dev:
-  dbName: papahana_test
-  obCollect: observation_blocks
-  observerCollect: observer
-  containerCollect: containers
-  scriptCollect: scripts
-  templateCollect: templates
-  ipCollect: instrument_packages
-  port: 27017 
-  ip: 
-test:
-  dbName: papahana_test
-  obCollect: observation_blocks
-  observerCollect: observer
-  containerCollect: containers
-  scriptCollect: scripts
-  templateCollect: templates
-  ipCollect: instrument_packages
-  port: 27017
-  ip: 
+apikey:
+  secret_key:
+  timeout: 86400
 
+production:
+  ob_db:
+    - 2022A
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 27017
+  ip:
+  admin:
+    - #
+    - #
+dev:
+  ob_db:
+    - 2022A_dev
+    - 2021B_dev
+    - 2021A_dev
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 27017
+  ip:
+  admin:
+    - #
+    - #
+test:
+  ob_db: observing_db_test
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 27017
+  ip:
+  admin:
+    - #
+    - #
 
 apis:
   proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php

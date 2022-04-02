@@ -37,7 +37,7 @@ def sem_id_get():
     return semester_list
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_proposal_get(sem_id):
     """
     retrieves the proposal associated with the program.
@@ -66,20 +66,25 @@ def sem_id_semester_get(semester):
     obs_id = g.user
 
     # check the database first
-    semester_list = obs_cont.observer_semid()
+    full_list = obs_cont.observer_semid()['associations']
 
     # check the proposals api
     sem_ids = utils.get_proposal_ids(obs_id)
-    for semid in sem_ids:
-        if semester in semid:
-            semester_list.append(semid)
+    if sem_ids:
+        full_list += sem_ids
+
+    semester_list = []
+    for sem_id in full_list:
+        if semester in sem_id:
+            semester_list.append(sem_id)
 
     # TODO check the schedule
+    semester_list = set(semester_list)
 
-    return set(semester_list)
+    return {semester: list(semester_list)}
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_ob_get(sem_id):
     """
     Retrieves the ob_blocks for a sem_id
@@ -96,7 +101,7 @@ def sem_id_ob_get(sem_id):
     return utils.list_with_objectid(ob_blocks)
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_containers_get(sem_id):
     """
     Retrieves all containers associated with a program.  The Semester Id
@@ -114,7 +119,7 @@ def sem_id_containers_get(sem_id):
     return utils.list_with_objectid(containers)
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_targets_get(sem_id):
     """
     Retrieves all the targets associated with a program.
@@ -136,7 +141,7 @@ def sem_id_targets_get(sem_id):
     return all_targets
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_submit_post(body, sem_id):
     """
     Submits OBs for a program.  Uses the obsid in the authentication
@@ -153,7 +158,7 @@ def sem_id_submit_post(body, sem_id):
     return 'do some magic! sem_id_submit_post'
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_submit_put(sem_id, body=None):
     """sem_id_submit_put
 
@@ -171,7 +176,7 @@ def sem_id_submit_put(sem_id, body=None):
 
 # ----- new controllers -----
 
-# @auth_utils.confirm_associated
+# @auth_utils.confirm_sem_id_associated
 # def sem_id_ob_metadata(sem_id):
 #     """
 #        /semesterIds/{sem_id}/ob/metadata
@@ -195,7 +200,7 @@ def sem_id_submit_put(sem_id, body=None):
 #     return utils.list_with_objectid(containers)
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_ob_cal(sem_id, instrument=None):
     """
         /semesterIds/{sem_id}/ob/calibration
@@ -221,7 +226,7 @@ def sem_id_ob_cal(sem_id, instrument=None):
     return utils.list_with_objectid(matching_ob)
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_ob_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
                        ob_priority=None, min_priority=None, max_priority=None,
                        min_duration=None, max_duration=None, state=None,
@@ -291,7 +296,7 @@ def sem_id_ob_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
     return utils.list_with_objectid(matching_ob)
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_ob_metadata(sem_id, instrument=None,  min_ra=None, max_ra=None,
                        ob_priority=None, min_priority=None, max_priority=None,
                        min_duration=None, max_duration=None, state=None,
@@ -361,7 +366,7 @@ def sem_id_ob_metadata(sem_id, instrument=None,  min_ra=None, max_ra=None,
     return utils.list_with_objectid(matching_ob)
 
 
-@auth_utils.confirm_associated
+@auth_utils.confirm_sem_id_associated
 def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
                       ob_priority=None, min_priority=None, max_priority=None,
                       min_duration=None, max_duration=None, state=None,
@@ -417,10 +422,10 @@ def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
 
     return utils.list_with_objectid(matching_ob)
 
-def sem_id_ob_sequence(sem_id, min_ra=None, max_ra=None, instrument=None, ob_priority=None, min_priority=None, max_priority=None, min_duration=None, max_duration=None, state=None, observable=None, completed=None):  # noqa: E501
-    """sem_id_ob_sequence
-
+def sem_id_ob_observations(sem_id, min_ra=None, max_ra=None, instrument=None, ob_priority=None, min_priority=None, max_priority=None, min_duration=None, max_duration=None, state=None, observable=None, completed=None):  # noqa: E501
+    """
     Retrieves all the target components associated with a program. # noqa: E501
+        /semesterIds/{sem_id}/ob/observations
 
     :param sem_id: semester id
     :type sem_id: dict | bytes
@@ -450,14 +455,23 @@ def sem_id_ob_sequence(sem_id, min_ra=None, max_ra=None, instrument=None, ob_pri
     :rtype: List
     """
     if connexion.request.is_json:
-        sem_id = SemIdSchema.from_dict(connexion.request.get_json())  # noqa: E501
+        sem_id = SemIdSchema.from_dict(connexion.request.get_json())
     if connexion.request.is_json:
-        min_ra = RASchema.from_dict(connexion.request.get_json())  # noqa: E501
+        min_ra = RASchema.from_dict(connexion.request.get_json())
     if connexion.request.is_json:
-        max_ra = RASchema.from_dict(connexion.request.get_json())  # noqa: E501
+        max_ra = RASchema.from_dict(connexion.request.get_json())
     if connexion.request.is_json:
-        instrument = InstrumentEnum.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
+
+    query = {'metadata.sem_id': sem_id}
+    result = {'observations': 1}
+
+    matching_ob = utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
+                                     ob_priority, min_priority, max_priority,
+                                     min_duration, max_duration, state,
+                                     observable, completed)
+
+    return utils.list_with_objectid(matching_ob)
 
 
 

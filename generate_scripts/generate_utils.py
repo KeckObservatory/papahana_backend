@@ -11,7 +11,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--mode", "-m", type=str,
-                        default='dev',
+                        default=None,
                         help="The configuration to read")
 
     return parser.parse_args()

@@ -5,16 +5,20 @@ from papahana.controllers import controller_helper as utils
 
 
 def add_association(keck_id, sem_id):
-    coll = config_collection('observerCollect')
-    _ = coll.update_one({"keck_id": keck_id}, {"$addToSet": {"associations": sem_id}})
+    coll = config_collection('observerCollect', db_name='obs_db')
+    _ = coll.update_one({"keck_id": keck_id},
+                        {"$addToSet": {"associations": sem_id}})
 
 
-def is_associated(sem_id):
+def is_semid_associated(sem_id):
     keck_id = g.user
 
     query = {'keck_id': keck_id, 'associations': sem_id}
     fields = {'associations': 1, '_id': 0}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
+
     if results:
         try:
             if sem_id in results[0]['associations']:
@@ -39,7 +43,8 @@ def add_sem_id_db(sem_id):
 
     query = {'keck_id': keck_id}
     fields = {'associations': 1, '_id': 0}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect')
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
 
     assoc_list = []
     if results:
@@ -51,7 +56,7 @@ def add_sem_id_db(sem_id):
     assoc_list.append(sem_id)
 
     fields = {'associations': assoc_list}
-    utils.update_doc(query, fields, 'observerCollect')
+    utils.update_doc(query, fields, 'observerCollect', db_name='obs_db')
 
     return
 

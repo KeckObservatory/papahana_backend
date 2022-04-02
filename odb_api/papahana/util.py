@@ -48,14 +48,21 @@ def read_secret(config='./config.live.yaml'):
         return None
 
 
-def config_collection(collection, conf=None):
+def config_collection(collection, db_name=None, conf=None):
     if not conf:
         with current_app.app_context():
             conf = current_app.config_params
 
-    coll = create_collection(conf['dbName'], conf[collection],
-                             port=conf['port'], ip=conf['ip'])
+    if not db_name:
+        db_name = 'ob_db'
+
+    db = conf[db_name]
+
+    coll = create_collection(db, conf[collection], port=conf['port'],
+                             ip=conf['ip'])
+
     return coll
+
 
 
 def create_collection(dbName, collName, port=27017, ip='127.0.0.1',

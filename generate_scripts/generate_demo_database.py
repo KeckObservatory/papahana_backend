@@ -115,6 +115,7 @@ def randTimeConstraint():
 
 
 def generate_container(ob_blocks):
+
     ob_set = set()
     n_ob = random.randint(0, 9)
     for indx in range(0, n_ob):
@@ -223,12 +224,10 @@ def parse_templates_version(template_list):
     return schema
 
 
-
 def generate_observer_collection(coll):
     n_obs = 15
 
-    # Lucas, Tyler
-    keck_admin = [4769, 4866]
+    keck_admin = config['admin']
 
     keck_id_list = set()
     for obs in range(0, n_obs):
@@ -244,16 +243,17 @@ def generate_observer_collection(coll):
         doc = {'keck_id': obs_id, "api_key": akey, "associations": sem_id_list}
         _ = coll.insert_one(doc)
 
+    assoc_list = []
     # create admin observer
     coll = papahana_util.config_collection('obCollect', conf=config)
 
     fields = {'metadata.sem_id': 1, '_id': 0}
     sem_ids = list(coll.find({}, fields))
-    assoc_list = []
     for result in sem_ids:
         assoc_list.append(result['metadata']['sem_id'])
 
-    coll = papahana_util.config_collection('observerCollect', conf=config)
+    coll = papahana_util.config_collection('observerCollect', db_name='obs_db',
+                                           conf=config)
 
     for admin_id in keck_admin:
         akey = auth_utils.generate_new_api_key()
@@ -386,7 +386,7 @@ def generate_observation(nLen, maxArr):
 
 
 @remove_none_values_in_dict
-def generate_metadata(maxArr):
+def generate_metadata(maxArr, semester):
     pi_name = random_utils.randPI()
     schema = {
         'name': 'standard stars #' + str(random.randint(0, 9)),
@@ -394,7 +394,7 @@ def generate_metadata(maxArr):
         'priority': random_utils.randInt(100),
         'ob_type': 'science',
         'pi_id': random_utils.pis[pi_name],
-        'sem_id': str(random_utils.randSemId()),
+        'sem_id': random_utils.randSemId(),
         'instrument': 'KCWI',
         'comment': random_utils.optionalRandComment()
     }
@@ -420,7 +420,7 @@ def generate_program(container_list):
 
     schema = {
         'name': 'Program #' + str(random.randint(0, 99)),
-        'sem_id': str(random_utils.randSemId()),
+        'sem_id': random_utils.randSemId(),
         'container_list': list(ob_set),
         'comment': random_utils.optionalRandComment()
     }
@@ -533,9 +533,10 @@ def generate_mos_target():
 
 
 @remove_none_values_in_dict
-def generate_observation_block(nLen, maxArr, template_list, inst='KCWI', _id=None):
+def generate_observation_block(nLen, maxArr, template_list, inst='KCWI',
+                               semester=None, _id=None):
     schema = {
-        'metadata': generate_metadata(maxArr),
+        'metadata': generate_metadata(maxArr, semester),
         'target': random.choice([None, generate_sidereal_target(),
                                  generate_nonsidereal_target(),
                                  generate_mos_target()]),
@@ -627,26 +628,30 @@ def make_status_realistic(ob):
 if __name__=='__main__':
     args = utils.parse_args()
     mode = args.mode
+    if not args.mode:
+        mode = papahana_util.read_mode()
 
     seed = 1984739
     random.seed(seed)
 
     config = utils.read_config(mode)
+    obs_db = config['obs_db']
 
-    # generate templates - returns [{'_id': ObjectId('622ff5db24d4e9afb8e2872c'), ..]
+    # generate templates
     print("...generating templates")
     template_list = generate_template.generate_templates()
 
-    # # Create ob_blocks collection
+    # Create ob_blocks collection
     print("...generating OBs")
     coll = papahana_util.config_collection('obCollect', conf=config)
+
+    ob_blocks = []
     coll.drop()
     nLen = 5
     maxArr = 5
     inst = 'KCWI'
-    ob_blocks = []
     for idx in range(random_utils.NOBS):
-        doc = generate_observation_block(nLen, maxArr, template_list, inst)
+        doc = generate_observation_block(nLen, maxArr, template_list, inst=inst)
         result = coll.insert_one(doc)
         ob_blocks.append(str(result.inserted_id))
 
@@ -656,6 +661,7 @@ if __name__=='__main__':
     # Create containers collection
     print("...generating containers")
     coll = papahana_util.config_collection('containerCollect', conf=config)
+
     coll.drop()
     nContainers = 20
     container_list = []
@@ -664,10 +670,11 @@ if __name__=='__main__':
         result = coll.insert_one(doc)
         container_list.append(str(result.inserted_id))
 
-    # # Create Instrument collection
+    # Create Instrument collection
     print("...generating instrument package")
     coll = papahana_util.config_collection('ipCollect', conf=config)
     coll.drop()
+
     ip = generate_inst_package(template_list)
     result = coll.insert_one(ip)
 
@@ -684,11 +691,11 @@ if __name__=='__main__':
         script_schema = generate_scripts(name, stype)
         result = coll.insert_one(script_schema)
 
-
     # Create observer collection
     print("...generating observers")
 
-    coll = papahana_util.config_collection('observerCollect', conf=config)
+    coll = papahana_util.config_collection('observerCollect', db_name='obs_db',
+                                                conf=config)
     coll.drop()
     generate_observer_collection(coll)
 
