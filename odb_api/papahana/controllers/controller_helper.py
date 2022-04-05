@@ -72,11 +72,11 @@ def get_by_id(id, collect_name, db_name=None, cln_oid=True):
     else:
         query = query_by_id(id, add_delete=False)
 
-    coll = config_collection(collect_name, db_name=None)
+    coll = config_collection(collect_name, db_name=db_name)
 
     results = list(coll.find(query))
     if not results:
-        abort(404, f'No results in: {collect_name} for id: {id}')
+        abort(422, f'No results in: {collect_name} for id: {id}')
 
     if cln_oid:
         return json_with_objectid(results[0])
@@ -87,13 +87,17 @@ def get_by_id(id, collect_name, db_name=None, cln_oid=True):
 def get_by_query(query, collect_name, db_name=None):
     """
     query the database by input query pararmeters for all fields in a document.
+
     :param query: json query parameter
     :type query: dict
     :param collect_name: the database collection.
     :type collect_name: str
+    :param db_name: the database name,  the default is the ODB.
+    :type db_name: str
+
     :rtype: List[Dict{Query Result}]
     """
-    coll = config_collection(collect_name, db_name=None)
+    coll = config_collection(collect_name, db_name=db_name)
     if "status.deleted" not in query and collect_name == 'obCollect':
         query["status.deleted"] = False
 
@@ -153,8 +157,9 @@ def insert_into_collection(doc, collect_name, db_name=None):
     """
     coll = config_collection(collect_name, db_name=None)
 
-    if "_id" in doc:
+    if type(doc) is dict and "_id" in doc:
         del doc["_id"]
+
     try:
         result = coll.insert_one(doc)
     except Exception as err:
@@ -304,23 +309,6 @@ def clean_objectid(docs):
         cln_docs.append(result)
 
     return cln_docs
-
-
-# Container specific helpers
-def get_ob_list(container_id):
-    """
-    :param container_id: container identifier
-    :type container_id: str
-    :rtype: List[str]
-    """
-    results = get_by_id(container_id, 'containerCollect')
-
-    if results:
-        ob_list = results['observation_blocks']
-    else:
-        ob_list = []
-
-    return ob_list
 
 
 # semesters_and_program specific

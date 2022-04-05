@@ -30,18 +30,7 @@ def create_app():
 
 def main():
     app = create_app()
-    
-    # @app.app.after_request
-    # def update_cookie(response):
-    #     try:
-    #         response.set_cookie('ODB-API-KEY', max_age=86400)
-    #     except:
-    #         pass
-
     app.run(port=50002)
-
-
-
 
 if __name__ == '__main__':
     main()

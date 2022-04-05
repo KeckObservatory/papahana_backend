@@ -1,8 +1,11 @@
 from flask import abort, g
 import json
+import ast
 
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import authorization_controller as auth_utils
+from papahana.models.observation_block import ObservationBlock
+from papahana.models.status import Status
 
 
 def calc_exp_time(obs):
@@ -126,5 +129,10 @@ def check_ob_allowed(ob):
                    f' OB - the semester ID does not match allowed programs.')
 
 
+def add_default_status(body, json_body):
+    ob_obj = ObservationBlock.from_dict(json_body)
+    if not ob_obj.status:
+        body['status'] = ast.literal_eval(str(Status()).replace("\n", ""))
 
+    return body
 

@@ -1,40 +1,40 @@
 openapi: 3.0.0
 info:
   title: Observing Database API
-  description: WMKO API to the Observation Management System
+  description: WMKO API interface to the Observing DataBase (ODB)
   contact:
-    email: observing-support@keck.hawaii.edu
+    email: lfuhrman@keck.hawaii.edu
   license:
     name: BSD 3-Clause
     url: https://opensource.org/licenses/BSD-3-Clause
-  version: "0.1"
+  version: "0.1.0"
 servers:
 - url: http://localhost:8080/
-tags:
-- name: Instrument
-  externalDocs:
-    description: Find out more
-    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
-- name: Semester ID
-  externalDocs:
-    description: Find out more
-    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
-- name: Containers
-  externalDocs:
-    description: Find out more
-    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
-- name: Templates
-  externalDocs:
-    description: Find out more
-    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
-- name: Observation Block
-  externalDocs:
-    description: Find out more
-    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+#tags:
+#- name: Instrument
+#  externalDocs:
+#    description: Find out more
+#    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+#- name: Semester ID
+#  externalDocs:
+#    description: Find out more
+#    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+#- name: Containers
+#  externalDocs:
+#    description: Find out more
+#    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+#- name: Templates
+#  externalDocs:
+#    description: Find out more
+#    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
+#- name: Observation Block
+#  externalDocs:
+#    description: Find out more
+#    url: https://keckobservatory.atlassian.net/wiki/spaces/DSI/pages/808779858/Programmatic+Web+Interfacej
 
-paths:
-
-
+# -------------------------------------------------------------------------------
+# Example Path
+# -------------------------------------------------------------------------------
 #  /example/{required_parameter}/more/:
 
     # get/post/put/delete
@@ -72,7 +72,7 @@ paths:
 #      x-swagger-router-controller: Observer
 #      x-openapi-router-controller: papahana.controllers.observers_controller
 
-
+paths:
 # -------------------------------------------------------------------------------
 # Semester ID Section
 # -------------------------------------------------------------------------------
@@ -102,8 +102,9 @@ paths:
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
   /semesterIds/{semester}/semester:
-    summary: Retrieves programs (Semester IDs) of a given semester for an obs_id.
-             The Semester ID is a required parameter.
+    summary: Retrieves programs (Semester IDs) of a given semester for the
+             authenticated observer (Keck ID). The Semester is a required
+             parameter,  ie 2020A.
     get:
       tags:
         - Semester Id
@@ -151,7 +152,7 @@ paths:
         "401":
           description: Unauthorized
         "422":
-          description: Observation ID (Keck ID) not found.
+          description: Observation ID (Keck ID) or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -176,7 +177,7 @@ paths:
         "401":
           description: Unauthorized
         "422":
-          description: Observation ID (Keck ID) not found.
+          description: Observation ID (Keck ID) or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -203,7 +204,7 @@ paths:
         "401":
           description: Unauthorized
         "422":
-          description: Observation ID (Keck ID) not found.
+          description: Observation ID (Keck ID) or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -231,7 +232,7 @@ paths:
         "401":
           description: Unauthorized
         "422":
-          description: Observation ID (Keck ID) not found.
+          description: Observation ID (Keck ID) or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -257,7 +258,7 @@ paths:
         "401":
           description: Unauthorized
         "422":
-          description: Observation ID (Keck ID) not found.
+          description: Observation ID (Keck ID) or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -281,7 +282,7 @@ paths:
         "401":
           description: Unauthorized
         "422":
-          description: Observation ID (Keck ID) not found.
+          description: Observation ID (Keck ID) or Semester ID not found.
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
@@ -289,7 +290,8 @@ paths:
    get:
       tags:
         - Semester Id
-      description: Retrieves all the observation blocks metadata for a given program.  The default is to exclude completed observation blocks.
+      description: Retrieves all the observation blocks metadata for a given program.  The
+                    default is to exclude completed observation blocks.
       operationId: sem_id_ob_metadata
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -394,7 +396,8 @@ paths:
    get:
       tags:
         - Semester Id
-      description: Retrieves all the calibration observation blocks in their entirety for a given program.  Excludes completed observation blocks.
+      description: Retrieves all the calibration observation blocks in their entirety
+                   for a given program.  Excludes completed observation blocks.
       operationId: sem_id_ob_cal
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -419,7 +422,9 @@ paths:
    get:
       tags:
         - Semester Id
-      description: Retrieves all the science observation blocks in their entirety for a given program that are observable for the night.  Excludes completed observation blocks.
+      description: Retrieves all the science observation blocks in their entirety for
+                   a given program that are observable for the night.  Excludes
+                   completed observation blocks.
       operationId: sem_id_ob_sci
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -458,7 +463,7 @@ paths:
     get:
       tags:
         - Containers
-      description: Retrieves a specific container's information
+      description: Retrieves a specific container's information.
       operationId: containers_get
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -480,7 +485,7 @@ paths:
     put:
       tags:
         - Containers
-      description: Overwrites a container
+      description: Overwrites a container.
       operationId: containers_put
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -495,14 +500,14 @@ paths:
           description: OK
         "401":
           description: Unauthorized
-        "404":
-          description: Container id not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
     post:
       tags:
         - Containers
-      description: Creates a container
+      description: Creates a container.
       operationId: containers_post
       requestBody:
         content:
@@ -515,14 +520,14 @@ paths:
           description: OK
         "401":
           description: Unauthorized
-        "404":
-          description: Container id not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
     delete:
       tags:
         - Containers
-      description: Delete container by id
+      description: Delete container by id.
       operationId: containers_delete
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -531,15 +536,16 @@ paths:
           description: Deleted
         "401":
           description: Unauthorized
-        "404":
-          description: Container id not found
+        "422":
+          description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
   /containers/append:
     put:
       tags:
       - Containers
-      description: Appends an observation block to a container by id
+      description: Appends an observation block to a container by id.
       operationId: containers_append_put
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -562,6 +568,7 @@ paths:
           description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
   /containers/executionTimes:
     get:
       tags:
@@ -587,11 +594,12 @@ paths:
           description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
   /containers/items:
     get:
       tags:
       - Containers
-      description: Retrieves the ordered list of observing blocks in a container
+      description: Retrieves the ordered list of observing blocks in a container.
       operationId: containers_items_get
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -613,11 +621,12 @@ paths:
           description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
   /containers/items/summary:
     get:
       tags:
       - Containers
-      description: Retrieves a summary of container information
+      description: Retrieves a summary of container information.
       operationId: containers_items_summary_get
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -636,12 +645,13 @@ paths:
           description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
   /containers/verify:
     get:
       tags:
       - Containers
-      description: Request verification of the elements of a container. Sends container summary
-        as a sucessfull response
+      description: Request verification of the elements of a container. Sends container
+                   summary as a sucessfull response
       operationId: containers_verify_get
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -660,11 +670,12 @@ paths:
           description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
   /containers/scheduleToO:
     post:
       tags:
       - Containers
-      description: Submits a container for Target of Opportunity (ToO) (all the elements)
+      description: Submits a container for Target of Opportunity (ToO) (all the elements).
       operationId: containers_schedule_too_post
       requestBody:
         content:
@@ -685,12 +696,13 @@ paths:
           description: Container not found.  Check the Container ID.
       x-swagger-router-controller: Containers
       x-openapi-router-controller: papahana.controllers.containers_controller
+
   /containers/export:
     get:
       tags:
       - Containers
       description: Retrieves a specific container information in a file format (default
-        .json)
+                  is a json file.).
       operationId: containers_export_get
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -733,10 +745,11 @@ paths:
                   $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
-        "404":
-          description: Group not found
+        "422":
+          description: Instrument Package not found
       x-swagger-router-controller: Instrument
       x-openapi-router-controller: papahana.controllers.instrument_controller
+
   /instrumentPackages/{instrument}/parameters:
     get:
       tags:
@@ -757,8 +770,8 @@ paths:
                 $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
-        "404":
-          description: Group not found
+        "422":
+          description: Instrument Package not found
       x-swagger-router-controller: Instrument
       x-openapi-router-controller: papahana.controllers.instrument_controller
 
@@ -786,8 +799,8 @@ paths:
                 $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
-        "404":
-          description: Group not found
+        "422":
+          description: Instrument Package not found
       x-swagger-router-controller: Instrument
       x-openapi-router-controller: papahana.controllers.instrument_controller
 
@@ -815,8 +828,8 @@ paths:
                 $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
-        "404":
-          description: Group not found
+        "422":
+          description: Instrument Package not found
       x-swagger-router-controller: Instrument
       x-openapi-router-controller: papahana.controllers.instrument_controller
 
@@ -842,17 +855,21 @@ paths:
                 $ref: '#/components/schemas/InstrumentPackage'
         "400":
           description: Invalid status value
-        "404":
-          description: Group not found
+        "422":
+          description: Instrument Package not found
       x-swagger-router-controller: Instrument
       x-openapi-router-controller: papahana.controllers.instrument_controller
 
+# -------------------------------------------------------------------------------
+# Observation Block Section
+# -------------------------------------------------------------------------------
 
   /obsBlocks:
     get:
       tags:
       - Observation Block
-      description: "Retrieves the general parameters of an OB (target, exec time, other as needed)"
+      description: Retrieves the Observation Block (OB) by OB ID.  The returned OB is
+                   in JSON format.
       operationId: ob_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -865,14 +882,16 @@ paths:
                 $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
       - Observation Block
-      description: Updates the observation block with the new one
+      description: Updates the observation block with the JSON formatted OB provided.
       operationId: ob_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -888,14 +907,16 @@ paths:
           description: On a success replaces the given OB with the updated OB.
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     post:
       tags:
       - Observation Block
-      description: Inserts an observation block.
+      description: Inserts an Observation Block.
       operationId: ob_post
       requestBody:
         description: Observation block to be added.
@@ -915,12 +936,16 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     delete:
       tags:
       - Observation Block
-      description: Removes the observation block
+      description: Removes the observation block.
       operationId: ob_delete
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -929,8 +954,8 @@ paths:
           description: On a success removes given OB from the database.
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
@@ -938,7 +963,7 @@ paths:
     get:
       tags:
       - Observation Block
-      description: "Retrieves the last saved version an OB."
+      description: Retrieves the last saved version of an OB.
       operationId: ob_last_version
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -951,8 +976,10 @@ paths:
                 $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
@@ -960,7 +987,8 @@ paths:
     get:
       tags:
       - Observation Block
-      description: "Retrieves the last ten revisions,  unless the number of revisions is specified"
+      description: Retrieves the last ten revisions,  unless the number of
+                   revisions is specified.
       operationId: ob_revisions
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -974,8 +1002,10 @@ paths:
                 $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
@@ -983,7 +1013,7 @@ paths:
     get:
       tags:
       - Observation Block
-      description: "Retrieves the nth (revision_index) revision"
+      description: Retrieves the nth (revision_index) revision.
       operationId: ob_revision_index
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -997,29 +1027,30 @@ paths:
                 $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
 #
-#      /obsBlock/revisions
-#      /obsBlock/revisions/{revision_n}
 #      /obsBlocks/state/{state}
 #      /obsBlocks/scripts
 #      /obsBlocks/executionTimeRemaining
 
-  /obsBlocks/sequences:
+  /obsBlocks/observations:
     get:
       tags:
         - Observation Block
-      description: Retrieves the list of templates associated with the OB
-      operationId: ob_sequences_get
+      description: Retrieves the list of templates associated with the
+                   Observation Block.
+      operationId: ob_observations_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: Retrieves the list of templates associated with the OB.
+          description: Returns the list of templates associated with the OB.
           content:
             application/json:
               schema:
@@ -1028,14 +1059,16 @@ paths:
                   $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     post:
       tags:
         - Observation Block
-      description: Creates the list of templates associated with the OB
+      description: Creates the list of templates associated with the OB.
       operationId: ob_sequence_post
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1055,14 +1088,16 @@ paths:
           description: On success inserts a new list of templates associated with the OB.
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
-      description: Updates the list of templates associated with the OB
+      description: Updates the list of templates associated with the OB.
       operationId: ob_sequence_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1083,16 +1118,19 @@ paths:
           description: On success replaces the given templates with new list of templates.
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-  /obsBlocks/sequence/id:
+
+  /obsBlocks/observations/id:
     get:
       tags:
         - Observation Block
-      description: Retrieves the specified observation within the OB
-      operationId: ob_sequence_id_get
+      description: Retrieves the specified observation within the Observation Block.
+      operationId: ob_observations_id_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/sequence_number'
@@ -1105,14 +1143,16 @@ paths:
                 $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
-      description: Updates the specified observation within the OB
+      description: Updates the specified observation within the Observation Block.
       operationId: ob_sequence_id_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1128,14 +1168,16 @@ paths:
           description: replaces the given Template within the OB with Template of id=sequence_number
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     delete:
       tags:
         - Observation Block
-      description: Removes the specified observation within the OB
+      description: Removes the specified observation within the OB.
       operationId: ob_sequence_id_delete
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1145,15 +1187,20 @@ paths:
           description: removes the observation from the OB
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/sequence/{file_parameter}:
     get:
       tags:
         - Observation Block
-      description: Retrieves the specified observation within the OB
+      description: Retrieves the specified sequence within the Observation Block
+                  and returns it in the format specified.  Supported formats are
+                  csv, json, html, txt, pdf, ps.
       operationId: ob_sequence_id_file_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1168,14 +1215,16 @@ paths:
                 $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
       tags:
         - Observation Block
-      description: Updates the specified observation within the OB
+      description: Updates the specified sequence within the Observation Block.
       operationId: ob_sequence_id_file_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1193,15 +1242,19 @@ paths:
           description: replaces the given Template within the OB with Template of id=sequence_number
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/sequence/duplicate:
     post:
       tags:
         - Observation Block
-      description: Generate a new copy of the observation and add it to the list of observations in the OB.
+      description: Generate a new copy of the sequence and add it to the list of
+                   sequences in the Observation Block.
       operationId: ob_sequence_duplicate
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1215,16 +1268,19 @@ paths:
                 $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
+        "401":
+          description: Unauthorized
         "404":
           description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/completelyFilledIn:
     get:
       tags:
         - Observation Block
       description: Verify that the required parameters have been filled in.
-      operationId: ob_sequence_filled
+      operationId: ob_completely_filled
       parameters:
         - $ref: '#/components/parameters/ob_id'
       responses:
@@ -1237,17 +1293,18 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
         "422":
-          description: OB is missing required parameters.
+          description: Observation Block not found
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/supplementFiles:
     get:
       tags:
         - Observation Block
-      description: Retrieves list of files.
+      description: Retrieves a list of files associated with the Observation Block.
       operationId: ob_sequence_supplement
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1263,10 +1320,13 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
+        "401":
+          description: Unauthorized
         "422":
-          description: Observation Block not found
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/timeConstraints:
     get:
       tags:
@@ -1287,6 +1347,8 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
+        "401":
+          description: Unauthorized
         "422":
           description: Observation Block not found
       x-swagger-router-controller: Observation
@@ -1294,7 +1356,8 @@ paths:
     put:
       tags:
         - Observation Block
-      description: Creates / Replaces the time constraints (from, to).
+      description: Creates / Replaces the time constraints (from, to) within the
+                   Observation Block.
       operationId: ob_time_constraint_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1311,15 +1374,18 @@ paths:
           description: On success updates an existing time constraint(s) of an OB.
         "400":
           description: Invalid input time constraints -- input must be an array.
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/schedule:
     get:
       tags:
         - Observation Block
-      description: Retrieves scheduling information.
+      description: Retrieves scheduling information for the Observation Block.
       operationId: ob_schedule_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1335,8 +1401,10 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
     put:
@@ -1351,15 +1419,19 @@ paths:
           description: On success updates an existing time constraint(s) of an OB.
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/executions:
     get:
       tags:
         - Observation Block
-      description: Retrieves the list of execution attempts for a specific OB (for a specific night).
+      description: Retrieves the list of execution attempts for a specific
+                   Observation Block.
       operationId: ob_executions
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1375,15 +1447,19 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/executionTime:
     get:
       tags:
         - Observation Block
-      description: Calculates the execution time.
+      description: Calculates the remaining execution time for an Observation Block.
+                   The calculated value has units = minutes.
       operationId: ob_execution_time
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1397,22 +1473,27 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/duplicate:
     post:
       tags:
         - Observation Block
-      description: Duplicate the OB, default is current semId.
+      description: Duplicate the OB, default is create the new Observation Block with
+                   the current semId.
       operationId: ob_duplicate
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/sem_id_not_required'
       responses:
         "200":
-          description: On success a new OB is generated, with a new unique ID. If needed the OB is associated with a new semester.
+          description: On success a new OB is generated, with a new unique ID. If
+                       needed the OB is associated with a new semester.
           content:
             application/json:
               schema:
@@ -1420,39 +1501,52 @@ paths:
                 x-content-type: application/json
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/upgrade:
     post:
       tags:
         - Observation Block
-      description: When an instrument package changes, attempts to port an existing OB to the new package, default is the current semId.
+      description: Adapt a current Observation Block to use a more recent version
+                   of an Instrument Package.  This can be used when a new version
+                   of an Instrument Package becomes available. The default is
+                   to use the current semId.
       operationId: ob_upgrade
       parameters:
         - $ref: '#/components/parameters/ob_id'
         - $ref: '#/components/parameters/sem_id_not_required'
       responses:
         "200":
-          description: On success the new version of the OB is returned, with a new unique ID.  If the upgrade fails (the New OB must pass verification), an error code is generated.
+          description: On success the new version of the OB is returned, with
+                       the same ID.  If the upgrade fails, an error code is
+                       generated and the Observation Block remains unchanged.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-  /obsBlocks/export:
+
+  /obsBlocks/export/{file_parameter}:
     get:
       tags:
         - Observation Block
-      description: Exports an OB in human-readable format.
+      description: Exports an OB in different file formats. .  Supported formats are
+                   csv, json, html, txt, pdf, ps.
       operationId: ob_export
       parameters:
+        - $ref: '#/components/parameters/file_parameter'
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
@@ -1463,80 +1557,99 @@ paths:
                 $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
-        "404":
-          description: Observation Block not found
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
-      
-  # -------------------------------------------------------------------------------
-  # observer section
-  # -------------------------------------------------------------------------------
+
+
+# -------------------------------------------------------------------------------
+# observer section
+# -------------------------------------------------------------------------------
+
   /observers/semesterIds:
     get:
       tags:
         - Observers
-      description: view the list of semester IDs (programs) that the observers are associated.
+      description: View the list of semester IDs (programs) that the
+                   observer is associated with.
       operationId: observer_semid
       responses:
         "200":
-          description: On success a TBD text version of the OB is returned.
+          description: On success a JSON formatted list of Semester IDs of
+                       the programs associated with the Observer ID are returned.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ObserverList'
         "400":
-          description: Invalid Program Semester ID (sem_id).
+          description: Invalid status value
+        "401":
+          description: Unauthorized
         "422":
-          description: Program Semester ID (sem_id) not found.
+          description: Keck ID is not associated with any programs.
       x-swagger-router-controller: Observer
       x-openapi-router-controller: papahana.controllers.observers_controller
+
   /observers/{sem_id}/view:
     get:
       tags:
         - Observers
-      description: view the list of observers associated with the sem_id (program).  The list will include user’s Keck ID
+      description: View the list of observers associated with the sem_id
+                   (program).  The list will be the users' Keck ID
       operationId: observer_view
       parameters:
         - $ref: '#/components/parameters/sem_id'
       responses:
         "200":
-          description: On success a TBD text version of the OB is returned.
+          description: On success a JSON formatted list of Keck IDs of
+                       the observers associated with the Semester ID are returned.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ObserverList'
         "400":
-          description: Invalid Program Semester ID (sem_id).
+          description: Invalid status value
+        "401":
+          description: Unauthorized
         "422":
           description: Program Semester ID (sem_id) not found.
       x-swagger-router-controller: Observer
       x-openapi-router-controller: papahana.controllers.observers_controller
+
   /observers/apikey:
     get:
       tags:
         - Observers
-      description: Get the apikey for the autheticated observer.  Requires the browser
-                   to be logged in via the keck login page.
+      description: View the apikey for the autheticated observer.  Requires
+                   the browser to be authenticated with the Keck Observatory login.
       operationId: observer_apikey
       responses:
         "200":
-          description: On success a TBD text version of the OB is returned.
+          description: On success a JSON formatted API KEY and Encrypted Keck
+                       ID are returned.  The two cookies can be used to
+                       authenticate when calling the API directly.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/apikey'
         "400":
-          description: Invalid Program Semester ID (sem_id).
+          description: Invalid status value
+        "401":
+          description: Unauthorized
         "422":
           description: Program Semester ID (sem_id) not found.
       x-swagger-router-controller: Observer
       x-openapi-router-controller: papahana.controllers.observers_controller
+
   /observers/keckid/{api_key}:
     get:
       tags:
         - Observers
       description: Get the Keck ID associated with the API Key.  The API Key is a
-                   required parameter.
+                   required parameter..
       operationId: observer_keckid
       parameters:
         - $ref: '#/components/parameters/api_key'
@@ -1547,8 +1660,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/apikey'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
         "422":
-          description: Invalid API Key.
+          description: Program Semester ID (sem_id) not found.
       x-swagger-router-controller: Observer
       x-openapi-router-controller: papahana.controllers.observers_controller
 
@@ -1567,8 +1684,12 @@ paths:
 #            application/json:
 #              schema:
 #                $ref: '#/components/schemas/apikey'
+#        "400":
+#          description: Invalid status value
+#        "401":
+#          description: Unauthorized
 #        "422":
-#          description: Invalid API Key.
+#          description: Program Semester ID (sem_id) not found.
 #      x-swagger-router-controller: Authorization
 #      x-openapi-router-controller: papahana.controllers.authorization_controller.
 
@@ -1589,7 +1710,9 @@ paths:
 #              schema:
 #                $ref: '#/components/schemas/ObserverList'
 #        "400":
-#          description: Invalid Program Semester ID (sem_id).
+#          description: Invalid status value
+#        "401":
+#          description: Unauthorized
 #        "422":
 #          description: Program Semester ID (sem_id) not found.
 #      x-swagger-router-controller: Observer
@@ -1611,81 +1734,196 @@ paths:
 #              schema:
 #                $ref: '#/components/schemas/ObserverList'
 #        "400":
-#          description: Invalid Program Semester ID (sem_id).
+#          description: Invalid status value
+#        "401":
+#          description: Unauthorized
 #        "422":
 #          description: Program Semester ID (sem_id) not found.
 #      x-swagger-router-controller: Observer
 #      x-openapi-router-controller: papahana.controllers.observers_controller
 
 
-
-
-#  /login:
-#    post:
-#      summary: Logs in and returns the authentication cookie
-#      requestBody:
-#        required: true
-#        description: A JSON object containing the login and password.
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/LoginRequest'
-#      security: []    # no authentication
-#      responses:
-#        '200':
-#          description: >
-#            Successfully authenticated.
-#            The session ID is returned in a cookie named `JSESSIONID`. You need to include this cookie in subsequent requests.
-#          headers:
-#            Set-Cookie:
-#              schema:
-#                type: string
-#                example: JSESSIONID=abcde12345; Path=/; HttpOnly
-#
 security:
-#  - cookieAuth: []     # use the same name as under securitySchemes
   - ApiKeyAuth: []     # use the same name as under securitySchemes
-#  - ApiKeyUrl: []
 
 components:
   securitySchemes:
-#    cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
-#      type: "apiKey"
-#      in: "cookie"
-#      name: "ODB-API"  # cookie name
-#      x-apikeyInfoFunc: papahana.controllers.authorization_controller.ApiKeyAuth
-
     ApiKeyAuth:
       type: apiKey
       in: cookie
       name: ODB-API-KEY
       x-apikeyInfoFunc: papahana.controllers.authorization_controller.check_apikey_auth
 
-##      x-apikeyInfoFunc: papahana.controllers.authorization_controller.check_ApiKeyAuth
-#      x-tokenInfoFunc: papahana.controllers.authorization_controller.ApiKeyAuth
-##      x-apikeyInfoFunc: papahana.controllers.authorization_controller.checkApikeyAuth
-
-#    ApiKeyUrl:        # arbitrary name for the security scheme
-#      type: apiKey
-#      in: query       # can be "header", "query" or "cookie"
-#      name: odb_id  # name of the header, query parameter or cookie
-#      # need to implement this function for connexion
-#      # https://connexion.readthedocs.io/en/latest/security.html#apikey-authentication
-#      x-apikeyInfoFunc: papahana.controllers.authorization_controller.decrypt_key
-
-
   parameters:
 
-    obs_id:
-      name: obs_id
-      in: query
-      description: observer id
+    api_key:
+      name: api_key
+      in: path
+      description: The API key.
       required: true
-      style: form
+      style: simple
       explode: true
       schema:
         type: integer
-      example: 2009
+      example: 0456976544
+
+    container_id:
+      name: container_id
+      in: query
+      description: ObjectId of the container identifier.
+      required: true
+      explode: true
+      schema:
+        type: string
+      example: 621ffdb8aa42780c3071a651
+
+    completed:
+      name: completed
+      in: query
+      description: return results that are completed.  The default is false (0),
+        use completed=1 for only OBs that are observable.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: boolean
+
+    file_parameter:
+      name: file_parameter
+      in: path
+      description: file type
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        enum:
+          - csv
+          - json
+          - html
+          - txt
+          - pdf
+          - ps
+      example: json
+
+# TODO used with the 'remove' and 'add' observer routes.
+#    keck_id:
+#      name: keck_id
+#      in: path
+#      description: Observer Keck ID.
+#      required: true
+#      style: simple
+#      explode: true
+#      schema:
+#        type: integer
+#      example: 0456
+
+    instrument:
+      name: instrument
+      in: path
+      description: instrument used to make observation
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/InstrumentEnum'
+      example: KCWI
+
+    instrument_optional:
+      name: instrument
+      in: query
+      description: restrict results to a specific Instrument
+      style: form
+      explode: false
+      schema:
+        $ref: '#/components/schemas/InstrumentEnum'
+      required: false
+      example: "KCWI"
+
+    ip_version:
+      name: ip_version
+      in: query
+      description: ip version description here
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+      example: 0.1.0
+
+    max_duration:
+      name: max_duration
+      in: query
+      description: only return results that have a duration less than or equal to the max_duration.  The
+        duration unit is minutes.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: number
+
+    max_priority:
+      name: max_priority
+      in: query
+      description:  only return results with priority less than to max.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
+
+    max_ra:
+      name: max_ra
+      in: query
+      description: the maximum right ascension
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/RASchema'
+      required: false
+      example: "12:30:00.0"
+
+    min_duration:
+      name: min_duration
+      in: query
+      description: only return results that have a duration greater than or equal to the min_duration.
+                   The duration unit is minutes.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: number
+
+    min_priority:
+      name: min_priority
+      in: query
+      description: only return results with priority greater than or equal to minimum.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
+
+    min_ra:
+      name: min_ra
+      in: query
+      description: the minimum right ascension
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/RASchema'
+      required: false
+      example: "12:30:00.0"
+
+    ob_priority:
+      name: ob_priority
+      in: query
+      description: return results with a given priority.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
 
     ob_id:
       name: ob_id
@@ -1697,6 +1935,83 @@ components:
       schema:
         type: string
       example: 621ffc2853e6386db4116fe6
+
+    observable:
+      name: observable
+      in: query
+      description: only return results that are observable for current UT to sunrise.  The duration is
+        not taken into consideration. Default is false (0),  use observable=1 for only OBs
+        that are observable.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: boolean
+
+    revision_n:
+      name: revision_n
+      in: query
+      description: The number of revisions to return
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: integer
+      example: 5
+
+    revision_index:
+      name: revision_index
+      in: path
+      description: The index of the single revision to return.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: integer
+      example: 7
+
+    script_name:
+      name: script_name
+      in: query
+      description: the name of the script to retrieve
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+      example: KCWI_ifu_sci_stare
+
+    sem_id:
+      name: sem_id
+      in: path
+      description: semester id
+      required: true
+      style: simple
+      explode: true
+      schema:
+        $ref: '#/components/schemas/SemIdSchema'
+      example: 2021A_U456
+
+#    sem_id_in_query:
+#      in: query
+#      name: sem_id
+#      description: semester id
+#      required: true
+#      explode: true
+#      schema:
+#        $ref: '#/components/schemas/SemIdSchema'
+#      example: 2021A
+
+    sem_id_not_required:
+      in: query
+      name: sem_id
+      description: program id including semester
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/SemIdSchema'
+      required: false
+      example: 2021A_U456
 
     semester:
       in: query
@@ -1722,106 +2037,6 @@ components:
         pattern: '^\d{4}[AB]$'
       example: 2021A
 
-    api_key:
-      name: api_key
-      in: path
-      description: The API key.
-      required: true
-      style: simple
-      explode: true
-      schema:
-        type: integer
-      example: 0456976544
-
-    keck_id:
-      name: keck_id
-      in: path
-      description: Observer Keck ID.
-      required: true
-      style: simple
-      explode: true
-      schema:
-        type: integer
-      example: 0456
-
-    sem_id:
-      name: sem_id
-      in: path
-      description: semester id
-      required: true
-      style: simple
-      explode: true
-      schema:
-        $ref: '#/components/schemas/SemIdSchema'
-      example: 2021A_U456
-    sem_id_in_query:
-      in: query
-      name: sem_id
-      description: semester id
-      required: true
-      explode: true
-      schema:
-        $ref: '#/components/schemas/SemIdSchema'
-      example: 2021A
-    sem_id_not_required:
-      in: query
-      name: sem_id
-      description: program id including semester
-      style: form
-      explode: true
-      schema:
-        $ref: '#/components/schemas/SemIdSchema'
-      required: false
-      example: 2021A_U456
-
-    template_type:
-      in: query
-      name: template_type
-      description: A string to indicate template,  (acquisition, science, engineering, calibration)
-      required: true
-      explode: true
-      schema:
-        type: string
-        enum:
-        - acquisition
-        - science
-        - engineering
-        - calibration
-      example: science
-
-    instrument:
-      name: instrument
-      in: path
-      description: instrument used to make observation
-      required: true
-      style: simple
-      explode: false
-      schema:
-        $ref: '#/components/schemas/InstrumentEnum'
-      example: KCWI
-
-    ip_version:
-      name: ip_version
-      in: query
-      description: ip version description here
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: string
-      example: 0.1.0
-
-    script_name:
-      name: script_name
-      in: query
-      description: the name of the script to retrieve
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: string
-      example: KCWI_ifu_sci_stare
-
     sequence_number:
       name: sequence_number
       in: query
@@ -1831,23 +2046,16 @@ components:
       explode: false
       schema:
         type: integer
-      example: 0
-
-    file_parameter:
-      name: file_parameter
-      in: path
-      description: file type
-      required: true
-      style: simple
+      example: 1
+    state:
+      name: state
+      in: query
+      description: return OBs of a certain state,  the possible states are defined in ‘Defined Types’.
+      required: false
+      style: form
       explode: false
       schema:
         type: string
-        enum:
-          - csv
-          - json
-          - html
-          - txt
-      example: json
 
     template_name:
       name: template_name
@@ -1860,153 +2068,23 @@ components:
         type: string
       example: "KCWI_ifu_sci_stare"
 
-    container_id:
-      name: container_id
+    template_type:
       in: query
-      description: ObjectId of the container identifier.
+      name: template_type
+      description: A string to indicate template,  possible values - acquisition, science,
+                  engineering, calibration.
       required: true
       explode: true
       schema:
         type: string
-      example: 621ffdb8aa42780c3071a651
-
-    # ODT / Planning Tool Specific Parameters
-#    ra_range:
-#      name: ra_range
-#      in: query
-#      description: the right ascension range
-#      style: form
-#      explode: true
-#      schema:
-#        $ref: '#/components/schemas/RaRangeSchema'
-#      required: false
-#      example: "12:30:00.0-14:30:00.0"
-    min_ra:
-      name: min_ra
-      in: query
-      description: the minimum right ascension
-      style: form
-      explode: true
-      schema:
-        $ref: '#/components/schemas/RASchema'
-      required: false
-      example: "12:30:00.0"
-    max_ra:
-      name: max_ra
-      in: query
-      description: the maximum right ascension
-      style: form
-      explode: true
-      schema:
-        $ref: '#/components/schemas/RASchema'
-      required: false
-      example: "12:30:00.0"
-    instrument_optional:
-      name: instrument
-      in: query
-      description: restrict results to a specific Instrument
-      style: form
-      explode: false
-      schema:
-        $ref: '#/components/schemas/InstrumentEnum'
-      required: false
-      example: "KCWI"
-    ob_priority:
-      name: ob_priority
-      in: query
-      description: return results with a given priority.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: integer
-    min_priority:
-      name: min_priority
-      in: query
-      description: only return results with priority greater than or equal to minimum.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: integer
-    max_priority:
-      name: max_priority
-      in: query
-      description:  only return results with priority less than to max.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: integer
-    min_duration:
-      name: min_duration
-      in: query
-      description: only return results that have a duration greater than or equal to the min_duration.  The duration unit is minutes.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: number
-    max_duration:
-      name: max_duration
-      in: query
-      description: only return results that have a duration less than or equal to the max_duration.  The duration unit is minutes.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: number
-    state:
-      name: state
-      in: query
-      description: return OBs of a certain state,  the possible states are defined in ‘Defined Types’.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: string
-    observable:
-      name: observable
-      in: query
-      description: only return results that are observable for current UT to sunrise.  The duration is not taken into consideration. Default is false (0),  use observable=1 for only OBs that are observable.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: boolean
-    completed:
-      name: completed
-      in: query
-      description: return results that are completed.  The default is false (0),  use completed=1 for only OBs that are observable.
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: boolean
-    revision_n:
-      name: revision_n
-      in: query
-      description: The number of revisions to return
-      required: false
-      style: form
-      explode: false
-      schema:
-        type: integer
-      example: 5
-    revision_index:
-      name: revision_index
-      in: path
-      description: The index of the single revision to return.
-      required: true
-      style: simple
-      explode: false
-      schema:
-        type: integer
-      example: 7
-
+        enum:
+        - acquisition
+        - science
+        - engineering
+        - calibration
+      example: science
 
   schemas:
-
     apikey:
       type: string
 
@@ -2028,9 +2106,9 @@ components:
           default: []
         comment:
           type: string
+          default: ""
 
     ObservationBlock:
-
       required:
         - metadata
       type: object
@@ -2041,11 +2119,12 @@ components:
           $ref: '#/components/schemas/Target'
         acquisition:
           $ref: '#/components/schemas/Acquisition'
-        sequences:
+        common_parameters:
+          $ref: '#/components/schemas/CommonParameters'
+        observations:
           type: array
           items:
-            $ref: '#/components/schemas/ScienceTemplate'
-        # TODO add calibration and eng templates here
+            $ref: '#/components/schemas/TemplateSchema'
         associations:
           type: array
           items:
@@ -2056,11 +2135,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DateSchema'
-#          example: "2021-04-22 13:22:36"
         comment:
           type: string
           example:
-            A great Observation Block.
+            Hello Observation Block.
 
     ObsBlockMetadata:
       required:
@@ -2077,6 +2155,7 @@ components:
           type: string
         version:
           type: string
+#          ref: '#/components/schemas/VersionSchema'
         ob_type:
           type: string
           enum:
@@ -2093,22 +2172,21 @@ components:
           $ref: '#/components/schemas/InstrumentEnum'
         comment:
           type: string
+          default: ""
       example:
-        name: "standard stars #9"
-        version: 0.1
+        name: standard stars
+        version: 0.1.1
+        priority: 20
+        ob_type: science
         pi_id: 7766
-        sem_id: "2021A_U046"
-        instrument: "KCWI"
-        comment: "All I see are stars."
+        sem_id: 2021A_U046
+        instrument: KCWI
+        comment: My OB Metadata
 
     ObservationTemplate:
-      # TODO this is a place holder until Eng and Cal templates are added.
-      type: object
-      properties:
-        metadata:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObservationMetadata'
+      oneOf:
+        - $ref: '#/components/schemas/ScienceTemplate'
+        - $ref: '#/components/schemas/CalEngTemplate'
 
     ScienceTemplate:
       required:
@@ -2120,6 +2198,63 @@ components:
           $ref: '#/components/schemas/ObservationMetadata'
         parameters:
           $ref: '#/components/schemas/ScienceParameters'
+
+    CalEngTemplate:
+      required:
+        - metadata
+        - parameters
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ObservationMetadata'
+        parameters:
+          $ref: '#/components/schemas/CalEngParameters'
+
+    CommonParameters:
+      required:
+        - metadata
+        - parameters
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/CommonParametersMetadata'
+        parameters:
+          $ref: '#/components/schemas/CommonParametersParams'
+
+    CommonParametersMetadata:
+      required:
+        - name
+        - ui_name
+        - instrument
+        - template_type
+        - version
+      type: object
+      properties:
+        name:
+          type: string
+        ui_name:
+          type: string
+        instrument:
+          type: string
+        template_type:
+          type: string
+        version:
+          type: string
+#          ref: '#/components/schemas/VersionSchema'
+
+    CommonParametersParams:
+      required:
+        - instrument_parameters
+        - detector_parameters
+        - tcs_config
+      type: object
+      properties:
+        instrument_parameters:
+          type: string
+        detector_parameters:
+          type: string
+        tcs_config:
+          type: string
 
     Acquisition:
       required:
@@ -2158,6 +2293,7 @@ components:
           default: "science"
         version:
           type: string
+#          ref: '#/components/schemas/VersionSchema'
         script:
           type: string
         sequence_number:
@@ -2189,6 +2325,44 @@ components:
           type: number
         det1_exp_number:
           type: integer
+        det2_exp_time:
+          type: number
+        det2_exp_number:
+          type: integer
+        seq_dither_number:
+          type: integer
+        seq_dither_pattern:
+          type: object
+          properties:
+            seq_dither_slitoffset:
+              type: number
+            seq_dither_ra_offset:
+              type: number
+            seq_dither_dec_offset:
+              type: number
+            seq_dither_position:
+              type: string
+              enum:
+                - T
+                - S
+                - O
+            seq_dither_guided:
+              type: boolean
+
+    CalEngParameters:
+      required:
+        - det1_exp_time
+        - det1_exp_number
+      type: object
+      properties:
+        det1_exp_time:
+          type: number
+        det1_exp_number:
+          type: integer
+        det2_exp_time:
+          type: number
+        det2_exp_number:
+          type: integer
 
     # TODO add IP template description
     InstrumentPackage:
@@ -2207,6 +2381,7 @@ components:
           $ref: '#/components/schemas/TargetMetadata'
         parameters:
           $ref: '#/components/schemas/TargetParameters'
+
     TargetMetadata:
       required:
         - name
@@ -2226,10 +2401,11 @@ components:
           default: "target"
         version:
           type: string
+#          ref: '#/components/schemas/VersionSchema'
       example:
         name: multi_object_target
         ui_name: Multi-Object Spectroscopy Target
-        instrument: KCWI
+        template_type: target
         version: 0.1.1
 
     TargetParameters:
@@ -2245,86 +2421,59 @@ components:
           $ref: '#/components/schemas/RASchema'
         target_coord_dec:
           $ref: '#/components/schemas/DecSchema'
+        rot_cfg_pa:
+          type: number
+        target_coord_pm_ra:
+          type: number
+        target_coord_pm_dec:
+          type: number
+        target_coord_epoch:
+          type: string
+        target_coord_frame:
+          type: string
+        seq_constraint_obstime:
+          $ref: '#/components/schemas/DateSchema'
+        target_info_magnitude:
+          type: object
+          properties:
+            target_info_band:
+              type: string
+            target_info_mag:
+              type: number
+        target_info_comment:
+          type:
+            string
       example:
         target_info_name: super bright star
         target_coord_ra: 23:55:05
         target_coord_dec: -02:13:50
 
-#       name:
-#          type: string
-#        ra:
-#          $ref: '#/components/schemas/RASchema'
-#        dec:
-#          $ref: '#/components/schemas/DecSchema'
-#        equinox:
-#          type: string
-#          default: "J2000"
-#        frame:
-#          type: string
-#          default: "Fk5"
-#        PA:
-#          type: number
-#          default: 0.0
-#        pm_ra:
-#          type: number
-#          default: 0.0
-#        pm_dec:
-#          type: number
-#          default: 0.0
-#        epoch:
-#          type: number
-#          default: 2000.0
-#        obstime:
-#          type: string
-#        magnitude:
-#          type: array
-#          items:
-#            $ref: '#/components/schemas/Magnitude'
-#        dra:
-#          type: number
-#          default: 0.0
-#        ddec:
-#          type: number
-#          default: 0.0
-#        comment:
-#          type: string
-#      example:
-#        name: A Stellar Galaxy
-#        ra: '15:01:01'
-#        dec: '20:00:02.2'
-#        equinox: J2000
-#        frame: Fk5
-#        PA: -90.0
-#        pm_ra: 5.96
-#        pm_dec: 5.6373
-#        obstime: 2021-04-22 15:08:04
-#        comment: comment
-#        magnitude:
-#          magnitude: 14.5
-#          band: J
-#
-
-
-
     Status:
+      required:
+        - state
+        - current_seq
+        - current_step
+        - current_exp_det1
+        - current_exp_det2
+        - executions
+        - deleted
       type: object
       properties:
         state:
           type: integer
-#          oneOf:
-#            - pattern: '^[Pp]artially defined$'
-#            - pattern: '^[Dd]efined$'
-#            - pattern: '^[Rr]eview$'
-#            - pattern: '^[Rr]ejected$'
-#            - pattern: '^[Dd]raft$'
-#            - pattern: '^[Ss]tarted$'
-#            - pattern: '^[Ee]xecuted$'
-#            - pattern: '^[Cc]ompleted$'
-#            - pattern: '^[Ff]ailed$'
-#            - pattern: '^[Tt]erminated$'
-#            - pattern: '^[Ss]topped$'
-#            - pattern: '^[Dd]one$'
-#          default: started
+          default: 0
+        current_seq:
+          type: integer
+          default: 0
+        current_step:
+          type: integer
+          default: 0
+        current_exp_det1:
+          type: integer
+          default: 0
+        current_exp_det2:
+          type: integer
+          default: 0
         executions:
           type: array
           items:
@@ -2427,17 +2576,16 @@ components:
 
     TemplateSchema:
       oneOf:
-          - $ref: '#/components/schemas/ObservationTemplate'
           - $ref: '#/components/schemas/ScienceTemplate'
+          - $ref: '#/components/schemas/CalEngTemplate'
 
     DateSchema:
       type: string
       pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
       example: "2021-04-22 13:22:36"
 
-    # new schema
-    RaRangeSchema:
+    VersionSchema:
       type: string
-      pattern: '^\d{2}:\d{2}:\d{2}\.?\d{*}$-^\d{2}:\d{2}:\d{2}\.?\d{*}$'
-      example: '12:30:00.0-14:30:00.0'
+      pattern: '^\d+\.'
+      example: '0.0.1'
 

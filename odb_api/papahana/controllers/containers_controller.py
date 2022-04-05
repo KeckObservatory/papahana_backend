@@ -1,58 +1,53 @@
 import connexion
+from flask import abort
 
 from papahana.controllers import controller_helper as utils
+from papahana.controllers import containers_utils as contain_utils
 from papahana.controllers import observation_block_controller
 
-from papahana.models.container import Container  
-from papahana.models.observation_block import ObservationBlock
+from papahana.models.container import Container
 
 
-
-def containers_get(container_id):  
+def containers_get(container_id):
     """
-    Retrieves a specific container's information
-
-    error:
-    http://vm-webtools.keck.hawaii.edu:50000/v0/containers?container_id=09ad6fc4062bf346f1b0437
-    result:
-    http://vm-webtools.keck.hawaii.edu:50000/v0/containers?container_id=60a6b4057c25cc6791b5fb02
+    Retrieves a specific container.
+        /containers
 
     :param container_id: container identifier
     :type container_id: str
 
-    :rtype: Container
+    :rtype: dict (Container)
     """
-    try:
-        return utils.get_by_id(container_id, 'containerCollect')
-    except ValueError as err:
-        return err
+    container = utils.get_by_id(container_id, 'containerCollect')
+    _ = contain_utils.is_associated(container)
+
+    return container
 
 
 def containers_post(body):
     """
     Creates a container 
-
-    test:
-    curl -v -H "Content-Type: application/json" -X POST -d '{"semester":"2030A"}' http://vm-webtools.keck:50000/v0/containers
-        db.containers.find({"semester": "2030A"})
+        /containers
 
     :param body:
     :type body: dict | bytes
 
     :rtype: str: the ObjectID of the inserted document
     """
+    if connexion.request.is_json:
+        _ = contain_utils.is_associated(body)
+    else:
+        abort(422, 'Request must be JSON formatted.')
+
     result = utils.insert_into_collection(body, 'containerCollect')
 
     return str(result)
 
 
 def containers_put(body, container_id):  
-    """containers_put
-
-    test :
-    curl -v -H "Content-Type: application/json" -X PUT -d '{"semester":"2024A","observation_blocks":["2","3"]}' 'http://vm-webtools.keck:50000/v0/containers?container_id=609ad6fc4062bf346f1b0437'
-
+    """
     Overwrites a container
+        /containers
 
     :param body:
     :type body: dict | bytes
@@ -61,13 +56,17 @@ def containers_put(body, container_id):
 
     :rtype: None
     """
-    if type(body) is not dict:
-        container_dict = body.to_dict()
+    # check the sem_id in body is associated
+    if connexion.request.is_json:
+        _ = contain_utils.is_associated(body)
     else:
-        container_dict = body
+        abort(422, 'Request must be JSON formatted.')
+
+    # get container and confirm container is associated
+    _ = containers_get(container_id)
 
     new_vals = {}
-    for key, val in container_dict.items():
+    for key, val in body.items():
         if val and key != 'container_id':
             new_vals[key] = val
 
@@ -76,23 +75,26 @@ def containers_put(body, container_id):
 
 
 def containers_delete(container_id):
-    """containers_delete
-
+    """
     Delete container by id
+        /containers
 
     :param container_id: container identifier
     :type container_id: str
 
     :rtype: None
     """
+    # get container and confirm container is associated
+    _ = containers_get(container_id)
+
     query = utils.query_by_id(container_id, add_delete=False)
     utils.delete_from_collection(query, 'containerCollect')
 
 
 def containers_append_put(body, container_id):
-    """containers_append_put
-
+    """
     Appends a list of observation blocks to a container by id.
+        /containers/append
 
     :param body:
     :type body: list | bytes
@@ -101,7 +103,8 @@ def containers_append_put(body, container_id):
 
     :rtype: None
     """
-    ob_list = utils.get_ob_list(container_id)
+    # get observation list and confirm container is associated
+    ob_list = contain_utils.get_ob_list(container_id)
 
     # update the container collection with new values
     unique_obs = list(set(ob_list + body))
@@ -116,15 +119,16 @@ def containers_append_put(body, container_id):
 def containers_execution_times_get(container_id):  
     """
     Calculate the total execution time of a container
-
-    http://vm-webtools.keck.hawaii.edu:50000/v0/containers/executionTimes?container_id=609306745ec7a7825e28af85
+        /containers/executionTimes
 
     :param container_id: container identifier
     :type container_id: str
 
     :rtype: float
     """
-    ob_list = utils.get_ob_list(container_id)
+    # get observation list and confirm container is associated
+    ob_list = contain_utils.get_ob_list(container_id)
+
     total_time = 0
     for ob in ob_list:
         total_time += observation_block_controller.ob_execution_time(str(ob))
@@ -135,6 +139,7 @@ def containers_execution_times_get(container_id):
 def containers_export_get(container_id):  
     """
     Retrieves a specific container information in a file format (default .json)
+        /containers/export
 
     :param container_id: container identifier
     :type container_id: str
@@ -146,17 +151,17 @@ def containers_export_get(container_id):
     return 'do some magic!'
 
 
-def containers_items_get(container_id):  
-    """containers_items_get
-
+def containers_items_get(container_id):
+    """
     Retrieves the ordered list of observing blocks in a container.
+        /containers/items
 
     :param container_id: container identifier
     :type container_id: str
 
     :rtype: List[ObservationBlock]
     """
-    ob_list = utils.get_ob_list(container_id)
+    ob_list = contain_utils.get_ob_list(container_id)
     ob_list.sort()
 
     ob_block_list = []
@@ -180,6 +185,7 @@ def containers_items_summary_get(container_id):
         return utils.get_by_id(container_id, 'containerCollect')
     except ValueError as err:
         return err
+
 
 def containers_schedule_too_post(body):  
     """

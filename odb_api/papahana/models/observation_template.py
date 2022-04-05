@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
-from papahana.models.observation_metadata import ObservationMetadata  # noqa: F401,E501
 from papahana import util
 
 
@@ -15,20 +14,15 @@ class ObservationTemplate(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: List[ObservationMetadata]=None):  # noqa: E501
+    def __init__(self):  # noqa: E501
         """ObservationTemplate - a model defined in Swagger
 
-        :param metadata: The metadata of this ObservationTemplate.  # noqa: E501
-        :type metadata: List[ObservationMetadata]
         """
         self.swagger_types = {
-            'metadata': List[ObservationMetadata]
         }
 
         self.attribute_map = {
-            'metadata': 'metadata'
         }
-        self._metadata = metadata
 
     @classmethod
     def from_dict(cls, dikt) -> 'ObservationTemplate':
@@ -40,24 +34,3 @@ class ObservationTemplate(Model):
         :rtype: ObservationTemplate
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def metadata(self) -> List[ObservationMetadata]:
-        """Gets the metadata of this ObservationTemplate.
-
-
-        :return: The metadata of this ObservationTemplate.
-        :rtype: List[ObservationMetadata]
-        """
-        return self._metadata
-
-    @metadata.setter
-    def metadata(self, metadata: List[ObservationMetadata]):
-        """Sets the metadata of this ObservationTemplate.
-
-
-        :param metadata: The metadata of this ObservationTemplate.
-        :type metadata: List[ObservationMetadata]
-        """
-
-        self._metadata = metadata

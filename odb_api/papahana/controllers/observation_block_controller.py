@@ -13,10 +13,12 @@ from papahana.controllers import authorization_utils as auth_utils
 from papahana.models.body import Body  
 from papahana.models.body1 import Body1  
 from papahana.models.date_schema import DateSchema  
-from papahana.models.observation_block import ObservationBlock  
+from papahana.models.observation_block import ObservationBlock
 from papahana.models.sem_id_schema import SemIdSchema
 from papahana.models.template_schema import TemplateSchema  
 from papahana import util
+from papahana.models.status import Status
+
 
 # directory used for writing files to return
 OUT_DIR = "/tmp"
@@ -49,6 +51,9 @@ def ob_post(body):
     :rtype: str of new OB ID.
     """
     auth_utils.check_sem_id_associated(body['metadata']['sem_id'])
+    if connexion.request.is_json:
+        # check that status is complete,  add defaults
+        body = ob_utils.add_default_status(body, connexion.request.get_json())
 
     result = utils.insert_into_collection(body, 'obCollect')
 
@@ -70,9 +75,11 @@ def ob_put(body, ob_id):
     ob = ob_get(ob_id)
     if not ob:
         abort(422, f'Observation Block id: {ob_id} not found.')
-
     # check the update OB is associated
     auth_utils.check_sem_id_associated(body['metadata']['sem_id'])
+
+    if connexion.request.is_json:
+        body = ob_utils.add_default_status(body, connexion.request.get_json())
 
     utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect', clear=True)
 
@@ -136,10 +143,13 @@ def ob_executions(ob_id):
     # get and check access is allowed
     ob = ob_get(ob_id)
 
-    if "status" not in ob or "executions" not in ob["status"]:
+    ob_obj = ObservationBlock.from_dict(ob)
+    if not ob_obj.status or not ob_obj.status.executions:
         return []
 
-    return ob["status"]["executions"]
+    ob_obj = ObservationBlock.from_dict(ob)
+
+    return ob_obj.status.executions
 
 
 def ob_execution_time(ob_id):
@@ -154,24 +164,19 @@ def ob_execution_time(ob_id):
 
     :rtype: float
     """
-    fields = {"observations": 1, "_id": 0, "status": 1, "metadata.sem_id": 1}
-    ob_info = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    # get and check access is allowed
+    ob = ob_get(ob_id)
 
-    # check the OB is associated
-    auth_utils.check_sem_id_associated(ob_info['metadata']['sem_id'])
-
-    if not ob_info or 'observations' not in ob_info:
+    ob_obj = ObservationBlock.from_dict(ob)
+    if not ob_obj.status:
         return 0.0
 
-    # The OB either has a state of Complete=3 or aborted=4.
-    if ob_info['status']['state'] >= 3:
+    if ob_obj.status.state >= 3:
         return 0.0
 
-    # take into account what sequences have been completed
-    current_seq = ob_info['status']['current_seq']
-
+    current_seq = ob_obj.status.current_seq
     total_tm = 0.0
-    for obs in ob_info['observations']:
+    for obs in ob_obj.observations:
         ob_seq = obs['metadata']['sequence_number']
 
         if ob_seq >= current_seq:
@@ -198,7 +203,7 @@ def ob_export(ob_id):
     return ob_get(ob_id)
 
 
-def ob_sequence_filled(ob_id):
+def ob_completely_filled(ob_id):
     """
     Verify that the required parameters have been filled in.
         /obsBlocks/completelyFilledIn
@@ -209,7 +214,7 @@ def ob_sequence_filled(ob_id):
     :rtype: bool
     """
     fields = {"parameters": 1, "_id": 0}
-    observations = ob_sequences_get(ob_id)
+    observations = ob_observations_get(ob_id)
 
     for filled in observations:
         if filled.keys() < {"metadata", "parameters"}:
@@ -237,37 +242,41 @@ def ob_sequence_filled(ob_id):
     return True
 
 
-def ob_sequences_get(ob_id):
+def ob_observations_get(ob_id):
     """
-    Retrieves the list of sequences associated with the OB
-        /obsBlocks/sequences
+    Retrieves the list of observation sequences associated with the OB
+        /obsBlocks/observations
 
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: List[Observation]
     """
-    fields = {"_id": 0, "observations": 1, "acquisition": 1, 'metadata.sem_id': 1}
-    ob_sequences = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    fields = {"_id": 0, "observations": 1, "acquisition": 1,
+              'metadata.sem_id': 1}
+    obs = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+
+    if not obs:
+        return []
 
     # check the OB is associated
-    auth_utils.check_sem_id_associated(ob_sequences['metadata']['sem_id'])
+    auth_utils.check_sem_id_associated(obs['metadata']['sem_id'])
 
     sequence_list = []
-    if "acquisition" in ob_sequences:
-        sequence_list.append(ob_sequences["acquisition"])
+    if "acquisition" in obs:
+        sequence_list.append(obs["acquisition"])
 
-    if "observations" in ob_sequences:
-        for seq in ob_sequences["observations"]:
+    if "observations" in obs:
+        for seq in obs["observations"]:
             sequence_list.append(seq)
 
     return sequence_list
 
 
-def ob_sequence_id_get(ob_id, sequence_number):
+def ob_observations_id_get(ob_id, sequence_number):
     """
-    Retrieves the specified sequence within the OB
-        /obsBlocks/sequence/id
+    Retrieves the specified observation sequence within the OB
+        /obsBlocks/observations/id
 
     :param ob_id: observation block id
     :type ob_id: str
@@ -277,12 +286,12 @@ def ob_sequence_id_get(ob_id, sequence_number):
     :rtype: Template
     """
     fields = {"_id": 0, "observations": 1, "acquisition": 1, "metadata.sem_id": 1}
-    ob_sequences = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+    observations = utils.get_fields_by_id(ob_id, fields, 'obCollect')
 
     # check the OB is associated
-    auth_utils.check_sem_id_associated(ob_sequences['metadata']['sem_id'])
+    auth_utils.check_sem_id_associated(observations['metadata']['sem_id'])
 
-    sequence = ob_utils.get_sequence(ob_sequences, sequence_number)
+    sequence = ob_utils.get_sequence(observations, sequence_number)
 
     return sequence
 
@@ -341,30 +350,32 @@ def ob_sequence_id_delete(ob_id, sequence_number):
 
     :rtype: None
     """
+    # cehck association and get ob
     ob = ob_get(ob_id)
-    observations = utils.get_sequence(ob, sequence_number)
+    ob_obj = ObservationBlock.from_dict(ob)
+    # observations
 
-    if obs_type not in ob:
-        return
-
-    # this is assumed to be an acquisition
-    if type(observations) is not list:
-        del ob[obs_type]
-    else:
-        n_obs = len(observations)
-        if n_obs <= 1:
-            abort(400, "Not allowed to delete the last observation template.")
-        elif n_obs < obs_indx:
-            return
-        del observations[obs_indx]
-
-        for cnt in range(0, len(observations)):
-            observations[cnt]['sequence_number'] = f'{obs_type[:3]}{cnt}'
-
-        ob[obs_type] = observations
-
-    utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
-
+    # if 'obs_type' not in ob:
+    #     return
+    #
+    # # this is assumed to be an acquisition
+    # if type(observations) is not list:
+    #     del ob[obs_type]
+    # else:
+    #     n_obs = len(observations)
+    #     if n_obs <= 1:
+    #         abort(400, "Not allowed to delete the last observation template.")
+    #     elif n_obs < obs_indx:
+    #         return
+    #     del observations[obs_indx]
+    #
+    #     for cnt in range(0, len(observations)):
+    #         observations[cnt]['sequence_number'] = f'{obs_type[:3]}{cnt}'
+    #
+    #     ob[obs_type] = observations
+    #
+    # utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
+    #
 
 #TODO come back to types other then json
 #TODO think through cleanup

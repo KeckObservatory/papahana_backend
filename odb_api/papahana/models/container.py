@@ -16,7 +16,7 @@ class Container(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, sem_id: SemIdSchema=None, observation_blocks: List[str]=None, comment: str=None):  # noqa: E501
+    def __init__(self, name: str=None, sem_id: SemIdSchema=None, observation_blocks: List[str]=None, comment: str=''):  # noqa: E501
         """Container - a model defined in Swagger
 
         :param name: The name of this Container.  # noqa: E501

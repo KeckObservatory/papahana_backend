@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
+from papahana.models.science_parameters_seq_dither_pattern import ScienceParametersSeqDitherPattern  # noqa: F401,E501
 from papahana import util
 
 
@@ -14,25 +15,45 @@ class ScienceParameters(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, det1_exp_time: float=None, det1_exp_number: int=None):  # noqa: E501
+    def __init__(self, det1_exp_time: float=None, det1_exp_number: int=None, det2_exp_time: float=None, det2_exp_number: int=None, seq_dither_number: int=None, seq_dither_pattern: ScienceParametersSeqDitherPattern=None):  # noqa: E501
         """ScienceParameters - a model defined in Swagger
 
         :param det1_exp_time: The det1_exp_time of this ScienceParameters.  # noqa: E501
         :type det1_exp_time: float
         :param det1_exp_number: The det1_exp_number of this ScienceParameters.  # noqa: E501
         :type det1_exp_number: int
+        :param det2_exp_time: The det2_exp_time of this ScienceParameters.  # noqa: E501
+        :type det2_exp_time: float
+        :param det2_exp_number: The det2_exp_number of this ScienceParameters.  # noqa: E501
+        :type det2_exp_number: int
+        :param seq_dither_number: The seq_dither_number of this ScienceParameters.  # noqa: E501
+        :type seq_dither_number: int
+        :param seq_dither_pattern: The seq_dither_pattern of this ScienceParameters.  # noqa: E501
+        :type seq_dither_pattern: ScienceParametersSeqDitherPattern
         """
         self.swagger_types = {
             'det1_exp_time': float,
-            'det1_exp_number': int
+            'det1_exp_number': int,
+            'det2_exp_time': float,
+            'det2_exp_number': int,
+            'seq_dither_number': int,
+            'seq_dither_pattern': ScienceParametersSeqDitherPattern
         }
 
         self.attribute_map = {
             'det1_exp_time': 'det1_exp_time',
-            'det1_exp_number': 'det1_exp_number'
+            'det1_exp_number': 'det1_exp_number',
+            'det2_exp_time': 'det2_exp_time',
+            'det2_exp_number': 'det2_exp_number',
+            'seq_dither_number': 'seq_dither_number',
+            'seq_dither_pattern': 'seq_dither_pattern'
         }
         self._det1_exp_time = det1_exp_time
         self._det1_exp_number = det1_exp_number
+        self._det2_exp_time = det2_exp_time
+        self._det2_exp_number = det2_exp_number
+        self._seq_dither_number = seq_dither_number
+        self._seq_dither_pattern = seq_dither_pattern
 
     @classmethod
     def from_dict(cls, dikt) -> 'ScienceParameters':
@@ -90,3 +111,87 @@ class ScienceParameters(Model):
             raise ValueError("Invalid value for `det1_exp_number`, must not be `None`")  # noqa: E501
 
         self._det1_exp_number = det1_exp_number
+
+    @property
+    def det2_exp_time(self) -> float:
+        """Gets the det2_exp_time of this ScienceParameters.
+
+
+        :return: The det2_exp_time of this ScienceParameters.
+        :rtype: float
+        """
+        return self._det2_exp_time
+
+    @det2_exp_time.setter
+    def det2_exp_time(self, det2_exp_time: float):
+        """Sets the det2_exp_time of this ScienceParameters.
+
+
+        :param det2_exp_time: The det2_exp_time of this ScienceParameters.
+        :type det2_exp_time: float
+        """
+
+        self._det2_exp_time = det2_exp_time
+
+    @property
+    def det2_exp_number(self) -> int:
+        """Gets the det2_exp_number of this ScienceParameters.
+
+
+        :return: The det2_exp_number of this ScienceParameters.
+        :rtype: int
+        """
+        return self._det2_exp_number
+
+    @det2_exp_number.setter
+    def det2_exp_number(self, det2_exp_number: int):
+        """Sets the det2_exp_number of this ScienceParameters.
+
+
+        :param det2_exp_number: The det2_exp_number of this ScienceParameters.
+        :type det2_exp_number: int
+        """
+
+        self._det2_exp_number = det2_exp_number
+
+    @property
+    def seq_dither_number(self) -> int:
+        """Gets the seq_dither_number of this ScienceParameters.
+
+
+        :return: The seq_dither_number of this ScienceParameters.
+        :rtype: int
+        """
+        return self._seq_dither_number
+
+    @seq_dither_number.setter
+    def seq_dither_number(self, seq_dither_number: int):
+        """Sets the seq_dither_number of this ScienceParameters.
+
+
+        :param seq_dither_number: The seq_dither_number of this ScienceParameters.
+        :type seq_dither_number: int
+        """
+
+        self._seq_dither_number = seq_dither_number
+
+    @property
+    def seq_dither_pattern(self) -> ScienceParametersSeqDitherPattern:
+        """Gets the seq_dither_pattern of this ScienceParameters.
+
+
+        :return: The seq_dither_pattern of this ScienceParameters.
+        :rtype: ScienceParametersSeqDitherPattern
+        """
+        return self._seq_dither_pattern
+
+    @seq_dither_pattern.setter
+    def seq_dither_pattern(self, seq_dither_pattern: ScienceParametersSeqDitherPattern):
+        """Sets the seq_dither_pattern of this ScienceParameters.
+
+
+        :param seq_dither_pattern: The seq_dither_pattern of this ScienceParameters.
+        :type seq_dither_pattern: ScienceParametersSeqDitherPattern
+        """
+
+        self._seq_dither_pattern = seq_dither_pattern

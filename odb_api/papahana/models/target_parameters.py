@@ -6,8 +6,11 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
+from papahana.models.date_schema import DateSchema  # noqa: F401,E501
 from papahana.models.dec_schema import DecSchema  # noqa: F401,E501
 from papahana.models.ra_schema import RASchema  # noqa: F401,E501
+from papahana.models.target_parameters_target_info_magnitude import TargetParametersTargetInfoMagnitude  # noqa: F401,E501
+import re  # noqa: F401,E501
 from papahana import util
 
 
@@ -16,7 +19,7 @@ class TargetParameters(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, target_info_name: str=None, target_coord_ra: RASchema=None, target_coord_dec: DecSchema=None):  # noqa: E501
+    def __init__(self, target_info_name: str=None, target_coord_ra: RASchema=None, target_coord_dec: DecSchema=None, rot_cfg_pa: float=None, target_coord_pm_ra: float=None, target_coord_pm_dec: float=None, target_coord_epoch: str=None, target_coord_frame: str=None, seq_constraint_obstime: DateSchema=None, target_info_magnitude: TargetParametersTargetInfoMagnitude=None, target_info_comment: str=None):  # noqa: E501
         """TargetParameters - a model defined in Swagger
 
         :param target_info_name: The target_info_name of this TargetParameters.  # noqa: E501
@@ -25,21 +28,61 @@ class TargetParameters(Model):
         :type target_coord_ra: RASchema
         :param target_coord_dec: The target_coord_dec of this TargetParameters.  # noqa: E501
         :type target_coord_dec: DecSchema
+        :param rot_cfg_pa: The rot_cfg_pa of this TargetParameters.  # noqa: E501
+        :type rot_cfg_pa: float
+        :param target_coord_pm_ra: The target_coord_pm_ra of this TargetParameters.  # noqa: E501
+        :type target_coord_pm_ra: float
+        :param target_coord_pm_dec: The target_coord_pm_dec of this TargetParameters.  # noqa: E501
+        :type target_coord_pm_dec: float
+        :param target_coord_epoch: The target_coord_epoch of this TargetParameters.  # noqa: E501
+        :type target_coord_epoch: str
+        :param target_coord_frame: The target_coord_frame of this TargetParameters.  # noqa: E501
+        :type target_coord_frame: str
+        :param seq_constraint_obstime: The seq_constraint_obstime of this TargetParameters.  # noqa: E501
+        :type seq_constraint_obstime: DateSchema
+        :param target_info_magnitude: The target_info_magnitude of this TargetParameters.  # noqa: E501
+        :type target_info_magnitude: TargetParametersTargetInfoMagnitude
+        :param target_info_comment: The target_info_comment of this TargetParameters.  # noqa: E501
+        :type target_info_comment: str
         """
         self.swagger_types = {
             'target_info_name': str,
             'target_coord_ra': RASchema,
-            'target_coord_dec': DecSchema
+            'target_coord_dec': DecSchema,
+            'rot_cfg_pa': float,
+            'target_coord_pm_ra': float,
+            'target_coord_pm_dec': float,
+            'target_coord_epoch': str,
+            'target_coord_frame': str,
+            'seq_constraint_obstime': DateSchema,
+            'target_info_magnitude': TargetParametersTargetInfoMagnitude,
+            'target_info_comment': str
         }
 
         self.attribute_map = {
             'target_info_name': 'target_info_name',
             'target_coord_ra': 'target_coord_ra',
-            'target_coord_dec': 'target_coord_dec'
+            'target_coord_dec': 'target_coord_dec',
+            'rot_cfg_pa': 'rot_cfg_pa',
+            'target_coord_pm_ra': 'target_coord_pm_ra',
+            'target_coord_pm_dec': 'target_coord_pm_dec',
+            'target_coord_epoch': 'target_coord_epoch',
+            'target_coord_frame': 'target_coord_frame',
+            'seq_constraint_obstime': 'seq_constraint_obstime',
+            'target_info_magnitude': 'target_info_magnitude',
+            'target_info_comment': 'target_info_comment'
         }
         self._target_info_name = target_info_name
         self._target_coord_ra = target_coord_ra
         self._target_coord_dec = target_coord_dec
+        self._rot_cfg_pa = rot_cfg_pa
+        self._target_coord_pm_ra = target_coord_pm_ra
+        self._target_coord_pm_dec = target_coord_pm_dec
+        self._target_coord_epoch = target_coord_epoch
+        self._target_coord_frame = target_coord_frame
+        self._seq_constraint_obstime = seq_constraint_obstime
+        self._target_info_magnitude = target_info_magnitude
+        self._target_info_comment = target_info_comment
 
     @classmethod
     def from_dict(cls, dikt) -> 'TargetParameters':
@@ -120,3 +163,171 @@ class TargetParameters(Model):
             raise ValueError("Invalid value for `target_coord_dec`, must not be `None`")  # noqa: E501
 
         self._target_coord_dec = target_coord_dec
+
+    @property
+    def rot_cfg_pa(self) -> float:
+        """Gets the rot_cfg_pa of this TargetParameters.
+
+
+        :return: The rot_cfg_pa of this TargetParameters.
+        :rtype: float
+        """
+        return self._rot_cfg_pa
+
+    @rot_cfg_pa.setter
+    def rot_cfg_pa(self, rot_cfg_pa: float):
+        """Sets the rot_cfg_pa of this TargetParameters.
+
+
+        :param rot_cfg_pa: The rot_cfg_pa of this TargetParameters.
+        :type rot_cfg_pa: float
+        """
+
+        self._rot_cfg_pa = rot_cfg_pa
+
+    @property
+    def target_coord_pm_ra(self) -> float:
+        """Gets the target_coord_pm_ra of this TargetParameters.
+
+
+        :return: The target_coord_pm_ra of this TargetParameters.
+        :rtype: float
+        """
+        return self._target_coord_pm_ra
+
+    @target_coord_pm_ra.setter
+    def target_coord_pm_ra(self, target_coord_pm_ra: float):
+        """Sets the target_coord_pm_ra of this TargetParameters.
+
+
+        :param target_coord_pm_ra: The target_coord_pm_ra of this TargetParameters.
+        :type target_coord_pm_ra: float
+        """
+
+        self._target_coord_pm_ra = target_coord_pm_ra
+
+    @property
+    def target_coord_pm_dec(self) -> float:
+        """Gets the target_coord_pm_dec of this TargetParameters.
+
+
+        :return: The target_coord_pm_dec of this TargetParameters.
+        :rtype: float
+        """
+        return self._target_coord_pm_dec
+
+    @target_coord_pm_dec.setter
+    def target_coord_pm_dec(self, target_coord_pm_dec: float):
+        """Sets the target_coord_pm_dec of this TargetParameters.
+
+
+        :param target_coord_pm_dec: The target_coord_pm_dec of this TargetParameters.
+        :type target_coord_pm_dec: float
+        """
+
+        self._target_coord_pm_dec = target_coord_pm_dec
+
+    @property
+    def target_coord_epoch(self) -> str:
+        """Gets the target_coord_epoch of this TargetParameters.
+
+
+        :return: The target_coord_epoch of this TargetParameters.
+        :rtype: str
+        """
+        return self._target_coord_epoch
+
+    @target_coord_epoch.setter
+    def target_coord_epoch(self, target_coord_epoch: str):
+        """Sets the target_coord_epoch of this TargetParameters.
+
+
+        :param target_coord_epoch: The target_coord_epoch of this TargetParameters.
+        :type target_coord_epoch: str
+        """
+
+        self._target_coord_epoch = target_coord_epoch
+
+    @property
+    def target_coord_frame(self) -> str:
+        """Gets the target_coord_frame of this TargetParameters.
+
+
+        :return: The target_coord_frame of this TargetParameters.
+        :rtype: str
+        """
+        return self._target_coord_frame
+
+    @target_coord_frame.setter
+    def target_coord_frame(self, target_coord_frame: str):
+        """Sets the target_coord_frame of this TargetParameters.
+
+
+        :param target_coord_frame: The target_coord_frame of this TargetParameters.
+        :type target_coord_frame: str
+        """
+
+        self._target_coord_frame = target_coord_frame
+
+    @property
+    def seq_constraint_obstime(self) -> DateSchema:
+        """Gets the seq_constraint_obstime of this TargetParameters.
+
+
+        :return: The seq_constraint_obstime of this TargetParameters.
+        :rtype: DateSchema
+        """
+        return self._seq_constraint_obstime
+
+    @seq_constraint_obstime.setter
+    def seq_constraint_obstime(self, seq_constraint_obstime: DateSchema):
+        """Sets the seq_constraint_obstime of this TargetParameters.
+
+
+        :param seq_constraint_obstime: The seq_constraint_obstime of this TargetParameters.
+        :type seq_constraint_obstime: DateSchema
+        """
+
+        self._seq_constraint_obstime = seq_constraint_obstime
+
+    @property
+    def target_info_magnitude(self) -> TargetParametersTargetInfoMagnitude:
+        """Gets the target_info_magnitude of this TargetParameters.
+
+
+        :return: The target_info_magnitude of this TargetParameters.
+        :rtype: TargetParametersTargetInfoMagnitude
+        """
+        return self._target_info_magnitude
+
+    @target_info_magnitude.setter
+    def target_info_magnitude(self, target_info_magnitude: TargetParametersTargetInfoMagnitude):
+        """Sets the target_info_magnitude of this TargetParameters.
+
+
+        :param target_info_magnitude: The target_info_magnitude of this TargetParameters.
+        :type target_info_magnitude: TargetParametersTargetInfoMagnitude
+        """
+
+        self._target_info_magnitude = target_info_magnitude
+
+    @property
+    def target_info_comment(self) -> str:
+        """Gets the target_info_comment of this TargetParameters.
+
+
+        :return: The target_info_comment of this TargetParameters.
+        :rtype: str
+        """
+        return self._target_info_comment
+
+    @target_info_comment.setter
+    def target_info_comment(self, target_info_comment: str):
+        """Sets the target_info_comment of this TargetParameters.
+
+
+        :param target_info_comment: The target_info_comment of this TargetParameters.
+        :type target_info_comment: str
+        """
+
+        self._target_info_comment = target_info_comment

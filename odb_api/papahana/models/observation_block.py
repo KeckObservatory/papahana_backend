@@ -7,11 +7,12 @@ from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
 from papahana.models.acquisition import Acquisition  # noqa: F401,E501
+from papahana.models.common_parameters import CommonParameters  # noqa: F401,E501
 from papahana.models.date_schema import DateSchema  # noqa: F401,E501
 from papahana.models.obs_block_metadata import ObsBlockMetadata  # noqa: F401,E501
-from papahana.models.science_template import ScienceTemplate  # noqa: F401,E501
 from papahana.models.status import Status  # noqa: F401,E501
 from papahana.models.target import Target  # noqa: F401,E501
+from papahana.models.template_schema import TemplateSchema  # noqa: F401,E501
 from papahana import util
 
 
@@ -20,7 +21,7 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, sequences: List[ScienceTemplate]=None, associations: List[str]=None, status: Status=None, time_constraints: List[DateSchema]=None, comment: str=None):  # noqa: E501
+    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, common_parameters: CommonParameters=None, observations: List[TemplateSchema]=None, associations: List[str]=None, status: Status=None, time_constraints: List[DateSchema]=None, comment: str=None):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param metadata: The metadata of this ObservationBlock.  # noqa: E501
@@ -29,8 +30,10 @@ class ObservationBlock(Model):
         :type target: Target
         :param acquisition: The acquisition of this ObservationBlock.  # noqa: E501
         :type acquisition: Acquisition
-        :param sequences: The sequences of this ObservationBlock.  # noqa: E501
-        :type sequences: List[ScienceTemplate]
+        :param common_parameters: The common_parameters of this ObservationBlock.  # noqa: E501
+        :type common_parameters: CommonParameters
+        :param observations: The observations of this ObservationBlock.  # noqa: E501
+        :type observations: List[TemplateSchema]
         :param associations: The associations of this ObservationBlock.  # noqa: E501
         :type associations: List[str]
         :param status: The status of this ObservationBlock.  # noqa: E501
@@ -44,7 +47,8 @@ class ObservationBlock(Model):
             'metadata': ObsBlockMetadata,
             'target': Target,
             'acquisition': Acquisition,
-            'sequences': List[ScienceTemplate],
+            'common_parameters': CommonParameters,
+            'observations': List[TemplateSchema],
             'associations': List[str],
             'status': Status,
             'time_constraints': List[DateSchema],
@@ -55,7 +59,8 @@ class ObservationBlock(Model):
             'metadata': 'metadata',
             'target': 'target',
             'acquisition': 'acquisition',
-            'sequences': 'sequences',
+            'common_parameters': 'common_parameters',
+            'observations': 'observations',
             'associations': 'associations',
             'status': 'status',
             'time_constraints': 'time_constraints',
@@ -64,7 +69,8 @@ class ObservationBlock(Model):
         self._metadata = metadata
         self._target = target
         self._acquisition = acquisition
-        self._sequences = sequences
+        self._common_parameters = common_parameters
+        self._observations = observations
         self._associations = associations
         self._status = status
         self._time_constraints = time_constraints
@@ -147,25 +153,46 @@ class ObservationBlock(Model):
         self._acquisition = acquisition
 
     @property
-    def sequences(self) -> List[ScienceTemplate]:
-        """Gets the sequences of this ObservationBlock.
+    def common_parameters(self) -> CommonParameters:
+        """Gets the common_parameters of this ObservationBlock.
 
 
-        :return: The sequences of this ObservationBlock.
-        :rtype: List[ScienceTemplate]
+        :return: The common_parameters of this ObservationBlock.
+        :rtype: CommonParameters
         """
-        return self._sequences
+        return self._common_parameters
 
-    @sequences.setter
-    def sequences(self, sequences: List[ScienceTemplate]):
-        """Sets the sequences of this ObservationBlock.
+    @common_parameters.setter
+    def common_parameters(self, common_parameters: CommonParameters):
+        """Sets the common_parameters of this ObservationBlock.
 
 
-        :param sequences: The sequences of this ObservationBlock.
-        :type sequences: List[ScienceTemplate]
+        :param common_parameters: The common_parameters of this ObservationBlock.
+        :type common_parameters: CommonParameters
         """
 
-        self._sequences = sequences
+        self._common_parameters = common_parameters
+
+    @property
+    def observations(self) -> List[TemplateSchema]:
+        """Gets the observations of this ObservationBlock.
+
+
+        :return: The observations of this ObservationBlock.
+        :rtype: List[TemplateSchema]
+        """
+        return self._observations
+
+    @observations.setter
+    def observations(self, observations: List[TemplateSchema]):
+        """Sets the observations of this ObservationBlock.
+
+
+        :param observations: The observations of this ObservationBlock.
+        :type observations: List[TemplateSchema]
+        """
+
+        self._observations = observations
 
     @property
     def associations(self) -> List[str]:

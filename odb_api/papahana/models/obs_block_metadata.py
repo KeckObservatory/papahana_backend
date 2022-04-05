@@ -17,7 +17,7 @@ class ObsBlockMetadata(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, version: str=None, ob_type: str=None, priority: int=None, pi_id: int=None, sem_id: SemIdSchema=None, instrument: InstrumentEnum=None, comment: str=None):  # noqa: E501
+    def __init__(self, name: str=None, version: str=None, ob_type: str=None, priority: int=None, pi_id: int=None, sem_id: SemIdSchema=None, instrument: InstrumentEnum=None, comment: str=''):  # noqa: E501
         """ObsBlockMetadata - a model defined in Swagger
 
         :param name: The name of this ObsBlockMetadata.  # noqa: E501

@@ -19,9 +19,6 @@ def instrument_packages(instrument):
 
     :rtype: [InstrumentPackage]
     """
-    if connexion.request.is_json:
-        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
-
     query = {"metadata.instrument": instrument}
 
     ip_packages = utils.get_by_query(query, 'ipCollect')
