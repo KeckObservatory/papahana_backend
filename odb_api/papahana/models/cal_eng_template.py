@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
-from papahana.models.cal_eng_parameters import CalEngParameters  # noqa: F401,E501
 from papahana.models.observation_metadata import ObservationMetadata  # noqa: F401,E501
 from papahana import util
 
@@ -16,25 +15,20 @@ class CalEngTemplate(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObservationMetadata=None, parameters: CalEngParameters=None):  # noqa: E501
+    def __init__(self, metadata: ObservationMetadata=None):  # noqa: E501
         """CalEngTemplate - a model defined in Swagger
 
         :param metadata: The metadata of this CalEngTemplate.  # noqa: E501
         :type metadata: ObservationMetadata
-        :param parameters: The parameters of this CalEngTemplate.  # noqa: E501
-        :type parameters: CalEngParameters
         """
         self.swagger_types = {
-            'metadata': ObservationMetadata,
-            'parameters': CalEngParameters
+            'metadata': ObservationMetadata
         }
 
         self.attribute_map = {
-            'metadata': 'metadata',
-            'parameters': 'parameters'
+            'metadata': 'metadata'
         }
         self._metadata = metadata
-        self._parameters = parameters
 
     @classmethod
     def from_dict(cls, dikt) -> 'CalEngTemplate':
@@ -69,26 +63,3 @@ class CalEngTemplate(Model):
             raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
 
         self._metadata = metadata
-
-    @property
-    def parameters(self) -> CalEngParameters:
-        """Gets the parameters of this CalEngTemplate.
-
-
-        :return: The parameters of this CalEngTemplate.
-        :rtype: CalEngParameters
-        """
-        return self._parameters
-
-    @parameters.setter
-    def parameters(self, parameters: CalEngParameters):
-        """Sets the parameters of this CalEngTemplate.
-
-
-        :param parameters: The parameters of this CalEngTemplate.
-        :type parameters: CalEngParameters
-        """
-        if parameters is None:
-            raise ValueError("Invalid value for `parameters`, must not be `None`")  # noqa: E501
-
-        self._parameters = parameters

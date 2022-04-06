@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 
-from flask import json
+import json
 from six import BytesIO
 
 from papahana.models.instrument_enum import InstrumentEnum  # noqa: E501
@@ -19,7 +19,7 @@ class TestTemplatesController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/v0/instrumentPackages/{instrument}/{ip_version}/{template_name}'.format(instrument=InstrumentEnum(), ip_version=1.2, template_name='template_name_example'),
+            '/instrumentPackages/{instrument}/{ip_version}/{template_name}'.format(instrument=InstrumentEnum(), ip_version=1.2, template_name='template_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

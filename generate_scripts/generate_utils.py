@@ -14,6 +14,10 @@ def parse_args():
                         default=None,
                         help="The configuration to read")
 
+    parser.add_argument("--generate_observers", "-o", type=bool,
+                        default=False,
+                        help="The configuration to read")
+
     return parser.parse_args()
 
 

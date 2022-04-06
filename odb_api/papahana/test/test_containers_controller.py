@@ -2,8 +2,8 @@
 
 from __future__ import absolute_import
 
-from flask import json
 from six import BytesIO
+import json
 
 from papahana.test import BaseTestCase
 from papahana.test.test_default_values import ContainerTestDefaults
@@ -17,6 +17,7 @@ class TestContainersController(BaseTestCase):
         """
         Insert a new Container to work with
         """
+        self.set_api_cookie()
         self.container_id = self.insert_container(self.container)
 
     def tearDown(self):
@@ -36,7 +37,7 @@ class TestContainersController(BaseTestCase):
     def insert_container(self, container_body):
 
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='POST',
             data=json.dumps(container_body),
             content_type='application/json')
@@ -51,7 +52,7 @@ class TestContainersController(BaseTestCase):
     def delete_container(self, container_id):
         query_string = [('container_id', container_id)]
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='DELETE',
             query_string=query_string)
 
@@ -75,7 +76,7 @@ class TestContainersController(BaseTestCase):
                        '60de13afe025482cc63707bf']
         query_string = [('container_id', self.container_id)]
         response = self.client.open(
-            '/v0/containers/append',
+            '/containers/append',
             method='PUT',
             data=json.dumps(new_id_list),
             content_type='application/json',
@@ -86,34 +87,13 @@ class TestContainersController(BaseTestCase):
 
         # confirm the new list is in the container
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='GET',
             query_string=query_string)
 
         result_dict = json.loads(response.data.decode('utf-8'))
         for id in new_id_list:
             assert(id in result_dict['observation_blocks'])
-
-    def test_containers_delete(self):
-        """Test case for containers_delete
-
-        Delete container by id
-        """
-        query_string = [('container_id', self.container_id)]
-        response = self.client.open(
-            '/v0/containers',
-            method='DELETE',
-            query_string=query_string)
-        self.assert_status(response, 204,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-        # confirm the container no longer is in the db
-        response = self.client.open(
-            '/v0/containers',
-            method='GET',
-            query_string=query_string)
-        self.assert404(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
 
     def test_containers_execution_times_get(self):
         """Test case for containers_execution_times_get
@@ -122,7 +102,7 @@ class TestContainersController(BaseTestCase):
         """
         query_string = [('container_id', self.container_id)]
         response = self.client.open(
-            '/v0/containers/executionTimes',
+            '/containers/executionTimes',
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -137,7 +117,7 @@ class TestContainersController(BaseTestCase):
     #     """
     #     query_string = [('container_id', self.container_id)]
     #     response = self.client.open(
-    #         '/v0/containers/export',
+    #         '/containers/export',
     #         method='GET',
     #         query_string=query_string)
     #     self.assert200(response,
@@ -150,7 +130,7 @@ class TestContainersController(BaseTestCase):
         """
         query_string = [('container_id', self.container_id)]
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -173,7 +153,7 @@ class TestContainersController(BaseTestCase):
 
         query_string = [('container_id', container_id)]
         response = self.client.open(
-            '/v0/containers/items',
+            '/containers/items',
             method='GET',
             query_string=query_string)
 
@@ -194,7 +174,7 @@ class TestContainersController(BaseTestCase):
         """
         query_string = [('container_id', self.container_id)]
         response = self.client.open(
-            '/v0/containers/items/summary',
+            '/containers/items/summary',
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -212,7 +192,7 @@ class TestContainersController(BaseTestCase):
         """
         body = self.container
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='POST',
             data=json.dumps(body),
             content_type='application/json')
@@ -223,7 +203,7 @@ class TestContainersController(BaseTestCase):
         new_container_id = json.loads(response.data.decode('utf-8'))
         query_string = [('container_id', new_container_id)]
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -237,7 +217,7 @@ class TestContainersController(BaseTestCase):
         body = self.container_new
         query_string = [('container_id', self.container_id)]
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='PUT',
             data=json.dumps(body),
             content_type='application/json',
@@ -247,7 +227,7 @@ class TestContainersController(BaseTestCase):
 
         # confirm the new container is there
         response = self.client.open(
-            '/v0/containers',
+            '/containers',
             method='GET',
             query_string=query_string)
         self.assert200(response,
@@ -264,7 +244,7 @@ class TestContainersController(BaseTestCase):
     #     """
     #     body = [Container()]
     #     response = self.client.open(
-    #         '/v0/containers/scheduleToO',
+    #         '/containers/scheduleToO',
     #         method='POST',
     #         data=json.dumps(body),
     #         content_type='application/json')
@@ -278,13 +258,75 @@ class TestContainersController(BaseTestCase):
     #     """
     #     query_string = [('container_id', self.container_id)]
     #     response = self.client.open(
-    #         '/v0/containers/verify',
+    #         '/containers/verify',
     #         method='GET',
     #         query_string=query_string)
     #     self.assert200(response,
     #                    'Response body is : ' + response.data.decode('utf-8'))
 
 
+class TestContainerDeleteController(BaseTestCase):
+    """ContainersController integration test stubs"""
+
+    def setUp(self):
+        """
+        Insert a new Container to work with
+        """
+        self.set_api_cookie()
+        self.container_id = self.insert_container(self.container)
+        print(self.container_id)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.defaults = ContainerTestDefaults('test')
+        cls.ob_defaults = ObsBlocksTestDefaults('test')
+        cls.container = cls.defaults.get_example_container(0)
+        cls.container_new = cls.defaults.get_example_container(-1)
+
+    # -------------------- HELPERS --------------------
+    def insert_container(self, container_body):
+
+        response = self.client.open(
+            '/containers',
+            method='POST',
+            data=json.dumps(container_body),
+            content_type='application/json')
+
+        self.assert200(response,
+                       'Failed setUp -- did not insert container.')
+
+        container_id = response.data.decode('utf-8').replace("\n", "").replace('"', '')
+
+        return container_id
+
+    # -------------------- TESTS --------------------
+    def test_containers_delete(self):
+        """Test case for containers_delete
+
+        Delete container by id
+        """
+        query_string = [('container_id', self.container_id)]
+        response = self.client.open(
+            '/containers',
+            method='DELETE',
+            query_string=query_string)
+        self.assert_status(response, 204,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+        # confirm the container no longer is in the db
+        response = self.client.open(
+            '/containers',
+            method='GET',
+            query_string=query_string)
+        self.assert_status(response, 422,
+                           'Response body is : ' + response.data.decode('utf-8'))
+
+
 if __name__ == '__main__':
     import unittest
-    unittest.main()
+    import sys
+
+    # suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
+    # unittest.TextTestRunner(verbosity=3).run(suite)
+
+    # unittest.main()

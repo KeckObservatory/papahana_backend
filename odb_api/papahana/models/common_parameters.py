@@ -7,7 +7,6 @@ from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
 from papahana.models.common_parameters_metadata import CommonParametersMetadata  # noqa: F401,E501
-from papahana.models.common_parameters_params import CommonParametersParams  # noqa: F401,E501
 from papahana import util
 
 
@@ -16,25 +15,20 @@ class CommonParameters(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: CommonParametersMetadata=None, parameters: CommonParametersParams=None):  # noqa: E501
+    def __init__(self, metadata: CommonParametersMetadata=None):  # noqa: E501
         """CommonParameters - a model defined in Swagger
 
         :param metadata: The metadata of this CommonParameters.  # noqa: E501
         :type metadata: CommonParametersMetadata
-        :param parameters: The parameters of this CommonParameters.  # noqa: E501
-        :type parameters: CommonParametersParams
         """
         self.swagger_types = {
-            'metadata': CommonParametersMetadata,
-            'parameters': CommonParametersParams
+            'metadata': CommonParametersMetadata
         }
 
         self.attribute_map = {
-            'metadata': 'metadata',
-            'parameters': 'parameters'
+            'metadata': 'metadata'
         }
         self._metadata = metadata
-        self._parameters = parameters
 
     @classmethod
     def from_dict(cls, dikt) -> 'CommonParameters':
@@ -69,26 +63,3 @@ class CommonParameters(Model):
             raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
 
         self._metadata = metadata
-
-    @property
-    def parameters(self) -> CommonParametersParams:
-        """Gets the parameters of this CommonParameters.
-
-
-        :return: The parameters of this CommonParameters.
-        :rtype: CommonParametersParams
-        """
-        return self._parameters
-
-    @parameters.setter
-    def parameters(self, parameters: CommonParametersParams):
-        """Sets the parameters of this CommonParameters.
-
-
-        :param parameters: The parameters of this CommonParameters.
-        :type parameters: CommonParametersParams
-        """
-        if parameters is None:
-            raise ValueError("Invalid value for `parameters`, must not be `None`")  # noqa: E501
-
-        self._parameters = parameters

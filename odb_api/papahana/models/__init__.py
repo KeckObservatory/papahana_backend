@@ -12,7 +12,6 @@ from papahana.models.cal_eng_parameters import CalEngParameters
 from papahana.models.cal_eng_template import CalEngTemplate
 from papahana.models.common_parameters import CommonParameters
 from papahana.models.common_parameters_metadata import CommonParametersMetadata
-from papahana.models.common_parameters_params import CommonParametersParams
 from papahana.models.container import Container
 from papahana.models.date_schema import DateSchema
 from papahana.models.dec_schema import DecSchema
@@ -30,7 +29,6 @@ from papahana.models.one_of_dec_schema import OneOfDecSchema
 from papahana.models.one_of_instrument_enum import OneOfInstrumentEnum
 from papahana.models.one_of_observation_template import OneOfObservationTemplate
 from papahana.models.one_of_ra_schema import OneOfRASchema
-from papahana.models.one_of_template_schema import OneOfTemplateSchema
 from papahana.models.one_ofbody import OneOfbody
 from papahana.models.one_ofbody1 import OneOfbody1
 from papahana.models.ra_schema import RASchema

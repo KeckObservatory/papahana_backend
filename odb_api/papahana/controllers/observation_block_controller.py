@@ -1,6 +1,6 @@
 import connexion
 from copy import deepcopy
-from flask import abort, send_from_directory, g
+from flask import abort, send_from_directory
 import json
 import pandas
 

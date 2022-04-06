@@ -463,7 +463,7 @@ paths:
     get:
       tags:
         - Containers
-      description: Retrieves a specific container's information.
+      description: Retrieves a specific container.
       operationId: containers_get
       parameters:
         - $ref: '#/components/parameters/container_id'
@@ -2191,35 +2191,42 @@ components:
     ScienceTemplate:
       required:
         - metadata
-        - parameters
+#        - parameters
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/ObservationMetadata'
-        parameters:
-          $ref: '#/components/schemas/ScienceParameters'
+#        parameters:
+#          $ref: '#/components/schemas/ScienceParameters'
 
     CalEngTemplate:
       required:
         - metadata
-        - parameters
+#        - parameters
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/ObservationMetadata'
-        parameters:
-          $ref: '#/components/schemas/CalEngParameters'
+#        parameters:
+#          $ref: '#/components/schemas/CalEngParameters'
 
     CommonParameters:
       required:
         - metadata
-        - parameters
+# TODO this will have to validate for each instrument
+#        - instrument_parameters
+#        - detector_parameters
+#        - tcs_config
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/CommonParametersMetadata'
-        parameters:
-          $ref: '#/components/schemas/CommonParametersParams'
+#        instrument_parameters:
+#          type: string
+#        detector_parameters:
+#          type: string
+#        tcs_config:
+#          type: string
 
     CommonParametersMetadata:
       required:
@@ -2242,20 +2249,6 @@ components:
           type: string
 #          ref: '#/components/schemas/VersionSchema'
 
-    CommonParametersParams:
-      required:
-        - instrument_parameters
-        - detector_parameters
-        - tcs_config
-      type: object
-      properties:
-        instrument_parameters:
-          type: string
-        detector_parameters:
-          type: string
-        tcs_config:
-          type: string
-
     Acquisition:
       required:
       - metadata
@@ -2275,6 +2268,7 @@ components:
         - version
         - script
         - sequence_number
+        - template_type
       type: object
       properties:
         name:
@@ -2298,14 +2292,14 @@ components:
           type: string
         sequence_number:
           type: integer
-      example:
-        name: KCWI_ifu_acq_offsetStar
-        ui_name: KCWI direct
-        instrument: KCWI
-        template_type: acquisition
-        version: 0.1.1
-        script: KCWI_ifu_acq_offsetStar
-        sequence_number: 0
+#      example:
+#        name: KCWI_ifu_acq_offsetStar
+#        ui_name: KCWI direct
+#        instrument: KCWI
+#        template_type: acquisition
+#        version: 0.1.1
+#        script: KCWI_ifu_acq_offsetStar
+#        sequence_number: 1
 
     AcquisitionParameters:
       required:
@@ -2546,6 +2540,9 @@ components:
         - pattern: '^-\d{2}:\d{2}:\d{2}$'
         - pattern: '^-\d{2}:\d{2}:\d{2}.\d{1}$'
         - pattern: '^-\d{2}:\d{2}:\d{2}.\d{2}$'
+        - pattern: '^\+\d{2}:\d{2}:\d{2}$'
+        - pattern: '^\+\d{2}:\d{2}:\d{2}.\d{1}$'
+        - pattern: '^\+\d{2}:\d{2}:\d{2}.\d{2}$'
       example: "19:32:28.4"
 
     DitherSchema:
@@ -2575,9 +2572,10 @@ components:
       example: "2021A_U123"
 
     TemplateSchema:
-      oneOf:
-          - $ref: '#/components/schemas/ScienceTemplate'
-          - $ref: '#/components/schemas/CalEngTemplate'
+      $ref: '#/components/schemas/ScienceTemplate'
+#      oneOf:
+#          - $ref: '#/components/schemas/ScienceTemplate'
+#          - $ref: '#/components/schemas/CalEngTemplate'
 
     DateSchema:
       type: string

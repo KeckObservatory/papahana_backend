@@ -77,10 +77,10 @@ filled_acq_templates = [{
         "name": "KCWI_ifu_acq_direct",
         "ui_name": "KCWI direct",
         "instrument": "KCWI",
-        "type": "acquisition",
+        "template_type": "acquisition",
         "version": "0.1.1",
         "script": "KCWI_ifu_acq_direct",
-        "sequence_number" : 0},
+        "sequence_number": 0},
     "parameters": {
         "rot_cfg_wrap": "auto",
         "rot_cfg_mode": "PA",
@@ -257,7 +257,8 @@ def generate_observer_collection(coll):
 
     for admin_id in keck_admin:
         akey = auth_utils.generate_new_api_key()
-        doc = {'keck_id': admin_id, "api_key": akey, "associations": assoc_list}
+        assoc_unique = list(set(assoc_list))
+        doc = {'keck_id': admin_id, "api_key": akey, "associations": assoc_unique}
         _ = coll.insert_one(doc)
 
     return
@@ -265,7 +266,7 @@ def generate_observer_collection(coll):
 
 def generate_common_parameters():
     schema = {"metadata":
-                  {"name": "kcwi_common_parameters",
+                  {"name": "KCWI_common_parameters",
                    "ui_name": "KCWI Common parameters",
                    "instrument": "KCWI",
                    "template_type": "common_parameters",
@@ -461,19 +462,8 @@ def generate_kcwi_acquisiton(nLen, maxArr):
 
 
 def generate_acquisition(nLen, maxArr, inst='KCWI'):
-    if inst=='KCWI':
-        schema = generate_kcwi_acquisiton(nLen, maxArr)
-    else:
-        schema = {
-            'instrument_setup': random_utils.randString(),
-            'acquisition_method': random_utils.randString(),
-            'guider_selection': random_utils.optionalRandString(),
-            'ao_modes': random_utils.optionalRandArrString(nLen, maxArr),
-            'offset_stars': random_utils.optionalRandArrString(nLen, maxArr),
-            'slitmasks': random_utils.optionalRandArrString(nLen, maxArr),
-            'position_angles': random_utils.optionalRandArrString(nLen, maxArr),
-            'comment': random_utils.optionalRandComment()
-        }
+    schema = generate_kcwi_acquisiton(nLen, maxArr)
+
     return schema
 
 
@@ -691,12 +681,13 @@ if __name__=='__main__':
         script_schema = generate_scripts(name, stype)
         result = coll.insert_one(script_schema)
 
-    # Create observer collection
-    print("...generating observers")
+    if args.generate_observers:
+        # Create observer collection
+        print("...generating observers")
 
-    coll = papahana_util.config_collection('observerCollect', db_name='obs_db',
-                                                conf=config)
-    coll.drop()
-    generate_observer_collection(coll)
+        coll = papahana_util.config_collection('observerCollect', db_name='obs_db',
+                                                    conf=config)
+        coll.drop()
+        generate_observer_collection(coll)
 
 
