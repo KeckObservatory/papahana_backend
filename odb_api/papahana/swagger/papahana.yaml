@@ -2183,32 +2183,27 @@ components:
         instrument: KCWI
         comment: My OB Metadata
 
-    ObservationTemplate:
-      oneOf:
-        - $ref: '#/components/schemas/ScienceTemplate'
-        - $ref: '#/components/schemas/CalEngTemplate'
-
     ScienceTemplate:
       required:
         - metadata
-#        - parameters
+        - parameters
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/ObservationMetadata'
-#        parameters:
-#          $ref: '#/components/schemas/ScienceParameters'
+        parameters:
+          $ref: '#/components/schemas/ScienceParameters'
 
     CalEngTemplate:
       required:
         - metadata
-#        - parameters
+        - parameters
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/ObservationMetadata'
-#        parameters:
-#          $ref: '#/components/schemas/CalEngParameters'
+        parameters:
+          $ref: '#/components/schemas/CalEngParameters'
 
     CommonParameters:
       required:
@@ -2572,10 +2567,9 @@ components:
       example: "2021A_U123"
 
     TemplateSchema:
-      $ref: '#/components/schemas/ScienceTemplate'
-#      oneOf:
-#          - $ref: '#/components/schemas/ScienceTemplate'
-#          - $ref: '#/components/schemas/CalEngTemplate'
+      anyOf:
+          - $ref: '#/components/schemas/ScienceTemplate'
+          - $ref: '#/components/schemas/CalEngTemplate'
 
     DateSchema:
       type: string

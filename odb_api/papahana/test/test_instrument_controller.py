@@ -19,7 +19,6 @@ class TestInstrumentController(BaseTestCase):
         self.set_api_cookie()
         self.inst = 'KCWI'
 
-
     def test_instrument_packages(self):
         """Test case for instrument_packages
 
