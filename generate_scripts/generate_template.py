@@ -646,7 +646,6 @@ kcwi_common_parameters = {
 def parse_args():
     """
     Parse the command line arguments.
-
     :return: <obj> commandline arguments
     """
     parser = argparse.ArgumentParser()
@@ -669,7 +668,6 @@ def generate_templates():
     coll = papahana_util.config_collection('templateCollect', conf=config)
 
     coll.drop()
-    print(f"Using {config['dbName']} database.")
     print('...adding templates to collection')
     templates = [kcwi_ifu_acq_offsetStar_template,
                  kcwi_ifu_acq_direct_template,
@@ -688,3 +686,4 @@ def generate_templates():
     doc = list(coll.find({}, fields))
 
     return doc
+

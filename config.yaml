@@ -1,0 +1,51 @@
+mode:
+  config: demo
+
+apikey:
+  secret_key:
+  secret_iv:
+
+local:
+  dbName: papahana 
+  obCollect: observation_blocks
+  observerCollect: observer
+  containerCollect: containers
+  scriptCollect: scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 
+  ip: 
+demo:
+  dbName: papahana_demo 
+  obCollect: observation_blocks
+  observerCollect: observer
+  containerCollect: containers
+  scriptCollect: scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  ip: 
+  port: 
+dev:
+  dbName: papahana_test
+  obCollect: observation_blocks
+  observerCollect: observer
+  containerCollect: containers
+  scriptCollect: scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 
+  ip: 
+test:
+  dbName: papahana_test
+  obCollect: observation_blocks
+  observerCollect: observer
+  containerCollect: containers
+  scriptCollect: scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 
+  ip: 
+
+
+apis:
+  proposalApi: 

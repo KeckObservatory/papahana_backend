@@ -322,21 +322,20 @@ def generate_ip_kcwi(version):
     return schema
 
 
-if __name__=='__main__':
-    n_packages = 5
-    args = utils.parse_args()
-    mode = args.mode
-
-    config = utils.read_config(mode)
-    print(f"Using {config['dbName']} database")
-
-    # Create IP collection
-    print("...generating Instrument Packages.")
-    coll = papahana_util.config_collection('ipCollect', conf=config)
-    coll.drop()
-
-    version_prefix = '0.1'
-    for idx in range(n_packages):
-        version = f'{version_prefix}.{idx}'
-        doc = generate_ip_kcwi(version)
-        result = coll.insert_one(doc)
+# if __name__=='__main__':
+#     n_packages = 5
+#     args = utils.parse_args()
+#     mode = args.mode
+#
+#     config = utils.read_config(mode)
+#
+#     # Create IP collection
+#     print("...generating Instrument Packages.")
+#     coll = papahana_util.config_collection('ipCollect', conf=config)
+#     coll.drop()
+#
+#     version_prefix = '0.1'
+#     for idx in range(n_packages):
+#         version = f'{version_prefix}.{idx}'
+#         doc = generate_ip_kcwi(version)
+#         result = coll.insert_one(doc)

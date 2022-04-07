@@ -1,0 +1,59 @@
+mode:
+  config: dev 
+
+apikey:
+  secret_key:
+
+testing:
+  admin: 4769
+
+production:
+  ob_db:
+    - 2022A
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: instrument_scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 27017
+  ip:
+  admin:
+    - #
+    - #
+dev:
+  ob_db:
+    - 2022A_dev
+    - 2021B_dev
+    - 2021A_dev
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: instrument_scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 27017
+  ip:
+  admin:
+    - #
+    - #
+test:
+  ob_db: observing_db_test
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: instrument_scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  port: 27017
+  ip:
+  admin:
+    - #
+    - #
+
+apis:
+  proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php
+
