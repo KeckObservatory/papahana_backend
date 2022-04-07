@@ -7,6 +7,7 @@ from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
 from papahana.models.observation_metadata import ObservationMetadata  # noqa: F401,E501
+from papahana.models.science_parameters import ScienceParameters  # noqa: F401,E501
 from papahana import util
 
 
@@ -15,20 +16,25 @@ class ScienceTemplate(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObservationMetadata=None):  # noqa: E501
+    def __init__(self, metadata: ObservationMetadata=None, parameters: ScienceParameters=None):  # noqa: E501
         """ScienceTemplate - a model defined in Swagger
 
         :param metadata: The metadata of this ScienceTemplate.  # noqa: E501
         :type metadata: ObservationMetadata
+        :param parameters: The parameters of this ScienceTemplate.  # noqa: E501
+        :type parameters: ScienceParameters
         """
         self.swagger_types = {
-            'metadata': ObservationMetadata
+            'metadata': ObservationMetadata,
+            'parameters': ScienceParameters
         }
 
         self.attribute_map = {
-            'metadata': 'metadata'
+            'metadata': 'metadata',
+            'parameters': 'parameters'
         }
         self._metadata = metadata
+        self._parameters = parameters
 
     @classmethod
     def from_dict(cls, dikt) -> 'ScienceTemplate':
@@ -63,3 +69,26 @@ class ScienceTemplate(Model):
             raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
 
         self._metadata = metadata
+
+    @property
+    def parameters(self) -> ScienceParameters:
+        """Gets the parameters of this ScienceTemplate.
+
+
+        :return: The parameters of this ScienceTemplate.
+        :rtype: ScienceParameters
+        """
+        return self._parameters
+
+    @parameters.setter
+    def parameters(self, parameters: ScienceParameters):
+        """Sets the parameters of this ScienceTemplate.
+
+
+        :param parameters: The parameters of this ScienceTemplate.
+        :type parameters: ScienceParameters
+        """
+        if parameters is None:
+            raise ValueError("Invalid value for `parameters`, must not be `None`")  # noqa: E501
+
+        self._parameters = parameters

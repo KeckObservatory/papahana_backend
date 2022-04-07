@@ -2,11 +2,9 @@
 
 from __future__ import absolute_import
 
-import json
-from six import BytesIO
+import ast
 
-from papahana.models.instrument_enum import InstrumentEnum  # noqa: E501
-from papahana.models.instrument_package import InstrumentPackage  # noqa: E501
+from papahana.models.instrument_package import InstrumentPackage
 from papahana.test import BaseTestCase
 
 
@@ -17,7 +15,14 @@ class TestInstrumentController(BaseTestCase):
         Insert a new OB to work with
         """
         self.set_api_cookie()
-        self.inst = 'KCWI'
+
+    @classmethod
+    def setUpClass(cls):
+        """
+        called once before running all test methods
+        """
+        cls.inst = 'KCWI'
+
 
     def test_instrument_packages(self):
         """Test case for instrument_packages
@@ -30,6 +35,10 @@ class TestInstrumentController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+        ip_dict = ast.literal_eval(response.data.decode('utf-8'))
+
+        assert(InstrumentPackage.from_dict(ip_dict))
+
     def test_instrument_packages_templates(self):
         """Test case for instrument_packages_template
 
@@ -41,28 +50,34 @@ class TestInstrumentController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    # def test_instrument_packages_ip_parameter(self):
-    #     """Test case for instrument_packages_ip_parameter
-    #
-    #
-    #     """
-    #     response = self.client.open(
-    #         '/instrumentPackages/{instrument}/parameters'.format(instrument=InstrumentEnum(), ip_version=1.2),
-    #         method='GET')
-    #     self.assert200(response,
-    #                    'Response body is : ' + response.data.decode('utf-8'))
-    #
-    # def test_instrument_packages_ip_template(self):
-    #     """Test case for instrument_packages_ip_template
-    #
-    #
-    #     """
-    #     response = self.client.open(
-    #         '/instrumentPackages/{instrument}/{template_name}'.format(instrument=InstrumentEnum(),
-    #                                                                                   ip_version=1.2,
-    #                                                                                   template_name='template_name_example'),
-    #         method='GET')
-    #     self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
+    def test_instrument_packages_scripts(self):
+        """Test case for instrument_packages_parameter
+
+
+        """
+        response = self.client.open(
+            f'/instrumentPackages/{self.inst}/parameters',
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_instrument_packages_template_metadata(self):
+        """Test case for instrument_packages_template_metadata
+
+
+        """
+        response = self.client.open(
+            f'/instrumentPackages/{self.inst}/templates/metadata', method='GET')
+        self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_instrument_packages_scripts(self):
+        """Test case for instrument_packages_ip_template
+
+
+        """
+        response = self.client.open(
+            f'/instrumentPackages/{self.inst}/templates', method='GET')
+        self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
 
 
 if __name__ == '__main__':

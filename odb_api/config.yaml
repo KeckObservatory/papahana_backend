@@ -3,7 +3,9 @@ mode:
 
 apikey:
   secret_key:
-  timeout: 86400
+
+testing:
+  admin: 4769
 
 production:
   ob_db:
@@ -12,7 +14,7 @@ production:
   obCollect: observation_blocks
   observerCollect: observers
   containerCollect: containers
-  scriptCollect: scripts
+  scriptCollect: instrument_scripts
   templateCollect: templates
   ipCollect: instrument_packages
   port: 27017
@@ -29,7 +31,7 @@ dev:
   obCollect: observation_blocks
   observerCollect: observers
   containerCollect: containers
-  scriptCollect: scripts
+  scriptCollect: instrument_scripts
   templateCollect: templates
   ipCollect: instrument_packages
   port: 27017
@@ -43,7 +45,7 @@ test:
   obCollect: observation_blocks
   observerCollect: observers
   containerCollect: containers
-  scriptCollect: scripts
+  scriptCollect: instrument_scripts
   templateCollect: templates
   ipCollect: instrument_packages
   port: 27017

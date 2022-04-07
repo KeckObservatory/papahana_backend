@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
+from papahana.models.instrument_package_metadata import InstrumentPackageMetadata  # noqa: F401,E501
 from papahana import util
 
 
@@ -14,15 +15,45 @@ class InstrumentPackage(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self):  # noqa: E501
+    def __init__(self, metadata: InstrumentPackageMetadata=None, optical_parameters: object=None, guider: object=None, configurable_elements: str=None, pointing_origins: List[str]=None, template_list: List[str]=None):  # noqa: E501
         """InstrumentPackage - a model defined in Swagger
 
+        :param metadata: The metadata of this InstrumentPackage.  # noqa: E501
+        :type metadata: InstrumentPackageMetadata
+        :param optical_parameters: The optical_parameters of this InstrumentPackage.  # noqa: E501
+        :type optical_parameters: object
+        :param guider: The guider of this InstrumentPackage.  # noqa: E501
+        :type guider: object
+        :param configurable_elements: The configurable_elements of this InstrumentPackage.  # noqa: E501
+        :type configurable_elements: str
+        :param pointing_origins: The pointing_origins of this InstrumentPackage.  # noqa: E501
+        :type pointing_origins: List[str]
+        :param template_list: The template_list of this InstrumentPackage.  # noqa: E501
+        :type template_list: List[str]
         """
         self.swagger_types = {
+            'metadata': InstrumentPackageMetadata,
+            'optical_parameters': object,
+            'guider': object,
+            'configurable_elements': str,
+            'pointing_origins': List[str],
+            'template_list': List[str]
         }
 
         self.attribute_map = {
+            'metadata': 'metadata',
+            'optical_parameters': 'optical_parameters',
+            'guider': 'guider',
+            'configurable_elements': 'configurable_elements',
+            'pointing_origins': 'pointing_origins',
+            'template_list': 'template_list'
         }
+        self._metadata = metadata
+        self._optical_parameters = optical_parameters
+        self._guider = guider
+        self._configurable_elements = configurable_elements
+        self._pointing_origins = pointing_origins
+        self._template_list = template_list
 
     @classmethod
     def from_dict(cls, dikt) -> 'InstrumentPackage':
@@ -34,3 +65,141 @@ class InstrumentPackage(Model):
         :rtype: InstrumentPackage
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def metadata(self) -> InstrumentPackageMetadata:
+        """Gets the metadata of this InstrumentPackage.
+
+
+        :return: The metadata of this InstrumentPackage.
+        :rtype: InstrumentPackageMetadata
+        """
+        return self._metadata
+
+    @metadata.setter
+    def metadata(self, metadata: InstrumentPackageMetadata):
+        """Sets the metadata of this InstrumentPackage.
+
+
+        :param metadata: The metadata of this InstrumentPackage.
+        :type metadata: InstrumentPackageMetadata
+        """
+        if metadata is None:
+            raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
+
+        self._metadata = metadata
+
+    @property
+    def optical_parameters(self) -> object:
+        """Gets the optical_parameters of this InstrumentPackage.
+
+
+        :return: The optical_parameters of this InstrumentPackage.
+        :rtype: object
+        """
+        return self._optical_parameters
+
+    @optical_parameters.setter
+    def optical_parameters(self, optical_parameters: object):
+        """Sets the optical_parameters of this InstrumentPackage.
+
+
+        :param optical_parameters: The optical_parameters of this InstrumentPackage.
+        :type optical_parameters: object
+        """
+        if optical_parameters is None:
+            raise ValueError("Invalid value for `optical_parameters`, must not be `None`")  # noqa: E501
+
+        self._optical_parameters = optical_parameters
+
+    @property
+    def guider(self) -> object:
+        """Gets the guider of this InstrumentPackage.
+
+
+        :return: The guider of this InstrumentPackage.
+        :rtype: object
+        """
+        return self._guider
+
+    @guider.setter
+    def guider(self, guider: object):
+        """Sets the guider of this InstrumentPackage.
+
+
+        :param guider: The guider of this InstrumentPackage.
+        :type guider: object
+        """
+        if guider is None:
+            raise ValueError("Invalid value for `guider`, must not be `None`")  # noqa: E501
+
+        self._guider = guider
+
+    @property
+    def configurable_elements(self) -> str:
+        """Gets the configurable_elements of this InstrumentPackage.
+
+
+        :return: The configurable_elements of this InstrumentPackage.
+        :rtype: str
+        """
+        return self._configurable_elements
+
+    @configurable_elements.setter
+    def configurable_elements(self, configurable_elements: str):
+        """Sets the configurable_elements of this InstrumentPackage.
+
+
+        :param configurable_elements: The configurable_elements of this InstrumentPackage.
+        :type configurable_elements: str
+        """
+        if configurable_elements is None:
+            raise ValueError("Invalid value for `configurable_elements`, must not be `None`")  # noqa: E501
+
+        self._configurable_elements = configurable_elements
+
+    @property
+    def pointing_origins(self) -> List[str]:
+        """Gets the pointing_origins of this InstrumentPackage.
+
+
+        :return: The pointing_origins of this InstrumentPackage.
+        :rtype: List[str]
+        """
+        return self._pointing_origins
+
+    @pointing_origins.setter
+    def pointing_origins(self, pointing_origins: List[str]):
+        """Sets the pointing_origins of this InstrumentPackage.
+
+
+        :param pointing_origins: The pointing_origins of this InstrumentPackage.
+        :type pointing_origins: List[str]
+        """
+        if pointing_origins is None:
+            raise ValueError("Invalid value for `pointing_origins`, must not be `None`")  # noqa: E501
+
+        self._pointing_origins = pointing_origins
+
+    @property
+    def template_list(self) -> List[str]:
+        """Gets the template_list of this InstrumentPackage.
+
+
+        :return: The template_list of this InstrumentPackage.
+        :rtype: List[str]
+        """
+        return self._template_list
+
+    @template_list.setter
+    def template_list(self, template_list: List[str]):
+        """Sets the template_list of this InstrumentPackage.
+
+
+        :param template_list: The template_list of this InstrumentPackage.
+        :type template_list: List[str]
+        """
+        if template_list is None:
+            raise ValueError("Invalid value for `template_list`, must not be `None`")  # noqa: E501
+
+        self._template_list = template_list

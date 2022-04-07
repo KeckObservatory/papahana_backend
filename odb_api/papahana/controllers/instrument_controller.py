@@ -9,21 +9,20 @@ from papahana.controllers import controller_helper as utils
 from papahana.controllers import instrument_utils as inst_utils
 
 
-def instrument_packages(instrument):
-    """instrument_packages
-
-    Retrieves the the available instrument packages for an instrument.
+def instrument_packages(instrument, ip_version=None):
+    """
+    Retrieves the available instrument packages for an instrument. The
+    version is optional,  defaults to most recent version.
+        /instrumentPackages/{instrument}
 
     :param instrument: instrument used to make observation
     :type instrument: str
 
-    :rtype: [InstrumentPackage]
+    :rtype: InstrumentPackage
     """
-    query = {"metadata.instrument": instrument}
+    package = inst_utils.get_ip(instrument, ip_version)
 
-    ip_packages = utils.get_by_query(query, 'ipCollect')
-
-    return utils.list_with_objectid(ip_packages)
+    return utils.json_with_objectid(package)
 
 
 def instrument_packages_parameter(instrument, ip_version=None):
@@ -40,22 +39,11 @@ def instrument_packages_parameter(instrument, ip_version=None):
 
     :rtype: InstrumentPackage
     """
-    if connexion.request.is_json:
-        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
-
-    if not ip_version:
-        query = {'metadata.instrument': instrument}
-        ip_version = utils.most_recent_version(query, 'ipCollect')
-
-    query = {"metadata.instrument": instrument, "metadata.version": ip_version}
-    fields = {"_id": 0, "configurable_elements": 1}
-
-    package_list = utils.get_fields_by_query(query, fields, 'ipCollect')
-
-    if package_list:
-        return package_list[0]
-    else:
+    ip = instrument_packages(instrument, ip_version)
+    if not ip or 'configurable_elements' not in ip:
         return {}
+
+    return ip['configurable_elements']
 
 
 def instrument_packages_template(instrument, ip_version=None, template_name=None):
@@ -114,26 +102,25 @@ def instrument_packages_scripts(instrument, ip_version=None, script_name=None):
 
     :rtype: InstrumentPackage
     """
-    if connexion.request.is_json:
-        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
-
-    metadata = instrument_packages_template_metadata(instrument,
-                                                     ip_version=ip_version)
-
     if script_name:
         return inst_utils.get_by_script_name(script_name)
 
-    scripts = []
-    for meta in metadata:
-        try:
-            script_name = metadata[meta]['metadata']['script']
-            script_ver = metadata[meta]['metadata']['script_version']
-            scripts.append(inst_utils.get_by_script_name(script_name,
-                                                         script_ver))
-        except KeyError:
-            continue
+    temp_meta_list = instrument_packages_template_metadata(instrument, ip_version)
 
-    return scripts
+    script_list = []
+    for meta in temp_meta_list.values():
+        if 'script' in meta['metadata']:
+            script_list.append(meta['metadata']['script'])
+
+    script_names = list(set(script_list))
+
+    script_list = []
+    for script_name in script_names:
+        script = inst_utils.get_by_script_name(script_name)
+        if script:
+            script_list.append(script)
+
+    return script_list
 
 
 

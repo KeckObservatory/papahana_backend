@@ -206,6 +206,26 @@ def generate_inst_package(template_list):
     return schema
 
 
+def new_script(name):
+    script = {
+        "metadata": {
+            "name": name,
+            "version": "0.0.1",
+            "instrument": "KCWI",
+            "script_type": "science"
+        },
+        "script": []
+    }
+
+    return script
+
+def generate_scripts_collection(coll, template_list):
+    template_info = parse_templates_version(template_list)
+    for name in template_info.keys():
+        schema = new_script(name)
+        coll.insert_one(schema)
+
+
 def parse_templates(template_list):
     schema = {}
     for template in template_list:
@@ -690,4 +710,10 @@ if __name__=='__main__':
         coll.drop()
         generate_observer_collection(coll)
 
+    # print("...generating scripts")
+    #
+    # coll = papahana_util.config_collection('scriptCollect', conf=config)
+    # coll.drop()
+    # generate_scripts_collection(coll, template_list)
+    #
 

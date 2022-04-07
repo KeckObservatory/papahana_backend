@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 import warnings
+import ast
 
 from papahana.test import BaseTestCase
 from papahana.test.test_default_values import ObsBlocksTestDefaults
@@ -14,8 +15,8 @@ class TestSemesterIdController(BaseTestCase):
         Insert a new OB to work with
         """
         self.set_api_cookie()
-        self.container_id = self.insert_container(self.container)
-
+    #     self.container_id = self.insert_container(self.container)
+    #
     # def tearDown(self):
     #     """
     #     Remove the OB that was inserted at start of test
@@ -27,23 +28,30 @@ class TestSemesterIdController(BaseTestCase):
         #TODO find the socket warning!
         warnings.simplefilter("ignore")
         cls.ob_defaults = ObsBlocksTestDefaults('test')
-        cls.sem_id = '2020A_U169'
-        cls.obs_id = 2003
-        cls.semester = '2021A'
+
+
+    # ------
+    # TESTS
+    # ------
 
     def test_sem_id_containers_get(self):
         """Test case for sem_id_containers_get
+        /semesterIds/{sem_id}/containers
 
         Retrieves all containers associated with a program.
         """
         response = self.client.open(
-            '/semesterIds/',
+            '/semesterIds',
             method='GET')
-        sem_id = response['associations'][0]
+        sem_ids = response.data.decode('utf-8')
+        sem_ids = ast.literal_eval(sem_ids)
+
+        assert(sem_ids)
+
+        sem_id = sem_ids['associations'][0]
 
         response = self.client.open(
-            f'/semesterIds/{sem_id}/containers',
-            method='GET')
+            f'/semesterIds/{sem_id}/containers', method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -53,11 +61,11 @@ class TestSemesterIdController(BaseTestCase):
         retrieves all the sem_ids associated with an observer.
         """
         response = self.client.open(
-            '/semesterIds/',
+            '/semesterIds',
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
-    #
+    
     # def test_sem_id_ob_get(self):
     #     """Test case for sem_id_ob_get
     #

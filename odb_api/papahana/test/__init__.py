@@ -31,7 +31,8 @@ class BaseTestCase(TestCase):
         return app.app
 
     def set_api_cookie(self):
-        keck_id = 4769
+        config_params = util.read_config('testing')
+        keck_id = config_params['admin']
         query = {'keck_id': keck_id}
         results = helpers.get_by_query(query, 'observerCollect', db_name='obs_db')
         raw_api_key = results[0]['api_key']

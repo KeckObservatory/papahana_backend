@@ -1992,16 +1992,6 @@ components:
         $ref: '#/components/schemas/SemIdSchema'
       example: 2021A_U456
 
-#    sem_id_in_query:
-#      in: query
-#      name: sem_id
-#      description: semester id
-#      required: true
-#      explode: true
-#      schema:
-#        $ref: '#/components/schemas/SemIdSchema'
-#      example: 2021A
-
     sem_id_not_required:
       in: query
       name: sem_id
@@ -2355,7 +2345,54 @@ components:
 
     # TODO add IP template description
     InstrumentPackage:
-      description: Instrument package description goes here
+      required:
+        - metadata
+        - optical_parameters
+        - guider
+        - configurable_elements
+        - pointing_origins
+        - template_list
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/InstrumentPackageMetadata'
+        optical_parameters:
+          type: object
+        guider:
+          type: object
+        configurable_elements:
+          type: string
+        pointing_origins:
+          type: array
+          items:
+            type: string
+        template_list:
+          type: array
+          items:
+            type: string
+
+    InstrumentPackageMetadata:
+      required:
+        - name
+        - ui_name
+        - version
+        - instrument
+        - observing_modes
+      type: object
+      properties:
+        name:
+          type: string
+        ui_name:
+          type: string
+        version:
+          type: string
+        instrument:
+          type: string
+        observing_modes:
+          type: array
+          items:
+            type: string
+
     # TODO add observer list schema
     ObserverList:
       description: Observer List description goes here
