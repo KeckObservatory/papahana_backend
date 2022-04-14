@@ -126,7 +126,7 @@ class HistoricalCollection(Collection):
 
     @property
     def _deltas_name(self):
-        return "__deltas_{}".format(self.name)
+        return "deltas_{}".format(self.name)
 
     @property
     def _deltas_collection(self):
@@ -284,7 +284,6 @@ class HistoricalCollection(Collection):
                 )
                 ptch = self._add_patch(patch)
                 patch_obj = PatchResult(ptch)
-                # patch_obj.inserted_id_obj = inserted_obj
                 patch_obj.inserted_id_obj = inserted_obj
 
                 return patch_obj

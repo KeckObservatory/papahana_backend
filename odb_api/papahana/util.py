@@ -65,7 +65,7 @@ def config_collection(collection, db_name=None, conf=None):
     mongo_port = conf['mongo_port']
 
     if collection == 'obCollect':
-        CLIENT_URL = f"mongodb://localhost:{mongo_port}"
+        CLIENT_URL = f"mongodb://{conf['ip']}:{mongo_port}"
         mongo = pymongo.MongoClient(CLIENT_URL)
         db = mongo[db]
         coll = observation_blocks(database=db)
