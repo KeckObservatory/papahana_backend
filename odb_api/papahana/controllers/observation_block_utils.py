@@ -1,11 +1,77 @@
+from datetime import datetime
 from flask import abort, g
 import json
 import ast
+import pymongo
+
+from papahana.util import config_collection
 
 from papahana.controllers import controller_helper as utils
-from papahana.controllers import authorization_controller as auth_utils
+from papahana.controllers import authorization_utils as auth_utils
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.status import Status
+
+
+def update_ob(_ob_id, new_ob):
+    metadata = {"timestamp": datetime.now()}
+    coll = config_collection('obCollect')
+
+    coll.patch_one(new_ob, metadata=metadata)
+
+
+# def update_ob_fields(obj_id, fields):
+#
+#     metadata = {"timestamp": datetime.now()}
+#     _ob_id = ob['_ob_id']
+#     coll = config_collection('obCollect')
+#
+#     coll.patch_one(new_ob, metadata=metadata)
+
+
+def ob_get(_ob_id):
+    coll = config_collection('obCollect')
+
+    ob = coll.latest({'_ob_id': _ob_id})
+
+    if ob:
+        try:
+            del ob['_revision_metadata']
+        except KeyError:
+            pass
+
+    return ob
+
+
+def ob_id_associated(ob_id):
+    """
+    Minimally check that the OB can be viewed by the user logged in.  The
+    returned OB is the original OB,  not the most recent.
+    """
+    # will return one result,  and throw 422 if not found
+    ob = utils.get_by_id(ob_id, 'obCollect')
+    auth_utils.check_sem_id_associated(ob['metadata']['sem_id'])
+
+    return ob
+
+
+def insert_ob(ob_doc):
+    """
+    Add a new document to a collection.
+    :param ob_doc: the document to insert
+    :type ob_doc: dict
+    rtype: document id
+    """
+    coll = config_collection('obCollect')
+
+    # generate the _ob_id -- don't allow it to be inserted manually
+    sem_id = ob_doc['metadata']['sem_id']
+    n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
+    ob_doc['_ob_id'] = f"{sem_id}_{str(n_ob).zfill(4)}"
+
+    metadata = {"timestamp": datetime.now()}
+    result = coll.patch_one(ob_doc, metadata=metadata)
+
+    return result.inserted_id_obj.inserted_id
 
 
 def calc_exp_time(obs):

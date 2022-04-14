@@ -6,18 +6,12 @@ import pandas
 
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import observation_block_utils as ob_utils
-from papahana.controllers import observers_utils as obs_utils
 from papahana.controllers import authorization_utils as auth_utils
 
-
-from papahana.models.body import Body  
-from papahana.models.body1 import Body1  
-from papahana.models.date_schema import DateSchema  
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.sem_id_schema import SemIdSchema
-from papahana.models.template_schema import TemplateSchema  
-from papahana import util
-from papahana.models.status import Status
+
+from papahana.util import config_collection
 
 
 # directory used for writing files to return
@@ -29,16 +23,20 @@ def ob_get(ob_id):
     Retrieves the general parameters of an OB.
         /obsBlocks
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID
     :type ob_id: str
 
     :rtype: ObservationBlock
     """
     # will return one result,  and throw 404 if not found
-    ob = utils.get_by_id(ob_id, 'obCollect')
-    auth_utils.check_sem_id_associated(ob['metadata']['sem_id'])
+    ob_orig = ob_utils.ob_id_associated(ob_id)
 
-    return ob
+    # todo check on the latest version.
+
+    # get latest version
+    ob = ob_utils.ob_get(ob_orig['_ob_id'])
+
+    return utils.json_with_objectid(ob)
 
 
 def ob_post(body):
@@ -55,7 +53,11 @@ def ob_post(body):
         # check that status is complete,  add defaults
         body = ob_utils.add_default_status(body, connexion.request.get_json())
 
-    result = utils.insert_into_collection(body, 'obCollect')
+    # the id will be generated on inserting
+    if '_ob_id' in body:
+        del body['_ob_id']
+
+    result = ob_utils.insert_ob(body)
 
     return str(result)
 
@@ -64,19 +66,19 @@ def ob_put(body, ob_id):
     """
     Updates the observation block with the new one.
 
-    :param body: Observation block replacing ob_id.
+    :param body: Observation block replacing OB with Object ID = ob_id.
     :type body: dict | bytes
     :param ob_id: observation block id
     :type ob_id: str
 
     :rtype: None
     """
-    # check that access is allowed to the ob being replaced.
-    ob = ob_get(ob_id)
-    if not ob:
-        abort(422, f'Observation Block id: {ob_id} not found.')
-    # check the update OB is associated
-    auth_utils.check_sem_id_associated(body['metadata']['sem_id'])
+    # check that access is allowed to the ob being replaced,  422 if not found.
+    ob_orig = ob_utils.ob_id_associated(ob_id)
+
+    # add the id required by history
+    obs_block_id = ob_orig['_ob_id']
+    body['_ob_id'] = obs_block_id
 
     if connexion.request.is_json:
         body = ob_utils.add_default_status(body, connexion.request.get_json())
@@ -93,12 +95,16 @@ def ob_delete(ob_id):
 
     :rtype: None
     """
-    # check that access is allowed to delete the ob
-    ob = ob_get(ob_id)
-    if not ob:
-        abort(422, f'Observation Block id: {ob_id} not found.')
+    # check that access is allowed to be deleted,  422 if not found.
+    _ = ob_utils.ob_id_associated(ob_id)
 
-    utils.delete_by_id(ob_id, 'obCollect')
+    # get most recent version of OB
+    ob = ob_get(ob_id)
+
+    # set status to deleted,  the OB will remain in the database
+    ob['status']['deleted'] = True
+
+    ob_utils.update_ob(ob['_ob_id'], ob)
 
 
 def ob_duplicate(ob_id, sem_id=None):
@@ -112,10 +118,16 @@ def ob_duplicate(ob_id, sem_id=None):
 
     :rtype: str
     """
-    # check that access is allowed to duplicate
+    # check that access is allowed to duplicate,  get most recent version
     ob = ob_get(ob_id)
 
+    if not ob:
+        # handle no result
+        print(ob)
+
+    # remove IDs
     del ob['_id']
+    del ob['_ob_id']
 
     if sem_id:
         ob['metadata']['sem_id'] = sem_id
@@ -125,7 +137,8 @@ def ob_duplicate(ob_id, sem_id=None):
     # check the update OB is associated
     auth_utils.check_sem_id_associated(sem_id)
 
-    result = utils.insert_into_collection(ob, 'obCollect')
+    # result = utils.insert_into_collection(ob, 'obCollect')
+    result = ob_utils.insert_ob(ob)
 
     return str(result)
 
@@ -135,7 +148,7 @@ def ob_executions(ob_id):
     Retrieves the list of execution attempts for a specific OB.
         /obsBlocks/executions
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID str
     :type ob_id: str
 
     :rtype: List[str]
@@ -208,7 +221,7 @@ def ob_completely_filled(ob_id):
     Verify that the required parameters have been filled in.
         /obsBlocks/completelyFilledIn
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: bool
@@ -247,7 +260,7 @@ def ob_observations_get(ob_id):
     Retrieves the list of observation sequences associated with the OB
         /obsBlocks/observations
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: List[Observation]
@@ -278,7 +291,7 @@ def ob_observations_id_get(ob_id, sequence_number):
     Retrieves the specified observation sequence within the OB
         /obsBlocks/observations/id
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param sequence_number: index of template within the OB, seq0, acq0.
     :type sequence_number: str
@@ -303,7 +316,7 @@ def ob_sequence_id_put(body, ob_id, sequence_number):
 
     :param body:
     :type body: dict | bytes
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param sequence_number: index and type of template within the OB.
     :type sequence_number: str
@@ -343,16 +356,17 @@ def ob_sequence_id_delete(ob_id, sequence_number):
     """
     Removes the specified template within the OB
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param sequence_number: index and type of template within the OB.
     :type sequence_number: str
 
     :rtype: None
     """
-    # cehck association and get ob
+    # check association and get ob
     ob = ob_get(ob_id)
     ob_obj = ObservationBlock.from_dict(ob)
+
     # observations
 
     # if 'obs_type' not in ob:
@@ -378,12 +392,11 @@ def ob_sequence_id_delete(ob_id, sequence_number):
     #
 
 #TODO come back to types other then json
-#TODO think through cleanup
 def ob_sequence_id_file_get(ob_id, sequence_number, file_parameter):
     """
     Returns the specified template within the OB as a file
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param sequence_number: index and type of template within the OB.
     :type sequence_number: str
@@ -414,7 +427,7 @@ def ob_sequence_id_file_put(body, ob_id, sequence_number, file_parameter):
     Updates the specified template within the OB
         /obsBlocks/sequence/{sequence_number}/{file_parameter}
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param sequence_number: index and type of template within the OB.
     :type sequence_number: str
@@ -434,7 +447,7 @@ def ob_sequence_duplicate(ob_id, sequence_number):
     the OB.
         /obsBlocks/sequence/duplicate/{sequence_number}
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param sequence_number: index and type of template within the OB.
     :type sequence_number: str
@@ -452,14 +465,14 @@ def ob_sequence_duplicate(ob_id, sequence_number):
 
     new_template = deepcopy(observation)
 
-    #todo this isn't right anymore
-    new_sequence['template_index'] = f'seq{len(observations)}'
-
-    observations.append(new_sequence)
-    utils.update_doc(utils.query_by_id(ob_id), {"sequences": observations},
-                     'obCollect')
-
-    return new_sequence
+    # #todo this isn't right anymore
+    # new_sequence['template_index'] = f'seq{len(observations)}'
+    #
+    # observations.append(new_sequence)
+    # utils.update_doc(utils.query_by_id(ob_id), {"sequences": observations},
+    #                  'obCollect')
+    #
+    # return new_sequence
 
 
 def ob_sequence_post(body, ob_id, obs_type):
@@ -468,7 +481,7 @@ def ob_sequence_post(body, ob_id, obs_type):
 
     :param body:
     :type body: list or dict
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param obs_type: A string to indicate the type of template,
                           (acquisition, science, engineering, calibration)
@@ -490,7 +503,7 @@ def ob_sequence_put(body, ob_id, obs_type):
 
     :param body:
     :type body: dict | bytes
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param obs_type: A string to indicate the type of template,
                           (acquisition, science, engineering, calibration)
@@ -511,7 +524,7 @@ def ob_time_constraint_get(ob_id):
     """
     Retrieves the time constraints (from, to).
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: List[str]
@@ -537,7 +550,7 @@ def ob_time_constraint_put(body, ob_id):
 
     :param body:
     :type body: list
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: None
@@ -559,7 +572,7 @@ def ob_upgrade(ob_id, sem_id=None):
     When an instrument package changes, attempts to port an existing OB
     to the new package, default is the current sem_id.
 
-    :param ob_id: observation block ObjectId
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param sem_id: program id including semester
     :type sem_id: dict | bytes
@@ -589,7 +602,7 @@ def ob_schedule_put(ob_id):
     """
     On success updates an existing ob schedule.
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: None
@@ -604,7 +617,7 @@ def ob_schedule_get(ob_id):
     """
     Retrieves scheduling information. 
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: List[str]
@@ -617,7 +630,7 @@ def ob_sequence_supplement(ob_id):
     """
     Retrieves list of files.
 
-    :param ob_id: observation block id
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: None
@@ -625,40 +638,92 @@ def ob_sequence_supplement(ob_id):
     return 'do some magic!'
 
 
-def ob_last_version(ob_id):  # noqa: E501
-    """ob_last_version
+def ob_previous_version(ob_id):
+    """
+    Retrieves the last saved version an OB.
+        /obsBlocks/previousVersion
 
-    Retrieves the last saved version an OB. # noqa: E501
-
-    :param ob_id: observation block ObjectId
+    :param ob_id: observation block Object ID string
     :type ob_id: str
 
     :rtype: ObservationBlock
     """
-    return 'do some magic!'
+    ob = ob_get(ob_id)
+    _ob_id = ob['_ob_id']
+
+    new_ob = ob
+
+    new_ob['metadata']['name'] = 'wow,  a revision'
+
+    # the update requires all the values,  with the changes
+    # ob_utils.update_ob(ob, {'_ob_id': _ob_id, 'metadata.name': "another revision"})
+    ob_utils.update_ob(ob, new_ob)
 
 
-def ob_revisions(ob_id, revision_n=None):  # noqa: E501
-    """ob_revisions
+    # TODO when returning an OB,  strip out the revision information
+    # _revision_metadata
 
-    Retrieves the last ten revisions,  unless the number of revisions is specified # noqa: E501
+    # TODO this is for testing
+    coll = config_collection('obCollect')
 
-    :param ob_id: observation block ObjectId
+    revisions = coll.latest({'_ob_id': _ob_id})
+
+    # return utils.list_with_objectid(revisions)
+    if '_id' in revisions:
+        return utils.json_with_objectid(revisions)
+    else:
+        return revisions
+
+
+
+def ob_revisions(ob_id, revision_n=None): 
+    """
+    Retrieves the last ten revisions,  unless the number of revisions is specified
+        /obsBlocks/revisions
+
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param revision_n: The number of revisions to return
     :type revision_n: int
 
     :rtype: ObservationBlock
     """
-    return 'do some magic!'
+    ob = ob_get(ob_id)
+    _ob_id = ob['_ob_id']
+
+    coll = config_collection('obCollect')
+
+    # TODO this is only for testing
+    # new_ob = ob
+    # new_ob['metadata']['name'] = 'wow,  a revision of revisions'
+    # ob_utils.update_ob(ob, new_ob)
 
 
-def ob_revision_index(ob_id, revision_index):  # noqa: E501
+    # updates without history go through pymongo
+    # !!! TODO keep the status of the most recent when re-winding history
+    # TODO make updates to status through pymongo,  not patch_one
+    # TODO !!!! NOT RIGHT the 0th OB gets updated with pymongo,  not the latest
+    # TODO maybe that is okay,  accesss the Status from the observation_block collection
+
+    # TODO order by _revision_metadata -- this should include time stamp
+    # TODO maybe always update the STATUS on the Oth,  and include that on the
+    # TODO returned OB
+
+    # > db.observation_blocks.update({"_id": ObjectId('624f800a5e96b20aa2d6e219')}, {$set: {
+    #     'metadata.sequence_number': 3}})
+        # updates the latest,  but not in the history.
+
+    revisions = list(coll.revisions({'_ob_id': _ob_id}))
+
+    return utils.list_with_objectid(revisions)
+
+
+def ob_revision_index(ob_id, revision_index): 
     """ob_revision_index
 
-    Retrieves the nth (revision_index) revision # noqa: E501
+    Retrieves the nth (revision_index) revision
 
-    :param ob_id: observation block ObjectId
+    :param ob_id: observation block Object ID string
     :type ob_id: str
     :param revision_index: The index of the single revision to return.
     :type revision_index: int

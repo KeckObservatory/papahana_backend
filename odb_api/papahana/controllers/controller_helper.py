@@ -155,10 +155,15 @@ def insert_into_collection(doc, collect_name, db_name=None):
     :type collect_name: str
     rtype: document id
     """
-    coll = config_collection(collect_name, db_name=None)
+    coll = config_collection(collect_name, db_name=db_name)
 
     if type(doc) is dict and "_id" in doc:
         del doc["_id"]
+
+    if collect_name == 'obCollect' and '_ob_id' not in doc:
+        sem_id = doc['metadata']['sem_id']
+        n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
+        doc['_ob_id'] = f"{sem_id}_{str(n_ob).zfill(4)}"
 
     try:
         result = coll.insert_one(doc)
@@ -200,7 +205,7 @@ def delete_by_id(obj_id, collect_name, db_name=None):
     """
     obj_id = get_object_id(obj_id)
 
-    coll = config_collection(collect_name, db_name=None)
+    coll = config_collection(collect_name, db_name=db_name)
 
     try:
         coll.delete_one({'_id': obj_id})
@@ -486,84 +491,87 @@ def get_observable_range():
     return [None, None]
 
 
-def odt_ob_query(query, fields, instrument, min_ra, max_ra, ob_priority,
-                 min_priority, max_priority, min_duration, max_duration,
-                 state, observable, completed):
-    """
-    :param query: The initial query to add the params to.
-    :type query: dict | bytes
-    :param fields: The result fields to return,  an empty {} returns all.
-    :type fields: dict | bytes
-    :param instrument: instrument used to make observation
-    :type instrument: dict | bytes
-    :param min_ra: the minimum right ascension
-    :type min_ra: dict | bytes
-    :param max_ra: the maximum right ascension
-    :type max_ra: dict | bytes
-    :param ob_priority: return results with a given priority.
-    :type ob_priority: int
-    :param min_priority: only return results with priority greater than or
-                         equal to minimum.
-    :type min_priority: int
-    :param max_priority: only return results with priority less than to max.
-    :type max_priority: int
-    :param min_duration: only return results that have a duration greater than
-                         or equal to the min_duration.  The duration unit is
-                         minutes.
-    :type min_duration: float
-    :param max_duration: only return results that have a duration less than
-                        or equal to the max_duration.  The duration unit is
-                        minutes.
-    :type max_duration: float
-    :param state: return OBs of a certain state,  the possible states are
-                  defined in ‘Defined Types’.
-    :type state: str
-    :param observable: only return results that are observable for current UT
-                       to sunrise.  The duration is not taken into consideration.
-                       Default is false (0),  use observable for only OBs that
-                       are observable.
-    :type observable: bool
-    :param completed: return results that are completed.  The default is false,
-                      use completed for only OBs that are observable.
-    :type completed: bool
-    :rtype: List
-    """
-
-    if instrument:
-        query['metadata.instrument'] = instrument
-    if ob_priority:
-        query['metadata.priority'] = int(ob_priority)
-
-    # [0 = partial, 1 = ready, 2 = ongoing, 3 = complete, 4 = aborted]
-    if completed:
-        query['status.state'] = 3
-    elif state:
-        query['status.state'] = int(state)
-
-    else:
-        if min_priority and max_priority:
-            query["status.priority"] = {"$gt": int(min_priority),
-                                        "$lt": int(max_priority)}
-        elif min_priority:
-            query["status.priority"] = {"$gt": int(min_priority)}
-        elif max_priority:
-            query["status.priority"] = {"$lt": int(max_priority)}
-
-    # TODO need dcs keyword access
-    # if observable:
-    #     min_ra, max_ra = restrict2observable(min_ra, max_ra)
-
-    if min_ra and max_ra:
-        query["target.target_coord_ra"] = {"$gt": min_ra, "$lt": max_ra}
-    elif min_ra:
-        query["target.target_coord_ra"] = {"$gt": min_ra}
-    elif max_ra:
-        query["target.target_coord_ra"] = {"$lt": max_ra}
-
-    matching_ob = parse_duration(get_fields_by_query(query, fields, 'obCollect'),
-                                 min_duration, max_duration)
-
-    return matching_ob
+# def odt_ob_query(query, fields, instrument, min_ra, max_ra, ob_priority,
+#                  min_priority, max_priority, min_duration, max_duration,
+#                  state, observable, completed, container_id=None):
+#     """
+#     :param query: The initial query to add the params to.
+#     :type query: dict | bytes
+#     :param fields: The result fields to return,  an empty {} returns all.
+#     :type fields: dict | bytes
+#     :param instrument: instrument used to make observation
+#     :type instrument: dict | bytes
+#     :param min_ra: the minimum right ascension
+#     :type min_ra: dict | bytes
+#     :param max_ra: the maximum right ascension
+#     :type max_ra: dict | bytes
+#     :param ob_priority: return results with a given priority.
+#     :type ob_priority: int
+#     :param min_priority: only return results with priority greater than or
+#                          equal to minimum.
+#     :type min_priority: int
+#     :param max_priority: only return results with priority less than to max.
+#     :type max_priority: int
+#     :param min_duration: only return results that have a duration greater than
+#                          or equal to the min_duration.  The duration unit is
+#                          minutes.
+#     :type min_duration: float
+#     :param max_duration: only return results that have a duration less than
+#                         or equal to the max_duration.  The duration unit is
+#                         minutes.
+#     :type max_duration: float
+#     :param state: return OBs of a certain state,  the possible states are
+#                   defined in ‘Defined Types’.
+#     :type state: str
+#     :param observable: only return results that are observable for current UT
+#                        to sunrise.  The duration is not taken into consideration.
+#                        Default is false (0),  use observable for only OBs that
+#                        are observable.
+#     :type observable: bool
+#     :param completed: return results that are completed.  The default is false,
+#                       use completed for only OBs that are observable.
+#     :type completed: bool
+#     :param container_id: ObjectId of the container identifier.
+#     :type container_id: str
+#
+#     :rtype: List
+#     """
+#
+#     if instrument:
+#         query['metadata.instrument'] = instrument
+#     if ob_priority:
+#         query['metadata.priority'] = int(ob_priority)
+#
+#     # [0 = partial, 1 = ready, 2 = ongoing, 3 = complete, 4 = aborted]
+#     if completed:
+#         query['status.state'] = 3
+#     elif state:
+#         query['status.state'] = int(state)
+#
+#     else:
+#         if min_priority and max_priority:
+#             query["status.priority"] = {"$gt": int(min_priority),
+#                                         "$lt": int(max_priority)}
+#         elif min_priority:
+#             query["status.priority"] = {"$gt": int(min_priority)}
+#         elif max_priority:
+#             query["status.priority"] = {"$lt": int(max_priority)}
+#
+#     # TODO need dcs keyword access
+#     # if observable:
+#     #     min_ra, max_ra = restrict2observable(min_ra, max_ra)
+#
+#     if min_ra and max_ra:
+#         query["target.target_coord_ra"] = {"$gt": min_ra, "$lt": max_ra}
+#     elif min_ra:
+#         query["target.target_coord_ra"] = {"$gt": min_ra}
+#     elif max_ra:
+#         query["target.target_coord_ra"] = {"$lt": max_ra}
+#
+#     matching_ob = parse_duration(get_fields_by_query(query, fields, 'obCollect'),
+#                                  min_duration, max_duration)
+#
+#     return matching_ob
 
 
 def parse_duration(matching_ob, min_duration, max_duration):

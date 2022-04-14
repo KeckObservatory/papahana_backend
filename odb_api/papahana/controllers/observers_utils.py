@@ -10,6 +10,12 @@ def add_association(keck_id, sem_id):
                         {"$addToSet": {"associations": sem_id}})
 
 
+def is_semid_associated_args(*args, **kwargs):
+
+    sem_id = kwargs['sem_id']
+    return is_semid_associated(sem_id)
+
+
 def is_semid_associated(sem_id):
     keck_id = g.user
 

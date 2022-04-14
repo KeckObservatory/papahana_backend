@@ -17,7 +17,8 @@ production:
   scriptCollect: instrument_scripts
   templateCollect: templates
   ipCollect: instrument_packages
-  port: 27017
+  mongo_port: 27017
+  api_port: 15816
   ip:
   admin:
     - #
@@ -34,7 +35,8 @@ dev:
   scriptCollect: instrument_scripts
   templateCollect: templates
   ipCollect: instrument_packages
-  port: 27017
+  mongo_port: 27017
+  api_port: 15816
   ip:
   admin:
     - #
@@ -48,7 +50,8 @@ test:
   scriptCollect: instrument_scripts
   templateCollect: templates
   ipCollect: instrument_packages
-  port: 27017
+  mongo_port: 27017
+  api_port: 50002
   ip:
   admin:
     - #

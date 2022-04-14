@@ -95,19 +95,19 @@ class TestContainersController(BaseTestCase):
         for id in new_id_list:
             assert(id in result_dict['observation_blocks'])
 
-    def test_containers_execution_times_get(self):
-        """Test case for containers_execution_times_get
-
-        Test the calculation of the total execution time of a container.
-        """
-        query_string = [('container_id', self.container_id)]
-        response = self.client.open(
-            '/containers/executionTimes',
-            method='GET',
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-        #TODO add a check on the actual execution time.
+    # def test_containers_execution_times_get(self):
+    #     """Test case for containers_execution_times_get
+    #
+    #     Test the calculation of the total execution time of a container.
+    #     """
+    #     query_string = [('container_id', self.container_id)]
+    #     response = self.client.open(
+    #         '/containers/executionTimes',
+    #         method='GET',
+    #         query_string=query_string)
+    #     self.assert200(response,
+    #                    'Response body is : ' + response.data.decode('utf-8'))
+    #     #TODO add a check on the actual execution time.
 
 
     # def test_containers_export_get(self):

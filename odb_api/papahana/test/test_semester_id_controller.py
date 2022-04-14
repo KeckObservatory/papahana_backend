@@ -15,7 +15,6 @@ class TestSemesterIdController(BaseTestCase):
         Insert a new OB to work with
         """
         self.set_api_cookie()
-    #     self.container_id = self.insert_container(self.container)
     #
     # def tearDown(self):
     #     """

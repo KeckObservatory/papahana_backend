@@ -136,21 +136,6 @@ def containers_execution_times_get(container_id):
     return total_time
 
 
-def containers_export_get(container_id):  
-    """
-    Retrieves a specific container information in a file format (default .json)
-        /containers/export
-
-    :param container_id: container identifier
-    :type container_id: str
-
-    :rtype: Container
-    """
-    query = utils.query_by_id(container_id, add_delete=False)
-
-    return 'do some magic!'
-
-
 def containers_items_get(container_id):
     """
     Retrieves the ordered list of observing blocks in a container.
@@ -165,10 +150,10 @@ def containers_items_get(container_id):
     ob_list.sort()
 
     ob_block_list = []
-    for ob in ob_list:
-        ob_block_list.append(observation_block_controller.ob_get(ob))
+    for ob_id in ob_list:
+        ob_block_list.append(observation_block_controller.ob_get(ob_id))
 
-    return ob_block_list
+    return utils.list_with_objectid(ob_block_list)
 
 
 # TODO this seems like it is the same as /containers_get
@@ -185,21 +170,6 @@ def containers_items_summary_get(container_id):
         return utils.get_by_id(container_id, 'containerCollect')
     except ValueError as err:
         return err
-
-
-def containers_schedule_too_post(body):  
-    """
-    Submits a container for Target of Opportunity (ToO) (all the elements)
-
-    :param body: 
-    :type body: list | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        body = [Container.from_dict(d) for d in connexion.request.get_json()]
-
-    return 'do some magic!'
 
 
 def containers_verify_get(container_id):  

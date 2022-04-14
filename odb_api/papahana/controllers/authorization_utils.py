@@ -105,7 +105,6 @@ def get_admin_key():
     fields = {'api_key': 1, '_id': 0}
     results = utils.get_fields_by_query(query, fields, 'observerCollect',
                                         db_name='obs_db')
-    print("get_admin", results)
 
     return results[0]['api_key']
 
@@ -126,10 +125,15 @@ def check_sem_id_associated(sem_id):
 
 
 def confirm_sem_id_associated(func):
-    def inner(sem_id):
-        if not obs_utils.is_semid_associated(sem_id):
+    def inner(*args, **kwargs):
+        sem_id = kwargs['sem_id']
+        if not obs_utils.is_semid_associated_args(*args, **kwargs):
             abort(401, f"Unauthorized to access Program: {sem_id}")
-        return func(sem_id)
+
+        del kwargs['user']
+        del kwargs['token_info']
+
+        return func(*args, **kwargs)
     return inner
 
 

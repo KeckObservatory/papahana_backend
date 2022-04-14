@@ -13,6 +13,7 @@ import generate_random_utils as random_utils
 import generate_template
 from papahana import util as papahana_util
 from papahana.controllers import authorization_utils as auth_utils
+from papahana.controllers import controller_helper as helper_utils
 from bson.objectid import ObjectId
 
 kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
@@ -20,7 +21,6 @@ kcwi_science = ['KCWI_ifu_sci_dither', 'KCWI_ifu_sci_stare']
 
 def filled_sci_templates(template_list):
     templates_version = parse_templates_version(template_list)
-
 
     sci_templates = [
         {
@@ -116,14 +116,32 @@ def randTimeConstraint():
 
 def generate_container(ob_blocks):
 
+    sem_id = random_utils.randSemId()
+    print(f"SEM ID {sem_id}")
+
+    coll_ob = papahana_util.config_collection('obCollect', conf=config)
+
     ob_set = set()
-    n_ob = random.randint(0, 9)
-    for indx in range(0, n_ob):
+    # n_ob = random.randint(0, 30)
+    for indx in range(0, 60):
         ob_val = random.randint(0, len(ob_blocks)-1)
-        ob_set.update({ob_blocks[ob_val]})
+        rand_ob_id = ob_blocks[ob_val]
+
+        query = helper_utils.query_by_id(rand_ob_id)
+        rand_ob = list(coll_ob.find(query))
+        rand_ob = rand_ob[0]
+
+        if not rand_ob:
+            print(f'skipping {indx}')
+            continue
+
+        if rand_ob['metadata']['sem_id'] == sem_id:
+            print(f"adding ob {rand_ob['metadata']['sem_id']}")
+            print(f"adding ob {rand_ob_id}")
+            ob_set.update({rand_ob_id})
 
     schema = {
-        "sem_id": random_utils.randSemId(),
+        "sem_id": sem_id,
         "name": random_utils.randContainerName(),
         "observation_blocks": list(ob_set),
         "comment": random_utils.randComment()
@@ -264,6 +282,7 @@ def generate_observer_collection(coll):
         _ = coll.insert_one(doc)
 
     assoc_list = []
+
     # create admin observer
     coll = papahana_util.config_collection('obCollect', conf=config)
 
@@ -543,10 +562,14 @@ def generate_mos_target():
 
 
 @remove_none_values_in_dict
-def generate_observation_block(nLen, maxArr, template_list, inst='KCWI',
+def generate_observation_block(nLen, maxArr, template_list, coll, inst='KCWI',
                                semester=None, _id=None):
+    meta = generate_metadata(maxArr, semester)
+    sem_id = meta['sem_id']
+    n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
     schema = {
-        'metadata': generate_metadata(maxArr, semester),
+        '_ob_id': f"{meta['sem_id']}_{str(n_ob).zfill(4)}",
+        'metadata': meta,
         'target': random.choice([None, generate_sidereal_target(),
                                  generate_nonsidereal_target(),
                                  generate_mos_target()]),
@@ -645,7 +668,10 @@ if __name__=='__main__':
     random.seed(seed)
 
     config = utils.read_config(mode)
-    obs_db = config['obs_db']
+    ob_db = config['ob_db']
+
+    print(f"Using DataBase: {ob_db}")
+    papahana_util.drop_db(ob_db)
 
     # generate templates
     print("...generating templates")
@@ -661,9 +687,14 @@ if __name__=='__main__':
     maxArr = 5
     inst = 'KCWI'
     for idx in range(random_utils.NOBS):
-        doc = generate_observation_block(nLen, maxArr, template_list, inst=inst)
-        result = coll.insert_one(doc)
-        ob_blocks.append(str(result.inserted_id))
+        doc = generate_observation_block(nLen, maxArr, template_list, coll,
+                                         inst=inst)
+
+        metadata = {"timestamp": datetime.datetime.now()}
+
+        # result = coll.insert_one(doc)
+        result = coll.patch_one(doc, metadata=metadata)
+        ob_blocks.append(str(result.inserted_id_obj.inserted_id))
 
     for ob in ob_blocks:
         make_status_realistic(ob)
@@ -702,6 +733,10 @@ if __name__=='__main__':
         result = coll.insert_one(script_schema)
 
     if args.generate_observers:
+        obs_db = config['obs_db']
+        print(f"Using DataBase: {obs_db}")
+        papahana_util.drop_db(obs_db)
+
         # Create observer collection
         print("...generating observers")
 
@@ -709,11 +744,4 @@ if __name__=='__main__':
                                                     conf=config)
         coll.drop()
         generate_observer_collection(coll)
-
-    # print("...generating scripts")
-    #
-    # coll = papahana_util.config_collection('scriptCollect', conf=config)
-    # coll.drop()
-    # generate_scripts_collection(coll, template_list)
-    #
 

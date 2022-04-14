@@ -87,8 +87,17 @@ class TestObservationBlockController(BaseTestCase):
 
         # confirm the retrieve OB is the same as inserted
         result_ob = json.loads(response.data.decode('utf-8'))
+
         del result_ob['_id']
-        assert(result_ob == self.ob)
+        if '_ob_id' in result_ob:
+            del result_ob['_ob_id']
+
+        try:
+            assert(result_ob == self.ob)
+        except AssertionError:
+            value = {k: result_ob[k] for k in set(result_ob) - set(self.ob)}
+            print(f"Difference in Results: {value}")
+            assert (result_ob == self.ob)
 
     def test_ob_put(self):
         """Test case for ob_put
@@ -113,8 +122,18 @@ class TestObservationBlockController(BaseTestCase):
         result_ob = json.loads(response.data.decode('utf-8'))
 
         del result_ob['_id']
+        if '_ob_id' in result_ob.keys():
+            del result_ob['_ob_id']
 
         assert(result_ob == replacement_ob)
+
+        try:
+            assert(result_ob == replacement_ob)
+        except AssertionError:
+            value = {k: result_ob[k] for k in set(result_ob) - set(replacement_ob)}
+            print(f"Difference in Results: {value}")
+            assert(result_ob == replacement_ob)
+
 
     def test_ob_post(self):
         """Test case for ob_post

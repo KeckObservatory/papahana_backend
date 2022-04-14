@@ -19,7 +19,9 @@ class BaseTestCase(TestCase):
         app.app.json_encoder = JSONEncoder
         app.add_api('papahana.yaml')
 
-        mode = 'test'
+        # mode = 'test'
+        mode = util.read_mode()
+        print(f'working with mode: {mode}')
         urls = util.read_urls()
         config_params = util.read_config(mode)
 

@@ -48,6 +48,8 @@ class ObsBlocksTestDefaults:
 
         if '_id' in ob.keys():
             del ob['_id']
+        if '_ob_id' in ob.keys():
+            del ob['_ob_id']
 
         return self.ob_list[indx]
 

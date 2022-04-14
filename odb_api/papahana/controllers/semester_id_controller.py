@@ -4,6 +4,7 @@ import six
 from flask import g, abort
 
 from papahana.controllers import controller_helper as utils
+from papahana.controllers import semester_id_utils as sem_utils
 from papahana.controllers import authorization_utils as auth_utils
 from papahana.controllers import observers_controller as obs_cont
 # from papahana.controllers import observation_block_controller
@@ -142,65 +143,6 @@ def sem_id_targets_get(sem_id):
 
 
 @auth_utils.confirm_sem_id_associated
-def sem_id_submit_post(body, sem_id):
-    """
-    Submits OBs for a program.  Uses the obsid in the authentication
-    header and provided semId to retrieve the proposal file
-    associated with the program
-
-    :param body:
-    :type body: dict | bytes
-    :param sem_id: semester id
-    :type sem_id: str
-
-    :rtype: None
-    """
-    return 'do some magic! sem_id_submit_post'
-
-
-@auth_utils.confirm_sem_id_associated
-def sem_id_submit_put(sem_id, body=None):
-    """sem_id_submit_put
-
-    updates a program (OBs)
-
-    :param sem_id: semester id
-    :type sem_id: str
-    :param body:
-    :type body: dict | bytes
-
-    :rtype: None
-    """
-    return 'do some magic! sem_id_submit_put'
-
-
-# ----- new controllers -----
-
-# @auth_utils.confirm_sem_id_associated
-# def sem_id_ob_metadata(sem_id):
-#     """
-#        /semesterIds/{sem_id}/ob/metadata
-#
-#     sem_id" : "2019B_U158",
-#
-#     Retrieves all the observation blocks in their entirety for a given program.
-#     Excludes completed observation blocks.
-#
-#     :param sem_id: semester id
-#     :type sem_id: dict | bytes
-#
-#     :rtype: List
-#     """
-#     if connexion.request.is_json:
-#         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
-#
-#     query = {"metadata.sem_id": sem_id}
-#     containers = utils.get_by_query(query, 'obCollect')
-#
-#     return utils.list_with_objectid(containers)
-
-
-@auth_utils.confirm_sem_id_associated
 def sem_id_ob_cal(sem_id, instrument=None):
     """
         /semesterIds/{sem_id}/ob/calibration
@@ -230,7 +172,7 @@ def sem_id_ob_cal(sem_id, instrument=None):
 def sem_id_ob_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
                        ob_priority=None, min_priority=None, max_priority=None,
                        min_duration=None, max_duration=None, state=None,
-                       observable=None, completed=None):
+                       observable=None, completed=None, container_id=None):
     """
 
         /semesterIds/{sem_id}/ob/science
@@ -273,6 +215,8 @@ def sem_id_ob_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
     :param completed: return results that are completed.  The default is false,
                       use completed for only OBs that are observable.
     :type completed: bool
+    :param container_id: ObjectId of the container identifier.
+    :type container_id: str
 
     :rtype: List
     """
@@ -288,19 +232,21 @@ def sem_id_ob_sci(sem_id, instrument=None, min_ra=None, max_ra=None,
     query = {'metadata.sem_id': sem_id, 'metadata.ob_type': 'science'}
     result = {}
 
-    matching_ob = utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
-                                     ob_priority, min_priority, max_priority,
-                                     min_duration, max_duration, state,
-                                     observable, completed)
+    matching_ob = sem_utils.odt_ob_query(query, result, instrument, min_ra,
+                                         max_ra, ob_priority, min_priority,
+                                         max_priority, min_duration,
+                                         max_duration, state, observable,
+                                         completed, container_id)
 
-    return utils.list_with_objectid(matching_ob)
+    # return utils.list_with_objectid(matching_ob)
+    return matching_ob
 
 
 @auth_utils.confirm_sem_id_associated
 def sem_id_ob_metadata(sem_id, instrument=None,  min_ra=None, max_ra=None,
                        ob_priority=None, min_priority=None, max_priority=None,
                        min_duration=None, max_duration=None, state=None,
-                       observable=None, completed=None):
+                       observable=None, completed=None, container_id=None):
 
     """sem_id_ob_metadata
        /semesterIds/{sem_id}/ob/metadata
@@ -343,13 +289,13 @@ def sem_id_ob_metadata(sem_id, instrument=None,  min_ra=None, max_ra=None,
                       false (0),  use completed&#x3D;1 for only OBs that
                       are observable.
     :type completed: bool
+    :param container_id: ObjectId of the container identifier.
+    :type container_id: str
 
     :rtype: List
     """
     if connexion.request.is_json:
-        sem_id = SemIdSchema.from_dict(connexion.request.get_json())  
-    if connexion.request.is_json:
-        instrument = InstrumentEnum.from_dict(connexion.request.get_json())
+        sem_id = SemIdSchema.from_dict(connexion.request.get_json())
     if connexion.request.is_json:
         min_ra = RASchema.from_dict(connexion.request.get_json())
     if connexion.request.is_json:
@@ -358,19 +304,20 @@ def sem_id_ob_metadata(sem_id, instrument=None,  min_ra=None, max_ra=None,
     query = {'metadata.sem_id': sem_id}
     result = {'metadata': 1}
 
-    matching_ob = utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
-                                     ob_priority, min_priority, max_priority,
-                                     min_duration, max_duration, state,
-                                     observable, completed)
+    matching_ob = sem_utils.odt_ob_query(query, result, instrument, min_ra,
+                                         max_ra, ob_priority, min_priority,
+                                         max_priority, min_duration,
+                                         max_duration, state, observable,
+                                         completed, container_id)
 
-    return utils.list_with_objectid(matching_ob)
+    return matching_ob
 
 
 @auth_utils.confirm_sem_id_associated
 def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
                       ob_priority=None, min_priority=None, max_priority=None,
                       min_duration=None, max_duration=None, state=None,
-                      observable=None, completed=None):
+                      observable=None, completed=None, container_id=None):
     """sem_id_ob_targets
         /semesterIds/{sem_id}/ob/targets
 
@@ -400,6 +347,8 @@ def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
     :type observable: bool
     :param completed: return results that are completed.  The default is false (0),  use completed&#x3D;1 for only OBs that are observable.
     :type completed: bool
+    :param container_id: ObjectId of the container identifier.
+    :type container_id: str
 
     :rtype: List
     """
@@ -415,14 +364,17 @@ def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
     query = {'metadata.sem_id': sem_id}
     result = {'target': 1}
 
-    matching_ob = utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
+    matching_ob = sem_utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
                                      ob_priority, min_priority, max_priority,
                                      min_duration, max_duration, state,
-                                     observable, completed)
+                                     observable, completed, container_id)
 
-    return utils.list_with_objectid(matching_ob)
+    return matching_ob
 
-def sem_id_ob_observations(sem_id, min_ra=None, max_ra=None, instrument=None, ob_priority=None, min_priority=None, max_priority=None, min_duration=None, max_duration=None, state=None, observable=None, completed=None):  # noqa: E501
+def sem_id_ob_observations(sem_id, min_ra=None, max_ra=None, instrument=None,
+                           ob_priority=None, min_priority=None, max_priority=None,
+                           min_duration=None, max_duration=None, state=None,
+                           observable=None, completed=None, container_id=None):
     """
     Retrieves all the target components associated with a program. # noqa: E501
         /semesterIds/{sem_id}/ob/observations
@@ -451,6 +403,8 @@ def sem_id_ob_observations(sem_id, min_ra=None, max_ra=None, instrument=None, ob
     :type observable: bool
     :param completed: return results that are completed.  The default is false (0),  use completed&#x3D;1 for only OBs that are observable.
     :type completed: bool
+    :param container_id: ObjectId of the container identifier.
+    :type container_id: str
 
     :rtype: List
     """
@@ -466,12 +420,12 @@ def sem_id_ob_observations(sem_id, min_ra=None, max_ra=None, instrument=None, ob
     query = {'metadata.sem_id': sem_id}
     result = {'observations': 1}
 
-    matching_ob = utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
+    matching_ob = sem_utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
                                      ob_priority, min_priority, max_priority,
                                      min_duration, max_duration, state,
-                                     observable, completed)
+                                     observable, completed, container_id)
 
-    return utils.list_with_objectid(matching_ob)
+    return matching_ob
 
 
 

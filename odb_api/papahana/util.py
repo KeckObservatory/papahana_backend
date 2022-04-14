@@ -6,12 +6,17 @@ import pymongo
 import urllib
 from getpass import getpass
 import os
-from flask import current_app, request, g
+from flask import current_app
 
+# for history
+# from historical_collection.historical import HistoricalCollection
+from papahana.historical import HistoricalCollection
 # from papahana.controllers import controller_helper as utils
 
-# TODO use for testing ("admin" account)
-TMP_KECKID = 0
+
+class observation_blocks(HistoricalCollection):
+    # define the primary key for the Historical Collection
+    PK_FIELDS = ['_ob_id', ]
 
 
 def read_mode(config='./config.live.yaml'):
@@ -57,48 +62,55 @@ def config_collection(collection, db_name=None, conf=None):
         db_name = 'ob_db'
 
     db = conf[db_name]
+    mongo_port = conf['mongo_port']
 
-    coll = create_collection(db, conf[collection], port=conf['port'],
-                             ip=conf['ip'])
+    if collection == 'obCollect':
+        CLIENT_URL = f"mongodb://localhost:{mongo_port}"
+        mongo = pymongo.MongoClient(CLIENT_URL)
+        db = mongo[db]
+        coll = observation_blocks(database=db)
+    else:
+        coll = create_collection(db, conf[collection], port=conf['mongo_port'],
+                                 ip=conf['ip'])
 
     return coll
 
 
 
-def create_collection(dbName, collName, port=27017, ip='127.0.0.1',
-                      remote=False, username='papahanauser', password=None):
+def create_collection(db_name, collect_name, port=27017, ip='127.0.0.1'):
     """ create_collection
 
     Creates and returns a mongodb collection object
 
-    :param dbName: database name
-    :type dbName: str
-    :param collName: collection name
-    :type collName: str
+    :param db_name: database name
+    :type db_name: str
+    :param collect_name: collection name
+    :type collect_name: str
     :port: port name
     :type port: int
     :dbURL: url of database (use for databases)
     :dbURL: str
     :rtype: pymongo.collection.Collection
     """
-    if remote:
-        if not password:
-            password = getpass()
-        dbURL = f'mongodb+srv://{urllib.parse.quote(username)}:' \
-                f'{urllib.parse.quote(password)}@cluster0.gw51m.mongodb.net/' \
-                f'{dbName}'
-    elif os.environ.get('DOCKER_DATABASE_CONNECTION', False):
-        dbURL = f'mongodb://database:{port}'
-    else:
-        dbURL = f'mongodb://{ip}:{port}'
+    db_url = f'mongodb://{ip}:{port}'
 
-    client = pymongo.MongoClient(dbURL)
-    db = client[dbName]
-    coll = db[collName]
+    client = pymongo.MongoClient(db_url)
+    db = client[db_name]
+    coll = db[collect_name]
 
     return coll
 
+
+def drop_db(db_name, port=27017, ip='127.0.0.1'):
+    db_url = f'mongodb://{ip}:{port}'
+    client = pymongo.MongoClient(db_url)
+    client.drop_database(db_name)
+
+
+# -----------------------------
 # swagger generated below here
+# -----------------------------
+
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.

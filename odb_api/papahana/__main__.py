@@ -16,8 +16,11 @@ def create_app():
                            "allow_headers": "*", "expose_headers": "*"}})
 
     mode = util.read_mode()
+    print(f"using mode: {mode}")
     urls = util.read_urls()
     config_params = util.read_config(mode)
+
+    api_port = config_params['api_port']
 
     with app.app.app_context():
         current_app.config_params = config_params
@@ -25,12 +28,13 @@ def create_app():
         current_app.mode = mode
         current_app.config
 
-    return app
+    return app, api_port
 
 
 def main():
-    app = create_app()
-    app.run(port=50002)
+    app, api_port = create_app()
+    app.run(port=api_port)
+
 
 if __name__ == '__main__':
     main()
