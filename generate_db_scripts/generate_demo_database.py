@@ -264,6 +264,12 @@ def parse_templates_version(template_list):
 
 def generate_observer_collection(coll):
     n_obs = 15
+    # percy = 4000, Josh = 4012, Marc = 2495, Carlos = 3928, Jem = 2205,
+    # Greg = 2983, Sherry = 4098, randy = 2883, Chien-Hsiu = 3986, Mike = 4927
+    # John = 1883 Jeff = 2204 Matt = 4224
+
+    staff = [4000, 4012, 2495, 3928, 2205, 2983, 4098, 2883,
+             3986, 4927, 1883, 2204, 4224]
 
     keck_admin = config['admin']
 
@@ -278,7 +284,16 @@ def generate_observer_collection(coll):
 
         akey = auth_utils.generate_new_api_key()
 
-        doc = {'keck_id': obs_id, "api_key": akey, "associations": sem_id_list}
+        doc = {'keck_id': obs_id, "api_key": akey, "associations": sem_id_list,
+               'admin': 0}
+        _ = coll.insert_one(doc)
+
+    # create staff
+    for obs_id in staff:
+        akey = auth_utils.generate_new_api_key()
+        print(f"staff {obs_id}")
+        doc = {'keck_id': obs_id, "api_key": akey, "associations": [],
+               'admin': 0}
         _ = coll.insert_one(doc)
 
     assoc_list = []
@@ -297,7 +312,8 @@ def generate_observer_collection(coll):
     for admin_id in keck_admin:
         akey = auth_utils.generate_new_api_key()
         assoc_unique = list(set(assoc_list))
-        doc = {'keck_id': admin_id, "api_key": akey, "associations": assoc_unique}
+        doc = {'keck_id': admin_id, "api_key": akey,
+               "associations": assoc_unique, "admin": 1}
         _ = coll.insert_one(doc)
 
     return
@@ -443,6 +459,7 @@ def generate_metadata(maxArr, semester):
 
 @remove_none_values_in_dict
 def generate_program(container_list):
+
     observers = []
     for i in range(0, random.randint(0, 9)):
         pi_name = random_utils.randPI()

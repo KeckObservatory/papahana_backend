@@ -13,22 +13,6 @@ from papahana import util
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import observers_utils as obs_utils
 
-# TODO use for testing
-# TMP_KECKID = 1883 # real PI (for external APIs)
-TMP_KECKID = 1883
-
-
-# def login():
-#     """login
-#         /login
-#
-#     :rtype: Cookie
-#     """
-#     url = 'observers/apikey'
-#     res = auth_utils.set_apikey_cookie(url)
-#
-#     return res
-
 
 def observer_apikey():
     """observer_apikey
@@ -39,19 +23,6 @@ def observer_apikey():
 
     :rtype: Apikey
     """
-    # TODO not sure if should come from cookie or generated
-    # keck_id = g.user
-    #
-    # query = {"keck_id": keck_id}
-    # fields = {'api_key': 1, '_id': 0}
-    # results = utils.get_fields_by_query(query, fields, 'observerCollect', db_name='obs_db')
-    #
-    # if not results:
-    #     return {}
-    #
-    # ret_val = {'ODB-API-KEY': results[0]['api_key'],
-    #            'ODB-API-UID': scrampled_uid}
-
     scrampled_uid = request.cookies.get('ODB-API-UID')
     scrambled_api_key = request.cookies.get('ODB-API-KEY')
 
@@ -119,65 +90,41 @@ def observer_semid():
     keck_id = g.user
 
     query = {'keck_id': keck_id}
-    fields = {'keck_id': 1, '_id': 0, 'associations': 1}
+    fields = {'keck_id': 1, '_id': 0, 'associations': 1, 'admin': 1}
 
     results = utils.get_fields_by_query(query, fields, 'observerCollect',
                                         db_name='obs_db')
     if results:
         results = results[0]
     else:
-        results = {'keck_id': keck_id, 'associations': []}
+        results = {'keck_id': keck_id, 'associations': [], 'admin': 0}
 
+    # if admin,  return all sem_ids in OBs
+    # TODO should this just return something saying ALL instead?
+    if results['admin']:
+        query = {}
+        fields = {'metadata.sem_id': 1, '_id': 0}
+        sem_ids = utils.get_fields_by_query(query, fields, 'obCollect')
+
+        if sem_ids:
+            results['associations'] = []
+            for sem_id in sem_ids:
+                results['associations'].append(sem_id['metadata']['sem_id'])
+
+    if not results['associations']:
+        results['associations'] = []
+
+    # check observer schedule
+    sched_sem_ids = utils.get_sched_sem_ids(keck_id)
+    results['associations'] += obs_utils.add_association(keck_id, sched_sem_ids)
+
+    # check the proposal database
     proposal_sem_ids = utils.get_proposal_ids(keck_id)
+    results['associations'] += obs_utils.add_association(keck_id, proposal_sem_ids)
 
-    if type(proposal_sem_ids) is not list:
-        proposal_sem_ids = {}
-    else:
-        for sem_id in proposal_sem_ids:
-            obs_utils.add_association(keck_id, sem_id)
+    results['associations'] = list(set(results['associations']))
 
-    results['associations'] += proposal_sem_ids
-
-    # TODO will also need to go out and check schedule
+    # don't return admin status with the results
+    del results['admin']
 
     return results
-
-
-# def update_associations(sem_id):
-
-
-# def observer_remove(sem_id, keck_id):
-#     """observer_remove
-#         /observers/{sem_id}/remove/{keck_id}
-#
-#     remove access to a program for an observer by Keck ID.
-#
-#     :param sem_id: semester id
-#     :type sem_id: dict | bytes
-#     :param keck_id: semester id
-#     :type keck_id: int
-#
-#     :rtype: ObserverList
-#     """
-#     if connexion.request.is_json:
-#         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
-#
-#     return 'do some magic!'
-
-# def observer_add(sem_id, keck_id):
-#     """observer_add
-#         /observers/{sem_id}/add/{keck_id}
-#
-#     allow access to a program for an observer by Keck ID.
-#
-#     :param sem_id: semester id
-#     :type sem_id: dict | bytes
-#     :param keck_id: semester id
-#     :type keck_id: int
-#
-#     :rtype: ObserverList
-#     """
-#     if connexion.request.is_json:
-#         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
-#
-#     return 'do some magic!'

@@ -1,7 +1,7 @@
 from connexion.exceptions import OAuthProblem
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import authorization_utils as auth_utils
-from flask import g, make_response, redirect, request, abort
+from flask import g, request, abort, make_response, redirect
 
 """
 controller generated to handled auth operation described at:
@@ -18,13 +18,7 @@ def check_apikey_auth(api_key, required_scopes):
     keck_id = int(auth_utils.decrypt_encoded_str(scrampled_uid))
 
     if scrambled_api_key == 'NULL':
-
-        api_key = auth_utils.generate_api_key(keck_id)
-
-        #TODO not working
-        auth_utils.update_cookie('ODB-API-KEY', api_key, request.path)
-        abort(401, f'Unauthorized - no API key set.  An API Key has been '
-                   f'generated.  Please return to Login Page and try again.')
+        _ = auth_utils.generate_api_key(keck_id)
     else:
         api_key = auth_utils.decrypt_encoded_str(scrambled_api_key)
 
@@ -42,5 +36,6 @@ def check_apikey_auth(api_key, required_scopes):
     g.user = keck_id
 
     return {'uid': keck_id}
+
 
 

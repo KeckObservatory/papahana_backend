@@ -4,9 +4,6 @@ mode:
 apikey:
   secret_key:
 
-testing:
-  admin: 4769
-
 production:
   ob_db:
     - 2022A
@@ -20,9 +17,6 @@ production:
   mongo_port: 27017
   api_port: 15816
   ip:
-  admin:
-    - #
-    - #
 dev:
   ob_db:
     - 2022A_dev
@@ -53,10 +47,11 @@ test:
   mongo_port: 27017
   api_port: 50002
   ip:
-  admin:
-    - #
-    - #
 
 apis:
+  scheduleApi: https://www.keck.hawaii.edu/software/db_api/telSchedule.php
   proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php
+
+auth_server:
+  login: www3.keck.hawaii.edu/login
 

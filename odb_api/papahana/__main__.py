@@ -1,10 +1,8 @@
-from flask import current_app, g, Flask
+from flask import current_app
 from flask_cors import CORS, cross_origin
 import connexion
-import yaml
 
 from papahana import util
-from papahana.controllers import authorization_controller as auth_utils
 
 
 def create_app():

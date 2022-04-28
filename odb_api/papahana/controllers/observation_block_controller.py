@@ -10,6 +10,7 @@ from papahana.controllers import authorization_utils as auth_utils
 
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.sem_id_schema import SemIdSchema
+from papahana.models.status_subset import StatusSubset
 
 from papahana.util import config_collection
 
@@ -20,7 +21,7 @@ OUT_DIR = "/tmp"
 
 def ob_get(ob_id):
     """
-    Retrieves the general parameters of an OB.
+    Retrieves the most recent version of an OB.
         /obsBlocks
 
     :param ob_id: observation block Object ID
@@ -28,10 +29,8 @@ def ob_get(ob_id):
 
     :rtype: ObservationBlock
     """
-    # will return one result,  and throw 404 if not found
+    # will return one result,  and throw 422 if not found
     ob_orig = ob_utils.ob_id_associated(ob_id)
-
-    # todo check on the latest version.
 
     # get latest version
     ob = ob_utils.ob_get(ob_orig['_ob_id'])
@@ -118,32 +117,146 @@ def ob_duplicate(ob_id, sem_id=None):
 
     :rtype: str
     """
-    # check that access is allowed to duplicate,  get most recent version
+    # check that access is allowed and get ob,  422 if not found
     ob = ob_get(ob_id)
-
-    if not ob:
-        # handle no result
-        print(ob)
 
     # remove IDs
     del ob['_id']
     del ob['_ob_id']
 
+    # check the sem_id is associated
     if sem_id:
         ob['metadata']['sem_id'] = sem_id
-    else:
-        sem_id = ob['metadata']['sem_id']
+        auth_utils.check_sem_id_associated(sem_id)
 
-    # check the update OB is associated
-    auth_utils.check_sem_id_associated(sem_id)
-
-    # result = utils.insert_into_collection(ob, 'obCollect')
     result = ob_utils.insert_ob(ob)
 
-    return str(result)
+    return utils.json_with_objectid(result)
 
 
-def ob_executions(ob_id): 
+# routes for the completion status
+def ob_status_get(ob_id, status_field=None):  
+    """
+    retrieve the completion status of the observation block.  Optionally
+    a field can be added to return only a subset of the status.
+
+        /obsBlocks/status
+
+    :param ob_id: observation block ObjectId
+    :type ob_id: str
+    :param status_field: The completion status field to update
+    :type status_field: str
+
+    :rtype: StatusSubset
+    """
+    if status_field:
+        fields = {f'status.{status_field}': 1, '_id': 0}
+    else:
+        fields = {'status': 1, '_id': 0}
+    results = utils.get_fields_by_id(ob_id, fields, 'obCollect')
+
+    if not results:
+        return {}
+
+    return results
+
+
+def ob_status_update(ob_id, status_field, new_status):
+    """
+    update the status of the observation block.  It is meant to be used by
+    the execution engine to record the completion status of the Observation Block.
+        /obsBlocks/status/{status_field}/update
+
+    :param ob_id: observation block ObjectId
+    :type ob_id: str
+    :param new_status: The completion status field to update
+    :type new_status: str
+
+    :rtype: StatusSubset
+    """
+
+    query = utils.query_by_id(ob_id)
+    new_vals = {f'status.{status_field}': new_status}
+    result = utils.update_doc(query, new_vals, 'obCollect')
+
+    return ob_status_get(ob_id, status_field=status_field)
+
+
+def ob_previous_version(ob_id):
+    """
+    Retrieves the last saved version an OB.
+        /obsBlocks/previousVersion
+
+    :param ob_id: observation block Object ID string
+    :type ob_id: str
+
+    :rtype: ObservationBlock
+    """
+
+    revisions = ob_revisions(ob_id, revision_n=2)
+    if not revisions:
+        return {}
+
+    if len(revisions) > 1:
+        prev_version = revisions[-2]
+    else:
+        prev_version = revisions[-1]
+
+    prev_version = ob_utils.clean_revision_metadata(prev_version)
+
+    return prev_version
+
+
+def ob_revisions(ob_id, revision_n=None):
+    """
+    Retrieves the last ten revisions,  unless the number of revisions
+    is specified
+        /obsBlocks/revisions
+
+    :param ob_id: observation block Object ID string
+    :type ob_id: str
+    :param revision_n: The number of revisions to return
+    :type revision_n: int
+
+    :rtype: ObservationBlock
+    """
+    if not revision_n:
+        revision_n = 10
+
+    # returns ordered list of full OB 0 = original 1,2, .. = later revisions
+
+    ob = ob_get(ob_id)
+    _ob_id = ob['_ob_id']
+
+    coll = config_collection('obCollect')
+
+    # TODO this is only for testing (create a revision)
+
+    new_ob = ob
+    new_ob['metadata']['name'] = 'wow,  a revision of revisions'
+    ob_utils.update_ob(ob, new_ob)
+
+    revisions = list(coll.revisions({'_ob_id': _ob_id}))
+
+    return utils.list_with_objectid(revisions[-revision_n:])
+
+
+def ob_revision_index(ob_id, revision_index):
+    """ob_revision_index
+
+    Retrieves the nth (revision_index) revision
+
+    :param ob_id: observation block Object ID string
+    :type ob_id: str
+    :param revision_index: The index of the single revision to return.
+    :type revision_index: int
+
+    :rtype: ObservationBlock
+    """
+    return 'do some magic!'
+
+
+def ob_executions(ob_id):
     """
     Retrieves the list of execution attempts for a specific OB.
         /obsBlocks/executions
@@ -200,20 +313,6 @@ def ob_execution_time(ob_id):
     total_tm /= 60.0
 
     return total_tm
-
-
-#TODO this is only retrieving the OB -- does it need more?
-def ob_export(ob_id):
-    """
-    Exports an OB in human-readable format. 
-        /obsBlocks/export
-
-    :param ob_id: observation block id
-    :type ob_id: str
-
-    :rtype: ObservationBlock
-    """
-    return ob_get(ob_id)
 
 
 def ob_completely_filled(ob_id):
@@ -389,10 +488,10 @@ def ob_sequence_id_delete(ob_id, sequence_number):
     #     ob[obs_type] = observations
     #
     # utils.update_doc(utils.query_by_id(ob_id), ob, 'obCollect')
-    #
+
 
 #TODO come back to types other then json
-def ob_sequence_id_file_get(ob_id, sequence_number, file_parameter):
+def ob_sequence_id_get(ob_id, sequence_number, file_parameter):
     """
     Returns the specified template within the OB as a file
 
@@ -422,7 +521,7 @@ def ob_sequence_id_file_get(ob_id, sequence_number, file_parameter):
 
 
 #TODO currently only working with JSON
-def ob_sequence_id_file_put(body, ob_id, sequence_number, file_parameter):
+def ob_sequence_id_put(body, ob_id, sequence_number, file_parameter):
     """
     Updates the specified template within the OB
         /obsBlocks/sequence/{sequence_number}/{file_parameter}
@@ -445,7 +544,7 @@ def ob_sequence_duplicate(ob_id, sequence_number):
     """
     Generate a new copy of the template and add it to the list of templates in
     the OB.
-        /obsBlocks/sequence/duplicate/{sequence_number}
+        /obsBlocks/sequence/duplicate
 
     :param ob_id: observation block Object ID string
     :type ob_id: str
@@ -634,101 +733,6 @@ def ob_sequence_supplement(ob_id):
     :type ob_id: str
 
     :rtype: None
-    """
-    return 'do some magic!'
-
-
-def ob_previous_version(ob_id):
-    """
-    Retrieves the last saved version an OB.
-        /obsBlocks/previousVersion
-
-    :param ob_id: observation block Object ID string
-    :type ob_id: str
-
-    :rtype: ObservationBlock
-    """
-    ob = ob_get(ob_id)
-    _ob_id = ob['_ob_id']
-
-    new_ob = ob
-
-    new_ob['metadata']['name'] = 'wow,  a revision'
-
-    # the update requires all the values,  with the changes
-    # ob_utils.update_ob(ob, {'_ob_id': _ob_id, 'metadata.name': "another revision"})
-    ob_utils.update_ob(ob, new_ob)
-
-
-    # TODO when returning an OB,  strip out the revision information
-    # _revision_metadata
-
-    # TODO this is for testing
-    coll = config_collection('obCollect')
-
-    revisions = coll.latest({'_ob_id': _ob_id})
-
-    # return utils.list_with_objectid(revisions)
-    if '_id' in revisions:
-        return utils.json_with_objectid(revisions)
-    else:
-        return revisions
-
-
-
-def ob_revisions(ob_id, revision_n=None): 
-    """
-    Retrieves the last ten revisions,  unless the number of revisions is specified
-        /obsBlocks/revisions
-
-    :param ob_id: observation block Object ID string
-    :type ob_id: str
-    :param revision_n: The number of revisions to return
-    :type revision_n: int
-
-    :rtype: ObservationBlock
-    """
-    ob = ob_get(ob_id)
-    _ob_id = ob['_ob_id']
-
-    coll = config_collection('obCollect')
-
-    # TODO this is only for testing
-    # new_ob = ob
-    # new_ob['metadata']['name'] = 'wow,  a revision of revisions'
-    # ob_utils.update_ob(ob, new_ob)
-
-
-    # updates without history go through pymongo
-    # !!! TODO keep the status of the most recent when re-winding history
-    # TODO make updates to status through pymongo,  not patch_one
-    # TODO !!!! NOT RIGHT the 0th OB gets updated with pymongo,  not the latest
-    # TODO maybe that is okay,  accesss the Status from the observation_block collection
-
-    # TODO order by _revision_metadata -- this should include time stamp
-    # TODO maybe always update the STATUS on the Oth,  and include that on the
-    # TODO returned OB
-
-    # > db.observation_blocks.update({"_id": ObjectId('624f800a5e96b20aa2d6e219')}, {$set: {
-    #     'metadata.sequence_number': 3}})
-        # updates the latest,  but not in the history.
-
-    revisions = list(coll.revisions({'_ob_id': _ob_id}))
-
-    return utils.list_with_objectid(revisions)
-
-
-def ob_revision_index(ob_id, revision_index): 
-    """ob_revision_index
-
-    Retrieves the nth (revision_index) revision
-
-    :param ob_id: observation block Object ID string
-    :type ob_id: str
-    :param revision_index: The index of the single revision to return.
-    :type revision_index: int
-
-    :rtype: ObservationBlock
     """
     return 'do some magic!'
 

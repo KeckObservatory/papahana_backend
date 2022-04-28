@@ -13,14 +13,15 @@ from flask import current_app
 from papahana.historical import HistoricalCollection
 # from papahana.controllers import controller_helper as utils
 
+CONFIG_FILE = './config.live.yaml'
 
 class observation_blocks(HistoricalCollection):
     # define the primary key for the Historical Collection
     PK_FIELDS = ['_ob_id', ]
 
 
-def read_mode(config='./config.live.yaml'):
-    with open(config) as file:
+def read_mode():
+    with open(CONFIG_FILE) as file:
         mode_dict = yaml.load(file, Loader=yaml.FullLoader)['mode']
 
     if 'config' in mode_dict:
@@ -29,28 +30,35 @@ def read_mode(config='./config.live.yaml'):
         return 'production'
 
 
-def read_config(mode, config='./config.live.yaml'):
-    with open(config) as file:
+def read_config(mode):
+    with open(CONFIG_FILE) as file:
         config = yaml.load(file, Loader=yaml.FullLoader)[mode]
 
     return config
 
 
-def read_urls(config='./config.live.yaml'):
-    with open(config) as file:
+def config_file_section(section_name):
+    with open(CONFIG_FILE) as file:
+        section_dict = yaml.load(file, Loader=yaml.FullLoader)[section_name]
+
+    return section_dict
+
+
+def read_urls():
+    with open(CONFIG_FILE) as file:
         urls = yaml.load(file, Loader=yaml.FullLoader)['apis']
 
     return urls
 
 
-def read_secret(config='./config.live.yaml'):
-    with open(config) as file:
-        mode_dict = yaml.load(file, Loader=yaml.FullLoader)['apikey']
-
-    try:
-        return mode_dict['secret_key']
-    except KeyError:
-        return None
+# def read_secret():
+#     with open(CONFIG_FILE) as file:
+#         mode_dict = yaml.load(file, Loader=yaml.FullLoader)['apikey']
+#
+#     try:
+#         return mode_dict['secret_key']
+#     except KeyError:
+#         return None
 
 
 def config_collection(collection, db_name=None, conf=None):

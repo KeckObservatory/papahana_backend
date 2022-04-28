@@ -6,6 +6,8 @@ import json
 from papahana.test import BaseTestCase
 from papahana.test.test_default_values import ObsBlocksTestDefaults
 
+from papahana.models.status_field import StatusField
+
 
 class TestObservationBlockController(BaseTestCase):
     """ObservationBlockController integration test stubs"""
@@ -46,27 +48,27 @@ class TestObservationBlockController(BaseTestCase):
     def parse_id(self, response):
         return response.data.decode('utf-8').replace("\n", "").replace('"', '')
 
-    def check_template(self, new_template, template_id):
-
-        if template_id[:3] == 'acq':
-            template_type = 'acquisition'
-        else:
-            template_type = 'sequences'
-
-        orig_templates = self.ob[template_type]
-        if type(orig_templates) is not list:
-            orig_templates = [orig_templates]
-
-        orig_template = None
-        for template in orig_templates:
-            if template['template_id'] == template_id:
-                orig_template = template
-                break
-
-        assert orig_template
-        assert(new_template.keys() == orig_template.keys())
-        for key in orig_template:
-            assert(new_template[key] == orig_template[key])
+    # def check_template(self, new_template, template_id):
+    #
+    #     if template_id[:3] == 'acq':
+    #         template_type = 'acquisition'
+    #     else:
+    #         template_type = 'sequences'
+    #
+    #     orig_templates = self.ob[template_type]
+    #     if type(orig_templates) is not list:
+    #         orig_templates = [orig_templates]
+    #
+    #     orig_template = None
+    #     for template in orig_templates:
+    #         if template['template_id'] == template_id:
+    #             orig_template = template
+    #             break
+    #
+    #     assert orig_template
+    #     assert(new_template.keys() == orig_template.keys())
+    #     for key in orig_template:
+    #         assert(new_template[key] == orig_template[key])
 
     # ---------------------------
     # TESTS
@@ -85,7 +87,7 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-        # confirm the retrieve OB is the same as inserted
+        # confirm the retrieved OB is the same as inserted
         result_ob = json.loads(response.data.decode('utf-8'))
 
         del result_ob['_id']
@@ -134,7 +136,6 @@ class TestObservationBlockController(BaseTestCase):
             print(f"Difference in Results: {value}")
             assert(result_ob == replacement_ob)
 
-
     def test_ob_post(self):
         """Test case for ob_post
 
@@ -155,42 +156,87 @@ class TestObservationBlockController(BaseTestCase):
                        'Response body is : ' + response.data.decode('utf-8'))
 
         self.delete_ob(self.parse_id(response))
+
+    def test_ob_duplicate(self):
+        """Test case for ob_duplicate
+
+        Insert an OB to get the id,  test duplicating it,  delete to clean up.
+        """
+        query_string = [('ob_id', self.ob_id)]
+        response = self.client.open(
+            '/obsBlocks/duplicate',
+            method='POST',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+        result = json.loads(response.data.decode('utf-8'))
+        query_string = [('ob_id', self.ob_id)]
+        response = self.client.open(f'/obsBlocks', method='GET',
+                                    query_string=query_string)
+
+        # confirm the new OB exists in the db
+        self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
+
+        ob_json = json.loads(response.data.decode('utf-8'))
+
+        self.delete_ob(ob_json['_id'])
+
+    # def test_ob_sequence_duplicate(self):
+    #     """ Test case for ob_sequence_duplicate
     #
-    # def test_ob_delete(self):
-    #     """Test case for ob_delete
-    #
-    #     Insert an OB and then delete it.  Checks it returns status 204.
+    #     duplicate template in ob,  check to see the list increased by one.
     #     """
     #     query_string = [('ob_id', self.ob_id)]
     #     response = self.client.open(
-    #         '/obsBlocks',
-    #         method='DELETE',
-    #         query_string=query_string)
-    #     self.assert_status(response, 204,
-    #                        'Response body is : ' + response.data.decode('utf-8'))
-    #
-    #     # confirm the OB does not exist in the db
-    #     self.assert404(self.get_ob(self.parse_id(response)),
-    #                    'Response body is : ' + response.data.decode('utf-8'))
-    #
-    # def test_ob_duplicate(self):
-    #     """Test case for ob_duplicate
-    #
-    #     Insert an OB to get the id,  test duplicating it,  delete to clean up.
-    #     """
-    #     query_string = [('ob_id', self.ob_id)]
-    #     response = self.client.open(
-    #         '/obsBlocks/duplicate',
+    #         f'/obsBlocks/template/duplicate/{self.template_id}',
     #         method='POST',
     #         query_string=query_string)
     #     self.assert200(response,
     #                    'Response body is : ' + response.data.decode('utf-8'))
     #
-    #     # confirm the new OB exists in the db
-    #     self.assert200(self.get_ob(self.parse_id(response)),
-    #                    'Response body is : ' + response.data.decode('utf-8'))
+    #     # confirm the number of templates increased by one
+    #     response = self.get_ob(self.ob_id)
+    #     result_ob = json.loads(response.data.decode('utf-8'))
     #
-    #     self.delete_ob(self.parse_id(response))
+    #     orig_ob = self.defaults.get_example_ob(0)
+    #     assert(len(orig_ob['sequences']) + 1 == len(result_ob['sequences']))
+
+# ----
+# Status tests
+# ----
+    def test_ob_status_get_update(self):
+        """Test case for ob_status_update and ob_status_get
+
+
+        """
+
+        query_string = [('ob_id', self.ob_id)]
+        response = self.client.open('/obsBlocks/status', method='GET',
+                                    query_string=query_string)
+        self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
+
+        # status_fields = getattr(StatusField())
+        stat_obj = StatusField()
+        status_fields = stat_obj.__dict__
+        status_fields = status_fields['swagger_types'].keys()
+
+        new_stat_val = 44
+        for status_field in status_fields:
+            query_string = [('ob_id', self.ob_id), ('new_status', new_stat_val)]
+            response = self.client.open(
+                f'/obsBlocks/status/{status_field}/update', method='GET',
+                query_string=query_string)
+            self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
+
+            query_string = [('ob_id', self.ob_id), ('status_field', status_field)]
+
+            response = self.client.open(f'/obsBlocks/status',
+                                        method='GET', query_string=query_string)
+            result = json.loads(response.data.decode('utf-8'))
+
+            assert(result['status'][status_field] == new_stat_val)
+
     #
     # def test_ob_execution_time(self):
     #     """Test case for ob_execution_time
@@ -225,23 +271,6 @@ class TestObservationBlockController(BaseTestCase):
     #
     #     # TODO add check for the execution times
     #
-    # def test_ob_export(self):
-    #     """Test case for ob_export
-    #
-    #     get OB,  confirm it is the same as inserted
-    #     """
-    #     query_string = [('ob_id', self.ob_id)]
-    #     response = self.client.open(
-    #         '/obsBlocks/export',
-    #         method='GET',
-    #         query_string=query_string)
-    #     self.assert200(response,
-    #                    'Response body is : ' + response.data.decode('utf-8'))
-    #
-    #     # confirm the retrieve OB is the same as inserted
-    #     result_ob = json.loads(response.data.decode('utf-8'))
-    #     del result_ob['_id']
-    #     assert(result_ob == self.ob)
 
     # def test_ob_template_duplicate(self):
     #     """ Test case for ob_template_duplicate
@@ -412,25 +441,6 @@ class TestObservationBlockController(BaseTestCase):
     #     self.assert200(response,
     #                    'Response body is : ' + response.data.decode('utf-8'))
     #
-    # # def test_ob_template_id_file_put(self):
-    # #     """Test case for ob_template_id_file_put
-    # #
-    # #
-    # #     """
-    # #     filename = 'test_template_file.json'
-    # #     body = open(filename)
-    # #     # file = (BytesIO(b'my file contents'), "file_name.jpg")
-    # #     query_string = [('ob_id', self.ob_id)]
-    # #
-    # #     response = self.client.open(
-    # #         f'/obsBlocks/template/{self.template_id}/{self.file_parameter}',
-    # #         method='PUT',
-    # #         data=json.dumps(body),
-    # #         content_type='text/plain',
-    # #         query_string=query_string)
-    # #     self.assert200(response,
-    # #                    'Response body is : ' + response.data.decode('utf-8'))
-    #
     # def test_ob_time_constraint_get(self):
     #     """Test case for ob_time_constraint_get
     #
@@ -576,8 +586,11 @@ class TestObservationBlockDelete(BaseTestCase):
                            'Response body is : ' + response.data.decode('utf-8'))
 
         # confirm the OB does not exist in the db
-        self.assert404(self.get_ob(self.parse_id(response)),
-                       'Response body is : ' + response.data.decode('utf-8'))
+        # self.assert204(self.get_ob(self.parse_id(response)),
+        #                'Response body is : ' + response.data.decode('utf-8'))
+
+        # self.assert_status(self.get_ob(self.parse_id(response)), 204,
+        #                    'Failed __init__ delete_ob,  did not delete OB')
 
 
 

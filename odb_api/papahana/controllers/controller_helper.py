@@ -316,6 +316,24 @@ def clean_objectid(docs):
     return cln_docs
 
 
+def get_sched_sem_ids(keck_id):
+    cmd_url = f'?cmd=getScheduleByUser&obsid={keck_id}'
+    results = query_apis(cmd_url, 'scheduleApi')
+
+    if not results:
+        return []
+
+    sem_ids = []
+    for result in results:
+        try:
+            sem_id = f"{result['Semester']}_{result['ProjCode']}"
+        except KeyError:
+            continue
+        sem_ids.append(sem_id)
+
+    return sem_ids
+
+# TODO this should only return 2021A and beyond,  and APPROVED proposals
 # semesters_and_program specific
 def get_proposal_ids(obs_id):
     """
@@ -323,7 +341,34 @@ def get_proposal_ids(obs_id):
     :type obs_id: int
     """
     cmd_url = f'?cmd=getAllProposals&obsid={obs_id}&json=True'
+    # result = query_proposals_api(cmd_url)
+    result = query_apis(cmd_url, 'proposalApi')
+
+    if not result['success'] or 'data' not in result:
+        return []
+
+    prop_ids = []
+    all_props = result['data']['AllProposals']
+    for prop in all_props:
+        if "KTN" not in prop:
+            continue
+        prop_ids.append(prop["KTN"])
+
+    if type(prop_ids) is not list:
+        return []
+
+    return prop_ids
+
+
+def get_schedule_ids(obs_id):
+    """
+    :param obs_id: observer id
+    :type obs_id: int
+    """
+
+    cmd_url = f'?cmd=getAllProposals&obsid={obs_id}&json=True'
     result = query_proposals_api(cmd_url)
+    # result = query_apis(cmd_url, 'proposalApi')
 
     if not result['success'] or 'data' not in result:
         return result['msg']
@@ -341,11 +386,30 @@ def get_proposal_ids(obs_id):
 def get_ids(sem_id):
     cmd_url = f"?cmd=getOBSID&ktn={sem_id}&json=True"
     result = query_proposals_api(cmd_url)
+    # result = query_apis(cmd_url, 'proposalApi')
 
     if not result['success'] or 'data' not in result:
         return result['msg']
 
     return result['data']
+
+
+def query_apis(cmd_url, api_name):
+    with current_app.app_context():
+        urls = current_app.urls
+
+    if api_name not in urls:
+        return None
+
+    url = urls[api_name] + cmd_url
+
+    response = requests.get(url)
+    response.close()
+    try:
+        result = json.loads(response.content)
+        return result
+    except Exception as err:
+        return err
 
 
 def query_proposals_api(cmd_url):

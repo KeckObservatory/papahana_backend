@@ -4,10 +4,24 @@ from papahana.util import config_collection
 from papahana.controllers import controller_helper as utils
 
 
-def add_association(keck_id, sem_id):
+def add_association(keck_id, sem_id_list):
     coll = config_collection('observerCollect', db_name='obs_db')
-    _ = coll.update_one({"keck_id": keck_id},
-                        {"$addToSet": {"associations": sem_id}})
+
+    clean_list = []
+    for sem_id in sem_id_list:
+        try:
+            year = int(sem_id[:4])
+        except ValueError:
+            continue
+
+        if year < 2022:
+            continue
+
+        clean_list.append(sem_id)
+        _ = coll.update_one({"keck_id": keck_id},
+                            {"$addToSet": {"associations": sem_id}})
+
+    return clean_list
 
 
 def is_semid_associated_args(*args, **kwargs):
@@ -20,51 +34,41 @@ def is_semid_associated(sem_id):
     keck_id = g.user
 
     query = {'keck_id': keck_id, 'associations': sem_id}
-    fields = {'associations': 1, '_id': 0}
+    fields = {'associations': 1, '_id': 0, 'admin': 1}
 
     results = utils.get_fields_by_query(query, fields, 'observerCollect',
                                         db_name='obs_db')
 
     if results:
         try:
+            if results[0]['admin']:
+                return True
+
             if sem_id in results[0]['associations']:
                 return True
+
         except (KeyError, IndexError):
             return False
 
-    proposal_sem_ids = utils.get_proposal_ids(keck_id)
+    # check the schedule
+    if chk_add_assoc(keck_id, sem_id, utils.get_sched_sem_ids):
+        return True
 
-    if type(proposal_sem_ids) is not list:
-        return False
-
-    if proposal_sem_ids and sem_id in proposal_sem_ids:
-        add_sem_id_db(sem_id)
+    # check the proposals database
+    if chk_add_assoc(keck_id, sem_id, utils.get_proposal_ids):
         return True
 
     return False
 
 
-def add_sem_id_db(sem_id):
-    keck_id = g.user
+def chk_add_assoc(keck_id, sem_id, func):
+    # check the proposals database
+    sem_id_list = func(keck_id)
 
-    query = {'keck_id': keck_id}
-    fields = {'associations': 1, '_id': 0}
-    results = utils.get_fields_by_query(query, fields, 'observerCollect',
-                                        db_name='obs_db')
+    if sem_id_list and sem_id in sem_id_list:
+        _ = add_association(keck_id, sem_id_list)
+        return True
 
-    assoc_list = []
-    if results:
-        try:
-            assoc_list = results[0]['associations']
-        except (KeyError, IndexError):
-            pass
-
-    assoc_list.append(sem_id)
-
-    fields = {'associations': assoc_list}
-    utils.update_doc(query, fields, 'observerCollect', db_name='obs_db')
-
-    return
-
+    return False
 
 

@@ -5,6 +5,7 @@ from __future__ import absolute_import
 # import models into model package
 from papahana.models.acquisition import Acquisition
 from papahana.models.acquisition_parameters import AcquisitionParameters
+from papahana.models.any_of_status_subset import AnyOfStatusSubset
 from papahana.models.any_of_template_schema import AnyOfTemplateSchema
 from papahana.models.apikey import Apikey
 from papahana.models.body import Body
@@ -37,6 +38,8 @@ from papahana.models.science_parameters_seq_dither_pattern import ScienceParamet
 from papahana.models.science_template import ScienceTemplate
 from papahana.models.sem_id_schema import SemIdSchema
 from papahana.models.status import Status
+from papahana.models.status_field import StatusField
+from papahana.models.status_subset import StatusSubset
 from papahana.models.target import Target
 from papahana.models.target_metadata import TargetMetadata
 from papahana.models.target_parameters import TargetParameters

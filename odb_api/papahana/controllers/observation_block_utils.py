@@ -19,25 +19,24 @@ def update_ob(_ob_id, new_ob):
     coll.patch_one(new_ob, metadata=metadata)
 
 
-# def update_ob_fields(obj_id, fields):
-#
-#     metadata = {"timestamp": datetime.now()}
-#     _ob_id = ob['_ob_id']
-#     coll = config_collection('obCollect')
-#
-#     coll.patch_one(new_ob, metadata=metadata)
-
-
 def ob_get(_ob_id):
     coll = config_collection('obCollect')
 
     ob = coll.latest({'_ob_id': _ob_id})
 
-    if ob:
-        try:
-            del ob['_revision_metadata']
-        except KeyError:
-            pass
+    if not ob:
+        abort(422, f'No results in: Observation Block collections.')
+
+    ob = clean_revision_metadata(ob)
+
+    return ob
+
+
+def clean_revision_metadata(ob):
+    try:
+        del ob['_revision_metadata']
+    except KeyError:
+        pass
 
     return ob
 

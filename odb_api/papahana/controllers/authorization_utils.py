@@ -4,7 +4,7 @@ from base64 import b64encode, b64decode
 from Crypto.Cipher import AES
 from Crypto import Random
 
-from flask import g, abort, make_response, redirect
+from flask import g, abort, make_response, redirect, request
 
 from papahana import util
 from papahana.controllers import controller_helper as utils
@@ -22,9 +22,10 @@ def generate_api_key(keck_id):
     results = utils.get_fields_by_query(query, fields, 'observerCollect',
                                         db_name='obs_db')
     if not results:
-        doc = {'keck_id': keck_id, 'api_key': '', 'associations': ''}
+        doc = {'keck_id': keck_id, 'api_key': '', 'associations': [], 'admin': 0}
         utils.insert_into_collection(doc, 'observerCollect', db_name='obs_db')
     else:
+        # if we are here and there is already a key,  abort unauthorized
         try:
             key = results[0]['api_key']
             if key:
@@ -41,17 +42,6 @@ def generate_api_key(keck_id):
     utils.update_doc(query, fields, 'observerCollect', db_name='obs_db')
 
     return new_key
-
-
-def update_cookie(cook_name, cook_val, url):
-    res = make_response(redirect(url))
-    res.set_cookie(cook_name, domain='keck.hawaii.edu', expires=0)
-
-    scrambled_val = _encrypt_str(cook_val)
-    res.set_cookie(cook_name, scrambled_val, max_age=86400,
-                   domain='keck.hawaii.edu')
-
-    return res
 
 
 def _pad(unpadded_str):
@@ -76,7 +66,7 @@ def _encrypt_str(plain_str):
 
     :return: encrypted string
     """
-    secret_key = util.read_secret()
+    secret_key = util.config_file_section('apikey')['secret_key']
     key = hashlib.sha256(secret_key.encode()).digest()
 
     padded_str = _pad(plain_str)
@@ -90,7 +80,7 @@ def decrypt_encoded_str(encoded_str):
     def _unpad(s):
         return s[:-ord(s[len(s)-1:])]
 
-    secret_key = util.read_secret()
+    secret_key = util.config_file_section('apikey')['secret_key']
     key = hashlib.sha256(secret_key.encode()).digest()
 
     enc = b64decode(encoded_str)
@@ -135,6 +125,25 @@ def confirm_sem_id_associated(func):
 
         return func(*args, **kwargs)
     return inner
+
+
+# def get_api_key(keck_id):
+    # api_key = generate_api_key(keck_id)
+
+    # update_cookie('ODB-API-KEY', api_key, request.path)
+    # auth_config = util.config_file_section('auth_server')
+    # login_url = auth_config['login']
+
+
+# def update_cookie(cook_name, cook_val, url):
+#     res = make_response(redirect(url))
+#     res.set_cookie(cook_name, domain='keck.hawaii.edu', expires=0)
+#
+#     scrambled_val = _encrypt_str(cook_val)
+#     res.set_cookie(cook_name, scrambled_val, max_age=86400,
+#                    domain='keck.hawaii.edu')
+#
+#     return res
 
 
 

@@ -11,6 +11,7 @@ Originally taken from
 https://pypi.org/project/historical-collection/
 
 updates made to return the inserted id with a new insert,  under patch one
+updated to remove leading underscore from the history collection.
 
 """
 
@@ -34,6 +35,7 @@ class PatchResult(list):
     @inserted_id_obj.setter
     def inserted_id_obj(self, new_id):
         self.insert_id = new_id
+
 
 class HistoricalCollection(Collection):
     """Record everything associated with a collection.
@@ -300,3 +302,4 @@ class HistoricalCollection(Collection):
             one = self.patch_one(doc, *args, **kwargs)
             result.append(one)
         return result
+

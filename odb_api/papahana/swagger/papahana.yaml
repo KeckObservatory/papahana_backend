@@ -130,8 +130,7 @@ paths:
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
   /semesterIds/{sem_id}/ob:
-    summary: Retrieves the Observation Block (OB) information of a given program / semester ID.
-             The Semester ID is a required parameter.
+    summary: Retrieves the most recent version of an OB. The Semester ID is a required parameter.
     get:
       tags:
         - Semester Id
@@ -905,7 +904,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObservationBlock'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
         "401":
@@ -1091,62 +1092,6 @@ paths:
       responses:
         "204":
           description: removes the observation from the OB
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "422":
-          description: Observation Block not found with provided OB ID.
-      x-swagger-router-controller: Observation
-      x-openapi-router-controller: papahana.controllers.observation_block_controller
-
-# TODO low priority - no file parameter
-  /obsBlocks/sequence/{file_parameter}:
-    get:
-      tags:
-        - Observation Block
-      description: Retrieves the specified sequence within the Observation Block
-                  and returns it in the format specified.  Supported formats are
-                  csv, json, html, txt, pdf, ps.
-      operationId: ob_sequence_id_file_get
-      parameters:
-        - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/sequence_number'
-        - $ref: '#/components/parameters/file_parameter'
-      responses:
-        "200":
-          description: Retrieves and returns the Template of the observing block being requested
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateSchema'
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "422":
-          description: Observation Block not found with provided OB ID.
-      x-swagger-router-controller: Observation
-      x-openapi-router-controller: papahana.controllers.observation_block_controller
-    put:
-      tags:
-        - Observation Block
-      description: Updates the specified sequence within the Observation Block.
-      operationId: ob_sequence_id_file_put
-      parameters:
-        - $ref: '#/components/parameters/ob_id'
-        - $ref: '#/components/parameters/sequence_number'
-        - $ref: '#/components/parameters/file_parameter'
-      requestBody:
-        content:
-          text/plain:
-            schema:
-              type: string
-              format: binary
-        required: true
-      responses:
-        "200":
-          description: replaces the given Template within the OB with Template of id=sequence_number
         "400":
           description: Invalid status value
         "401":
@@ -1449,32 +1394,61 @@ paths:
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
-#  /obsBlocks/export/{file_parameter}:
-#    get:
-#      tags:
-#        - Observation Block
-#      description: Exports an OB in different file formats. .  Supported formats are
-#                   csv, json, html, txt, pdf, ps.
-#      operationId: ob_export
-#      parameters:
-#        - $ref: '#/components/parameters/file_parameter'
-#        - $ref: '#/components/parameters/ob_id'
-#      responses:
-#        "200":
-#          description: On success a TBD text version of the OB is returned.
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/ObservationBlock'
-#        "400":
-#          description: Invalid status value
-#        "401":
-#          description: Unauthorized
-#        "422":
-#          description: Observation Block not found with provided OB ID.
-#      x-swagger-router-controller: Observation
-#      x-openapi-router-controller: papahana.controllers.observation_block_controller
-#
+  # status routes
+  /obsBlocks/status/{status_field}/update:
+    get:
+      tags:
+        - Observation Block
+      description: update the status of the observation block.  It is meant to be
+                   used by the execution engine to record the completion status of
+                   the Observation Block.
+      operationId: ob_status_update
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/status_field'
+        - $ref: '#/components/parameters/new_status'
+      responses:
+        "200":
+          description: On success the new status of updated field is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusSubset'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
+
+  /obsBlocks/status:
+    get:
+      tags:
+        - Observation Block
+      description: retrieve the completion status of the observation block.  Optionally
+                   a field can be added to return only a subset of the status.
+      operationId: ob_status_get
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+        - $ref: '#/components/parameters/status_field_optional'
+      responses:
+        "200":
+          description: On success the json formatted status is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusSubset'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
+
 
 # -------------------------------------------------------------------------------
 # observer section
@@ -1583,7 +1557,7 @@ paths:
 #  /observers/keckid/update_cookie:
 #    get:
 #      tags:
-#        - Authorization
+#        - Observers
 #      description: Update the API Key Cookie
 #      operationId: update_cookie
 #      parameters:
@@ -1601,8 +1575,8 @@ paths:
 #          description: Unauthorized
 #        "422":
 #          description: Program Semester ID (sem_id) not found.
-#      x-swagger-router-controller: Authorization
-#      x-openapi-router-controller: papahana.controllers.authorization_controller.
+#      x-swagger-router-controller: Observer
+#      x-openapi-router-controller: papahana.controllers.observers_controller
 
 #  /observers/{sem_id}/add/{keck_id}:
 #    get:
@@ -1708,24 +1682,6 @@ components:
       explode: false
       schema:
         type: boolean
-
-    file_parameter:
-      name: file_parameter
-      in: path
-      description: file type
-      required: true
-      style: simple
-      explode: false
-      schema:
-        type: string
-        enum:
-          - csv
-          - json
-          - html
-          - txt
-          - pdf
-          - ps
-      example: json
 
 # TODO used with the 'remove' and 'add' observer routes.
 #    keck_id:
@@ -1958,6 +1914,7 @@ components:
       schema:
         type: integer
       example: 1
+
     state:
       name: state
       in: query
@@ -1967,6 +1924,49 @@ components:
       explode: false
       schema:
         type: string
+
+    status_field:
+      name: status_field
+      in: path
+      description: The completion status field to update
+      required: true
+      style: simple
+      explode: true
+      schema:
+        type: string
+        enum:
+          - state
+          - current_seq
+          - current_step
+          - current_exp_det1
+          - current_exp_det2
+
+    status_field_optional:
+      name: status_field
+      in: query
+      description: The completion status field to update
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        enum:
+          - state
+          - current_seq
+          - current_step
+          - current_exp_det1
+          - current_exp_det2
+
+    new_status:
+      name: new_status
+      in: query
+      description: The new status value.
+      required: true
+      style: form
+      explode: false
+      schema:
+        type: integer
+      example: 1
 
     template_name:
       name: template_name
@@ -2395,6 +2395,11 @@ components:
         target_coord_ra: 23:55:05
         target_coord_dec: -02:13:50
 
+    StatusSubset:
+      anyOf:
+          - $ref: '#/components/schemas/Status'
+          - $ref: '#/components/schemas/StatusField'
+
     Status:
       required:
         - state
@@ -2429,6 +2434,25 @@ components:
         deleted:
           type: boolean
           default: false
+
+    StatusField:
+      type: object
+      properties:
+        state:
+          type: integer
+          default: 0
+        current_seq:
+          type: integer
+          default: 0
+        current_step:
+          type: integer
+          default: 0
+        current_exp_det1:
+          type: integer
+          default: 0
+        current_exp_det2:
+          type: integer
+          default: 0
 
     Magnitude:
       required:

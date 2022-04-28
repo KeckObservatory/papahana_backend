@@ -7,6 +7,14 @@ import ast
 from papahana.test import BaseTestCase
 from papahana.test.test_default_values import ObsBlocksTestDefaults
 
+from papahana.models.container import Container 
+from papahana.models.instrument_enum import InstrumentEnum 
+from papahana.models.observation_block import ObservationBlock 
+from papahana.models.ra_schema import RASchema 
+from papahana.models.sem_id_schema import SemIdSchema 
+from papahana.models.target import Target 
+from papahana.test import BaseTestCase
+
 
 class TestSemesterIdController(BaseTestCase):
     """SemesterIdController integration test stubs"""
@@ -32,6 +40,45 @@ class TestSemesterIdController(BaseTestCase):
     # ------
     # TESTS
     # ------
+    def test_sem_id_ob_metadata(self):
+        """Test case for sem_id_ob_metadata
+        """
+        sem_id = self.get_sem_id()
+        assert(sem_id)
+
+        min_ra = '00:00:00.0'
+        max_ra = '24:00:00.0'
+
+
+        # query_string = [('min_ra', min_ra), ('max_ra', max_ra),
+        #                 ('instrument', 'KCWI'), ('ob_priority', 8),
+        #                 ('min_priority', 1), ('max_priority', 100),
+        #                 ('min_duration', 1.2), ('max_duration', 1.2),
+        #                 ('observable', True),
+        #                 ('completed', False),
+        #                 ('container_id', 'container_id_example')]
+
+        # test ra range
+        query_string = [('min_ra', min_ra), ('max_ra', max_ra)]
+
+        response = self.client.open(
+            f'/semesterIds/{sem_id}/ob/metadata', method='GET',
+            query_string=query_string)
+
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+        # test container id
+        container_id = self.get_container_id(sem_id)
+        query_string = [('container_id', container_id)]
+
+        response = self.client.open(
+            f'/semesterIds/{sem_id}/ob/metadata', method='GET',
+            query_string=query_string)
+
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
 
     def test_sem_id_containers_get(self):
         """Test case for sem_id_containers_get
@@ -39,15 +86,8 @@ class TestSemesterIdController(BaseTestCase):
 
         Retrieves all containers associated with a program.
         """
-        response = self.client.open(
-            '/semesterIds',
-            method='GET')
-        sem_ids = response.data.decode('utf-8')
-        sem_ids = ast.literal_eval(sem_ids)
-
-        assert(sem_ids)
-
-        sem_id = sem_ids['associations'][0]
+        sem_id = self.get_sem_id()
+        assert(sem_id)
 
         response = self.client.open(
             f'/semesterIds/{sem_id}/containers', method='GET')
@@ -64,7 +104,38 @@ class TestSemesterIdController(BaseTestCase):
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
-    
+
+    # -------
+    # Helpers
+    # -------
+
+    def make_default_response(self, route):
+        response = self.client.open(route, method='GET')
+        info = response.data.decode('utf-8')
+        info = ast.literal_eval(info)
+
+        return info
+
+    def get_sem_id(self):
+        sem_ids = self.make_default_response('/semesterIds')
+
+        if not sem_ids:
+            return None
+
+        sem_id = sem_ids['associations'][0]
+
+        return sem_id
+
+    def get_container_id(self, sem_id):
+        container_ids = self.make_default_response(
+            f'/semesterIds/{sem_id}/containers')
+
+        print(f'ont {container_ids}')
+        if not container_ids:
+            return None
+
+        return container_ids[0]['_id']
+
     # def test_sem_id_ob_get(self):
     #     """Test case for sem_id_ob_get
     #
