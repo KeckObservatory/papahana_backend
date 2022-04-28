@@ -5,8 +5,6 @@ from papahana.controllers import controller_helper as utils
 from papahana.controllers import containers_utils as contain_utils
 from papahana.controllers import observation_block_controller
 
-from papahana.models.container import Container
-
 
 def containers_get(container_id):
     """
@@ -19,7 +17,9 @@ def containers_get(container_id):
     :rtype: dict (Container)
     """
     container = utils.get_by_id(container_id, 'containerCollect')
-    _ = contain_utils.is_associated(container)
+    container_obj = contain_utils.is_associated(container)
+
+    container = contain_utils.clean_deleted_ob(container_obj, container_id)
 
     return container
 
@@ -35,11 +35,13 @@ def containers_post(body):
     :rtype: str: the ObjectID of the inserted document
     """
     if connexion.request.is_json:
-        _ = contain_utils.is_associated(body)
+        container_obj = contain_utils.is_associated(body)
     else:
         abort(422, 'Request must be JSON formatted.')
 
-    result = utils.insert_into_collection(body, 'containerCollect')
+    container = contain_utils.clean_deleted_ob(container_obj)
+
+    result = utils.insert_into_collection(container, 'containerCollect')
 
     return str(result)
 
@@ -58,15 +60,18 @@ def containers_put(body, container_id):
     """
     # check the sem_id in body is associated
     if connexion.request.is_json:
-        _ = contain_utils.is_associated(body)
+        container_obj = contain_utils.is_associated(body)
     else:
         abort(422, 'Request must be JSON formatted.')
 
-    # get container and confirm container is associated
+    # get current container and confirm container is associated
     _ = containers_get(container_id)
 
+    # check for deleted OBs
+    container = contain_utils.clean_deleted_ob(container_obj)
+
     new_vals = {}
-    for key, val in body.items():
+    for key, val in container.items():
         if val and key != 'container_id':
             new_vals[key] = val
 

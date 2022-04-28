@@ -33,7 +33,7 @@ def is_semid_associated_args(*args, **kwargs):
 def is_semid_associated(sem_id):
     keck_id = g.user
 
-    query = {'keck_id': keck_id, 'associations': sem_id}
+    query = {'keck_id': keck_id}
     fields = {'associations': 1, '_id': 0, 'admin': 1}
 
     results = utils.get_fields_by_query(query, fields, 'observerCollect',

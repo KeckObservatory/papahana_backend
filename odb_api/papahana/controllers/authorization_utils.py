@@ -127,26 +127,6 @@ def confirm_sem_id_associated(func):
     return inner
 
 
-# def get_api_key(keck_id):
-    # api_key = generate_api_key(keck_id)
-
-    # update_cookie('ODB-API-KEY', api_key, request.path)
-    # auth_config = util.config_file_section('auth_server')
-    # login_url = auth_config['login']
-
-
-# def update_cookie(cook_name, cook_val, url):
-#     res = make_response(redirect(url))
-#     res.set_cookie(cook_name, domain='keck.hawaii.edu', expires=0)
-#
-#     scrambled_val = _encrypt_str(cook_val)
-#     res.set_cookie(cook_name, scrambled_val, max_age=86400,
-#                    domain='keck.hawaii.edu')
-#
-#     return res
-
-
-
 
 
 

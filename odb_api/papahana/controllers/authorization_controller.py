@@ -17,20 +17,20 @@ def check_apikey_auth(api_key, required_scopes):
     scrampled_uid = request.cookies.get('ODB-API-UID')
     keck_id = int(auth_utils.decrypt_encoded_str(scrampled_uid))
 
-    if scrambled_api_key == 'NULL':
-        _ = auth_utils.generate_api_key(keck_id)
-    else:
-        api_key = auth_utils.decrypt_encoded_str(scrambled_api_key)
+    if not scrambled_api_key or scrambled_api_key == 'NULL':
+        abort(401, 'Unauthorized,  API KEY missing or NULL')
 
-        query = {'api_key': api_key}
-        fields = {'keck_id': 1, '_id': 0}
-        results = utils.get_fields_by_query(query, fields, 'observerCollect',
-                                            db_name='obs_db')
-        if not results:
-            raise OAuthProblem('API Key not found')
+    api_key = auth_utils.decrypt_encoded_str(scrambled_api_key)
 
-        if keck_id != results[0]['keck_id']:
-            abort(401, 'Unauthorized,  API KEY and Keck ID do not match our records.')
+    query = {'api_key': api_key}
+    fields = {'keck_id': 1, '_id': 0}
+    results = utils.get_fields_by_query(query, fields, 'observerCollect',
+                                        db_name='obs_db')
+    if not results:
+        raise OAuthProblem('API Key not found')
+
+    if keck_id != results[0]['keck_id']:
+        abort(401, 'Unauthorized,  API KEY and Keck ID do not match our records.')
 
     g.authorized = True
     g.user = keck_id

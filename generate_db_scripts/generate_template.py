@@ -427,7 +427,7 @@ kcwi_ifu_acq_offsetStar_template['metadata']['name'] = 'KCWI_ifu_acq_offsetStar'
 
 kcwi_common_parameters = {
     "metadata": {
-        "name": "kcwi_common_parameters",
+        "name": "KCWI_common_parameters",
         "ui_name": "KCWI Common Parameters",
         "template_type": "common_parameters",
         "instrument": "KCWI",
@@ -581,7 +581,8 @@ kcwi_common_parameters = {
             "type": "float",
             "units": None
         }
-    }
+    },
+    "tcs_parameters": {}
 }
 
 # kcwi_common_parameters = {
