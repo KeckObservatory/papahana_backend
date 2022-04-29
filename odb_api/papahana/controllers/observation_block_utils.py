@@ -60,16 +60,24 @@ def insert_ob(ob_doc):
     :type ob_doc: dict
     rtype: document id
     """
+    print('insert_ob')
     coll = config_collection('obCollect')
 
     # generate the _ob_id -- don't allow it to be inserted manually
     sem_id = ob_doc['metadata']['sem_id']
-    n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
-    ob_doc['_ob_id'] = f"{sem_id}_{str(n_ob).zfill(4)}"
+    # n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
+    # ob_doc['_ob_id'] = f"{sem_id}_{str(n_ob).zfill(4)}"
+
+    print('sem_id', sem_id)
+    ob_doc['_ob_id'] = get_new_ob_id(coll, sem_id)
+
+    print(f'ob_id {get_new_ob_id(coll, sem_id)}')
 
     metadata = {"timestamp": datetime.now()}
     result = coll.patch_one(ob_doc, metadata=metadata)
 
+    print(f'insert_ob result {result}')
+    print(f'insert_ob result {result.inserted_id_obj}')
     return result.inserted_id_obj.inserted_id
 
 
@@ -201,3 +209,7 @@ def add_default_status(body, json_body):
 
     return body
 
+
+def get_new_ob_id(coll, sem_id):
+    n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
+    return f"{sem_id}_{str(n_ob).zfill(4)}"

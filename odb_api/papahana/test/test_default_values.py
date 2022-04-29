@@ -3,6 +3,11 @@ import pymongo
 from papahana import util
 
 
+"""
+The test values are retreived from the database defined as 'test' in the 
+config file.
+"""
+
 class ContainerTestDefaults:
     def __init__(self, mode):
         self.config = util.read_config(mode)

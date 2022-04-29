@@ -117,7 +117,6 @@ def randTimeConstraint():
 def generate_container(ob_blocks):
 
     sem_id = random_utils.randSemId()
-    print(f"SEM ID {sem_id}")
 
     coll_ob = papahana_util.config_collection('obCollect', conf=config)
 
@@ -136,8 +135,6 @@ def generate_container(ob_blocks):
             continue
 
         if rand_ob['metadata']['sem_id'] == sem_id:
-            print(f"adding ob {rand_ob['metadata']['sem_id']}")
-            print(f"adding ob {rand_ob_id}")
             ob_set.update({rand_ob_id})
 
     schema = {
@@ -291,7 +288,6 @@ def generate_observer_collection(coll):
     # create staff
     for obs_id in staff:
         akey = auth_utils.generate_new_api_key()
-        print(f"staff {obs_id}")
         doc = {'keck_id': obs_id, "api_key": akey, "associations": [],
                'admin': 0}
         _ = coll.insert_one(doc)

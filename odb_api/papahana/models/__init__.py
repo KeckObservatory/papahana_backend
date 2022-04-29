@@ -23,12 +23,14 @@ from papahana.models.instrument_enum import InstrumentEnum
 from papahana.models.instrument_package import InstrumentPackage
 from papahana.models.instrument_package_metadata import InstrumentPackageMetadata
 from papahana.models.magnitude import Magnitude
+from papahana.models.ob_type import OBType
 from papahana.models.obs_block_metadata import ObsBlockMetadata
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.observation_metadata import ObservationMetadata
 from papahana.models.observer_list import ObserverList
 from papahana.models.one_of_dec_schema import OneOfDecSchema
 from papahana.models.one_of_instrument_enum import OneOfInstrumentEnum
+from papahana.models.one_of_ob_type import OneOfOBType
 from papahana.models.one_of_ra_schema import OneOfRASchema
 from papahana.models.one_ofbody import OneOfbody
 from papahana.models.one_ofbody1 import OneOfbody1

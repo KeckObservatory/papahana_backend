@@ -59,6 +59,7 @@ class BaseTestCase(TestCase):
         return ob_id
 
     def delete_ob(self, ob_id):
+        print(f'deleting: {ob_id}')
         query_string = [('ob_id', ob_id)]
         response = self.client.open(
             '/obsBlocks',

@@ -56,6 +56,7 @@ def ob_post(body):
     if '_ob_id' in body:
         del body['_ob_id']
 
+    print('inserting')
     result = ob_utils.insert_ob(body)
 
     return str(result)
@@ -76,8 +77,8 @@ def ob_put(body, ob_id):
     ob_orig = ob_utils.ob_id_associated(ob_id)
 
     # add the id required by history
-    obs_block_id = ob_orig['_ob_id']
-    body['_ob_id'] = obs_block_id
+    body['_ob_id'] = ob_orig['_ob_id']
+    body['metadata']['sem_id'] = ob_orig['metadata']['sem_id']
 
     if connexion.request.is_json:
         body = ob_utils.add_default_status(body, connexion.request.get_json())

@@ -7,6 +7,7 @@ from typing import List, Dict  # noqa: F401
 
 from papahana.models.base_model_ import Model
 from papahana.models.instrument_enum import InstrumentEnum  # noqa: F401,E501
+from papahana.models.ob_type import OBType  # noqa: F401,E501
 from papahana.models.sem_id_schema import SemIdSchema  # noqa: F401,E501
 import re  # noqa: F401,E501
 from papahana import util
@@ -17,7 +18,7 @@ class ObsBlockMetadata(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name: str=None, version: str=None, ob_type: str=None, priority: int=None, pi_id: int=None, sem_id: SemIdSchema=None, instrument: InstrumentEnum=None, comment: str=''):  # noqa: E501
+    def __init__(self, name: str=None, version: str=None, ob_type: OBType=None, priority: int=None, pi_id: int=None, sem_id: SemIdSchema=None, instrument: InstrumentEnum=None, comment: str=''):  # noqa: E501
         """ObsBlockMetadata - a model defined in Swagger
 
         :param name: The name of this ObsBlockMetadata.  # noqa: E501
@@ -25,7 +26,7 @@ class ObsBlockMetadata(Model):
         :param version: The version of this ObsBlockMetadata.  # noqa: E501
         :type version: str
         :param ob_type: The ob_type of this ObsBlockMetadata.  # noqa: E501
-        :type ob_type: str
+        :type ob_type: OBType
         :param priority: The priority of this ObsBlockMetadata.  # noqa: E501
         :type priority: int
         :param pi_id: The pi_id of this ObsBlockMetadata.  # noqa: E501
@@ -40,7 +41,7 @@ class ObsBlockMetadata(Model):
         self.swagger_types = {
             'name': str,
             'version': str,
-            'ob_type': str,
+            'ob_type': OBType,
             'priority': int,
             'pi_id': int,
             'sem_id': SemIdSchema,
@@ -125,29 +126,25 @@ class ObsBlockMetadata(Model):
         self._version = version
 
     @property
-    def ob_type(self) -> str:
+    def ob_type(self) -> OBType:
         """Gets the ob_type of this ObsBlockMetadata.
 
 
         :return: The ob_type of this ObsBlockMetadata.
-        :rtype: str
+        :rtype: OBType
         """
         return self._ob_type
 
     @ob_type.setter
-    def ob_type(self, ob_type: str):
+    def ob_type(self, ob_type: OBType):
         """Sets the ob_type of this ObsBlockMetadata.
 
 
         :param ob_type: The ob_type of this ObsBlockMetadata.
-        :type ob_type: str
+        :type ob_type: OBType
         """
-        allowed_values = ["science", "calibration", "engineering"]  # noqa: E501
-        if ob_type not in allowed_values:
-            raise ValueError(
-                "Invalid value for `ob_type` ({0}), must be one of {1}"
-                .format(ob_type, allowed_values)
-            )
+        if ob_type is None:
+            raise ValueError("Invalid value for `ob_type`, must not be `None`")  # noqa: E501
 
         self._ob_type = ob_type
 

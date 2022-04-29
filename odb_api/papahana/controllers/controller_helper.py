@@ -6,6 +6,7 @@ from flask import current_app, abort
 from bson import json_util
 
 from papahana.util import config_collection
+from papahana.controllers import observation_block_utils as ob_utils
 
 # Generalized
 def list_with_objectid(results):
@@ -160,10 +161,9 @@ def insert_into_collection(doc, collect_name, db_name=None):
     if type(doc) is dict and "_id" in doc:
         del doc["_id"]
 
-    if collect_name == 'obCollect' and '_ob_id' not in doc:
-        sem_id = doc['metadata']['sem_id']
-        n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
-        doc['_ob_id'] = f"{sem_id}_{str(n_ob).zfill(4)}"
+    if collect_name == 'obCollect':
+        print('!!!!!!! should not be here !!!!!!!!')
+        return None
 
     try:
         result = coll.insert_one(doc)
