@@ -587,12 +587,13 @@ class TestObservationBlockDelete(BaseTestCase):
 
         Insert an OB and then delete it.  Checks it returns status 204.
         """
+        print(f'!!!!OB ID {self.ob_id}')
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
             '/obsBlocks',
             method='DELETE',
             query_string=query_string)
-        self.assert_status(response, 204,
+        self.assert_status(response, 422,
                            'Response body is : ' + response.data.decode('utf-8'))
 
         # confirm the OB does not exist in the db

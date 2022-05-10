@@ -56,7 +56,6 @@ def ob_post(body):
     if '_ob_id' in body:
         del body['_ob_id']
 
-    print('inserting')
     result = ob_utils.insert_ob(body)
 
     return str(result)
@@ -96,15 +95,22 @@ def ob_delete(ob_id):
     :rtype: None
     """
     # check that access is allowed to be deleted,  422 if not found.
-    _ = ob_utils.ob_id_associated(ob_id)
+    ob = ob_utils.ob_id_associated(ob_id)
 
-    # get most recent version of OB
-    ob = ob_get(ob_id)
+    # mark deleted in the original OB document since this is a status field
+    new_vals = {'status.deleted': True}
+    result = utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
-    # set status to deleted,  the OB will remain in the database
-    ob['status']['deleted'] = True
+    # return the recent version
+    return ob_get(ob_id)
 
-    ob_utils.update_ob(ob['_ob_id'], ob)
+    # # get most recent version of OB
+    # ob = ob_get(ob_id)
+    #
+    # # set status to deleted,  the OB will remain in the database
+    # ob['status']['deleted'] = True
+
+    # ob_utils.update_ob(ob['_ob_id'], ob)
 
 
 def ob_duplicate(ob_id, sem_id=None):
