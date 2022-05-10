@@ -7,7 +7,8 @@ from papahana.controllers import controller_helper as utils
 from papahana.controllers import semester_id_utils as sem_utils
 from papahana.controllers import authorization_utils as auth_utils
 from papahana.controllers import observers_controller as obs_cont
-# from papahana.controllers import observation_block_controller
+# from papahana.controllers import containers_utils as contain_utils
+from papahana.controllers import containers_controller as contain_cont
 
 
 from papahana.models.container import Container  
@@ -117,7 +118,11 @@ def sem_id_containers_get(sem_id):
     query = {"sem_id": sem_id}
     containers = utils.get_by_query(query, 'containerCollect')
 
-    return utils.list_with_objectid(containers)
+    cln_containers = []
+    for container in containers:
+        cln_containers.append(contain_cont.containers_get(str(container['_id'])))
+
+    return utils.list_with_objectid(cln_containers)
 
 
 @auth_utils.confirm_sem_id_associated

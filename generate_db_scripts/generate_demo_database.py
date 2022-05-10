@@ -560,16 +560,16 @@ def generate_sidereal_target():
 @remove_none_values_in_dict
 def generate_nonsidereal_target():
     schema = generate_sidereal_target()
-    schema['target_coord_dra'] = random_utils.randFloat()
-    schema['target_coord_ddec']: random_utils.randFloat()
+    schema['parameters']['target_coord_dra'] = random_utils.randFloat()
+    schema['parameters']['target_coord_ddec']: random_utils.randFloat()
 
     return schema
 
 @remove_none_values_in_dict
 def generate_mos_target():
     schema = generate_sidereal_target()
-    schema['inst_cfg_mask_name'] = "Science Mask 101"
-    schema['inst_cfg_mask_barcode'] = "H01830928"
+    schema['parameters']['inst_cfg_mask_name'] = "Science Mask 101"
+    schema['parameters']['inst_cfg_mask_barcode'] = "H01830928"
 
     return schema
 
