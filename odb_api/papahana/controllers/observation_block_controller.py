@@ -95,22 +95,11 @@ def ob_delete(ob_id):
     :rtype: None
     """
     # check that access is allowed to be deleted,  422 if not found.
-    ob = ob_utils.ob_id_associated(ob_id)
+    _ = ob_utils.ob_id_associated(ob_id)
 
     # mark deleted in the original OB document since this is a status field
     new_vals = {'status.deleted': True}
-    result = utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
-
-    # return the recent version
-    return ob_get(ob_id)
-
-    # # get most recent version of OB
-    # ob = ob_get(ob_id)
-    #
-    # # set status to deleted,  the OB will remain in the database
-    # ob['status']['deleted'] = True
-
-    # ob_utils.update_ob(ob['_ob_id'], ob)
+    _ = utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
 
 def ob_duplicate(ob_id, sem_id=None):
