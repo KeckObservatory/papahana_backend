@@ -3,11 +3,14 @@ import argparse
 import generate_utils as utils
 from papahana import util as papahana_util
 from copy import deepcopy
+from collections import OrderedDict
 
 
 # Target Templates
-target_base_parameters = {
-    "target_info_name": {
+# target_base_keys = ['target_info_name', 'target_coord_ra']
+
+target_base_parameters = OrderedDict([
+    ("target_info_name", {
         "ui_name": "Target Name",
         "option": "regex",
         "allowed": ['[ -~]{100}'],
@@ -15,8 +18,8 @@ target_base_parameters = {
         "optionality": "required",
         "type": "string",
         "units": None
-    },
-    "target_coord_ra": {
+    }),
+    ("target_coord_ra", {
         "ui_name": "Right Ascension",
         "option": "regex",
         "allowed": ['^\d{2}:\d{2}:\d{2}$',
@@ -26,8 +29,8 @@ target_base_parameters = {
         "optionality": "required",
         "type": "string",
         "units": "Hours:Minutes:Seconds"
-    },
-    "target_coord_dec": {
+    }),
+    ("target_coord_dec", {
         "ui_name": "Declination",
         "option": "regex",
         "allowed": ['^\d{2}:\d{2}:\d{2}$',
@@ -40,17 +43,8 @@ target_base_parameters = {
         "optionality": "required",
         "type": "string",
         "units": "Degrees:Minutes:Seconds"
-    },
-    "rot_cfg_pa": {
-        "ui_name": "Position Angle",
-        "option": "range",
-        "allowed": [0.0,360.0],
-        "default": 0.0,
-        "optionality": "optional",
-        "type": "float",
-        "units": "Degrees"
-    },
-    "target_coord_pm_ra": {
+    }),
+    ("target_coord_pm_ra", {
         "ui_name": "Proper Motion (RA)",
         "option": "range",
         "allowed": [0.0, 5000.0],
@@ -58,8 +52,8 @@ target_base_parameters = {
         "optionality": "optional",
         "type": "string",
         "units" : "arcseconds/yr"
-    },
-    "target_coord_pm_dec": {
+    }),
+    ("target_coord_pm_dec", {
         "ui_name": "Proper Motion (DEC)",
         "option": "range",
         "allowed": [0.0, 100.0],
@@ -67,8 +61,8 @@ target_base_parameters = {
         "optionality": "optional",
         "type": "string",
         "units" : "arcseconds/yr"
-    },
-    "target_coord_frame": {
+    }),
+    ("target_coord_frame", {
         "ui_name": "Frame",
         "option": "set",
         "allowed": ['mount', 'FK5'],
@@ -76,8 +70,8 @@ target_base_parameters = {
         "optionality": "optional",
         "type": "string",
         "units": None
-    },
-    "target_coord_epoch": {
+    }),
+    ("target_coord_epoch", {
         "ui_name": "Epoch",
         "option": "range",
         "allowed": [1900.0, 2100.0],
@@ -85,17 +79,17 @@ target_base_parameters = {
         "optionality": "optional",
         "type": "float",
         "units": "year"
-    },
-    "seq_constraint_obstime": {
-        "ui_name": "Scheduled Time of Observation",
-        "option": "regex",
-        "allowed": [None, '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'],
-        "default": None,
+    }),
+    ("rot_cfg_pa", {
+        "ui_name": "Position Angle",
+        "option": "range",
+        "allowed": [0.0, 360.0],
+        "default": 0.0,
         "optionality": "optional",
-        "type": "string",
-        "units" : 'YR-MM-DD hh:mm:ss'
-    },
-    "target_magnitude": {
+        "type": "float",
+        "units": "Degrees"
+    }),
+    ("target_magnitude", {
         "ui_name": "Target Magnitude",
         "option": "list",
         "allowed": [
@@ -121,8 +115,17 @@ target_base_parameters = {
         "optionality": "required",
         "type": "array",
         "units": None
-    },
-    "target_info_comment": {
+    }),
+    ("seq_constraint_obstime", {
+        "ui_name": "Scheduled Time of Observation",
+        "option": "regex",
+        "allowed": [None, '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'],
+        "default": None,
+        "optionality": "optional",
+        "type": "string",
+        "units": 'YR-MM-DD hh:mm:ss'
+    }),
+    ("target_info_comment", {
         "ui_name": "Target Comment",
         "option": "regex",
         "allowed": [None, '[ -~]{100}'],
@@ -130,12 +133,139 @@ target_base_parameters = {
         "optionality": "optional",
         "type": "string",
         "units": None
-    }
+    })
+])
 
-}
+#
+# target_base_parameters = {
+#     "target_info_name": {
+#         "ui_name": "Target Name",
+#         "option": "regex",
+#         "allowed": ['[ -~]{100}'],
+#         "default": None,
+#         "optionality": "required",
+#         "type": "string",
+#         "units": None
+#     },
+#     "target_coord_ra": {
+#         "ui_name": "Right Ascension",
+#         "option": "regex",
+#         "allowed": ['^\d{2}:\d{2}:\d{2}$',
+#                     '^\d{2}:\d{2}:\d{2}.\d{1}$',
+#                     '^\d{2}:\d{2}:\d{2}.\d{2}$'],
+#         "default": None,
+#         "optionality": "required",
+#         "type": "string",
+#         "units": "Hours:Minutes:Seconds"
+#     },
+#     "target_coord_dec": {
+#         "ui_name": "Declination",
+#         "option": "regex",
+#         "allowed": ['^\d{2}:\d{2}:\d{2}$',
+#                     '^\d{2}:\d{2}:\d{2}.\d{1}$',
+#                     '^\d{2}:\d{2}:\d{2}.\d{2}$',
+#                     '^-\d{2}:\d{2}:\d{2}$',
+#                     '^-\d{2}:\d{2}:\d{2}.\d{1}$',
+#                     '^-\d{2}:\d{2}:\d{2}.\d{2}$'],
+#         "default": None,
+#         "optionality": "required",
+#         "type": "string",
+#         "units": "Degrees:Minutes:Seconds"
+#     },
+#     "rot_cfg_pa": {
+#         "ui_name": "Position Angle",
+#         "option": "range",
+#         "allowed": [0.0,360.0],
+#         "default": 0.0,
+#         "optionality": "optional",
+#         "type": "float",
+#         "units": "Degrees"
+#     },
+#     "target_coord_pm_ra": {
+#         "ui_name": "Proper Motion (RA)",
+#         "option": "range",
+#         "allowed": [0.0, 5000.0],
+#         "default": 0.0,
+#         "optionality": "optional",
+#         "type": "string",
+#         "units" : "arcseconds/yr"
+#     },
+#     "target_coord_pm_dec": {
+#         "ui_name": "Proper Motion (DEC)",
+#         "option": "range",
+#         "allowed": [0.0, 100.0],
+#         "default": 0.0,
+#         "optionality": "optional",
+#         "type": "string",
+#         "units" : "arcseconds/yr"
+#     },
+#     "target_coord_frame": {
+#         "ui_name": "Frame",
+#         "option": "set",
+#         "allowed": ['mount', 'FK5'],
+#         "default": 2000.0,
+#         "optionality": "optional",
+#         "type": "string",
+#         "units": None
+#     },
+#     "target_coord_epoch": {
+#         "ui_name": "Epoch",
+#         "option": "range",
+#         "allowed": [1900.0, 2100.0],
+#         "default": 2000.0,
+#         "optionality": "optional",
+#         "type": "float",
+#         "units": "year"
+#     },
+#     "seq_constraint_obstime": {
+#         "ui_name": "Scheduled Time of Observation",
+#         "option": "regex",
+#         "allowed": [None, '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'],
+#         "default": None,
+#         "optionality": "optional",
+#         "type": "string",
+#         "units" : 'YR-MM-DD hh:mm:ss'
+#     },
+#     "target_magnitude": {
+#         "ui_name": "Target Magnitude",
+#         "option": "list",
+#         "allowed": [
+#             {'target_info_band': {
+#                 "ui_name": "Spectral Band",
+#                 "option": "set",
+#                 "allowed": ['V', 'R', 'I', 'J', 'H', 'K'],
+#                 "default": None,
+#                 "optionality": "required",
+#                 "type": "string",
+#                 "units" : None}
+#             },
+#             {'target_info_mag': {
+#                 "ui_name": "Magnitude",
+#                 "option": "range",
+#                 "allowed": ['-27.0', '50.0'],
+#                 "default": None,
+#                 "optionality": "required",
+#                 "type": "float",
+#                 "units": 'Apparent'}}
+#         ],
+#         "default": None,
+#         "optionality": "required",
+#         "type": "array",
+#         "units": None
+#     },
+#     "target_info_comment": {
+#         "ui_name": "Target Comment",
+#         "option": "regex",
+#         "allowed": [None, '[ -~]{100}'],
+#         "default": None,
+#         "optionality": "optional",
+#         "type": "string",
+#         "units": None
+#     }
+# }
 
-nonsidereal_extra_params = {
-    "target_coord_dra": {
+nonsidereal_extra_params = deepcopy(target_base_parameters)
+nonsidereal_extra_params["target_coord_dra"] = {
         "ui_name": "Differential Tracking (RA)",
         "option": 'range',
         "allowed": [0.0, 5000.0],
@@ -143,8 +273,8 @@ nonsidereal_extra_params = {
         "optionality": "required",
         "type": "float",
         "units": 'acrseconds/hr'
-    },
-    "target_coord_ddec": {
+    }
+nonsidereal_extra_params["target_coord_ddec"] = {
         "ui_name": "Differential Tracking (DEC)",
         "option": 'range',
         "allowed": [0.0, 5000.0],
@@ -153,11 +283,10 @@ nonsidereal_extra_params = {
         "type": "float",
         "units": 'acrseconds/hr'
     }
-}
 
-mos_extra_params = {
 
-    "inst_cfg_mask": {
+mos_extra_params = deepcopy(target_base_parameters)
+mos_extra_params["inst_cfg_mask"] = {
         "ui_name": "Mask Name",
         "option": "regex",
         "allowed": ['[ -~]{100}'],
@@ -167,40 +296,38 @@ mos_extra_params = {
         "units": None
     }
 
-}
 
-sidereal_target = {
-    "metadata": {
+sidereal_target = OrderedDict([
+    ("metadata", {
         "name": "sidereal_target",
         "ui_name": "Sidereal Target",
         "template_type": "target",
         "version": "0.1.1"
-    },
-    "parameters": target_base_parameters
-}
+    }),
+    ("parameters", target_base_parameters)
+])
 
 
-nonsidereal_target = {
-    "metadata": {
+nonsidereal_target = OrderedDict([
+    ("metadata", {
         "name": "non_sidereal_target",
         "ui_name": "Non-Sidereal Target",
         "template_type": "target",
         "version": "0.1.1"
-    },
-    "parameters": {**target_base_parameters, **nonsidereal_extra_params}
-}
+    }),
+    ("parameters", nonsidereal_extra_params)
+])
 
 
-mos_target = {
-    "metadata": {
+mos_target = OrderedDict([
+    ("metadata", {
         "name": "multi_object_target",
         "ui_name": "Multi-Object Spectroscopy Target",
         "template_type": "target",
         "version": "0.1.1"
-    },
-    "parameters": {**target_base_parameters, **mos_extra_params}
-}
-
+    }),
+    ("parameters", mos_extra_params)
+])
 
 # Acquisition Templates
 kcwi_acq_direct_template_parameters = {
@@ -277,7 +404,7 @@ kcwi_acq_direct_template_parameters = {
             "units": None
         }
 
-}  
+}
 
 dither_schema = {
     "ui_name": "Dither Pattern",
@@ -546,7 +673,7 @@ kcwi_common_parameters = {
             "units": None
         },
         "det1_mode_ampmode": {
-            "ui_name": "Blue AMPMODE  0(quad, ALL), 1 (single C), 2 (single E), 3 (single D), 4 (single F), 5 (single B), 6 (single G), 7 (single A), 8 (single H), 9 (dual A&B), 10 (dual C&D)",
+            "ui_name": "Blue AMPMODE  0(quad, ALL)), 1 (single C)), 2 (single E)), 3 (single D)), 4 (single F)), 5 (single B)), 6 (single G)), 7 (single A)), 8 (single H)), 9 (dual A&B)), 10 (dual C&D)",
             "allowed": [0, 10],
             "option": "range",
             "optionality": "optional",
@@ -585,223 +712,6 @@ kcwi_common_parameters = {
     "tcs_parameters": {}
 }
 
-# kcwi_common_parameters = {
-#     "metadata": {
-#         "name": "KCWI_common_parameters",
-#         "ui_name": "KCWI Common parameters",
-#         "instrument": "KCWI",
-#         "template_type": "common_parameters",
-#         "version": "0.1.1", },
-#     "instrument_parameters": {
-#         "inst_cfg_slicer" : {
-#             "ui_name": "Slicer",
-#             "option": "set",
-#             "allowed": ["slicer1", "slicer2"],
-#             "default": None,
-#             "optionality": "required",
-#             "type": "string",
-#             "units": None},
-#         "inst_cfg_blockingfilter": {
-#             "ui_name": "Blocking Filter",
-#             "option": "set",
-#             "allowed": ["filter1", "filter2"],
-#             "default": None,
-#             "optionality": "required",
-#             "type": "string",
-#             "units": None},
-#          "inst_cfg_hatch": {
-#              "ui_name": "Hatch Position",
-#              "option": "set",
-#              "allowed": ["open", "closed"],
-#              "default": "open",
-#              "optionality": "optional",
-#              "type": "string",
-#              "units": None},
-#          "inst_cfg_calib": {
-#              "ui_name": "Calibration Position",
-#              "option": "set",
-#              "allowed": ["Sky", "Mirror", "Filter"],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "string",
-#              "units": None},
-#          "inst_cfg_polarimeter": {
-#              "ui_name": "Polarimeter",
-#              "option": "set",
-#              "allowed": ["Sky", "Polar", "Lens"],
-#              "default": "Lens",
-#              "optionality": "optional",
-#              "type": "string",
-#              "units": None},
-#          "inst_cfg_ifu": {
-#              "ui_name": "IFU",
-#              "option": "set",
-#              "allowed": ["Home", "Large", "Medium", "Small", "FPCam", "Aux"],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "string",
-#              "units": None},
-#          "inst_cfg1_filter": {
-#              "ui_name": "Red-Side Filter for camera 1",
-#              "option": "set",
-#              "allowed": ["Home", "Large", "Medium", "Small", "FPCam", "Aux"],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "string",
-#              "units": None},
-#          "inst_cfg2_filter": {
-#              "ui_name": "Blue-Side Filter for camera 1",
-#              "option": "set",
-#              "allowed": ["Home", "Large", "Medium", "Small", "FPCam", "Aux"],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "string",
-#              "units": None},
-#          "inst_cfg1_grating": {
-#              "ui_name": "Blue-Side Grating Position",
-#              "option": "set",
-#              "allowed": ["None", "BH3", "BL", "BH2", "BM", "GGTrg"],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "string",
-#              "units": None},
-#         "inst_cfg2_grating": {
-#             "ui_name": "Red-Side Grating Position",
-#             "option": "set",
-#             "allowed": ["None", "RH3", "RL", "RH2", "BM", "GGTrg"],
-#             "default": None,
-#             "optionality": "required",
-#             "type": "string",
-#             "units": None},
-#          "inst_ns_mask": {
-#              "ui_name": "Nod and Shuffle Mask",
-#              "option": "set",
-#              "allowed": ["open", "Dark", "Mask"],
-#              "default": "open",
-#              "optionality": "optional",
-#              "type": "float",
-#              "units": None},
-#          "inst_ns_direction": {
-#              "ui_name": "Nod and Shuffle Direction (1=down, 2=up)",
-#              "option": "set",
-#              "allowed": [1, 2],
-#              "default": 1,
-#              "optionality": "optional",
-#              "type": "integer",
-#              "units": None},
-#          "inst_kmirror_mode": {
-#              "ui_name": "K-Mirror Mode",
-#              "option": "set",
-#              "allowed": ["Tracking", "Stationary"],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "string",
-#              "units": None},
-#          "inst_kmirror_angle": {
-#              "ui_name": "K-Mirror Angle",
-#              "option": "range",
-#              "allowed": [0, 360],
-#              "default": None, "optionality": "required",
-#              "type": "float",
-#              "units": None},
-#          "inst_wavelength1_central": {
-#              "ui_name": "Red-Side Central Wavelength",
-#              "option": "range",
-#              "allowed": [350, 1050],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "float",
-#              "units": "nm"},
-#          "inst_wavelength2_central": {
-#              "ui_name": "Blue-Side Central Wavelength",
-#              "option": "range",
-#              "allowed": [350, 1050],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "float",
-#              "units": "nm"},
-#          "inst_wavelength1_peak": {
-#              "ui_name": "Red-Side Peak Wavelength",
-#              "option": "range",
-#              "allowed": [350, 1050],
-#              "default": None,
-#              "optionality": "required",
-#              "type": "float",
-#              "units": "nm"},
-#          "inst_wavelength2_peak": {
-#              "ui_name": "Blue-Side Peak Wavelength",
-#              "option": "range",
-#              "allowed": [350, 1050],
-#              "default": None, "optionality": "required",
-#              "type": "float",
-#              "units": "nm"
-#          }
-#      },
-#     "detector_parameters": {
-#         "det1_mode_binning": {"ui_name": "Red-Side Detector Binning",
-#             "option": "set",
-#             "allowed": ['1x1', '2x2'],
-#             "default": '2x2',
-#             "optionality": "optional",
-#             "type": "string",
-#             "units": "pixels"},
-#         "det2_mode_binning": {
-#             "ui_name": "Blue-Side Detector Binning",
-#              "option": "set",
-#              "allowed": ['1x1', '2x2'],
-#             "default": '2x2', "optionality": "optional",
-#              "type": "integer",
-#              "units": 'pixels'},
-#         "det1_mode_amp": {
-#             "ui_name": "Red-Side Amplifier Mode",
-#             "option": "range",
-#             "allowed": [0, 10], "default": 0,
-#             "optionality": "optional",
-#             "type": "integer",
-#             "units": "0 : quad (ALL), 1 : single C, 2 : single E, 3 : single D, 4 : single F, 5 : single B, 6 : single G, 7 : single A, 8 : single H, 9 : dual (A&B), 10 : dual (C&D)"},
-#         "det2_mode_amp": {
-#             "ui_name": "Blue-Side Amplifier Mode",
-#             "option": "range",
-#             "allowed": [1, 10], "default": 0,
-#             "optionality": "optional",
-#             "type": "integer",
-#             "units": "0 : quad (ALL), 1 : single C, 2 : single E, 3 : single D, 4 : single F, 5 : single B, 6 : single G, 7 : single A, 8 : single H, 9 : dual (A&B), 10 : dual (C&D)"},
-#         "det1_mode_read": {
-#             "ui_name": "Red-Side CCD Read Mode",
-#             "option": "set",
-#             "allowed": [0, 1], "default": None,
-#             "optionality": "required",
-#             "type": "integer",
-#             "units": "(0=slow, 1=fast)"},
-#         "det2_mode_read": {
-#             "ui_name": "Blue-Side CCD Read Mode",
-#             "option": "set",
-#             "allowed": [0, 1], "default": None,
-#             "optionality": "required",
-#             "type": "integer",
-#             "units": "(0=slow, 1=fast)"},
-#         "det1_mode_gain": {
-#             "ui_name": "Red-Side CCD Gain Multiplier",
-#             "option": "set",
-#             "allowed": [1, 2, 5, 10],
-#             "default": None, "optionality": "required",
-#             "type": "integer",
-#             "units": None},
-#         "det2_mode_gain": {"ui_name": "Blue-Side CCD Gain Multiplier",
-#             "option": "set",
-#             "allowed": [1, 2, 5, 10],
-#             "default": None, "optionality": "required",
-#             "type": "integer",
-#             "units": None}
-#     },
-#
-#     "tcs_parameters": {
-#
-#     },
-#
-# }
-
-
 
 def parse_args():
     """
@@ -820,6 +730,8 @@ def parse_args():
 # if __name__=="__main__":
 
 def generate_templates():
+    from collections import OrderedDict
+
     args = utils.parse_args()
     mode = args.mode
 
@@ -829,6 +741,7 @@ def generate_templates():
 
     coll.drop()
     print('...adding templates to collection')
+
     templates = [kcwi_ifu_acq_offsetStar_template,
                  kcwi_ifu_acq_direct_template,
                  kcwi_ifu_sci_stare_template,
@@ -838,9 +751,6 @@ def generate_templates():
                  mos_target, kcwi_common_parameters]
 
     result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)
-    # print("1", result.insertedIds)
-    # > db.templates.find({}, {'metadata.name': 1})
-    # {"_id": ObjectId("622ff2a07204ec4ca49950b9"), "metadata": {"name": "KCWI_ifu_acq_offsetStar"}}
 
     fields = {'metadata.name': 1, 'metadata.version': 1}
     doc = list(coll.find({}, fields))

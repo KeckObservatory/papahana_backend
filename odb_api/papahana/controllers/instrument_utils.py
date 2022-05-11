@@ -35,6 +35,7 @@ def get_ip_template(template_name, template_ver=None):
     if not templates:
         return {}
 
+    templates[0]['parameter_order'] = templates[0]['parameters'].keys()
     return utils.json_with_objectid(templates[0])
 
 

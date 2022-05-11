@@ -1,17 +1,13 @@
 import datetime
 import six
-import typing
 import yaml
 import pymongo
-import urllib
-from getpass import getpass
-import os
+from collections import OrderedDict
+
 from flask import current_app
 
 # for history
-# from historical_collection.historical import HistoricalCollection
 from papahana.historical import HistoricalCollection
-# from papahana.controllers import controller_helper as utils
 
 CONFIG_FILE = './config.live.yaml'
 
@@ -51,16 +47,6 @@ def read_urls():
     return urls
 
 
-# def read_secret():
-#     with open(CONFIG_FILE) as file:
-#         mode_dict = yaml.load(file, Loader=yaml.FullLoader)['apikey']
-#
-#     try:
-#         return mode_dict['secret_key']
-#     except KeyError:
-#         return None
-
-
 def config_collection(collection, db_name=None, conf=None):
     if not conf:
         with current_app.app_context():
@@ -74,7 +60,7 @@ def config_collection(collection, db_name=None, conf=None):
 
     if collection == 'obCollect':
         CLIENT_URL = f"mongodb://{conf['ip']}:{mongo_port}"
-        mongo = pymongo.MongoClient(CLIENT_URL)
+        mongo = pymongo.MongoClient(CLIENT_URL, document_class=OrderedDict)
         db = mongo[db]
         coll = observation_blocks(database=db)
     else:
@@ -102,7 +88,7 @@ def create_collection(db_name, collect_name, port=27017, ip='127.0.0.1'):
     """
     db_url = f'mongodb://{ip}:{port}'
 
-    client = pymongo.MongoClient(db_url)
+    client = pymongo.MongoClient(db_url, document_class=OrderedDict)
     db = client[db_name]
     coll = db[collect_name]
 
@@ -111,7 +97,7 @@ def create_collection(db_name, collect_name, port=27017, ip='127.0.0.1'):
 
 def drop_db(db_name, port=27017, ip='127.0.0.1'):
     db_url = f'mongodb://{ip}:{port}'
-    client = pymongo.MongoClient(db_url)
+    client = pymongo.MongoClient(db_url, document_class=OrderedDict)
     client.drop_database(db_name)
 
 
