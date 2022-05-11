@@ -21,7 +21,7 @@ def get_ip(instrument, ip_version=None):
         return None
 
 
-def get_ip_template(template_name, template_ver=None):
+def get_ip_template(template_name, template_ver=None, order=None):
     """
     Get the template by name and optionally template_version
     """
@@ -35,7 +35,12 @@ def get_ip_template(template_name, template_ver=None):
     if not templates:
         return {}
 
-    templates[0]['parameter_order'] = templates[0]['parameters'].keys()
+    if order:
+        try:
+            templates[0]['parameter_order'] = templates[0]['parameters'].keys()
+        except (KeyError, IndexError):
+            pass
+
     return utils.json_with_objectid(templates[0])
 
 
@@ -58,7 +63,7 @@ def get_template_field(field, template_name, template_ver=None):
     return utils.json_with_objectid(info[0])
 
 
-def get_template_metadata(template_name, template_ver=None):
+def get_template_metadata(template_name, template_ver=None, order=None):
     """
     get the metadata of the template by name
     """
@@ -72,7 +77,7 @@ def get_ip_scripts(template_name, template_ver=None):
     return get_template_field('metadata.script', template_name, template_ver)
 
 
-def get_template_info(instrument, ip_version, template_name, func):
+def get_template_info(instrument, ip_version, template_name, parameter_order, func):
     """
     Get the template information
     """
@@ -84,9 +89,9 @@ def get_template_info(instrument, ip_version, template_name, func):
     info = {}
     for tmp_name, tmp_ver in ip["template_list"].items():
         if not template_name:
-            info[tmp_name] = func(tmp_name, tmp_ver)
+            info[tmp_name] = func(tmp_name, tmp_ver, parameter_order)
         elif tmp_name == template_name:
-            return {template_name: func(tmp_name, tmp_ver)}
+            return {template_name: func(tmp_name, tmp_ver, parameter_order)}
 
     return info
 

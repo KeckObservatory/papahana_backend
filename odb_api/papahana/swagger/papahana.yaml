@@ -695,6 +695,7 @@ paths:
       - $ref: '#/components/parameters/instrument'
       - $ref: '#/components/parameters/ip_version'
       - $ref: '#/components/parameters/template_name'
+      - $ref: '#/components/parameters/parameter_order'
 
       responses:
         "200":
@@ -1979,6 +1980,17 @@ components:
         type: string
       example: "KCWI_ifu_sci_stare"
 
+    parameter_order:
+      name: parameter_order
+      in: query
+      description: Return the template with parameter order
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: boolean
+      example: True
+
     template_type:
       in: query
       name: template_type
@@ -1990,9 +2002,13 @@ components:
         type: string
         enum:
         - acquisition
+        - Acquisition
         - science
+        - Science
         - engineering
+        - Engineering
         - calibration
+        - Calibration
       example: science
 
   schemas:
@@ -2068,11 +2084,12 @@ components:
           type: string
 #          ref: '#/components/schemas/VersionSchema'
         ob_type:
-          type: string
-          enum:
-            - science
-            - calibration
-            - engineering
+          $ref: '#/components/schemas/OBType'
+#          type: string
+#          enum:
+#            - science
+#            - calibration
+#            - engineering
         priority:
           type: integer
         pi_id:
@@ -2468,6 +2485,13 @@ components:
         magnitude: 14.7
         band: K
 
+    OBType:
+      type: string
+      oneOf:
+        - pattern: '^[Ss][Cc][Ii][Ee][Nn][Cc][Ee]$'
+        - pattern: '^[Ee][Nn][Gg][Ii][Nn][Ee][Ee][Rr][Ii][Nn][Gg]$'
+        - pattern: '^[Cc][Aa][Ll][Ii][Bb][Rr][Aa][Tt][Ii][Oo][Nn]$'
+
     FindingChart:
       description: Finding chart description goes here
 
@@ -2499,7 +2523,6 @@ components:
           - NS
           - N2
           - NC
-
     RASchema:
       type: string
       oneOf:

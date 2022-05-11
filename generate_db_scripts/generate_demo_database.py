@@ -691,6 +691,11 @@ if __name__=='__main__':
     template_list = generate_template.generate_templates()
 
     # Create ob_blocks collection
+    print("...zeroing deltas")
+    coll = papahana_util.config_collection('deltaCollect', conf=config)
+    coll.drop()
+
+    # Create ob_blocks collection
     print("...generating OBs")
     coll = papahana_util.config_collection('obCollect', conf=config)
 

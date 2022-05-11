@@ -161,7 +161,7 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(self.get_ob(self.parse_id(response)),
                        'Response body is : ' + response.data.decode('utf-8'))
 
-        self.delete_ob(self.parse_id(response))
+        # self.delete_ob(self.parse_id(response))
 
     def test_ob_duplicate(self):
         """Test case for ob_duplicate
@@ -186,7 +186,7 @@ class TestObservationBlockController(BaseTestCase):
 
         ob_json = json.loads(response.data.decode('utf-8'))
 
-        self.delete_ob(ob_json['_id'])
+        # self.delete_ob(ob_json['_id'])
 
 
 

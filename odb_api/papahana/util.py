@@ -60,7 +60,7 @@ def config_collection(collection, db_name=None, conf=None):
 
     if collection == 'obCollect':
         CLIENT_URL = f"mongodb://{conf['ip']}:{mongo_port}"
-        mongo = pymongo.MongoClient(CLIENT_URL, document_class=OrderedDict)
+        mongo = pymongo.MongoClient(CLIENT_URL)
         db = mongo[db]
         coll = observation_blocks(database=db)
     else:
@@ -88,7 +88,11 @@ def create_collection(db_name, collect_name, port=27017, ip='127.0.0.1'):
     """
     db_url = f'mongodb://{ip}:{port}'
 
-    client = pymongo.MongoClient(db_url, document_class=OrderedDict)
+    if collect_name == 'templateCollect':
+        client = pymongo.MongoClient(db_url, document_class=OrderedDict)
+    else:
+        client = pymongo.MongoClient(db_url)
+
     db = client[db_name]
     coll = db[collect_name]
 

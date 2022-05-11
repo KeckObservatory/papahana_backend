@@ -66,7 +66,8 @@ class BaseTestCase(TestCase):
             method='DELETE',
             query_string=query_string)
 
-        self.assert_status(response, 422,
+        print('delte resp', response)
+        self.assert_status(response, 204,
                            'Failed __init__ delete_ob,  did not delete OB')
 
 

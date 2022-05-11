@@ -46,7 +46,8 @@ def instrument_packages_parameter(instrument, ip_version=None):
     return ip['configurable_elements']
 
 
-def instrument_packages_template(instrument, ip_version=None, template_name=None):
+def instrument_packages_template(instrument, ip_version=None,
+                                 template_name=None, parameter_order=None):
     """
     Retrieves the specified instrument package template metadata
     /instrumentPackages/{instrument}/templates
@@ -62,7 +63,7 @@ def instrument_packages_template(instrument, ip_version=None, template_name=None
     """
     func = inst_utils.get_ip_template
     return inst_utils.get_template_info(instrument, ip_version,
-                                        template_name, func)
+                                        template_name, parameter_order, func)
 
 
 def instrument_packages_template_metadata(instrument, ip_version=None,
@@ -83,7 +84,7 @@ def instrument_packages_template_metadata(instrument, ip_version=None,
     """
     func = inst_utils.get_template_metadata
     return inst_utils.get_template_info(instrument, ip_version,
-                                        template_name, func)
+                                        template_name, None, func)
 
 
 def instrument_packages_scripts(instrument, ip_version=None, script_name=None):
