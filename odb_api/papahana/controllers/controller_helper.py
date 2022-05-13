@@ -403,7 +403,7 @@ def query_apis(cmd_url, api_name):
 
     url = urls[api_name] + cmd_url
 
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     response.close()
     try:
         result = json.loads(response.content)
@@ -421,7 +421,7 @@ def query_proposals_api(cmd_url):
 
     url = urls['proposalApi'] + cmd_url
 
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     response.close()
     try:
         result = json.loads(response.content)

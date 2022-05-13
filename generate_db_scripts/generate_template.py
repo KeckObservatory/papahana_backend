@@ -283,6 +283,12 @@ nonsidereal_extra_params["target_coord_ddec"] = {
         "type": "float",
         "units": 'acrseconds/hr'
     }
+nonsidereal_extra_params.move_to_end('target_coord_ddec', last=False)
+nonsidereal_extra_params.move_to_end('target_coord_dra', last=False)
+nonsidereal_extra_params.move_to_end('target_coord_dec', last=False)
+nonsidereal_extra_params.move_to_end('target_coord_ra', last=False)
+nonsidereal_extra_params.move_to_end('target_info_name', last=False)
+
 
 
 mos_extra_params = deepcopy(target_base_parameters)
@@ -295,6 +301,8 @@ mos_extra_params["inst_cfg_mask"] = {
         "type": "string",
         "units": None
     }
+mos_extra_params.move_to_end('inst_cfg_mask', last=False)
+mos_extra_params.move_to_end('target_info_name', last=False)
 
 
 sidereal_target = OrderedDict([
