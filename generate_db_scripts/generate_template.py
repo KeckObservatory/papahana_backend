@@ -51,7 +51,7 @@ target_base_parameters = OrderedDict([
         "default": 0.0,
         "optionality": "optional",
         "type": "string",
-        "units" : "arcseconds/yr"
+        "units": "arcseconds/yr"
     }),
     ("target_coord_pm_dec", {
         "ui_name": "Proper Motion (DEC)",
@@ -60,13 +60,13 @@ target_base_parameters = OrderedDict([
         "default": 0.0,
         "optionality": "optional",
         "type": "string",
-        "units" : "arcseconds/yr"
+        "units": "arcseconds/yr"
     }),
     ("target_coord_frame", {
         "ui_name": "Frame",
         "option": "set",
         "allowed": ['mount', 'FK5'],
-        "default": 2000.0,
+        "default": 'FK5',
         "optionality": "optional",
         "type": "string",
         "units": None
@@ -75,7 +75,7 @@ target_base_parameters = OrderedDict([
         "ui_name": "Epoch",
         "option": "range",
         "allowed": [1900.0, 2100.0],
-        "default": 2000.0,
+        "default": 'FK5',
         "optionality": "optional",
         "type": "float",
         "units": "year"

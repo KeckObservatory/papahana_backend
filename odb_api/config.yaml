@@ -1,42 +1,33 @@
 mode:
-  config: dev 
+  config: production
+
+testing:
+  admin:
 
 apikey:
   secret_key:
+  timeout:
 
 production:
-  ob_db:
-    - 2022A
+  ob_db: observing_database
   obs_db: keck_observers
   obCollect: observation_blocks
   observerCollect: observers
   containerCollect: containers
-  scriptCollect: instrument_scripts
+  scriptCollect: scripts
   templateCollect: templates
   ipCollect: instrument_packages
-  mongo_port: 27017
-  api_port: 15816
-  ip:
-dev:
-  ob_db:
-    - 2022A_dev
-    - 2021B_dev
-    - 2021A_dev
-  obs_db: keck_observers
-  obCollect: observation_blocks
-  observerCollect: observers
-  containerCollect: containers
-  scriptCollect: instrument_scripts
-  templateCollect: templates
-  ipCollect: instrument_packages
-  mongo_port: 27017
-  api_port: 15816
-  ip:
+  deltaCollect: deltas_observation_blocks
+  mongo_port:
+  api_port:
+  ip0:
+  ip1:
+  ip2:
+  replica_name: odb
   admin:
-    - #
-    - #
-test:
-  ob_db: observing_db_test
+
+dev:
+  ob_db: observing_dev
   obs_db: keck_observers
   obCollect: observation_blocks
   observerCollect: observers
@@ -44,14 +35,36 @@ test:
   scriptCollect: instrument_scripts
   templateCollect: templates
   ipCollect: instrument_packages
-  mongo_port: 27017
-  api_port: 50002
-  ip:
+  deltaCollect: deltas_observation_blocks
+  mongo_port:
+  api_port:
+  ip0:
+  ip1:
+  ip2:
+  replica_name: odb
+  admin:
+
+
+test:
+  ob_db: test_observing_database
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: instrument_scripts
+  templateCollect: templates
+  ipCollect: instrument_packages
+  deltaCollect: deltas_observation_blocks
+  mongo_port:
+  api_port:
+  ip0:
+  ip1:
+  ip2:
+  replica_name: odb
+  admin:
 
 apis:
-  scheduleApi: https://www.keck.hawaii.edu/software/db_api/telSchedule.php
-  proposalApi: https://www.keck.hawaii.edu/software/db_api/proposalsAPI.php
+  proposalApi:
 
 auth_server:
-  login: www3.keck.hawaii.edu/login
-
+  login: 

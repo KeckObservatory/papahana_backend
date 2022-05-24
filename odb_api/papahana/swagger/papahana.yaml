@@ -2392,7 +2392,9 @@ components:
         target_coord_pm_dec:
           type: number
         target_coord_epoch:
-          type: string
+          oneOf:
+            - type: number
+            - type: integer
         target_coord_frame:
           type: string
         seq_constraint_obstime:
@@ -2405,8 +2407,8 @@ components:
             target_info_mag:
               type: number
         target_info_comment:
-          type:
-            string
+          nullable: true
+          type: string
       example:
         target_info_name: super bright star
         target_coord_ra: 23:55:05

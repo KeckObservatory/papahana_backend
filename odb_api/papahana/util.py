@@ -47,6 +47,18 @@ def read_urls():
     return urls
 
 
+def compose_set_url(conf):
+    ip0 = conf['ip0']
+    ip1 = conf['ip1']
+    # ip2 = conf['ip2']
+    port = conf['mongo_port']
+    replica_name = conf['replica_name']
+
+    # TODO add ip2 here
+    # 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo'
+    return f"mongodb://{ip0}:{port},{ip1}:{port}/?replicaSet={replica_name}"
+
+
 def config_collection(collection, db_name=None, conf=None):
     if not conf:
         with current_app.app_context():
@@ -56,22 +68,18 @@ def config_collection(collection, db_name=None, conf=None):
         db_name = 'ob_db'
 
     db = conf[db_name]
-    mongo_port = conf['mongo_port']
+    mongo_url = compose_set_url(conf)
 
     if collection == 'obCollect':
-        CLIENT_URL = f"mongodb://{conf['ip']}:{mongo_port}"
-        mongo = pymongo.MongoClient(CLIENT_URL)
+        mongo = pymongo.MongoClient(mongo_url)
         db = mongo[db]
         coll = observation_blocks(database=db)
     else:
-        coll = create_collection(db, conf[collection], port=conf['mongo_port'],
-                                 ip=conf['ip'])
+        coll = create_collection(db, conf[collection], mongo_url)
 
     return coll
 
-
-
-def create_collection(db_name, collect_name, port=27017, ip='127.0.0.1'):
+def create_collection(db_name, collect_name, mongo_url):
     """ create_collection
 
     Creates and returns a mongodb collection object
@@ -86,12 +94,14 @@ def create_collection(db_name, collect_name, port=27017, ip='127.0.0.1'):
     :dbURL: str
     :rtype: pymongo.collection.Collection
     """
-    db_url = f'mongodb://{ip}:{port}'
+    # db_url = f'mongodb://{ip}:{port}'
 
     if collect_name == 'templateCollect':
-        client = pymongo.MongoClient(db_url, document_class=OrderedDict)
+        client = pymongo.MongoClient(mongo_url, document_class=OrderedDict)
+        # client = pymongo.Connection(db_url, replicaset='odb', document_class=OrderedDict)
     else:
-        client = pymongo.MongoClient(db_url)
+        client = pymongo.MongoClient(mongo_url)
+        # client = pymongo.Connection(db_url, replicaset='odb')
 
     db = client[db_name]
     coll = db[collect_name]
