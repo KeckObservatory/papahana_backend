@@ -50,13 +50,13 @@ def read_urls():
 def compose_set_url(conf):
     ip0 = conf['ip0']
     ip1 = conf['ip1']
-    # ip2 = conf['ip2']
+    ip2 = conf['ip2']
     port = conf['mongo_port']
     replica_name = conf['replica_name']
 
     # TODO add ip2 here
     # 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo'
-    return f"mongodb://{ip0}:{port},{ip1}:{port}/?replicaSet={replica_name}"
+    return f"mongodb://{ip0}:{port},{ip1}:{port},{ip2}:{port}/?replicaSet={replica_name}"
 
 
 def config_collection(collection, db_name=None, conf=None):
