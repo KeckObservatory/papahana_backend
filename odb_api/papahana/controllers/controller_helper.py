@@ -284,6 +284,23 @@ def update_add_doc(query, new_vals, collect_name):
     coll.update_one(query, {"$push": new_vals})
 
 
+def update_remove_element(query, remove_vals, collect_name):
+    """
+    Add to a database collection document.
+    :param query: the query used to find the document
+    :type query: dict
+    :param remove_vals: the key/val pair of new values to update.
+    :type remove_vals: dict
+    :param collect_name: the database collection.
+    :type collect_name: str
+    """
+    coll = config_collection(collect_name)
+    if '_id' in remove_vals.keys():
+        del remove_vals['_id']
+
+    coll.update_one(query, {"$pull": remove_vals})
+
+
 def get_object_id(obj_id):
     """
     transform an ObjectId string to ObjectId

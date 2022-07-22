@@ -3,6 +3,7 @@ import random
 import string
 from itertools import product
 
+import numpy as np
 
 seed = 1984739
 random.seed(seed)
@@ -92,7 +93,11 @@ sem_id_tail = ["_U033", "_U050",  "_U042",  "_U043", "_U042",  "_U043",
 randContainerName = lambda: random.choice(containers)
 
 
-NOBS = 100 # number of observation blocks
+tag_names = ["Favorite OBs", "Standard Stars", "Bright", "Faint", "Library"]
+
+randTagName = lambda : random.choice(tag_names)
+
+NOBS = 100  # number of observation blocks
 
 
 semesters = [str(x)+y for x, y in product(range(2019,2022), ['A', 'B'])]

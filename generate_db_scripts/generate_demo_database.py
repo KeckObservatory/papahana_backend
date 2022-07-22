@@ -448,6 +448,7 @@ def generate_metadata(maxArr, semester):
         'pi_id': random_utils.pis[pi_name],
         'sem_id': random_utils.randSemId(),
         'instrument': 'KCWI',
+        'tags': [],
         'comment': random_utils.optionalRandComment()
     }
     return schema
@@ -597,9 +598,7 @@ def generate_observation_block(nLen, maxArr, template_list, coll, inst='KCWI',
         schema['_id'] = _id
     return schema
 
-
 def generate_scripts(script_name, stype):
-
     schema = {
         'metadata': {
             'name': script_name,
@@ -612,6 +611,18 @@ def generate_scripts(script_name, stype):
     }
 
     return schema
+
+
+def get_sem_id(ob):
+    coll = papahana_util.config_collection('obCollect', conf=config)
+    fields = {'metadata.sem_id': 1}
+
+    ob_info = list(coll.find({"_id": ObjectId(ob)}, fields))
+    try:
+        return ob_info[0]['metadata']['sem_id']
+    except:
+        return None
+
 
 
 def make_status_realistic(ob):
@@ -671,6 +682,40 @@ def make_status_realistic(ob):
                         {'$set': {'status.current_exp_det2': current_exp_det2}})
 
 
+tag_names = ["Favorite OBs", "Standard Stars", "Bright", "Faint", "Library"]
+
+
+def add_tags_to_ob(ob, sem_id_obj_id):
+    tag_list = []
+
+    coll = papahana_util.config_collection('obCollect', conf=config)
+    fields = {'metadata.sem_id': 1}
+
+    ob_info = list(coll.find({"_id": ObjectId(ob)}, fields))
+    sem_id = str(ob_info[0]['metadata']['sem_id'])
+    for i in range(0, random_utils.randInt(0, len(tag_names)-1)):
+        tag_id = random.choice(sem_id_obj_id[sem_id])
+        if tag_id not in tag_list:
+            tag_list.append(tag_id)
+
+    coll = papahana_util.config_collection('obCollect', conf=config)
+    coll.update_one({'_id': ObjectId(ob)}, {'$set': {'metadata.tags': tag_list}})
+
+
+# each sem_id has a set of tags
+def generate_tag_list(coll, sem_id_list):
+    sem_id_obj_id = {}
+    for sem_id in sem_id_list:
+        sem_id_obj_id[sem_id] = []
+        for tag_name in tag_names:
+            print(sem_id, tag_name)
+            tag_schema = {'sem_id': sem_id, 'tag_str': tag_name}
+            result = coll.insert_one(tag_schema)
+            sem_id_obj_id[sem_id].append(str(result.inserted_id))
+
+    return sem_id_obj_id
+
+
 if __name__=='__main__':
     args = utils.parse_args()
     mode = args.mode
@@ -684,7 +729,7 @@ if __name__=='__main__':
     ob_db = config['ob_db']
 
     print(f"Using DataBase: {ob_db}")
-    papahana_util.drop_db(ob_db)
+    papahana_util.drop_db(ob_db, conf=config)
 
     # generate templates
     print("...generating templates")
@@ -714,8 +759,20 @@ if __name__=='__main__':
         result = coll.patch_one(doc, metadata=metadata)
         ob_blocks.append(str(result.inserted_id_obj.inserted_id))
 
+    sem_id_list = []
     for ob in ob_blocks:
         make_status_realistic(ob)
+        sem_id = get_sem_id(ob)
+        if sem_id not in sem_id_list:
+            sem_id_list.append(sem_id)
+
+    # create tags collection
+    coll = papahana_util.config_collection('tagsCollect', conf=config)
+    sem_id_obj_id = generate_tag_list(coll, sem_id_list)
+
+    # add tags randomly to OBs
+    for ob in ob_blocks:
+        add_tags_to_ob(ob, sem_id_obj_id)
 
     # Create containers collection
     print("...generating containers")
@@ -753,13 +810,13 @@ if __name__=='__main__':
     if args.generate_observers:
         obs_db = config['obs_db']
         print(f"Using DataBase: {obs_db}")
-        papahana_util.drop_db(obs_db)
+        papahana_util.drop_db(obs_db, config)
 
         # Create observer collection
         print("...generating observers")
 
-        coll = papahana_util.config_collection('observerCollect', db_name='obs_db',
-                                                    conf=config)
+        coll = papahana_util.config_collection('observerCollect',
+                                               db_name='obs_db', conf=config)
         coll.drop()
         generate_observer_collection(coll)
 

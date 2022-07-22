@@ -11,7 +11,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--mode", "-m", type=str,
-                        default=None,
+                        default=None, required=True,
                         help="The configuration to read")
 
     parser.add_argument("--generate_observers", "-o", type=bool,

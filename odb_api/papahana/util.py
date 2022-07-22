@@ -48,18 +48,26 @@ def read_urls():
 
 
 def compose_set_url(conf):
+    """
+    Compile and return the replica set mongo_url
+    """
     ip0 = conf['ip0']
     ip1 = conf['ip1']
     ip2 = conf['ip2']
     port = conf['mongo_port']
     replica_name = conf['replica_name']
 
-    # TODO add ip2 here
-    # 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo'
     return f"mongodb://{ip0}:{port},{ip1}:{port},{ip2}:{port}/?replicaSet={replica_name}"
 
 
 def config_collection(collection, db_name=None, conf=None):
+    """
+    @param collection: <str> the collection name in config file
+    @param db_name: <str> the database name in config file
+    @param conf: the config file object
+
+    @return: The mogo collection
+    """
     if not conf:
         with current_app.app_context():
             conf = current_app.config_params
@@ -79,6 +87,7 @@ def config_collection(collection, db_name=None, conf=None):
 
     return coll
 
+
 def create_collection(db_name, collect_name, mongo_url):
     """ create_collection
 
@@ -94,14 +103,10 @@ def create_collection(db_name, collect_name, mongo_url):
     :dbURL: str
     :rtype: pymongo.collection.Collection
     """
-    # db_url = f'mongodb://{ip}:{port}'
-
     if collect_name == 'templateCollect':
         client = pymongo.MongoClient(mongo_url, document_class=OrderedDict)
-        # client = pymongo.Connection(db_url, replicaset='odb', document_class=OrderedDict)
     else:
         client = pymongo.MongoClient(mongo_url)
-        # client = pymongo.Connection(db_url, replicaset='odb')
 
     db = client[db_name]
     coll = db[collect_name]
@@ -109,9 +114,9 @@ def create_collection(db_name, collect_name, mongo_url):
     return coll
 
 
-def drop_db(db_name, port=27017, ip='127.0.0.1'):
-    db_url = f'mongodb://{ip}:{port}'
-    client = pymongo.MongoClient(db_url, document_class=OrderedDict)
+def drop_db(db_name, conf):
+    mongo_url = compose_set_url(conf)
+    client = pymongo.MongoClient(mongo_url, document_class=OrderedDict)
     client.drop_database(db_name)
 
 

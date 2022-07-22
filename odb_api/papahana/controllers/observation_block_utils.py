@@ -2,7 +2,6 @@ from datetime import datetime
 from flask import abort, g
 import json
 import ast
-import pymongo
 
 from papahana.util import config_collection
 
