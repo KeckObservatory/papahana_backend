@@ -17,6 +17,27 @@ def get_tag_oid(sem_id, tag_name, db_name=None):
     return str(result[0]['_id'])
 
 
+def add_tag(sem_id, tag_name, db_name=None):
+
+    tag_schema = {'sem_id': sem_id, 'tag_str': tag_name}
+
+    coll = config_collection('tagsCollect', db_name=db_name)
+    result = coll.insert_one(tag_schema)
+
+    return str(result.inserted_id)
+
+
+def get_tag_name(tag_id, db_name=None):
+
+    fields = {'tag_str': 1, '_id': 0}
+    results = utils.get_fields_by_id(tag_id, fields, 'tagsCollect', db_name=db_name)
+
+    if not results:
+        return None
+
+    return results['tag_str']
+
+
 def tag_is_in_ob(obj_id, tag_id):
     """
     Check if the tag is already in the OB tag_list.

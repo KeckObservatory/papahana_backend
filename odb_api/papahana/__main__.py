@@ -1,6 +1,8 @@
 from flask import current_app
 from flask_cors import CORS, cross_origin
 import connexion
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from papahana import util
 

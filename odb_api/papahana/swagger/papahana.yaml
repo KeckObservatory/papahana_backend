@@ -112,7 +112,7 @@ paths:
         "422":
           description: Invalid parameter
       x-swagger-router-controller: Search
-      x-openapi-router-controller: papahana.controllers.search
+      x-openapi-router-controller: papahana.controllers.search_controller
 
   /search/ob/component:
    get:
@@ -150,7 +150,7 @@ paths:
         "422":
           description: Invalid parameter
       x-swagger-router-controller: Search
-      x-openapi-router-controller: papahana.controllers.search
+      x-openapi-router-controller: papahana.controllers.search_controller
 
 
 # -------------------------------------------------------------------------------
@@ -2138,7 +2138,7 @@ components:
 
     tag_name_optional:
       in: query
-      name: tag_name
+      name: tag_name_optional
       description: a tag to search on
       style: form
       explode: false
@@ -2149,7 +2149,7 @@ components:
 
     ob_component_name:
       in: query
-      name: tag_name
+      name: ob_component_name
       description: a tag to search on
       style: form
       explode: false

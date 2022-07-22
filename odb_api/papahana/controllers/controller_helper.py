@@ -132,7 +132,7 @@ def get_fields_by_id(ob_id, fields, collect_name, db_name=None):
     :type query: dict
     :param collect_name: the database collection.
     :type collect_name: str
-    :rtype: List[Dict{Query Result}]
+    :rtype: Dict{Query Result}
     """
     coll = config_collection(collect_name, db_name=db_name)
     if collect_name == 'obCollect':
