@@ -88,6 +88,47 @@ paths:
         - $ref: '#/components/parameters/sem_id_optional'
         - $ref: '#/components/parameters/min_ra'
         - $ref: '#/components/parameters/max_ra'
+        - $ref: '#/components/parameters/min_dec'
+        - $ref: '#/components/parameters/max_dec'
+        - $ref: '#/components/parameters/instrument_optional'
+        - $ref: '#/components/parameters/ob_priority'
+        - $ref: '#/components/parameters/min_priority'
+        - $ref: '#/components/parameters/max_priority'
+        - $ref: '#/components/parameters/min_duration'
+        - $ref: '#/components/parameters/max_duration'
+        - $ref: '#/components/parameters/state'
+        - $ref: '#/components/parameters/observable'
+        - $ref: '#/components/parameters/completed'
+        - $ref: '#/components/parameters/container_id_optional'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Invalid parameter
+      x-swagger-router-controller: Search
+      x-openapi-router-controller: papahana.controllers.search_controller
+
+  /search/ob/tableview:
+   get:
+      tags:
+        - Search
+      description: Retrieves all the OBs associated with the search parameters.
+      operationId: search_ob_tableview
+      parameters:
+        - $ref: '#/components/parameters/tag_name_optional'
+        - $ref: '#/components/parameters/sem_id_optional'
+        - $ref: '#/components/parameters/min_ra'
+        - $ref: '#/components/parameters/max_ra'
+        - $ref: '#/components/parameters/min_dec'
+        - $ref: '#/components/parameters/max_dec'
         - $ref: '#/components/parameters/instrument_optional'
         - $ref: '#/components/parameters/ob_priority'
         - $ref: '#/components/parameters/min_priority'
@@ -119,7 +160,7 @@ paths:
       tags:
         - Search
       description: Retrieves all the OB components associated with the search parameters.
-      operationId: search_ob_inst_config
+      operationId: search_ob_component
       parameters:
         - $ref: '#/components/parameters/tag_name_optional'
         - $ref: '#/components/parameters/ob_component_name'
@@ -1949,6 +1990,28 @@ components:
       required: false
       example: "12:30:00.0"
 
+
+    min_dec:
+      name: min_dec
+      in: query
+      description: the minimum declination
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/DecSchema'
+      required: false
+      example: "45:30:00.0"
+    max_dec:
+      name: max_dec
+      in: query
+      description: the maximum declination
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/DecSchema'
+      required: false
+      example: "45:30:00.0"
+
     ob_priority:
       name: ob_priority
       in: query
@@ -2138,7 +2201,7 @@ components:
 
     tag_name_optional:
       in: query
-      name: tag_name_optional
+      name: tag_name
       description: a tag to search on
       style: form
       explode: false
@@ -2156,11 +2219,14 @@ components:
       schema:
         type: string
         enum:
-          - target
-          - instrument
-          - sequence
           - acquisition
-      required: false
+          - associations
+          - common_parameters
+          - metadata
+          - observations
+          - status
+          - target
+      required: true
       example: Favorite OBs
 
     template_name:

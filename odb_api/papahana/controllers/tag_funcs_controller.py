@@ -40,6 +40,8 @@ def tags_add(tag_name, ob_id):
     return tags_all(ob_id)
 
 
+# def tags_all_pi():
+
 def tags_all(ob_id):
     """tags_all
 
@@ -64,7 +66,7 @@ def tags_all(ob_id):
 def tags_delete(tag_name, ob_id):  
     """tags_delete
 
-    Delete a Tag to an Observation Block. 
+    Delete a Tag from an Observation Block.
 
     :param tag_name: a tag to search on
     :type tag_name: str
@@ -92,3 +94,6 @@ def tags_delete(tag_name, ob_id):
 
     return tags_all(ob_id)
 
+
+# match tag_name,  ob_id
+# odb:PRIMARY> db.tag_info.aggregate([{$match: {tag_str: "Bright"}}, {"$addFields": {"tag_id": {"$toString": "$_id"}}}, {$lookup: {from: "observation_blocks", localField: "tag_id", foreignField: "metadata.tags", as: "out_tag"}}, {$unwind: "$out_tag"}, {$match: {$expr: {"$eq": ["$out_tag._id", ObjectId("62db03407aaa695b0854c689")]}}}]).pretty()
