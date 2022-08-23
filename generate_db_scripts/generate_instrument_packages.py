@@ -339,3 +339,90 @@ def generate_ip_kcwi(version):
 #         version = f'{version_prefix}.{idx}'
 #         doc = generate_ip_kcwi(version)
 #         result = coll.insert_one(doc)
+
+
+def generate_ip_kpf():
+    kpf_schema = {
+        "metadata": {
+            "name": "kcwi_instrument_package",
+            "ui_name": "KCWI Instrument Package",
+            "version": "0.1.0",
+            "instrument": "KCWI",
+            "observing_modes": [
+                "imaging",
+                "ifu"
+            ]
+        },
+        "optical_parameters": {
+            "field_of_view": [
+                1200,
+                1200
+            ],
+            "slit_length": 4
+        },
+        "guider": {
+            "name": "Guider",
+            "fov": [
+                120,
+                120
+            ],
+            "pixel_scale": 0.17,
+            "pa_offset": "null",
+            "read_noise": "null",
+            "gain": "null",
+            "zero_points": "null",
+            "sensitivity": "null",
+            "filters": "null"
+        },
+        "configurable_elements": [
+            "inst_cfg_slicer",
+            "inst_cfg_hatch",
+            "inst_cfg_calib",
+            "inst_cfg_polarimeter",
+            "inst_cfg_ifu",
+            "inst_cfg1_filter",
+            "inst_cfg1_grating",
+            "inst_cfg1_blockingfilter",
+            "inst_cfg2_filter",
+            "inst_cfg2_grating",
+            "inst_cfg2_blockingfilter",
+            "inst_ns_mask",
+            "inst_ns_direction",
+            "inst_kmirror_mode",
+            "inst_kmirror_angle",
+            "inst_det1_focus",
+            "inst_det2_focus",
+            "inst_wavelengt1_central",
+            "inst_wavelength1_peakinst_wavelength2_central",
+            "inst_wavelength2_peakdet1_mode_binning",
+            "det1_mode_amp",
+            "det1_mode_read",
+            "det1_mode_gain",
+            "det2_mode_binning",
+            "det2_mode_amp",
+            "det2_mode_read",
+            "det2_mode_gain"
+        ],
+        "pointing_origins": [
+            "IFU",
+            "REF",
+            "Imaging"
+        ],
+        "template_list": {
+            "kpf_common_parameters": "0.1.1",
+            "kpf_sci_stare": "0.1.1",
+            "kcwi_ifu_acq_offsetStar": "0.1.1",
+            "kcwi_ifu_acq_direct": "0.1.1",
+            "kcwi_ifu_sci_stare": "0.1.1",
+            "kcwi_ifu_sci_dither": "0.1.1",
+            "sidereal_target": "0.1.1",
+            "non_sidereal_target": "0.1.1",
+            "multi_object_target": "0.1.1",
+            "kcwi_common_parameters": "0.1"
+        },
+        "event_table": "null",
+        "comment": "A KCWI Instrument Package"
+    }
+
+    return kpf_schema
+

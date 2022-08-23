@@ -127,3 +127,5 @@ arcSeconds = z_fill_number(randInt(0, 60))
 
 decDeg = z_fill_number(randInt(0, 90))
 elevation = random.choice(['+', '-'])
+
+rand_bool = lambda: bool(random.getrandbits(1))

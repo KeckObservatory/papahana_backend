@@ -136,134 +136,6 @@ target_base_parameters = OrderedDict([
     })
 ])
 
-#
-# target_base_parameters = {
-#     "target_info_name": {
-#         "ui_name": "Target Name",
-#         "option": "regex",
-#         "allowed": ['[ -~]{100}'],
-#         "default": None,
-#         "optionality": "required",
-#         "type": "string",
-#         "units": None
-#     },
-#     "target_coord_ra": {
-#         "ui_name": "Right Ascension",
-#         "option": "regex",
-#         "allowed": ['^\d{2}:\d{2}:\d{2}$',
-#                     '^\d{2}:\d{2}:\d{2}.\d{1}$',
-#                     '^\d{2}:\d{2}:\d{2}.\d{2}$'],
-#         "default": None,
-#         "optionality": "required",
-#         "type": "string",
-#         "units": "Hours:Minutes:Seconds"
-#     },
-#     "target_coord_dec": {
-#         "ui_name": "Declination",
-#         "option": "regex",
-#         "allowed": ['^\d{2}:\d{2}:\d{2}$',
-#                     '^\d{2}:\d{2}:\d{2}.\d{1}$',
-#                     '^\d{2}:\d{2}:\d{2}.\d{2}$',
-#                     '^-\d{2}:\d{2}:\d{2}$',
-#                     '^-\d{2}:\d{2}:\d{2}.\d{1}$',
-#                     '^-\d{2}:\d{2}:\d{2}.\d{2}$'],
-#         "default": None,
-#         "optionality": "required",
-#         "type": "string",
-#         "units": "Degrees:Minutes:Seconds"
-#     },
-#     "rot_cfg_pa": {
-#         "ui_name": "Position Angle",
-#         "option": "range",
-#         "allowed": [0.0,360.0],
-#         "default": 0.0,
-#         "optionality": "optional",
-#         "type": "float",
-#         "units": "Degrees"
-#     },
-#     "target_coord_pm_ra": {
-#         "ui_name": "Proper Motion (RA)",
-#         "option": "range",
-#         "allowed": [0.0, 5000.0],
-#         "default": 0.0,
-#         "optionality": "optional",
-#         "type": "string",
-#         "units" : "arcseconds/yr"
-#     },
-#     "target_coord_pm_dec": {
-#         "ui_name": "Proper Motion (DEC)",
-#         "option": "range",
-#         "allowed": [0.0, 100.0],
-#         "default": 0.0,
-#         "optionality": "optional",
-#         "type": "string",
-#         "units" : "arcseconds/yr"
-#     },
-#     "target_coord_frame": {
-#         "ui_name": "Frame",
-#         "option": "set",
-#         "allowed": ['mount', 'FK5'],
-#         "default": 2000.0,
-#         "optionality": "optional",
-#         "type": "string",
-#         "units": None
-#     },
-#     "target_coord_epoch": {
-#         "ui_name": "Epoch",
-#         "option": "range",
-#         "allowed": [1900.0, 2100.0],
-#         "default": 2000.0,
-#         "optionality": "optional",
-#         "type": "float",
-#         "units": "year"
-#     },
-#     "seq_constraint_obstime": {
-#         "ui_name": "Scheduled Time of Observation",
-#         "option": "regex",
-#         "allowed": [None, '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'],
-#         "default": None,
-#         "optionality": "optional",
-#         "type": "string",
-#         "units" : 'YR-MM-DD hh:mm:ss'
-#     },
-#     "target_magnitude": {
-#         "ui_name": "Target Magnitude",
-#         "option": "list",
-#         "allowed": [
-#             {'target_info_band': {
-#                 "ui_name": "Spectral Band",
-#                 "option": "set",
-#                 "allowed": ['V', 'R', 'I', 'J', 'H', 'K'],
-#                 "default": None,
-#                 "optionality": "required",
-#                 "type": "string",
-#                 "units" : None}
-#             },
-#             {'target_info_mag': {
-#                 "ui_name": "Magnitude",
-#                 "option": "range",
-#                 "allowed": ['-27.0', '50.0'],
-#                 "default": None,
-#                 "optionality": "required",
-#                 "type": "float",
-#                 "units": 'Apparent'}}
-#         ],
-#         "default": None,
-#         "optionality": "required",
-#         "type": "array",
-#         "units": None
-#     },
-#     "target_info_comment": {
-#         "ui_name": "Target Comment",
-#         "option": "regex",
-#         "allowed": [None, '[ -~]{100}'],
-#         "default": None,
-#         "optionality": "optional",
-#         "type": "string",
-#         "units": None
-#     }
-# }
-
 nonsidereal_extra_params = deepcopy(target_base_parameters)
 nonsidereal_extra_params["target_coord_dra"] = {
         "ui_name": "Differential Tracking (RA)",
@@ -513,12 +385,12 @@ kcwi_ifu_sci_stare_parameters = {
 
 kcwi_ifu_sci_dither_template = {
     "metadata": {
-        "name": "KCWI_ifu_sci_dither",
+        "name": "kcwi_ifu_sci_dither",
         "ui_name": "KCWI dither",
         "instrument": "KCWI",
         "template_type": "science",
         "version": "0.1.1",
-        "script": "KCWI_ifu_sci_stare",
+        "script": "kcwi_ifu_sci_stare",
         "script_version": "0.1.1",
         "sequence_number": 1
     },
@@ -529,12 +401,12 @@ kcwi_ifu_sci_dither_template = {
 
 kcwi_ifu_sci_stare_template = {
     "metadata": {
-        "name": "KCWI_ifu_sci_stare",
+        "name": "kcwi_ifu_sci_stare",
         "ui_name": "KCWI stare",
         "instrument": "KCWI",
         "template_type": "science",
         "version": "0.1.1",
-        "script": "KCWI_ifu_sci_stare",
+        "script": "kcwi_ifu_sci_stare",
         "script_version": "0.1.0",
         "sequence_number": 1
     },
@@ -543,12 +415,12 @@ kcwi_ifu_sci_stare_template = {
 
 kcwi_ifu_acq_direct_template = {
     "metadata": {
-        "name": "KCWI_ifu_acq_direct",
+        "name": "kcwi_ifu_acq_direct",
         "ui_name": "KCWI direct",
         "instrument": "KCWI",
         "template_type": "acquisition",
         "version": "0.1.1",
-        "script": "KCWI_ifu_acq_direct",
+        "script": "kcwi_ifu_acq_direct",
         "script_version": "0.1.0",
         "sequence_number": 0
 
@@ -558,15 +430,15 @@ kcwi_ifu_acq_direct_template = {
 
 #TODO: Fill with separate template
 kcwi_ifu_acq_offsetStar_template = deepcopy(kcwi_ifu_acq_direct_template)
-kcwi_ifu_acq_offsetStar_template['metadata']['name'] = 'KCWI_ifu_acq_offsetStar'
+kcwi_ifu_acq_offsetStar_template['metadata']['name'] = 'kcwi_ifu_acq_offsetStar'
 
 kcwi_common_parameters = {
     "metadata": {
-        "name": "KCWI_common_parameters",
+        "name": "kcwi_common_parameters",
         "ui_name": "KCWI Common Parameters",
         "template_type": "common_parameters",
         "instrument": "KCWI",
-        "version": "0.1"
+        "version": "0.1.0"
     },
     "instrument_parameters": {
         "inst_cfg_hatch": {
@@ -721,6 +593,309 @@ kcwi_common_parameters = {
 }
 
 
+kpf_common_parameters = {
+    "metadata": {
+        "name": "kpf_common_parameters",
+        "ui_name": "KPF Common Parameters",
+        "instrument": "KPF",
+        "template_type": "common_parameters",
+        "version": "0.1.1"
+    },
+    "instrument_parameters": {
+        "inst_cfg_simulcal_source": {
+            "ui_name": "Simultaneous Cal Fiber Source",
+            "description": "Source to illuminate the simultaneous cal fiber (i.e. octagon position)",
+            "option": "set",
+            "allowed": [
+            ],
+            "default": None,
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
+        "inst_cfg_simulcal_autofilter": {
+            "ui_name": "Simultaneous Cal Fiber Filter",
+            "description": "System should automatically set ND filters for cal source?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_simulcal_nd1": {
+            "ui_name": "Simultaneous Cal Fiber ND Filter 1",
+            "description": "ND filter in first filter wheel if inst_cfg_simulcal_autofilter is not True",
+            "option": "set",
+            "allowed": ['ND0.1', 'ND0.2', 'ND0.3', 'ND0.4', 'ND0.5'],
+            "default": "ND0.1",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "inst_cfg_simulcal_nd2": {
+            "ui_name": "Simultaneous Cal Fiber ND Filter 1",
+            "description": "ND filter in second filter wheel if inst_cfg_simulcal_autofilter is not True",
+            "option": "set",
+            "allowed": ['ND0.1', 'ND0.2', 'ND0.3', 'ND0.4', 'ND0.5'],
+            "default": "ND0.1",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "inst_cfg_sss_sky": {
+            "ui_name": "Source Select Shutter Sky",
+            "description": "Should the source select shutter for sky be open?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_sss_sci": {
+            "ui_name": "Source Select Shutter Science",
+            "description": "Should the source select shutter for science be open?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_sss_socal_sci": {
+            "ui_name": "Source Select Shutter SoCal Science",
+            "description": "Should the source select shutter for SoCal science be open?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_sss_socal_cal": {
+            "ui_name": "Source Select Shutter SoCal Calibration",
+            "description": "Should the source select shutter for SoCal cal be open?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        }
+    },
+    "guider_parameters": {
+        "guider1_cfg_mode": {
+            "ui_name": "Guide Camera Mode",
+            "option": "set",
+            "allowed": [
+                "auto",
+                "manual",
+                "off"
+            ],
+            "default": None,
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
+        "guider1_cfg_framerate": {
+            "ui_name": "Guide Camera Frame Rate",
+            "description": "If guide_cfg_mode is manual, frame rate for camera",
+            "option": "range",
+            "allowed": [
+                1,
+                400
+            ],
+            "default": 100,
+            "optionality": "optional",
+            "type": "int",
+            "units": "Hz"
+        },
+        "guider1_cfg_camgain": {
+            "ui_name": "Guide Camera Gain",
+            "description": "If guide_cfg_mode is manual, gain for camera",
+            "option": "set",
+            "allowed": [
+                "high",
+                "medium",
+                "low"
+            ],
+            "default": "high",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "guider1_cfg_exptime": {
+            "ui_name": "Guide Camera Exposure Time",
+            "description": "If guide_cfg_mode is manual, exposure time for camera",
+            "option": "range",
+            "allowed": [
+                1e-6,
+                1
+            ],
+            "default": None,
+            "optionality": "optional",
+            "type": "float",
+            "units": "seconds"
+        },
+        "guider1_cfg_loopgain": {
+            "ui_name": "Guide Camera Loop Gain",
+            "description": "If guide_cfg_mode is manual, tip tilt loop gain",
+            "option": "range",
+            "allowed": [
+                0,
+                1
+            ],
+            "default": None,
+            "optionality": "optional",
+            "type": "float",
+            "units": None,
+        },
+        "guider1_cfg_xwindow": {
+            "ui_name": "Guide Camera X-Window Size",
+            "description": "Size of the guide window in X pixels",
+            "option": "range",
+            "allowed": [
+                0,
+                640
+            ],
+            "default": 64,
+            "optionality": "optional",
+            "type": "int",
+            "units": 'pixels',
+        },
+        "guider1_cfg_ywindow": {
+            "ui_name": "Guide Camera Y-Window Size",
+            "description": "Size of the guide window in Y pixels",
+            "option": "range",
+            "allowed": [
+                0,
+                640
+            ],
+            "default": 64,
+            "optionality": "optional",
+            "type": "int",
+            "units": 'pixels',
+        },
+        "guider1_cfg_raoffset": {
+            "ui_name": "Guider RA Offset",
+            "description": "Offset distance in RA from the guide star to science target",
+            "option": "range",
+            "allowed": [
+                0,
+                20
+            ],
+            "default": None,
+            "optionality": "required",
+            "type": "float",
+            "units": "arcseconds",
+        },
+        "guider1_cfg_decoffset": {
+            "ui_name": "Guider RA Offset",
+            "description": "Offset distance in Dec from the guide star to science target",
+            "option": "range",
+            "allowed": [
+                0,
+                20
+            ],
+            "default": None,
+            "optionality": "required",
+            "type": "float",
+            "units": "arcseconds",
+        },
+    },
+    "detector parameters": {},
+    "tcs_parameters": {}
+}
+
+
+kpf_sci_stare = {
+    "metadata": {
+        "name": "kpf_sci_stare",
+        "ui_name": "kpf stare observation",
+        "instrument": "KPF",
+        "template_type": "science",
+        "version": "0.1.1",
+        "script": "kpf_sci_stare",
+        "script_version": "0.1.0",
+        "sequence_number": 1
+    },
+    "parameters": {
+        "target_info_spectraltype": {
+            "ui_name": "Spectral Type",
+            "description": "The spectral type of target.  used by drp and possibly by automatic guide parameters",
+            "option": "set",
+            "allowed": ["O", "B", "A", "F", "G", "K", "M"],
+            "default": None,
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
+        "inst_cfg_nexp": {
+            "ui_name": "Number of Exposures",
+            "description": "The number of exposures to take.",
+            "option": "range",
+            "allowed": [1, 100],
+            "default": None,
+            "optionality": "required",
+            "type": "int",
+            "units": None
+        },
+        "inst_cfg_exptime": {
+            "ui_name": "Exposure Time",
+            "description": "The exposure time of an individual science exposure.",
+            "option": "range",
+            "allowed": [1, 3600],
+            "default": None,
+            "optionality": "required",
+            "type": "float",
+            "units": "seconds"
+        },
+        "inst_cfg_trigger_cahk": {
+            "ui_name": "CA H&K Detector On",
+            "description": "Trigger the ca h&k detector?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_trigger_green": {
+            "ui_name": "Green Detector On",
+            "description": "Trigger the green detector?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_trigger_red": {
+            "ui_name": "Red Detector On",
+            "description": "Trigger the red detector?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "required",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_expmeter_active": {
+            "ui_name": "Use Exposure Meter",
+            "description": "Use the exposure meter to end the exposure?",
+            "option": "boolean",
+            "default": None,
+            "optionality": "optional",
+            "type": "boolean",
+            "units": None
+        },
+        "inst_cfg_expmeter_flux": {
+            "ui_name": "Flux Level",
+            "description": "The flux level on exposure meter at which to end exposure.",
+            "option": "range",
+            "allowed": [1, 1e8],
+            "default": 1e6,
+            "optionality": "optional",
+            "type": "float",
+            "units": None
+        },
+    }
+}
+
+
 def parse_args():
     """
     Parse the command line arguments.
@@ -735,20 +910,7 @@ def parse_args():
     return parser.parse_args()
 
 
-# if __name__=="__main__":
-
-def generate_templates():
-    from collections import OrderedDict
-
-    args = utils.parse_args()
-    mode = args.mode
-
-    config = utils.read_config(mode)
-
-    coll = papahana_util.config_collection('templateCollect', conf=config)
-
-    coll.drop()
-    print('...adding templates to collection')
+def generate_kcwi_templates(coll):
 
     templates = [kcwi_ifu_acq_offsetStar_template,
                  kcwi_ifu_acq_direct_template,
@@ -765,3 +927,37 @@ def generate_templates():
 
     return doc
 
+
+def generate_templates(config):
+    coll = papahana_util.config_collection('templateCollect', conf=config)
+
+    coll.drop()
+    print('...adding templates to collection')
+
+    # add kcwi
+
+    templates_kcwi = [
+        kcwi_ifu_acq_offsetStar_template,
+        kcwi_ifu_acq_direct_template,
+        kcwi_ifu_sci_stare_template,
+        kcwi_ifu_sci_dither_template]
+    templates_targets = [
+        sidereal_target,
+        nonsidereal_target,
+        mos_target,
+        kcwi_common_parameters
+    ]
+    templates_kpf = [kpf_common_parameters, kpf_sci_stare]
+
+    templates = []
+
+    templates += templates_kpf
+    templates += templates_kcwi
+    templates += templates_targets
+
+    result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)
+
+    fields = {'metadata.name': 1, 'metadata.version': 1}
+    doc = list(coll.find({}, fields))
+
+    return doc
