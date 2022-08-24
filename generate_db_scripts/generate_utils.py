@@ -99,14 +99,18 @@ def parse_templates_version(template_list):
     return schema
 
 
-def non_inst_templates(inst_list, template_list):
-    return list(filter(lambda template: [inst for inst in inst_list if inst[0].lower() not in template['metadata']['name']], template_list))
+def non_inst_templates(inst_list, template_list, allow_mos=False):
+    non_inst = list(filter(lambda template: [inst for inst in inst_list if inst[0].lower() not in template['metadata']['name']], template_list))
+    if not allow_mos:
+        return list(filter(lambda template: [template_dict for template_dict in non_inst if 'multi_obj' not in template['metadata']['name']], non_inst))
+
+    return non_inst
 
 
 def inst_template_list(inst, template_list):
     return list(filter(lambda template: inst.lower() in template['metadata']['name'], template_list))
 
 
-def parse_template_list(inst, inst_list, template_list):
+def parse_template_list(inst, inst_list, template_list, allow_mos=False):
     return non_inst_templates(inst_list, template_list) + inst_template_list(inst, template_list)
 

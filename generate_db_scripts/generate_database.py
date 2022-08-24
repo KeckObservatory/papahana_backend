@@ -66,7 +66,8 @@ if __name__=='__main__':
     # ip = generate_inst_package(template_list)
     for inst in INST_LIST:
         inst_lower = inst.lower()
-        inst_specific_templates = utils.parse_template_list(inst, INST_LIST, template_list)
+        inst_specific_templates = utils.parse_template_list(
+            inst, INST_LIST, template_list, allow_mos=False)
         if inst_lower == 'kcwi':
             ip = kcwi_filled.generate_inst_package(inst_specific_templates)
         elif inst_lower == 'kpf':
