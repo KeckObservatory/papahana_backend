@@ -1,5 +1,6 @@
 import generate_utils as utils
 
+
 def filled_acq_templates():
     acq_templates = [
         {
@@ -26,6 +27,7 @@ def filled_acq_templates():
     ]
 
     return acq_templates
+
 
 def filled_common_parameters():
     schema = {
@@ -130,9 +132,6 @@ def filled_sci_templates(template_list):
 
 
 def generate_inst_package(template_list):
-
-    # for on_id in ob_blocks:
-    #     template_name =
 
     schema = {
         "metadata": {

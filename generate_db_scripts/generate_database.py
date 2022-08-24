@@ -1,14 +1,4 @@
-import random
-import string
-from functools import wraps
-
-seed = 1984739
-random.seed(seed)
-
-import datetime
-
 import generate_utils as utils
-import generate_random_utils as random_utils
 import generate_observation_block as ob_utils
 import generate_tags as tags_utils
 import generate_containers as container_utils
@@ -20,9 +10,6 @@ import kpf_filled_templates as kpf_filled
 
 import generate_template
 from papahana import util as papahana_util
-from papahana.controllers import authorization_utils as auth_utils
-from papahana.controllers import controller_helper as helper_utils
-from bson.objectid import ObjectId
 from os import path
 
 CONFIG = 'config.live.ini'
@@ -90,12 +77,10 @@ if __name__=='__main__':
 
         result = coll.insert_one(ip)
 
-
-    # # Create script collection
+    # Create script collection
     coll = papahana_util.config_collection('scriptCollect', conf=config)
     coll.drop()
     generate_scripts_collection(coll, inst)
-
 
     if args.generate_observers:
         obs_db = config['obs_db']

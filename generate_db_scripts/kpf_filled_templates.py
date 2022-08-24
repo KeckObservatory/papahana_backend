@@ -97,6 +97,7 @@ def filled_sci_templates(template_list):
 
     return sci_templates
 
+
 def generate_inst_package(template_list):
 
     schema = {
