@@ -15,6 +15,8 @@ def get_ip(instrument, ip_version=None):
     query = {"metadata.instrument": instrument, "metadata.version": ip_version}
     package_list = utils.get_by_query(query, 'ipCollect')
 
+    configurable_parameters = {}
+
     if package_list:
         return package_list[0]
     else:

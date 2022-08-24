@@ -11,14 +11,13 @@ from papahana.models.observation_block import ObservationBlock
 from papahana.models.status import Status
 
 
-def update_ob(_ob_id, new_ob):
-    metadata = {"timestamp": datetime.now()}
-    coll = config_collection('obCollect')
-
-    coll.patch_one(new_ob, metadata=metadata)
-
-
 def ob_get(_ob_id):
+    """
+    Retrieve the latest revision of the OB.
+
+    @param _ob_id: <str> The 'revision' OB ID,  <sem_id>_####, 2022B_U160_0001
+    @return:
+    """
     coll = config_collection('obCollect')
 
     ob = coll.latest({'_ob_id': _ob_id})
@@ -32,6 +31,12 @@ def ob_get(_ob_id):
 
 
 def clean_revision_metadata(ob):
+    """
+    Remove the metadata associated with the revisions.
+
+    @param ob: <dict> the full ob
+    @return:
+    """
     try:
         del ob['_revision_metadata']
     except KeyError:
@@ -59,24 +64,15 @@ def insert_ob(ob_doc):
     :type ob_doc: dict
     rtype: document id
     """
-    print('insert_ob')
     coll = config_collection('obCollect')
 
     # generate the _ob_id -- don't allow it to be inserted manually
     sem_id = ob_doc['metadata']['sem_id']
-    # n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
-    # ob_doc['_ob_id'] = f"{sem_id}_{str(n_ob).zfill(4)}"
-
-    print('sem_id', sem_id)
     ob_doc['_ob_id'] = get_new_ob_id(coll, sem_id)
-
-    print(f'ob_id {get_new_ob_id(coll, sem_id)}')
 
     metadata = {"timestamp": datetime.now()}
     result = coll.patch_one(ob_doc, metadata=metadata)
 
-    print(f'insert_ob result {result}')
-    print(f'insert_ob result {result.inserted_id_obj}')
     return result.inserted_id_obj.inserted_id
 
 
@@ -183,25 +179,27 @@ def get_sequence(sequences, sequence_number, return_all=False):
 
 
 def write_json(dict_data, output):
+    """
+    Write json / dict formatted data to a file.
+
+    @param dict_data: <dict> the data to write
+    @param output: <str> the output filename to write
+    @return:
+    """
     with open(output, 'w') as fp:
         json.dump(dict_data, fp)
 
     fp.close()
 
 
-def check_ob_id_allowed(ob_id):
-    ob = utils.get_by_id(ob_id, 'obCollect')
-    check_ob_allowed(ob)
-
-
-def check_ob_allowed(ob):
-    sem_id = ob['metadata']['sem_id']
-    if not auth_utils.is_authorized_semid(sem_id):
-        abort(401, f'Observer with Keck ID {g.user} is not authorized to access'
-                   f' OB - the semester ID does not match allowed programs.')
-
-
 def add_default_status(body, json_body):
+    """
+    Add the default status field as defined in papahana.models.status
+
+    @param body: <dict> the OB
+    @param json_body: <dict> the json body OB
+    @return:
+    """
     ob_obj = ObservationBlock.from_dict(json_body)
     if not ob_obj.status:
         body['status'] = ast.literal_eval(str(Status()).replace("\n", ""))
@@ -210,5 +208,12 @@ def add_default_status(body, json_body):
 
 
 def get_new_ob_id(coll, sem_id):
+    """
+    Generate a new (next) _ob_id (<sem_id>_####)
+
+    @param coll: <pymongo> the collection
+    @param sem_id: <str> the sem_id
+    @return: <str> _ob_id format: <sem_id>_####
+    """
     n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
     return f"{sem_id}_{str(n_ob).zfill(4)}"

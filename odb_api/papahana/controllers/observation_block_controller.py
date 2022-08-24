@@ -19,7 +19,7 @@ from papahana.util import config_collection
 OUT_DIR = "/tmp"
 
 
-def ob_get(ob_id):
+def ob_get(ob_id, return_with_tagid=False):
     """
     Retrieves the most recent version of an OB.
         /obsBlocks
@@ -34,6 +34,9 @@ def ob_get(ob_id):
 
     # get latest version
     ob = ob_utils.ob_get(ob_orig['_ob_id'])
+
+    if not return_with_tagid:
+        ob['metadata']['tags'] = ob_orig['metadata']['tags']
 
     return utils.json_with_objectid(ob)
 
@@ -73,7 +76,7 @@ def ob_put(body, ob_id):
     :rtype: None
     """
     # check that access is allowed to the ob being replaced,  422 if not found.
-    ob_orig = ob_utils.ob_id_associated(ob_id)
+    ob_orig = ob_get(ob_id, return_with_tagid=True)
 
     # add the id required by history
     body['_ob_id'] = ob_orig['_ob_id']
@@ -114,18 +117,18 @@ def ob_duplicate(ob_id, sem_id=None):
     :rtype: str
     """
     # check that access is allowed and get ob,  422 if not found
-    ob = ob_get(ob_id)
+    ob_orig = ob_utils.ob_id_associated(ob_id)
 
     # remove IDs
-    del ob['_id']
-    del ob['_ob_id']
+    del ob_orig['_id']
+    del ob_orig['_ob_id']
 
     # check the sem_id is associated
     if sem_id:
-        ob['metadata']['sem_id'] = sem_id
+        ob_orig['metadata']['sem_id'] = sem_id
         auth_utils.check_sem_id_associated(sem_id)
 
-    result = ob_utils.insert_ob(ob)
+    result = ob_utils.insert_ob(ob_orig)
 
     return utils.json_with_objectid(result)
 
@@ -225,12 +228,6 @@ def ob_revisions(ob_id, revision_n=None):
     _ob_id = ob['_ob_id']
 
     coll = config_collection('obCollect')
-
-    # TODO this is only for testing (create a revision)
-
-    new_ob = ob
-    new_ob['metadata']['name'] = 'wow,  a revision of revisions'
-    ob_utils.update_ob(ob, new_ob)
 
     revisions = list(coll.revisions({'_ob_id': _ob_id}))
 

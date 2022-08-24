@@ -79,7 +79,7 @@ def search_ob(**kwargs):
 
     print(f'pipe {pipeline}')
 
-    return utils.json_with_objectid(result)
+    return utils.list_with_objectid(result)
 
 
 # def search_ob_inst_config(tag_name=None, sem_id=None, min_ra=None, max_ra=None, instrument=None, ob_priority=None, min_priority=None, max_priority=None, min_duration=None, max_duration=None, state=None, observable=None, completed=None, container_id=None):
@@ -154,7 +154,7 @@ def search_ob_component(**kwargs):
 
     print(f'pipe {pipeline}')
 
-    return utils.json_with_objectid(result)
+    return utils.list_with_objectid(result)
 
 
 def search_ob_tableview(**kwargs):
@@ -223,19 +223,21 @@ def search_ob_tableview(**kwargs):
 
     pipeline += [{
         '$project': {
-            '_id': 0, 'ob_name': '$metadata.name', 'sem_id': '$metadata.sem_id',
+            '_id': '$_id', 'ob_name': '$metadata.name', 'sem_id': '$metadata.sem_id',
             'instrument': '$metadata.instrument', 'ob_type': '$metadata.ob_type',
             'acquisition': '$acquisition.metadata.name',
             'common_parameters': '$common_parameters.metadata.name',
-            'tags': '$metadata.tags',
-            'number_sequences': {'$size': '$observations'}}
-        }]
+            'tags': '$metadata.tags', 'target_name': '$target.metadata.name',
+            'number_sequences': {'$cond': {'if': {
+                '$ne':  [{'$type': '$observations'}, 'missing']},
+                'then': {'$size': '$observations'}, 'else': '0'}
+            }
+        }
+    }]
 
     result = list(coll.aggregate(pipeline))
 
-    print(f'pipe {pipeline}')
-
-    return utils.json_with_objectid(result)
+    return utils.list_with_objectid(result)
 
 
 def base_search_pipeline(arg_dict):
@@ -254,7 +256,7 @@ def base_search_pipeline(arg_dict):
     if arg_dict.get('completed'):
         arg_dict['completed'] = 3
 
-    # Documnets = tags, containers,  observation_blocks
+    # Documents = tags, containers,  observation_blocks
     queries = {}
 
     # tags
@@ -319,22 +321,7 @@ def base_search_pipeline(arg_dict):
         pipeline += queries[pipe_key]
 
     # change the tag list object ids to names
-    pipeline += [
-        {'$addFields': {
-            'tag_id': {
-                '$map': {
-                    'input': f"{prefix}metadata.tags",
-                    'as': 'str_id',
-                    'in': {'$toObjectId': '$$str_id'}
-                }}}},
-        {'$lookup': {
-            'from': 'tag_info',
-            'localField': 'tag_id',
-            'foreignField': '_id',
-            'as': 'tag_list'}},
-        {'$addFields': {'tag_str_list': '$tag_list.tag_str'}},
-        {'$set': {f"{prefix.strip('$')}metadata.tags": '$tag_str_list'}}
-    ]
+    pipeline = utils.convert_tag2name(pipeline, prefix)
 
     # only get ob (output) from pipeline if it is nested
     if pipe_out in prefix:
@@ -344,7 +331,7 @@ def base_search_pipeline(arg_dict):
         ]
     else:
         # remove extra fields if wasn't filtered through 'output'
-        pipeline += [{"$unset": ["tag_list", "tag_str_list", "tag_id"]}]
+        pipeline = utils.unset_tag2name_fields(pipeline)
 
     if not coll:
         coll = util.config_collection('obCollect')

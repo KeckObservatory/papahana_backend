@@ -2775,6 +2775,7 @@ components:
         - pattern: '^[Mm][Oo][Ss][Ff][Ii][Rr][Ee]$'
         - pattern: '^[Nn][Ii][Re][Ss]$'
         - pattern: '^[Nn][Ii][Re][Cc]2$'
+        - pattern: '^[Kk][Pp][Ff]$'
         - enum:
           - DE
           - DF

@@ -6,7 +6,7 @@ from flask import current_app, abort
 from bson import json_util
 
 from papahana.util import config_collection
-from papahana.controllers import observation_block_utils as ob_utils
+
 
 # Generalized
 def list_with_objectid(results):
@@ -68,14 +68,15 @@ def get_by_id(id, collect_name, db_name=None, cln_oid=True):
     :type cln_oid: bool
     :rtype: Dict{Query Result}
     """
+    coll = config_collection(collect_name, db_name=db_name)
     if collect_name == 'obCollect':
-        query = query_by_id(id)
+        pipeline = convert_tag2name(pipeline_query_by_id(id))
+        pipeline = unset_tag2name_fields(pipeline)
+        results = list(coll.aggregate(pipeline))
     else:
         query = query_by_id(id, add_delete=False)
+        results = list(coll.find(query))
 
-    coll = config_collection(collect_name, db_name=db_name)
-
-    results = list(coll.find(query))
     if not results:
         abort(422, f'No results in: {collect_name} for id: {id}')
 
@@ -85,9 +86,55 @@ def get_by_id(id, collect_name, db_name=None, cln_oid=True):
     return results[0]
 
 
+def pipeline_query_by_id(id):
+    obj_id = get_object_id(id)
+    pipeline = [{'$match': {'$expr': {'$eq': [False, '$status.deleted']}}},
+                {'$match': {'$expr': {'$eq': ['$_id', obj_id]}}}]
+    return pipeline
+
+
+def convert_tag2name(pipeline, prefix='$'):
+    """
+    Mongo aggregate to change the tag id to tag name to be returned in results.
+
+    @param pipeline: <list> the pipeline commands
+    @param prefix: <str> the output variable name if processed in pipe earlier
+
+    @return: <list> the aggregate pipeline
+    """
+    pipeline += [
+        {'$addFields': {
+            'tag_id': {
+                '$map': {
+                    'input': f"{prefix}metadata.tags",
+                    'as': 'str_id',
+                    'in': {'$toObjectId': '$$str_id'}
+                }}}},
+        {'$lookup': {
+            'from': 'tag_info',
+            'localField': 'tag_id',
+            'foreignField': '_id',
+            'as': 'tag_list'}},
+        {'$addFields': {'tag_str_list': '$tag_list.tag_str'}},
+        {'$set': {f"{prefix.strip('$')}metadata.tags": '$tag_str_list'}}
+    ]
+    return pipeline
+
+
+def unset_tag2name_fields(pipeline):
+    """
+    Remove from the results the extra fields added to convert tag id to string.
+
+    @param pipeline: <list> the pipeline commands
+    @return: <list> the aggregate pipeline
+    """
+    pipeline += [{"$unset": ["tag_list", "tag_str_list", "tag_id"]}]
+    return pipeline
+
+
 def get_by_query(query, collect_name, db_name=None):
     """
-    query the database by input query pararmeters for all fields in a document.
+    query the database by input query parameters for all fields in a document.
 
     :param query: json query parameter
     :type query: dict
