@@ -100,7 +100,7 @@ def parse_templates_version(template_list):
 
 
 def non_inst_templates(inst_list, template_list):
-    return list(filter(lambda template: [inst for inst in inst_list if inst_list[0].lower() not in template['metadata']['name']], template_list))
+    return list(filter(lambda template: [inst for inst in inst_list if inst[0].lower() not in template['metadata']['name']], template_list))
 
 
 def inst_template_list(inst, template_list):

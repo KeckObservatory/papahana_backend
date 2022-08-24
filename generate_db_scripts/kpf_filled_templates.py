@@ -124,6 +124,14 @@ def generate_inst_package(template_list):
             "filters": 'null'
         },
         "configurable_elements": [
+            "inst_cfg_simulcal_source",
+            "inst_cfg_simulcal_autofilter",
+            "inst_cfg_simulcal_nd1",
+            "inst_cfg_simulcal_nd2",
+            "inst_cfg_sss_sky",
+            "inst_cfg_sss_sci",
+            "inst_cfg_sss_socal_sci",
+            "inst_cfg_sss_socal_cal"
         ],
         "pointing_origins": [
             "SKY",
