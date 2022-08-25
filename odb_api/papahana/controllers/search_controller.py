@@ -216,6 +216,8 @@ def search_ob_tableview(**kwargs):
         kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
     if connexion.request.is_json:
         kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
+    # if connexion.request.is_json:
+    #     kwargs['duration'] = uration.from_dict(connexion.request.get_json())
     if connexion.request.is_json:
         kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
 
@@ -298,6 +300,14 @@ def base_search_pipeline(arg_dict):
     queries['ob'] = add_min_max(queries['ob'], f'{prefix}target.parameters.target_coord_dec',
                                 arg_dict.get('min_dec'), arg_dict.get('max_dec'))
 
+    # duration
+    if arg_dict.get('min_duration'):
+        queries['ob'] += filter_by_duration(arg_dict.get('min_duration'),
+                                            pipe_out, less_than=False)
+    if arg_dict.get('max_duration'):
+        queries['ob'] += filter_by_duration(arg_dict.get('max_duration'),
+                                            pipe_out)
+
     # observable,  RA range
 
     ob_params = {
@@ -358,6 +368,40 @@ def filter_by_tag(tag_name, pipe_out):
             "as": pipe_out}
         },
         {"$unwind": f"${pipe_out}"}]
+
+    return pipe
+
+
+def filter_by_duration(duration, pipe_out, less_than=True):
+    """
+    Restrict the results by min and/or max duration
+
+    db.observation_blocks.aggregate([{$project: {'observations.parameters.det1_exp_time': 1, 'observations.parameters.det1_exp_number': 1, 'observations.metadata.sequence_number': 1, 'status.current_seq': 1}}, {$unwind: '$observations'}, {$group: {_id: "$_id", 'total': {$sum: {$cond: [{$gte: ['$observations.metadata.sequence_number', '$status.current_seq']}, {$multiply: ['$observations.parameters.det1_exp_time', '$observations.parameters.det1_exp_number']}, 0]}}}}, ,  {$match: {'total': {$lte: 1200}}  ])
+    """
+    if less_than:
+        cond = "lte"
+    else:
+        cond = "gte"
+
+    pipe = [
+        {"$unwind": "$observations"},
+        {"$group": {
+            "_id": "$_id",
+            pipe_out: {"$first": "$$ROOT"},
+            "total": {
+                "$sum": {
+                    "$cond": [
+                        {"$gte": [
+                            "$observations.metadata.sequence_number",
+                            "$status.current_seq"]},
+                        {"$multiply": [
+                            "$observations.parameters.det1_exp_time",
+                            "$observations.parameters.det1_exp_number"]}, 0]
+                }
+            }
+        }},
+        {"$match": {"total": {cond: duration}}}
+    ]
 
     return pipe
 
