@@ -57,7 +57,7 @@ def query_by_id(obj_id, add_delete=True):
         return {"_id": obj_id}
 
 
-def get_by_id(id, collect_name, db_name=None, cln_oid=True):
+def get_by_id(id, collect_name, db_name=None, cln_oid=True, unwind=True):
     """
     query by string container_id
     :param id: object id string
@@ -66,10 +66,15 @@ def get_by_id(id, collect_name, db_name=None, cln_oid=True):
     :type collect_name: str
     :param cln_oid: set to True to change object id to string in results.
     :type cln_oid: bool
+    :param unwind: set to False to return OB with OB tags as OID instead of name
+    :type unwind: bool
     :rtype: Dict{Query Result}
     """
     coll = config_collection(collect_name, db_name=db_name)
-    if collect_name == 'obCollect':
+    if collect_name == 'obCollect' and not unwind:
+        query = query_by_id(id, add_delete=True)
+        results = list(coll.find(query))
+    elif collect_name == 'obCollect':
         pipeline = convert_tag2name(pipeline_query_by_id(id))
         pipeline = unset_tag2name_fields(pipeline)
         results = list(coll.aggregate(pipeline))

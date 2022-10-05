@@ -246,7 +246,9 @@ def ob_revision_index(ob_id, revision_index):
 
     :rtype: ObservationBlock
     """
-    return 'do some magic!'
+    revision_list = ob_revisions(ob_id, revision_n=revision_index)
+
+    return revision_list[-1]
 
 
 def ob_executions(ob_id):

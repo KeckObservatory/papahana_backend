@@ -8,6 +8,7 @@ from papahana.models.sem_id_schema import SemIdSchema
 from papahana import util
 from papahana.controllers import controller_helper as utils
 
+COMPLETED = 3
 
 # def search_ob(tag_name=None, sem_id=None, min_ra=None, max_ra=None,
 #               instrument=None, ob_priority=None, min_priority=None,
@@ -256,7 +257,7 @@ def base_search_pipeline(arg_dict):
 
     # [0 = partial, 1 = ready, 2 = ongoing, 3 = complete, 4 = aborted]
     if arg_dict.get('completed'):
-        arg_dict['completed'] = 3
+        arg_dict['completed'] = COMPLETED
 
     # Documents = tags, containers,  observation_blocks
     queries = {}
@@ -376,12 +377,13 @@ def filter_by_duration(duration, pipe_out, less_than=True):
     """
     Restrict the results by min and/or max duration
 
-    db.observation_blocks.aggregate([{$project: {'observations.parameters.det1_exp_time': 1, 'observations.parameters.det1_exp_number': 1, 'observations.metadata.sequence_number': 1, 'status.current_seq': 1}}, {$unwind: '$observations'}, {$group: {_id: "$_id", 'total': {$sum: {$cond: [{$gte: ['$observations.metadata.sequence_number', '$status.current_seq']}, {$multiply: ['$observations.parameters.det1_exp_time', '$observations.parameters.det1_exp_number']}, 0]}}}}, ,  {$match: {'total': {$lte: 1200}}  ])
+    For Completed and Aborted OBs the total duration == 0
+
     """
     if less_than:
-        cond = "lte"
+        cond = "$lte"
     else:
-        cond = "gte"
+        cond = "$gte"
 
     pipe = [
         {"$unwind": "$observations"},
@@ -391,16 +393,21 @@ def filter_by_duration(duration, pipe_out, less_than=True):
             "total": {
                 "$sum": {
                     "$cond": [
-                        {"$gte": [
-                            "$observations.metadata.sequence_number",
-                            "$status.current_seq"]},
-                        {"$multiply": [
-                            "$observations.parameters.det1_exp_time",
-                            "$observations.parameters.det1_exp_number"]}, 0]
+                        {"$lte":
+                             ["$status.state", 2]
+                         },
+                        {"$cond": [
+                            {"$gte": [
+                                "$observations.metadata.sequence_number",
+                                "$status.current_seq"]},
+                            {"$multiply": [
+                                "$observations.parameters.det1_exp_time",
+                                "$observations.parameters.det1_exp_number"]}, 0]
+                        }, 0]
                 }
             }
         }},
-        {"$match": {"total": {cond: duration}}}
+        {"$match": {"total": {cond: duration}}},
     ]
 
     return pipe

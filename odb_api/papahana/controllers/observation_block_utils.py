@@ -51,7 +51,7 @@ def ob_id_associated(ob_id):
     returned OB is the original OB,  not the most recent.
     """
     # will return one result,  and throw 422 if not found
-    ob = utils.get_by_id(ob_id, 'obCollect')
+    ob = utils.get_by_id(ob_id, 'obCollect', unwind=False)
     auth_utils.check_sem_id_associated(ob['metadata']['sem_id'])
 
     return ob
