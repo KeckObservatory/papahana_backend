@@ -63,7 +63,7 @@ def generate_science(filled, template_list):
 def generate_acquisition(filled):
     schema = filled.filled_acq_templates()
 
-    return schema
+    return schema[0]
 
 
 def generate_metadata(inst):

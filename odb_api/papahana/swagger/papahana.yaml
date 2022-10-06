@@ -2292,6 +2292,7 @@ components:
             type: string
           default: []
         comment:
+          nullable: true
           type: string
           default: ""
 
@@ -2323,7 +2324,9 @@ components:
           items:
             $ref: '#/components/schemas/DateSchema'
         comment:
+          nullable: true
           type: string
+          default: ""
           example:
             Hello Observation Block.
 
@@ -2359,6 +2362,7 @@ components:
         instrument:
           $ref: '#/components/schemas/InstrumentEnum'
         comment:
+          nullable: true
           type: string
           default: ""
       example:
