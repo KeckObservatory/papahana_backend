@@ -21,7 +21,7 @@ class ObservationBlock(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, common_parameters: CommonParameters=None, observations: List[TemplateSchema]=None, associations: List[str]=None, status: Status=None, time_constraints: List[DateSchema]=None, comment: str=None):  # noqa: E501
+    def __init__(self, metadata: ObsBlockMetadata=None, target: Target=None, acquisition: Acquisition=None, common_parameters: CommonParameters=None, observations: List[TemplateSchema]=None, associations: List[str]=None, status: Status=None, time_constraints: List[DateSchema]=None, comment: str=''):  # noqa: E501
         """ObservationBlock - a model defined in Swagger
 
         :param metadata: The metadata of this ObservationBlock.  # noqa: E501

@@ -6,6 +6,9 @@ from __future__ import absolute_import
 from papahana.models.acquisition import Acquisition
 from papahana.models.acquisition_parameters import AcquisitionParameters
 from papahana.models.any_of_status_subset import AnyOfStatusSubset
+from papahana.models.any_of_target_parameters_target_coord_epoch import AnyOfTargetParametersTargetCoordEpoch
+from papahana.models.any_of_target_parameters_target_coord_pm_dec import AnyOfTargetParametersTargetCoordPmDec
+from papahana.models.any_of_target_parameters_target_coord_pm_ra import AnyOfTargetParametersTargetCoordPmRa
 from papahana.models.any_of_template_schema import AnyOfTemplateSchema
 from papahana.models.apikey import Apikey
 from papahana.models.body import Body
