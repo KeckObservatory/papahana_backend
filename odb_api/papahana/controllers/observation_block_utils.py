@@ -75,7 +75,7 @@ def insert_ob(ob_doc):
 
     # generate the _ob_id -- don't allow it to be inserted manually
     sem_id = ob_doc['metadata']['sem_id']
-    ob_doc['_ob_id'] = get_new_ob_id(coll, sem_id)
+    ob_doc['_ob_id'] = get_new_ob_id(sem_id)
 
     metadata = {"timestamp": datetime.now()}
     result = coll.patch_one(ob_doc, metadata=metadata)
@@ -217,7 +217,7 @@ def add_default_status(body, json_body):
     return body
 
 
-def get_new_ob_id(coll, sem_id):
+def get_new_ob_id(sem_id):
     """
     Generate a new (next) _ob_id (<sem_id>_####)
 
@@ -227,7 +227,7 @@ def get_new_ob_id(coll, sem_id):
     """
     coll = config_collection('deltaCollect')
     pipeline = [
-        {'$match': {'_ob_id': {'$regex': '2022B_K111'}}},
+        {'$match': {'_ob_id': {'$regex': {sem_id}}}},
         {'$sort': {'_ob_id': -1}}, {'$limit': 1},
         {'$project': {'_ob_id': 1, '_id': 0}}
     ]
