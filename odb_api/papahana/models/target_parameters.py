@@ -8,7 +8,7 @@ from typing import List, Dict  # noqa: F401
 from papahana.models.base_model_ import Model
 from papahana.models.date_schema import DateSchema  # noqa: F401,E501
 from papahana.models.dec_schema import DecSchema  # noqa: F401,E501
-from papahana.models.object import Object  # noqa: F401,E501
+# from papahana.models.object import Object  # noqa: F401,E501
 from papahana.models.ra_schema import RASchema  # noqa: F401,E501
 from papahana.models.target_parameters_target_info_magnitude import TargetParametersTargetInfoMagnitude  # noqa: F401,E501
 import re  # noqa: F401,E501
@@ -20,7 +20,7 @@ class TargetParameters(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, target_info_name: str=None, target_coord_ra: RASchema=None, target_coord_dec: DecSchema=None, rot_cfg_pa: float=None, target_coord_pm_ra: AnyOfTargetParametersTargetCoordPmRa=None, target_coord_pm_dec: AnyOfTargetParametersTargetCoordPmDec=None, target_coord_epoch: AnyOfTargetParametersTargetCoordEpoch=None, target_coord_frame: str=None, seq_constraint_obstime: DateSchema=None, target_info_magnitude: TargetParametersTargetInfoMagnitude=None, target_info_comment: str=None):  # noqa: E501
+    def __init__(self, target_info_name: str=None, target_coord_ra: RASchema=None, target_coord_dec: DecSchema=None, rot_cfg_pa: float=None, target_coord_frame: str=None, seq_constraint_obstime: DateSchema=None, target_info_magnitude: TargetParametersTargetInfoMagnitude=None, target_info_comment: str=None):  # noqa: E501
         """TargetParameters - a model defined in Swagger
 
         :param target_info_name: The target_info_name of this TargetParameters.  # noqa: E501
@@ -51,9 +51,9 @@ class TargetParameters(Model):
             'target_coord_ra': RASchema,
             'target_coord_dec': DecSchema,
             'rot_cfg_pa': float,
-            'target_coord_pm_ra': AnyOfTargetParametersTargetCoordPmRa,
-            'target_coord_pm_dec': AnyOfTargetParametersTargetCoordPmDec,
-            'target_coord_epoch': AnyOfTargetParametersTargetCoordEpoch,
+            # 'target_coord_pm_ra': AnyOfTargetParametersTargetCoordPmRa,
+            # 'target_coord_pm_dec': AnyOfTargetParametersTargetCoordPmDec,
+            # 'target_coord_epoch': AnyOfTargetParametersTargetCoordEpoch,
             'target_coord_frame': str,
             'seq_constraint_obstime': DateSchema,
             'target_info_magnitude': TargetParametersTargetInfoMagnitude,
@@ -77,9 +77,9 @@ class TargetParameters(Model):
         self._target_coord_ra = target_coord_ra
         self._target_coord_dec = target_coord_dec
         self._rot_cfg_pa = rot_cfg_pa
-        self._target_coord_pm_ra = target_coord_pm_ra
-        self._target_coord_pm_dec = target_coord_pm_dec
-        self._target_coord_epoch = target_coord_epoch
+        # self._target_coord_pm_ra = target_coord_pm_ra
+        # self._target_coord_pm_dec = target_coord_pm_dec
+        # self._target_coord_epoch = target_coord_epoch
         self._target_coord_frame = target_coord_frame
         self._seq_constraint_obstime = seq_constraint_obstime
         self._target_info_magnitude = target_info_magnitude
@@ -186,68 +186,68 @@ class TargetParameters(Model):
 
         self._rot_cfg_pa = rot_cfg_pa
 
-    @property
-    def target_coord_pm_ra(self) -> AnyOfTargetParametersTargetCoordPmRa:
-        """Gets the target_coord_pm_ra of this TargetParameters.
+    # @property
+    # def target_coord_pm_ra(self) -> AnyOfTargetParametersTargetCoordPmRa:
+    #     """Gets the target_coord_pm_ra of this TargetParameters.
+    #
+    #
+    #     :return: The target_coord_pm_ra of this TargetParameters.
+    #     :rtype: AnyOfTargetParametersTargetCoordPmRa
+    #     """
+    #     return self._target_coord_pm_ra
 
-
-        :return: The target_coord_pm_ra of this TargetParameters.
-        :rtype: AnyOfTargetParametersTargetCoordPmRa
-        """
-        return self._target_coord_pm_ra
-
-    @target_coord_pm_ra.setter
-    def target_coord_pm_ra(self, target_coord_pm_ra: AnyOfTargetParametersTargetCoordPmRa):
-        """Sets the target_coord_pm_ra of this TargetParameters.
-
-
-        :param target_coord_pm_ra: The target_coord_pm_ra of this TargetParameters.
-        :type target_coord_pm_ra: AnyOfTargetParametersTargetCoordPmRa
-        """
-
-        self._target_coord_pm_ra = target_coord_pm_ra
-
-    @property
-    def target_coord_pm_dec(self) -> AnyOfTargetParametersTargetCoordPmDec:
-        """Gets the target_coord_pm_dec of this TargetParameters.
-
-
-        :return: The target_coord_pm_dec of this TargetParameters.
-        :rtype: AnyOfTargetParametersTargetCoordPmDec
-        """
-        return self._target_coord_pm_dec
-
-    @target_coord_pm_dec.setter
-    def target_coord_pm_dec(self, target_coord_pm_dec: AnyOfTargetParametersTargetCoordPmDec):
-        """Sets the target_coord_pm_dec of this TargetParameters.
-
-
-        :param target_coord_pm_dec: The target_coord_pm_dec of this TargetParameters.
-        :type target_coord_pm_dec: AnyOfTargetParametersTargetCoordPmDec
-        """
-
-        self._target_coord_pm_dec = target_coord_pm_dec
-
-    @property
-    def target_coord_epoch(self) -> AnyOfTargetParametersTargetCoordEpoch:
-        """Gets the target_coord_epoch of this TargetParameters.
-
-
-        :return: The target_coord_epoch of this TargetParameters.
-        :rtype: AnyOfTargetParametersTargetCoordEpoch
-        """
-        return self._target_coord_epoch
-
-    @target_coord_epoch.setter
-    def target_coord_epoch(self, target_coord_epoch: AnyOfTargetParametersTargetCoordEpoch):
-        """Sets the target_coord_epoch of this TargetParameters.
-
-
-        :param target_coord_epoch: The target_coord_epoch of this TargetParameters.
-        :type target_coord_epoch: AnyOfTargetParametersTargetCoordEpoch
-        """
-
-        self._target_coord_epoch = target_coord_epoch
+    # @target_coord_pm_ra.setter
+    # def target_coord_pm_ra(self, target_coord_pm_ra: AnyOfTargetParametersTargetCoordPmRa):
+    #     """Sets the target_coord_pm_ra of this TargetParameters.
+    #
+    #
+    #     :param target_coord_pm_ra: The target_coord_pm_ra of this TargetParameters.
+    #     :type target_coord_pm_ra: AnyOfTargetParametersTargetCoordPmRa
+    #     """
+    #
+    #     self._target_coord_pm_ra = target_coord_pm_ra
+    #
+    # @property
+    # def target_coord_pm_dec(self) -> AnyOfTargetParametersTargetCoordPmDec:
+    #     """Gets the target_coord_pm_dec of this TargetParameters.
+    #
+    #
+    #     :return: The target_coord_pm_dec of this TargetParameters.
+    #     :rtype: AnyOfTargetParametersTargetCoordPmDec
+    #     """
+    #     return self._target_coord_pm_dec
+    #
+    # @target_coord_pm_dec.setter
+    # def target_coord_pm_dec(self, target_coord_pm_dec: AnyOfTargetParametersTargetCoordPmDec):
+    #     """Sets the target_coord_pm_dec of this TargetParameters.
+    #
+    #
+    #     :param target_coord_pm_dec: The target_coord_pm_dec of this TargetParameters.
+    #     :type target_coord_pm_dec: AnyOfTargetParametersTargetCoordPmDec
+    #     """
+    #
+    #     self._target_coord_pm_dec = target_coord_pm_dec
+    #
+    # @property
+    # def target_coord_epoch(self) -> AnyOfTargetParametersTargetCoordEpoch:
+    #     """Gets the target_coord_epoch of this TargetParameters.
+    #
+    #
+    #     :return: The target_coord_epoch of this TargetParameters.
+    #     :rtype: AnyOfTargetParametersTargetCoordEpoch
+    #     """
+    #     return self._target_coord_epoch
+    #
+    # @target_coord_epoch.setter
+    # def target_coord_epoch(self, target_coord_epoch: AnyOfTargetParametersTargetCoordEpoch):
+    #     """Sets the target_coord_epoch of this TargetParameters.
+    #
+    #
+    #     :param target_coord_epoch: The target_coord_epoch of this TargetParameters.
+    #     :type target_coord_epoch: AnyOfTargetParametersTargetCoordEpoch
+    #     """
+    #
+    #     self._target_coord_epoch = target_coord_epoch
 
     @property
     def target_coord_frame(self) -> str:

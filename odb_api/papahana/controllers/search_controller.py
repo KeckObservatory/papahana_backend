@@ -10,6 +10,7 @@ from papahana.controllers import controller_helper as utils
 
 COMPLETED = 3
 
+
 def search_ob(**kwargs):
     """search_ob
 
@@ -57,13 +58,7 @@ def search_ob(**kwargs):
 
     :rtype: json
     """
-    if connexion.request.is_json:
-        kwargs['sem_id'] = SemIdSchema.from_dict(connexion.request.get_json())
-        kwargs['min_ra'] = RASchema.from_dict(connexion.request.get_json())
-        kwargs['max_ra'] = RASchema.from_dict(connexion.request.get_json())
-        kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
-        kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
-        kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
+    kwargs = base_kwargs(kwargs)
 
     coll, pipeline = base_search_pipeline(kwargs)
 
@@ -72,7 +67,6 @@ def search_ob(**kwargs):
     return utils.list_with_objectid(result)
 
 
-# def search_ob_inst_config(tag_name=None, sem_id=None, min_ra=None, max_ra=None, instrument=None, ob_priority=None, min_priority=None, max_priority=None, min_duration=None, max_duration=None, state=None, observable=None, completed=None, container_id=None):
 def search_ob_component(**kwargs):
     """
 
@@ -124,13 +118,7 @@ def search_ob_component(**kwargs):
 
     :rtype: json
     """
-    if connexion.request.is_json:
-        kwargs['sem_id'] = SemIdSchema.from_dict(connexion.request.get_json())
-        kwargs['min_ra'] = RASchema.from_dict(connexion.request.get_json())
-        kwargs['max_ra'] = RASchema.from_dict(connexion.request.get_json())
-        kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
-        kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
-        kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
+    kwargs = base_kwargs(kwargs)
 
     coll, pipeline = base_search_pipeline(kwargs)
 
@@ -197,14 +185,7 @@ def search_ob_tableview(**kwargs):
 
     :rtype: json
     """
-    if connexion.request.is_json:
-        kwargs['sem_id'] = SemIdSchema.from_dict(connexion.request.get_json())
-        kwargs['min_ra'] = RASchema.from_dict(connexion.request.get_json())
-        kwargs['max_ra'] = RASchema.from_dict(connexion.request.get_json())
-        kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
-        kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
-    #     kwargs['duration'] = uration.from_dict(connexion.request.get_json())
-        kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
+    kwargs = base_kwargs(kwargs)
 
     coll, pipeline = base_search_pipeline(kwargs)
 
@@ -225,6 +206,21 @@ def search_ob_tableview(**kwargs):
     result = list(coll.aggregate(pipeline))
 
     return utils.list_with_objectid(result)
+
+
+def base_kwargs(kwargs):
+    if not connexion.request.is_json:
+        return kwargs
+
+    kwargs['sem_id'] = SemIdSchema.from_dict(connexion.request.get_json())
+    kwargs['min_ra'] = RASchema.from_dict(connexion.request.get_json())
+    kwargs['max_ra'] = RASchema.from_dict(connexion.request.get_json())
+    kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
+    kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
+    kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
+    # kwargs['duration'] = duration.from_dict(connexion.request.get_json())
+
+    return kwargs
 
 
 def base_search_pipeline(arg_dict):

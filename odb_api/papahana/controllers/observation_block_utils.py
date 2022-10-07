@@ -80,6 +80,9 @@ def insert_ob(ob_doc):
     metadata = {"timestamp": datetime.now()}
     result = coll.patch_one(ob_doc, metadata=metadata)
 
+    if result is None:
+        return 'No Results'
+
     return result.inserted_id_obj.inserted_id
 
 
@@ -222,5 +225,18 @@ def get_new_ob_id(coll, sem_id):
     @param sem_id: <str> the sem_id
     @return: <str> _ob_id format: <sem_id>_####
     """
-    n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
+    coll = config_collection('deltaCollect')
+    pipeline = [
+        {'$match': {'_ob_id': {'$regex': '2022B_K111'}}},
+        {'$sort': {'_ob_id': -1}}, {'$limit': 1},
+        {'$project': {'_ob_id': 1, '_id': 0}}
+    ]
+    agg_result = coll.aggregate(pipeline)
+    if '_ob_id' not in agg_result or not agg_result['_ob_id']:
+        n_ob = 0
+    else:
+        largest_ob_id = agg_result['_ob_id']
+        n_ob = largest_ob_id.split('_')[-1]
+
     return f"{sem_id}_{str(n_ob).zfill(4)}"
+

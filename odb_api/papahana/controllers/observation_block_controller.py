@@ -67,6 +67,8 @@ def ob_post(body):
     # reset tags,  these may or may not come in as str but need ObjectID
     body['metadata']['tags'] = []
 
+    print(body)
+
     result = ob_utils.insert_ob(body)
 
     return str(result)
