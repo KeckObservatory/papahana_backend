@@ -92,6 +92,8 @@ def sem_id_ob_get(sem_id):
     Retrieves the ob_blocks for a sem_id
         /semesterIds/{sem_id}/ob
 
+        @Note: This will return the OBs with Tags as Object IDs.
+
     :param sem_id: semester id
     :type sem_id: str
 

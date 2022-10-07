@@ -19,24 +19,29 @@ from papahana.util import config_collection
 OUT_DIR = "/tmp"
 
 
-def ob_get(ob_id, return_with_tagid=False):
+def ob_get(ob_id, tag_str=True):
     """
     Retrieves the most recent version of an OB.
         /obsBlocks
 
     :param ob_id: observation block Object ID
     :type ob_id: str
+    :param tag_str: return the tag as a string instead of Object ID of tag.
+        @Note,  tag is stored as Object ID reference to Tag in OB.
+    :type tag_str: bool
 
     :rtype: ObservationBlock
     """
+    if tag_str:
+        tag_id = False
+    else:
+        tag_id = True
+
     # will return one result,  and throw 422 if not found
-    ob_orig = ob_utils.ob_id_associated(ob_id)
+    ob_orig = ob_utils.ob_id_associated(ob_id, tag_id=tag_id)
 
     # get latest version
     ob = ob_utils.ob_get(ob_orig['_ob_id'])
-
-    if not return_with_tagid:
-        ob['metadata']['tags'] = ob_orig['metadata']['tags']
 
     return utils.json_with_objectid(ob)
 
@@ -59,6 +64,9 @@ def ob_post(body):
     if '_ob_id' in body:
         del body['_ob_id']
 
+    # reset tags,  these may or may not come in as str but need ObjectID
+    body['metadata']['tags'] = []
+
     result = ob_utils.insert_ob(body)
 
     return str(result)
@@ -76,16 +84,22 @@ def ob_put(body, ob_id):
     :rtype: None
     """
     # check that access is allowed to the ob being replaced,  422 if not found.
-    ob_orig = ob_get(ob_id, return_with_tagid=True)
+    ob_orig = ob_get(ob_id, tag_str=False)
+    auth_utils.check_sem_id_associated(ob_orig['metadata']['sem_id'])
 
-    # add the id required by history
-    body['_ob_id'] = ob_orig['_ob_id']
-    body['metadata']['sem_id'] = ob_orig['metadata']['sem_id']
+    # confirm the sem_id matches if it is in the body
+    if 'metadata' in body and 'sem_id' in body['metadata']:
+        body['metadata']['sem_id'] = ob_orig['metadata']['sem_id']
 
-    if connexion.request.is_json:
-        body = ob_utils.add_default_status(body, connexion.request.get_json())
+    # confirm the revision id matches if it is in the body
+    if '_ob_id' in body:
+        _ob_id = ob_orig['_ob_id']
+        body['_ob_id'] = _ob_id
 
-    utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect', clear=True)
+    result = utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
+
+    return {'_id': ob_id,  'matched': result.matched_count,
+            'modified': result.modified_count, 'new_id': result.upserted_id}
 
 
 def ob_delete(ob_id):
@@ -101,9 +115,13 @@ def ob_delete(ob_id):
     _ = ob_utils.ob_id_associated(ob_id)
 
     # mark deleted in the original OB document since this is a status field
-    new_vals = {'status.deleted': True}
-    _ = utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
+    body = {'status.deleted': True}
+    # _ = utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
+    result = utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
+
+    return {'_id': ob_id,  'matched': result.matched_count,
+            'modified': result.modified_count, 'new_id': result.upserted_id}
 
 def ob_duplicate(ob_id, sem_id=None):
     """
@@ -224,7 +242,7 @@ def ob_revisions(ob_id, revision_n=None):
 
     # returns ordered list of full OB 0 = original 1,2, .. = later revisions
 
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
     _ob_id = ob['_ob_id']
 
     coll = config_collection('obCollect')
@@ -262,7 +280,7 @@ def ob_executions(ob_id):
     :rtype: List[str]
     """
     # get and check access is allowed
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
 
     ob_obj = ObservationBlock.from_dict(ob)
     if not ob_obj.status or not ob_obj.status.executions:
@@ -286,7 +304,7 @@ def ob_execution_time(ob_id):
     :rtype: float
     """
     # get and check access is allowed
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
 
     ob_obj = ObservationBlock.from_dict(ob)
     if not ob_obj.status:
@@ -417,7 +435,7 @@ def ob_sequence_id_put(body, ob_id, sequence_number):
 
     :rtype: None
     """
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
     observations = ob_utils.get_sequence(ob, sequence_number, return_all=True)
 
     if not observations:
@@ -458,7 +476,7 @@ def ob_sequence_id_delete(ob_id, sequence_number):
     :rtype: None
     """
     # check association and get ob
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
     ob_obj = ObservationBlock.from_dict(ob)
 
     # observations
@@ -552,7 +570,7 @@ def ob_sequence_duplicate(ob_id, sequence_number):
         abort(400, f'Invalid sequence_number: {sequence_number}, currently '
                    f'duplicating acquisition sequence is NOT supported.')
 
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
 
     # TODO return the template number
     observation = ob_utils.get_sequence(ob, sequence_number)
@@ -653,7 +671,7 @@ def ob_time_constraint_put(body, ob_id):
         abort(400, 'Invalid input type -- time constraints must be an array.')
 
     # check that access is allowed to the ob being replaced.
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
     if not ob:
         abort(422, f'Observation Block id: {ob_id} not found.')
 
@@ -677,7 +695,7 @@ def ob_upgrade(ob_id, sem_id=None):
         sem_id = SemIdSchema.from_dict(connexion.request.get_json())
 
     # check that access is allowed to the ob being replaced.
-    ob = ob_get(ob_id)
+    ob = ob_get(ob_id, tag_str=False)
     if not ob:
         abort(422, f'Observation Block id: {ob_id} not found.')
 

@@ -45,13 +45,18 @@ def clean_revision_metadata(ob):
     return ob
 
 
-def ob_id_associated(ob_id):
+def ob_id_associated(ob_id, tag_id=True):
     """
     Minimally check that the OB can be viewed by the user logged in.  The
     returned OB is the original OB,  not the most recent.
+
+    :param ob_id: observation block id
+    :type ob_id: str
+    :param tag_id: set to True to return OB with OB tags as OID instead of name
+    :type tag_id: bool
     """
     # will return one result,  and throw 422 if not found
-    ob = utils.get_by_id(ob_id, 'obCollect', unwind=False)
+    ob = utils.get_by_id(ob_id, 'obCollect', tag_id=tag_id)
     auth_utils.check_sem_id_associated(ob['metadata']['sem_id'])
 
     return ob
@@ -60,8 +65,10 @@ def ob_id_associated(ob_id):
 def insert_ob(ob_doc):
     """
     Add a new document to a collection.
+
     :param ob_doc: the document to insert
     :type ob_doc: dict
+
     rtype: document id
     """
     coll = config_collection('obCollect')

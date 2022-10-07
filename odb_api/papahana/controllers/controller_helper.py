@@ -57,7 +57,7 @@ def query_by_id(obj_id, add_delete=True):
         return {"_id": obj_id}
 
 
-def get_by_id(id, collect_name, db_name=None, cln_oid=True, unwind=True):
+def get_by_id(id, collect_name, db_name=None, cln_oid=True, tag_id=False):
     """
     query by string container_id
     :param id: object id string
@@ -66,12 +66,12 @@ def get_by_id(id, collect_name, db_name=None, cln_oid=True, unwind=True):
     :type collect_name: str
     :param cln_oid: set to True to change object id to string in results.
     :type cln_oid: bool
-    :param unwind: set to False to return OB with OB tags as OID instead of name
-    :type unwind: bool
+    :param tag_id: set to True to return OB with OB tags as OID instead of name
+    :type tag_id: bool
     :rtype: Dict{Query Result}
     """
     coll = config_collection(collect_name, db_name=db_name)
-    if collect_name == 'obCollect' and not unwind:
+    if collect_name == 'obCollect' and tag_id:
         query = query_by_id(id, add_delete=True)
         results = list(coll.find(query))
     elif collect_name == 'obCollect':
@@ -214,7 +214,6 @@ def insert_into_collection(doc, collect_name, db_name=None):
         del doc["_id"]
 
     if collect_name == 'obCollect':
-        print('!!!!!!! should not be here !!!!!!!!')
         return None
 
     try:
@@ -316,7 +315,7 @@ def update_doc(query, new_vals, collect_name, db_name=None, clear=False):
     if '_id' in fields_to_update:
         del new_vals['_id']
 
-    coll.update_one(query, {"$set": new_vals})
+    return coll.update_one(query, {"$set": new_vals})
 
 
 def update_add_doc(query, new_vals, collect_name):

@@ -84,6 +84,7 @@ paths:
       description: Retrieves all the OBs associated with the search parameters.
       operationId: search_ob
       parameters:
+        - $ref: '#/components/parameters/ob_id_optional'
         - $ref: '#/components/parameters/tag_name_optional'
         - $ref: '#/components/parameters/sem_id_optional'
         - $ref: '#/components/parameters/min_ra'
@@ -162,6 +163,7 @@ paths:
       description: Retrieves all the OB components associated with the search parameters.
       operationId: search_ob_component
       parameters:
+        - $ref: '#/components/parameters/ob_id_optional'
         - $ref: '#/components/parameters/tag_name_optional'
         - $ref: '#/components/parameters/ob_component_name'
         - $ref: '#/components/parameters/sem_id_optional'
@@ -177,6 +179,7 @@ paths:
         - $ref: '#/components/parameters/observable'
         - $ref: '#/components/parameters/completed'
         - $ref: '#/components/parameters/container_id_optional'
+        - $ref: '#/components/parameters/return_id_optional'
       responses:
         "200":
           description: OK
@@ -1004,7 +1007,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ObservationBlock'
+              type: object
+#              $ref: '#/components/schemas/ObservationBlock'
         required: true
       responses:
         "204":
@@ -1990,7 +1994,6 @@ components:
       required: false
       example: "12:30:00.0"
 
-
     min_dec:
       name: min_dec
       in: query
@@ -2001,6 +2004,7 @@ components:
         $ref: '#/components/schemas/DecSchema'
       required: false
       example: "45:30:00.0"
+
     max_dec:
       name: max_dec
       in: query
@@ -2033,12 +2037,33 @@ components:
         type: string
       example: 621ffc2853e6386db4116fe6
 
+    ob_id_optional:
+      name: ob_id
+      in: query
+      description: observation block ObjectId
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+      example: 621ffc2853e6386db4116fe6
+
     observable:
       name: observable
       in: query
       description: only return results that are observable for current UT to sunrise.  The duration is
         not taken into consideration. Default is false (0),  use observable=1 for only OBs
         that are observable.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: boolean
+
+    return_id_optional:
+      name: return_id
+      in: query
+      description: return a string of the Object ID if False (0),  default is True (1)
       required: false
       style: form
       explode: false

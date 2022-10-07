@@ -10,10 +10,6 @@ from papahana.controllers import controller_helper as utils
 
 COMPLETED = 3
 
-# def search_ob(tag_name=None, sem_id=None, min_ra=None, max_ra=None,
-#               instrument=None, ob_priority=None, min_priority=None,
-#               max_priority=None, min_duration=None, max_duration=None,
-#               state=None, observable=None, completed=None, container_id=None):
 def search_ob(**kwargs):
     """search_ob
 
@@ -63,22 +59,15 @@ def search_ob(**kwargs):
     """
     if connexion.request.is_json:
         kwargs['sem_id'] = SemIdSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['min_ra'] = RASchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['max_ra'] = RASchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
 
     coll, pipeline = base_search_pipeline(kwargs)
 
     result = list(coll.aggregate(pipeline))
-
-    print(f'pipe {pipeline}')
 
     return utils.list_with_objectid(result)
 
@@ -130,30 +119,31 @@ def search_ob_component(**kwargs):
     :type completed: bool
     :param container_id: ObjectId of the container identifier.
     :type container_id: str
+    :param return_id: return a string of the Object ID if False (0),  default is True (1)
+    :type return_id: bool
 
     :rtype: json
     """
     if connexion.request.is_json:
         kwargs['sem_id'] = SemIdSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['min_ra'] = RASchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['max_ra'] = RASchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
 
     coll, pipeline = base_search_pipeline(kwargs)
 
     # pipeline += [{'$replaceRoot': {'newRoot': '$common_parameters'}}]
-    pipeline += [{'$project': {kwargs['ob_component_name']: 1, '_id': 0}}]
+    if 'return_id' in kwargs and kwargs['return_id']:
+        send_id = 0
+    else:
+        send_id = 1
+
+    # pipeline += [{'$project': {kwargs['ob_component_name']: 1, '_id': send_id}}]
+    pipeline += [{'$project': {kwargs['ob_component_name']: 1, '_id': 1}}]
 
     result = list(coll.aggregate(pipeline))
-
-    print(f'pipe {pipeline}')
 
     return utils.list_with_objectid(result)
 
@@ -209,17 +199,11 @@ def search_ob_tableview(**kwargs):
     """
     if connexion.request.is_json:
         kwargs['sem_id'] = SemIdSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['min_ra'] = RASchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['max_ra'] = RASchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['min_dec'] = DecSchema.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['max_dec'] = DecSchema.from_dict(connexion.request.get_json())
-    # if connexion.request.is_json:
     #     kwargs['duration'] = uration.from_dict(connexion.request.get_json())
-    if connexion.request.is_json:
         kwargs['instrument'] = InstrumentEnum.from_dict(connexion.request.get_json())
 
     coll, pipeline = base_search_pipeline(kwargs)
@@ -289,6 +273,14 @@ def base_search_pipeline(arg_dict):
         "$eq": [False, f"{prefix}status.deleted"]}
     }}]
 
+    ob_id = arg_dict.get('ob_id')
+    if ob_id:
+        obj_id = utils.get_object_id(ob_id)
+        queries['ob'].append({'$match': {'$expr': {'$eq': ['$_id', obj_id]}}})
+
+    # lt = {"$match": {"$expr": {"$lte": [field_name, max_val]}}}
+    # pipeline.append(lt)
+
     min_priority = make_int(arg_dict, 'min_priority')
     max_priority = make_int(arg_dict, 'max_priority')
 
@@ -310,7 +302,6 @@ def base_search_pipeline(arg_dict):
                                             pipe_out)
 
     # observable,  RA range
-
     ob_params = {
         'ob_priority': 'metadata.priority',
         'sem_id': 'metadata.sem_id', 'instrument': 'metadata.instrument',
