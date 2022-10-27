@@ -10,6 +10,7 @@ from papahana.controllers import controller_helper as helpers
 from papahana.encoder import JSONEncoder
 from papahana import util
 
+MODE = 'dev'
 
 class BaseTestCase(TestCase):
 
@@ -19,8 +20,9 @@ class BaseTestCase(TestCase):
         app.app.json_encoder = JSONEncoder
         app.add_api('papahana.yaml')
 
-        # mode = 'test'
-        mode = util.read_mode()
+        # mode = 'dev'
+        # mode = util.read_mode()
+        mode = MODE
         print(f'working with mode: {mode}')
         urls = util.read_urls()
         config_params = util.read_config(mode)
@@ -33,8 +35,8 @@ class BaseTestCase(TestCase):
         return app.app
 
     def set_api_cookie(self):
-        config_params = util.read_config('testing')
-        keck_id = config_params['admin']
+        config_params = util.read_config('dev')
+        keck_id = config_params['admin'][0]
         query = {'keck_id': keck_id}
         results = helpers.get_by_query(query, 'observerCollect', db_name='obs_db')
         raw_api_key = results[0]['api_key']
@@ -45,6 +47,7 @@ class BaseTestCase(TestCase):
         self.client.set_cookie('.keck.hawaii.edu', 'ODB-API-KEY', api_key)
 
     def insert_ob(self, ob_body):
+
         response = self.client.open(
             '/obsBlocks',
             method='POST',
@@ -59,15 +62,13 @@ class BaseTestCase(TestCase):
         return ob_id
 
     def delete_ob(self, ob_id):
-        print(f'deleting: {ob_id}')
         query_string = [('ob_id', ob_id)]
         response = self.client.open(
             '/obsBlocks',
             method='DELETE',
             query_string=query_string)
 
-        print('delte resp', response)
-        self.assert_status(response, 204,
+        self.assert_status(response, 200,
                            'Failed __init__ delete_ob,  did not delete OB')
 
 
