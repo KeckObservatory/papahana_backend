@@ -9,6 +9,7 @@ from papahana.test import BaseTestCase
 from papahana.test.test_default_values import ContainerTestDefaults
 from papahana.test.test_default_values import ObsBlocksTestDefaults
 
+MODE = 'dev'
 
 class TestContainersController(BaseTestCase):
     """ContainersController integration test stubs"""
@@ -28,8 +29,8 @@ class TestContainersController(BaseTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.defaults = ContainerTestDefaults('test')
-        cls.ob_defaults = ObsBlocksTestDefaults('test')
+        cls.defaults = ContainerTestDefaults(MODE)
+        cls.ob_defaults = ObsBlocksTestDefaults(MODE)
         cls.container = cls.defaults.get_example_container(0)
         cls.container_new = cls.defaults.get_example_container(-1)
 
@@ -281,8 +282,8 @@ class TestContainerDeleteController(BaseTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.defaults = ContainerTestDefaults('test')
-        cls.ob_defaults = ObsBlocksTestDefaults('test')
+        cls.defaults = ContainerTestDefaults(MODE)
+        cls.ob_defaults = ObsBlocksTestDefaults(MODE)
         cls.container = cls.defaults.get_example_container(0)
         cls.container_new = cls.defaults.get_example_container(-1)
 

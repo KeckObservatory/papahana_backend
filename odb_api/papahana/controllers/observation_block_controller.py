@@ -56,20 +56,14 @@ def ob_post(body):
     :rtype: str of new OB ID.
     """
     auth_utils.check_sem_id_associated(body['metadata']['sem_id'])
-    if connexion.request.is_json:
-        # check that status is complete,  add defaults
-        body = ob_utils.add_default_status(body, connexion.request.get_json())
 
     # the id will be generated on inserting
-    if '_ob_id' in body:
-        del body['_ob_id']
+    body = ob_utils.clean_ids(body)
 
     # reset tags,  these may or may not come in as str but need ObjectID
     body['metadata']['tags'] = []
 
-    print(body)
-
-    result = ob_utils.insert_ob(body)
+    result = ob_utils.insert_new_ob(body)
 
     return str(result)
 
@@ -104,7 +98,7 @@ def ob_put(body, ob_id):
             'modified': result.modified_count, 'new_id': result.upserted_id}
 
 
-def ob_delete(ob_id):
+def ob_delete(ob_id, db_name=None):
     """
     Removes the observation block
 
@@ -114,16 +108,15 @@ def ob_delete(ob_id):
     :rtype: None
     """
     # check that access is allowed to be deleted,  422 if not found.
-    _ = ob_utils.ob_id_associated(ob_id)
+    _ = ob_utils.ob_id_associated(ob_id, db_name)
 
     # mark deleted in the original OB document since this is a status field
     body = {'status.deleted': True}
-    # _ = utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
-
     result = utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
 
     return {'_id': ob_id,  'matched': result.matched_count,
             'modified': result.modified_count, 'new_id': result.upserted_id}
+
 
 def ob_duplicate(ob_id, sem_id=None):
     """
@@ -148,7 +141,7 @@ def ob_duplicate(ob_id, sem_id=None):
         ob_orig['metadata']['sem_id'] = sem_id
         auth_utils.check_sem_id_associated(sem_id)
 
-    result = ob_utils.insert_ob(ob_orig)
+    result = ob_utils.insert_new_ob(ob_orig)
 
     return utils.json_with_objectid(result)
 
@@ -196,7 +189,7 @@ def ob_status_update(ob_id, status_field, new_status):
 
     query = utils.query_by_id(ob_id)
     new_vals = {f'status.{status_field}': new_status}
-    result = utils.update_doc(query, new_vals, 'obCollect')
+    _ = utils.update_doc(query, new_vals, 'obCollect')
 
     return ob_status_get(ob_id, status_field=status_field)
 
@@ -670,12 +663,10 @@ def ob_time_constraint_put(body, ob_id):
     :rtype: None
     """
     if not isinstance(body, list):
-        abort(400, 'Invalid input type -- time constraints must be an array.')
+        abort(400, 'Invalid input type -- time constraints must be an object.')
 
     # check that access is allowed to the ob being replaced.
-    ob = ob_get(ob_id, tag_str=False)
-    if not ob:
-        abort(422, f'Observation Block id: {ob_id} not found.')
+    _ = ob_utils.ob_id_associated(ob_id, tag_id=True)
 
     utils.update_doc(utils.query_by_id(ob_id), {"time_constraints": body},
                      'obCollect')

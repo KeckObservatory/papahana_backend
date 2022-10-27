@@ -7,6 +7,7 @@ from papahana import util
 The test values are retreived from the database defined as 'test' in the 
 config file.
 """
+MODE = 'dev'
 
 class ContainerTestDefaults:
     def __init__(self, mode):
@@ -28,11 +29,13 @@ class ContainerTestDefaults:
 
 class ObsBlocksTestDefaults:
     def __init__(self, mode):
-        self.config = util.read_config(mode)
+        # self.config = util.read_config(mode)
+        self.config = util.read_config(MODE)
         coll = util.config_collection('obCollect', conf=self.config)
         self.ob_list = list(coll.find({"metadata.ob_type": 'science'},
                                       sort=[('_id', pymongo.DESCENDING)]))
-
+        # ob = self.ob_list[0]
+        # print('init1', ob['status'])
         self.example_ob_id = []
         self.init_ob_keys()
 
@@ -56,7 +59,12 @@ class ObsBlocksTestDefaults:
         if '_ob_id' in ob.keys():
             del ob['_ob_id']
 
-        return self.ob_list[indx]
+        # swagger definition sets default = [] to None (in model Status)
+        ob['status']['executions'] = []
+        ob['status']['deleted'] = False
+
+        # return self.ob_list[indx]
+        return ob
 
     def save_example_ob(self, indx):
         ob = self.ob_list[indx]

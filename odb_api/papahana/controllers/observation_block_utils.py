@@ -45,7 +45,16 @@ def clean_revision_metadata(ob):
     return ob
 
 
-def ob_id_associated(ob_id, tag_id=True):
+def clean_ids(body):
+    # the id will be generated on inserting
+    if '_id' in body:
+        del body['_id']
+    if '_ob_id' in body:
+        del body['_ob_id']
+
+    return body
+
+def ob_id_associated(ob_id, tag_id=True, db_name=None):
     """
     Minimally check that the OB can be viewed by the user logged in.  The
     returned OB is the original OB,  not the most recent.
@@ -56,13 +65,13 @@ def ob_id_associated(ob_id, tag_id=True):
     :type tag_id: bool
     """
     # will return one result,  and throw 422 if not found
-    ob = utils.get_by_id(ob_id, 'obCollect', tag_id=tag_id)
+    ob = utils.get_by_id(ob_id, 'obCollect', tag_id=tag_id, db_name=db_name)
     auth_utils.check_sem_id_associated(ob['metadata']['sem_id'])
 
     return ob
 
 
-def insert_ob(ob_doc):
+def insert_new_ob(ob_doc):
     """
     Add a new document to a collection.
 
@@ -75,7 +84,12 @@ def insert_ob(ob_doc):
 
     # generate the _ob_id -- don't allow it to be inserted manually
     sem_id = ob_doc['metadata']['sem_id']
+
+    # add a new history ID
     ob_doc['_ob_id'] = get_new_ob_id(sem_id)
+
+    # Zero the status for a new OB
+    ob_doc = add_default_status(ob_doc)
 
     metadata = {"timestamp": datetime.now()}
     result = coll.patch_one(ob_doc, metadata=metadata)
@@ -202,7 +216,7 @@ def write_json(dict_data, output):
     fp.close()
 
 
-def add_default_status(body, json_body):
+def add_default_status(body):
     """
     Add the default status field as defined in papahana.models.status
 
@@ -210,9 +224,10 @@ def add_default_status(body, json_body):
     @param json_body: <dict> the json body OB
     @return:
     """
-    ob_obj = ObservationBlock.from_dict(json_body)
-    if not ob_obj.status:
-        body['status'] = ast.literal_eval(str(Status()).replace("\n", ""))
+    body['status'] = ast.literal_eval(str(Status()).replace("\n", ""))
+
+    # swagger definition sets default = [] to None (in model Status)
+    body['status']['executions'] = []
 
     return body
 
@@ -221,22 +236,30 @@ def get_new_ob_id(sem_id):
     """
     Generate a new (next) _ob_id (<sem_id>_####)
 
-    @param coll: <pymongo> the collection
     @param sem_id: <str> the sem_id
+
     @return: <str> _ob_id format: <sem_id>_####
     """
     coll = config_collection('deltaCollect')
     pipeline = [
-        {'$match': {'_ob_id': {'$regex': {sem_id}}}},
-        {'$sort': {'_ob_id': -1}}, {'$limit': 1},
-        {'$project': {'_ob_id': 1, '_id': 0}}
+        {"$match": {"_ob_id": {"$regex": sem_id}}},
+        {"$sort": {"_ob_id": -1}}, {"$limit": 1},
+        {"$project": {"_ob_id": 1, "_id": 0}}
     ]
-    agg_result = coll.aggregate(pipeline)
+
+    agg_result = list(coll.aggregate(pipeline))
+
+    if not agg_result:
+        n_ob = 0
+        return f"{sem_id}_{str(n_ob).zfill(4)}"
+
+    agg_result = agg_result[0]
     if '_ob_id' not in agg_result or not agg_result['_ob_id']:
         n_ob = 0
-    else:
-        largest_ob_id = agg_result['_ob_id']
-        n_ob = largest_ob_id.split('_')[-1]
+        return f"{sem_id}_{str(n_ob).zfill(4)}"
+
+    largest_ob_id = agg_result['_ob_id']
+    n_ob = int(largest_ob_id.split('_')[-1]) + 1
 
     return f"{sem_id}_{str(n_ob).zfill(4)}"
 

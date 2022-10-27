@@ -122,14 +122,13 @@ def search_ob_component(**kwargs):
 
     coll, pipeline = base_search_pipeline(kwargs)
 
-    # pipeline += [{'$replaceRoot': {'newRoot': '$common_parameters'}}]
     if 'return_id' in kwargs and kwargs['return_id']:
         send_id = 0
     else:
         send_id = 1
 
-    # pipeline += [{'$project': {kwargs['ob_component_name']: 1, '_id': send_id}}]
-    pipeline += [{'$project': {kwargs['ob_component_name']: 1, '_id': 1}}]
+    pipeline += [{'$project': {kwargs['ob_component_name']: 1, '_id': send_id}}]
+    # pipeline += [{'$project': {kwargs['ob_component_name']: 1, '_id': 1}}]
 
     result = list(coll.aggregate(pipeline))
 

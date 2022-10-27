@@ -8,6 +8,7 @@ from papahana.test.test_default_values import ObsBlocksTestDefaults
 
 from papahana.models.status_field import StatusField
 
+MODE = 'dev'
 
 class TestObservationBlockController(BaseTestCase):
     """ObservationBlockController integration test stubs"""
@@ -18,21 +19,20 @@ class TestObservationBlockController(BaseTestCase):
         """
         self.set_api_cookie()
         self.ob_id = self.insert_ob(self.ob)
-        print(f'id {self.ob_id}')
 
     def tearDown(self):
         """
         Remove the OB that was inserted at start of test
         """
-        print(f'delete: {self.ob_id}')
-        self.delete_ob(self.ob_id)
+
+        # self.delete_ob(self.ob_id)
 
     @classmethod
     def setUpClass(cls):
         """
         called once before running all test methods
         """
-        cls.defaults = ObsBlocksTestDefaults('test')
+        cls.defaults = ObsBlocksTestDefaults(MODE)
         cls.template_id = 'seq0'
         cls.file_parameter = "json"
         cls.ob = cls.defaults.get_example_ob(0)
@@ -86,6 +86,7 @@ class TestObservationBlockController(BaseTestCase):
             '/obsBlocks',
             method='GET',
             query_string=query_string)
+
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -95,6 +96,15 @@ class TestObservationBlockController(BaseTestCase):
         del result_ob['_id']
         if '_ob_id' in result_ob:
             del result_ob['_ob_id']
+
+        if '_id' in self.ob:
+            del self.ob['_id']
+        if '_ob_id' in self.ob:
+            del self.ob['_ob_id']
+
+        # new OB is input with 'zered' status
+        del result_ob['status']
+        del self.ob['status']
 
         try:
             assert(result_ob == self.ob)
@@ -118,16 +128,20 @@ class TestObservationBlockController(BaseTestCase):
             data=json.dumps(replacement_ob),
             content_type='application/json',
             query_string=query_string)
-        self.assert_status(response, 204,
-                           'Response body is : ' + response.data.decode('utf-8'))
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
 
         # confirm the new OB was inserted
         response = self.get_ob(self.ob_id)
         result_ob = json.loads(response.data.decode('utf-8'))
 
-        del result_ob['_id']
+        if '_id' in result_ob.keys():
+            del result_ob['_id']
         if '_ob_id' in result_ob.keys():
             del result_ob['_ob_id']
+
+        del result_ob['status']
+        del replacement_ob['status']
 
         try:
             assert(result_ob == replacement_ob)
@@ -155,13 +169,11 @@ class TestObservationBlockController(BaseTestCase):
             content_type='application/json')
 
         self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+                       f"Response body is : {response.data.decode('utf-8')}")
 
         # confirm the OB exists in the db
-        self.assert200(self.get_ob(self.parse_id(response)),
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-        # self.delete_ob(self.parse_id(response))
+        # self.assert200(self.get_ob(self.parse_id(response)),
+        #                f"Response body is : {response.data.decode('utf-8')}")
 
     def test_ob_duplicate(self):
         """Test case for ob_duplicate
@@ -185,8 +197,6 @@ class TestObservationBlockController(BaseTestCase):
         self.assert200(response, 'Response body is : ' + response.data.decode('utf-8'))
 
         ob_json = json.loads(response.data.decode('utf-8'))
-
-        # self.delete_ob(ob_json['_id'])
 
 
 
@@ -561,7 +571,7 @@ class TestObservationBlockDelete(BaseTestCase):
         """
         called once before running all test methods
         """
-        cls.defaults = ObsBlocksTestDefaults('test')
+        cls.defaults = ObsBlocksTestDefaults(MODE)
         cls.template_id = 'seq0'
         cls.file_parameter = "json"
         cls.ob = cls.defaults.get_example_ob(0)
@@ -587,25 +597,13 @@ class TestObservationBlockDelete(BaseTestCase):
 
         Insert an OB and then delete it.  Checks it returns status 204.
         """
-        print(f'!!!!OB ID {self.ob_id}')
         query_string = [('ob_id', self.ob_id)]
         response = self.client.open(
             '/obsBlocks',
             method='DELETE',
             query_string=query_string)
-        self.assert_status(response, 422,
+        self.assert_status(response, 200,
                            'Response body is : ' + response.data.decode('utf-8'))
-
-        # confirm the OB does not exist in the db
-        # self.assert204(self.get_ob(self.parse_id(response)),
-        #                'Response body is : ' + response.data.decode('utf-8'))
-
-        # self.assert_status(self.get_ob(self.parse_id(response)), 204,
-        #                    'Failed __init__ delete_ob,  did not delete OB')
-
-
-
-
 
 
 if __name__ == '__main__':

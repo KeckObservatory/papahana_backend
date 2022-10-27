@@ -89,9 +89,8 @@ def generate_observation_block(template_list, coll, filled, inst):
     schema = {
         '_ob_id': f"{meta['sem_id']}_{str(n_ob).zfill(4)}",
         'metadata': meta,
-        'target': random.choice([None, target_utils.generate_sidereal_target(),
-                                 target_utils.generate_nonsidereal_target(),
-                                 target_utils.generate_mos_target()]),
+        'target': random.choice([target_utils.generate_sidereal_target(),
+                                 target_utils.generate_nonsidereal_target()]),
         'acquisition': generate_acquisition(filled),
         'observations': generate_science(filled, template_list),
         'associations': random_utils.randArrStr(NLEN, MAX_ARRAY_LEN),

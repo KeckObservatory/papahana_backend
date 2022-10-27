@@ -15,6 +15,7 @@ from papahana.models.sem_id_schema import SemIdSchema
 from papahana.models.target import Target 
 from papahana.test import BaseTestCase
 
+MODE = 'dev'
 
 class TestSemesterIdController(BaseTestCase):
     """SemesterIdController integration test stubs"""
@@ -34,7 +35,7 @@ class TestSemesterIdController(BaseTestCase):
     def setUpClass(cls):
         #TODO find the socket warning!
         warnings.simplefilter("ignore")
-        cls.ob_defaults = ObsBlocksTestDefaults('test')
+        cls.ob_defaults = ObsBlocksTestDefaults(MODE)
 
 
     # ------
