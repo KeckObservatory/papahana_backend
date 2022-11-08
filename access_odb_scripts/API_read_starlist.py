@@ -91,9 +91,12 @@ args = parse_args()
 api_session = Session()
 
 # Add the login url and API example url
-login_url = 'https://www3.keck.hawaii.edu/login/script'
-sem_id = '2022B_K111'
-api_url = 'https://www3.keck.hawaii.edu/api/ddoi'
+keck_site = # add the keck site to use
+login_url = f'https://{keck_site}/login/script'
+api_url = f'https://{keck_site}/api/ddoi'
+
+# program sem_id,  ie 2022B_K111
+sem_id = ''
 
 # returns all OB metadata for a program (2022B_K111)
 url_ob_list = f'{api_url}/semesterIds/{sem_id}/ob/metadata'
