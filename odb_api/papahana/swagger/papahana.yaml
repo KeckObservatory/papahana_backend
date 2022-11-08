@@ -2656,8 +2656,8 @@ components:
           type: string
 #          ref: '#/components/schemas/VersionSchema'
       example:
-        name: multi_object_target
-        ui_name: Multi-Object Spectroscopy Target
+        name: sidereal_target
+        ui_name: Sidereal Target
         template_type: target
         version: 0.1.1
 
@@ -2743,9 +2743,9 @@ components:
           default: 0
         executions:
           type: array
+          default: []
           items:
             $ref: '#/components/schemas/DateSchema'
-          default: []
         deleted:
           type: boolean
           default: false
@@ -2826,22 +2826,18 @@ components:
       type: string
       oneOf:
         - pattern: '^\d{2}:\d{2}:\d{2}$'
-        - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}$'
-        - pattern: '^\d{2}:\d{2}:\d{2}.\d{2}$'
+        - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}.*$'
       example: "12:32:14.4"
 
     DecSchema:
       type: string
       oneOf:
         - pattern: '^\d{2}:\d{2}:\d{2}$'
-        - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}$'
-        - pattern: '^\d{2}:\d{2}:\d{2}.\d{2}$'
+        - pattern: '^\d{2}:\d{2}:\d{2}.\d{1}.*$'
         - pattern: '^-\d{2}:\d{2}:\d{2}$'
-        - pattern: '^-\d{2}:\d{2}:\d{2}.\d{1}$'
-        - pattern: '^-\d{2}:\d{2}:\d{2}.\d{2}$'
+        - pattern: '^-\d{2}:\d{2}:\d{2}.\d{1}.*$'
         - pattern: '^\+\d{2}:\d{2}:\d{2}$'
-        - pattern: '^\+\d{2}:\d{2}:\d{2}.\d{1}$'
-        - pattern: '^\+\d{2}:\d{2}:\d{2}.\d{2}$'
+        - pattern: '^\+\d{2}:\d{2}:\d{2}.\d{1}.*$'
       example: "19:32:28.4"
 
     DitherSchema:
