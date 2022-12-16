@@ -33,7 +33,11 @@ def json_with_objectid(result):
     :type result: dict
     :rtype : Dict{Query Result}
     """
+    if not result:
+        return None
+
     cln_result = json.loads(json_util.dumps(result))
+
     if '_id' in cln_result and '$oid' in cln_result['_id']:
         cln_result['_id'] = cln_result['_id']['$oid']
 

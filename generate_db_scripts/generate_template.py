@@ -2,6 +2,7 @@ import argparse
 
 from kpf_templates import kpf_common_parameters, kpf_sci_stare
 from kcwi_templates import kcwi_ifu_acq_offsetStar_template, kcwi_ifu_acq_direct_template, kcwi_ifu_sci_stare_template, kcwi_ifu_sci_dither_template, kcwi_common_parameters
+from ssc_templates import ssc_acq_direct, ssc_common_parameters, ssc_sci_image, ssc_sci_dither
 
 from papahana import util as papahana_util
 from copy import deepcopy
@@ -198,16 +199,6 @@ nonsidereal_target = OrderedDict([
 ])
 
 
-mos_target = OrderedDict([
-    ("metadata", {
-        "name": "multi_object_target",
-        "ui_name": "Multi-Object Spectroscopy Target",
-        "template_type": "target",
-        "version": "0.1.1"
-    }),
-    ("parameters", mos_extra_params)
-])
-
 
 def parse_args():
     """
@@ -237,15 +228,17 @@ def generate_templates(config):
     templates_targets = [
         sidereal_target,
         nonsidereal_target,
-        mos_target,
         kcwi_common_parameters
     ]
     templates_kpf = [kpf_common_parameters, kpf_sci_stare]
+    templates_ssc = [ssc_acq_direct, ssc_common_parameters,
+                     ssc_sci_image, ssc_sci_dither]
 
     templates = []
 
     templates += templates_kpf
     templates += templates_kcwi
+    templates += templates_ssc
     templates += templates_targets
 
     result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)

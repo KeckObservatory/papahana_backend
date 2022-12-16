@@ -1067,6 +1067,36 @@ paths:
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
+  /obsBlocks/starlist:
+    post:
+      tags:
+        - Observation Block
+      description: Creates an OB for each target in starlist.
+      operationId: ob_starlist_post
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        "200":
+          description: On success inserts an OB for each target in starlist.
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Copy Observation Block not found with provided OB ID.
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
+
   /obsBlocks/previousVersion:
     get:
       tags:
@@ -2805,6 +2835,7 @@ components:
         - pattern: '^[Nn][Ii][Re][Ss]$'
         - pattern: '^[Nn][Ii][Re][Cc]2$'
         - pattern: '^[Kk][Pp][Ff]$'
+        - pattern: '^[Ss][Ss][Cc]$'
         - enum:
           - DE
           - DF

@@ -14,7 +14,7 @@ def instrument_packages(instrument, ip_version=None):
 
     :rtype: InstrumentPackage
     """
-    package = inst_utils.get_ip(instrument, ip_version)
+    package = inst_utils.get_ip(instrument.upper(), ip_version)
 
     return utils.json_with_objectid(package)
 

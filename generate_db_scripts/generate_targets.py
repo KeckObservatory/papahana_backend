@@ -27,8 +27,8 @@ def generate_dec():
 def generate_sidereal_target():
     schema = {
         "metadata": {
-            "name": "multi_object_target",
-            "ui_name": "Multi-Object Spectroscopy Target",
+            "name": "sidereal_target",
+            "ui_name": "Sidereal Target",
             "template_type": "target",
             "version": "0.1.1"
         },
@@ -52,15 +52,16 @@ def generate_sidereal_target():
 
 def generate_nonsidereal_target():
     schema = generate_sidereal_target()
+    schema['metadata']['name'] = "non_sidereal_target"
     schema['parameters']['target_coord_dra'] = random_utils.randFloat()
     schema['parameters']['target_coord_ddec']: random_utils.randFloat()
 
     return schema
 
 
-def generate_mos_target():
-    schema = generate_sidereal_target()
-    schema['parameters']['inst_cfg_mask_name'] = "Science Mask 101"
-    schema['parameters']['inst_cfg_mask_barcode'] = "H01830928"
-
-    return schema
+# def generate_mos_target():
+#     schema = generate_sidereal_target()
+#     schema['parameters']['inst_cfg_mask_name'] = "Science Mask 101"
+#     schema['parameters']['inst_cfg_mask_barcode'] = "H01830928"
+#
+#     return schema

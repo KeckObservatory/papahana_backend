@@ -7,6 +7,7 @@ from generate_observers import generate_observer_collection
 
 import kcwi_filled_templates as kcwi_filled
 import kpf_filled_templates as kpf_filled
+import ssc_filled_templates as ssc_filled
 
 import generate_template
 from papahana import util as papahana_util
@@ -14,7 +15,7 @@ from os import path
 
 CONFIG = 'config.live.ini'
 APP_PATH = path.abspath(path.dirname(__file__))
-INST_LIST = ['KPF', 'KCWI']
+INST_LIST = ['KPF', 'KCWI', 'SSC']
 
 if __name__=='__main__':
     args = utils.parse_args()
@@ -72,6 +73,8 @@ if __name__=='__main__':
             ip = kcwi_filled.generate_inst_package(inst_specific_templates)
         elif inst_lower == 'kpf':
             ip = kpf_filled.generate_inst_package(inst_specific_templates)
+        elif inst_lower == 'ssc':
+            ip = ssc_filled.generate_inst_package(inst_specific_templates)
         else:
             print(f'{inst} filled templates undefined!')
             continue

@@ -5,6 +5,7 @@ from papahana import util as papahana_util
 
 import kcwi_filled_templates as kcwi
 import kpf_filled_templates as kpf
+import ssc_filled_templates as ssc
 
 from bson.objectid import ObjectId
 import random
@@ -107,6 +108,8 @@ def set_filled_template_module(inst):
         return kcwi
     elif inst == 'kpf':
         return kpf
+    elif inst == 'ssc':
+        return ssc
 
 
 def randStatus():

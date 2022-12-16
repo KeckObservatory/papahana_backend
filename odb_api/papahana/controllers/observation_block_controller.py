@@ -146,6 +146,21 @@ def ob_duplicate(ob_id, sem_id=None):
     return utils.json_with_objectid(result)
 
 
+def ob_starlist_post(file, ob_id):
+    """ob_starlist_post
+
+    Creates an OB for each target in starlist. # noqa: E501
+
+    :param file:
+    :type file: strstr
+    :param ob_id: observation block ObjectId
+    :type ob_id: str
+
+    :rtype: None
+    """
+    return 'do some magic!'
+
+
 # routes for the completion status
 def ob_status_get(ob_id, status_field=None):  
     """
