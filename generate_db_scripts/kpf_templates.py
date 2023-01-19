@@ -9,350 +9,706 @@ kpf_common_parameters = {
         "version": "0.1.1"
     },
     "instrument_parameters": {
-        "inst_cfg_simulcal_source": {
-            "ui_name": "Simultaneous Cal Fiber Source",
-            "description": "Source to illuminate the simultaneous cal fiber (i.e. octagon position)",
-            "option": "set",
-            "allowed": [
-            ],
+        "inst_cfg_runagitator": {
             "default": None,
-            "optionality": "required",
-            "type": "string",
-            "units": None
-        },
-        "inst_cfg_simulcal_autofilter": {
-            "ui_name": "Simultaneous Cal Fiber Filter",
-            "description": "System should automatically set ND filters for cal source?",
+            "description": "Run the agitator during exposures?",
             "option": "boolean",
-            "default": None,
             "optionality": "required",
             "type": "boolean",
+            "ui_name": "Agitator On",
             "units": None
-        },
-        "inst_cfg_simulcal_nd1": {
-            "ui_name": "Simultaneous Cal Fiber ND Filter 1",
-            "description": "ND filter in first filter wheel if inst_cfg_simulcal_autofilter is not True",
-            "option": "set",
-            "allowed": ['ND0.1', 'ND0.2', 'ND0.3', 'ND0.4', 'ND0.5'],
-            "default": "ND0.1",
-            "optionality": "optional",
-            "type": "string",
-            "units": None
-        },
-        "inst_cfg_simulcal_nd2": {
-            "ui_name": "Simultaneous Cal Fiber ND Filter 1",
-            "description": "ND filter in second filter wheel if inst_cfg_simulcal_autofilter is not True",
-            "option": "set",
-            "allowed": ['ND0.1', 'ND0.2', 'ND0.3', 'ND0.4', 'ND0.5'],
-            "default": "ND0.1",
-            "optionality": "optional",
-            "type": "string",
-            "units": None
-        },
-        "inst_cfg_sss_sky": {
-            "ui_name": "Source Select Shutter Sky",
-            "description": "Should the source select shutter for sky be open?",
-            "option": "boolean",
+        }
+    },
+    "detector_parameters": {
+        "det1_cfg_trigger": {
             "default": None,
+            "description": "Trigger the Ca H&K detector?",
+            "option": "boolean",
             "optionality": "required",
             "type": "boolean",
+            "ui_name": "Ca H&K Detector Trigger",
             "units": None
         },
-        "inst_cfg_sss_sci": {
-            "ui_name": "Source Select Shutter Science",
-            "description": "Should the source select shutter for science be open?",
-            "option": "boolean",
+        "det2_cfg_trigger": {
             "default": None,
+            "description": "Trigger the green detector?",
+            "option": "boolean",
             "optionality": "required",
             "type": "boolean",
+            "ui_name": "Green Detector Trigger",
             "units": None
         },
-        "inst_cfg_sss_socal_sci": {
-            "ui_name": "Source Select Shutter SoCal Science",
-            "description": "Should the source select shutter for SoCal science be open?",
-            "option": "boolean",
+        "det3_cfg_trigger": {
             "default": None,
+            "description": "Use red detector?",
+            "option": "boolean",
             "optionality": "required",
             "type": "boolean",
-            "units": None
-        },
-        "inst_cfg_sss_socal_cal": {
-            "ui_name": "Source Select Shutter SoCal Calibration",
-            "description": "Should the source select shutter for SoCal cal be open?",
-            "option": "boolean",
-            "default": None,
-            "optionality": "required",
-            "type": "boolean",
+            "ui_name": "Red Detector Trigger",
             "units": None
         }
     },
     "guider_parameters": {
-        "guider1_cfg_mode": {
-            "ui_name": "Guide Camera Mode",
-            "option": "set",
+    },
+    "tcs_parameters": {
+    }
+}
+
+kpf_science = {
+    "metadata": {
+        "instrument": "KPF",
+        "name": "kpf_sci",
+        "script": "kpf_sci",
+        "script_version": "0.1.0",
+        "template_type": "science",
+        "ui_name": "KPF science",
+        "version": "0.1.0"
+    },
+    "parameters": {
+
+        "inst_cfg_nd1": {
             "allowed": [
-                "auto",
-                "manual",
-                "off"
+                "OD 0.1",
+                "OD 1.0",
+                "OD 1.3",
+                "OD 2.0",
+                "OD 3.0",
+                "OD 4.0"
             ],
             "default": None,
+            "description": "Filter to use in the ND1 filter wheel",
+            "option": "set",
             "optionality": "required",
-            "type": "string",
+            "type": "str",
+            "ui_name": "ND1 Filter",
             "units": None
         },
-        "guider1_cfg_framerate": {
-            "ui_name": "Guide Camera Frame Rate",
-            "description": "If guide_cfg_mode is manual, frame rate for camera",
-            "option": "range",
+        "inst_cfg_nd2": {
+            "allowed": [
+                "OD 0.1",
+                "OD 0.3",
+                "OD 0.5",
+                "OD 0.8",
+                "OD 1.0",
+                "OD 4.0"
+            ],
+            "default": None,
+            "description": "Filter to use in the ND2 filter wheel",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "ND2 Filter",
+            "units": None
+        },
+        "inst_cfg_calsource": {
+            "allowed": [
+                "Home",
+                "EtalonFiber",
+                "BrdbandFiber",
+                "U_gold",
+                "U_daily",
+                "Th_daily",
+                "Th_gold",
+                "SoCal-CalFib",
+                "LFCFiber"
+            ],
+            "default": None,
+            "description": "Calibration source to use",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Calibration source",
+            "units": None
+        },
+        "inst_cfg_em_band": {
             "allowed": [
                 1,
-                400
+                2,
+                3,
+                4
             ],
-            "default": 100,
+            "default": 1,
+            "description": "Which wavelength band of the exposure meter to use for termination condition?",
+            "option": "set",
             "optionality": "optional",
             "type": "int",
-            "units": "Hz"
+            "ui_name": "Exposure Meter Wavelength Band",
+            "units": None
         },
-        "guider1_cfg_camgain": {
-            "ui_name": "Guide Camera Gain",
-            "description": "If guide_cfg_mode is manual, gain for camera",
+        "inst_cfg_em_exptime": {
+            "allowed": [
+                0.1,
+                1800
+            ],
+            "default": None,
+            "description": "Exposure time in seconds",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Exposure time in seconds",
+            "units": "s"
+        },
+        "inst_cfg_em_flux": {
+            "allowed": [
+                1,
+                1000000000.0
+            ],
+            "default": 100000.0,
+            "description": "What flux value should trigger the exposure termination?",
+            "option": "range",
+            "optionality": "optional",
+            "type": "float",
+            "ui_name": "Termination flux",
+            "units": "counts"
+        },
+        "inst_cfg_em_mode": {
+            "allowed": [
+                "off",
+                "telescope",
+                "manual",
+                "auto"
+            ],
+            "default": "manual",
+            "description": "off = do not take EM exposures, monitor = take EM exposures, but do not use for exposure termination, trigger = take EM exposures and use for exposure termination, auto = take EM exposures using automatic exposure time and use for exposure termination",
             "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Exposure meter mode.",
+            "units": None
+        },
+        "det_exp_time": {
+            "allowed": [
+                0.1,
+                3600
+            ],
+            "default": None,
+            "description": "Exposure time in seconds",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Exposure time",
+            "units": "seconds"
+        },
+        "det_exp_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of exposures to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "int",
+            "ui_name": "Number of Exposures",
+            "units": None
+        },
+        "target_info_object": {
+            "default": "",
+            "description": "Value for the object keyword",
+            "option": "open",
+            "optionality": "optional",
+            "type": "string",
+            "ui_name": "Object Keyword",
+            "units": None
+        },
+        "inst_cfg_ts_simulcal": {
+            "default": None,
+            "description": "Should the timed shutter for simultaneous calibration fiber be opened during exposure?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Simultaneous Calibration fiber Timed Shutter Open",
+            "units": None
+        }
+    }
+}
+
+kpf_acq = {
+    "metadata": {
+        "instrument": "KPF",
+        "name": "kpf_acq",
+        "script": "kpf_acq",
+        "script_version": "0.1.0",
+        "template_type": "acquisition",
+        "ui_name": "KPF acquisition",
+        "version": "0.1.0",
+        "sequence_number": 0
+    },
+    "parameters": {
+        "guider_cfg_gain": {
             "allowed": [
                 "high",
                 "medium",
                 "low"
             ],
-            "default": "high",
-            "optionality": "optional",
-            "type": "string",
+            "description": "Only used if guide mode is manual",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Guider camera gain (high, medium, or low).",
             "units": None
         },
-        "guider1_cfg_exptime": {
-            "ui_name": "Guide Camera Exposure Time",
-            "description": "If guide_cfg_mode is manual, exposure time for camera",
-            "option": "range",
+        "guider_cfg_fps": {
             "allowed": [
-                1e-6,
+                0.01,
+                400
+            ],
+            "description": "Only used if guide mode is manual",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Guider Rate",
+            "units": "Hz"
+        },
+        "guider_cfg_loopgain": {
+            "allowed": [
+                0.01,
                 1
             ],
-            "default": None,
-            "optionality": "optional",
-            "type": "float",
-            "units": "seconds"
-        },
-        "guider1_cfg_loopgain": {
-            "ui_name": "Guide Camera Loop Gain",
-            "description": "If guide_cfg_mode is manual, tip tilt loop gain",
+            "description": "Tip tilt loop gain",
             "option": "range",
-            "allowed": [
-                0,
-                1
-            ],
-            "default": None,
-            "optionality": "optional",
-            "type": "float",
-            "units": None,
-        },
-        "guider1_cfg_xwindow": {
-            "ui_name": "Guide Camera X-Window Size",
-            "description": "Size of the guide window in X pixels",
-            "option": "range",
-            "allowed": [
-                0,
-                640
-            ],
-            "default": 64,
-            "optionality": "optional",
-            "type": "int",
-            "units": 'pixels',
-        },
-        "guider1_cfg_ywindow": {
-            "ui_name": "Guide Camera Y-Window Size",
-            "description": "Size of the guide window in Y pixels",
-            "option": "range",
-            "allowed": [
-                0,
-                640
-            ],
-            "default": 64,
-            "optionality": "optional",
-            "type": "int",
-            "units": 'pixels',
-        },
-        "guider1_cfg_raoffset": {
-            "ui_name": "Guider RA Offset",
-            "description": "Offset distance in RA from the guide star to science target",
-            "option": "range",
-            "allowed": [
-                0,
-                20
-            ],
-            "default": None,
             "optionality": "required",
             "type": "float",
-            "units": "arcseconds",
+            "ui_name": "Tip tilt loop gain",
+            "units": None
         },
-        "guider1_cfg_decoffset": {
-            "ui_name": "Guider RA Offset",
-            "description": "Offset distance in Dec from the guide star to science target",
-            "option": "range",
+        "guider_mode": {
             "allowed": [
-                0,
-                20
+                "off",
+                "telescope",
+                "manual",
+                "auto"
             ],
-            "default": None,
+            "description": "off = do not guide, telescope = use slow telescope guiding only, manual = use tip tilt with manually configured exposure parameters, auto = use tip tilt with automatically configured exposure parameters",
+            "option": "set",
             "optionality": "required",
-            "type": "float",
-            "units": "arcseconds",
+            "type": "str",
+            "ui_name": "Guide camera exposure mode.",
+            "units": None
         },
-    },
-    "detector parameters": {
-        "det1_trigger": {
-            "ui_name": "Green Detector On",
-            "description": "Trigger the green detector?",
-            "option": "boolean",
-            "default": None,
+        "tcs_coord_po": {
+            "allowed": [
+                "KPF",
+                "SKY",
+                "EM_SKY",
+                "REF"
+            ],
+            "description": "Pointing origin",
+            "option": "set",
             "optionality": "required",
-            "type": "boolean",
+            "type": "str",
+            "ui_name": "Pointing origin",
             "units": None
-        },
-        "det1_mode_gain": {
-            "ui_name": "The green side gain",
-            "option": "set",
-            "allowed": [1, 2, 5, 10],
-            "default": 1,
-            "optionality": "optional",
-            "type": "integer",
-            "units": None
-        },
-        "det1_cfg_binning": {
-            "ui_name": "The green side binning",
-            "allowed": ["1,1", "2,2"],
-            "option": "set",
-            "optionality": "optional",
-            "default": "1,1",
-            "type": "string",
-            "units": None
-        },
-        "det2_trigger": {
-            "ui_name": "Red Detector On",
-            "description": "Trigger the red detector?",
-            "option": "boolean",
-            "default": None,
-            "optionality": "required",
-            "type": "boolean",
-            "units": None
-        },
-        "det2_mode_gain": {
-            "ui_name": "The green side gain",
-            "option": "set",
-            "allowed": [1, 2, 5, 10],
-            "default": 1,
-            "optionality": "optional",
-            "type": "integer",
-            "units": None
-        },
-        "det2_cfg_binning": {
-            "ui_name": "The green side binning",
-            "allowed": ["1,1", "2,2"],
-            "option": "set",
-            "optionality": "optional",
-            "default": "1,1",
-            "type": "string",
-            "units": None
-        },
-        "det3_trigger": {
-            "ui_name": "CA H&K Detector On",
-            "description": "Trigger the ca h&k detector?",
-            "option": "boolean",
-            "default": None,
-            "optionality": "required",
-            "type": "boolean",
-            "units": None
-        },
-        "det3_mode_gain": {
-            "ui_name": "The green side gain",
-            "option": "set",
-            "allowed": [1, 2, 5, 10],
-            "default": 1,
-            "optionality": "optional",
-            "type": "integer",
-            "units": None
-        },
-        "det3_cfg_binning": {
-            "ui_name": "The green side binning",
-            "allowed": ["1,1", "2,2"],
-            "option": "set",
-            "optionality": "optional",
-            "default": "1,1",
-            "type": "string",
-            "units": None
-        },
-    },
-    "tcs_parameters": {}
+        }
+    }
 }
 
-
-kpf_sci_stare = {
+kpf_arc = {
     "metadata": {
-        "name": "kpf_sci_stare",
-        "ui_name": "kpf stare observation",
         "instrument": "KPF",
-        "template_type": "science",
-        "version": "0.1.1",
-        "script": "kpf_sci_stare",
+        "name": "kpf_arcs",
+        "script": "kpf_arcs",
         "script_version": "0.1.0",
-        "sequence_number": 1
+        "template_type": "calibration",
+        "ui_name": "KPF Arc Lamps",
+        "version": "0.1.0",
+        "sequence_number": 0
     },
     "parameters": {
-        "target_info_spectraltype": {
-            "ui_name": "Spectral Type",
-            "description": "The spectral type of target.  used by drp and possibly by automatic guide parameters",
+        "inst_cfg_nd1": {
+            "allowed": [
+                "OD 0.1",
+                "OD 1.0",
+                "OD 1.3",
+                "OD 2.0",
+                "OD 3.0",
+                "OD 4.0"
+            ],
+            "default": None,
+            "description": "Filter to use in the ND1 filter wheel",
             "option": "set",
-            "allowed": ["O", "B", "A", "F", "G", "K", "M"],
-            "default": None,
             "optionality": "required",
-            "type": "string",
+            "type": "str",
+            "ui_name": "ND1 Filter",
             "units": None
         },
-        "det1_exp_number": {
-            "ui_name": "Number of Exposures",
-            "description": "The number of exposures to take.",
-            "option": "range",
-            "allowed": [1, 100],
+        "inst_cfg_nd2": {
+            "allowed": [
+                "OD 0.1",
+                "OD 0.3",
+                "OD 0.5",
+                "OD 0.8",
+                "OD 1.0",
+                "OD 4.0"
+            ],
             "default": None,
+            "description": "Filter to use in the ND2 filter wheel",
+            "option": "set",
             "optionality": "required",
-            "type": "int",
+            "type": "str",
+            "ui_name": "ND2 Filter",
             "units": None
         },
-        "det1_exp_time": {
-            "ui_name": "Exposure Time",
-            "description": "The exposure time of an individual science exposure.",
-            "option": "range",
-            "allowed": [1, 3600],
+        "inst_cfg_calsource": {
+            "allowed": [
+                "Home",
+                "EtalonFiber",
+                "BrdbandFiber",
+                "U_gold",
+                "U_daily",
+                "Th_daily",
+                "Th_gold",
+                "SoCal-CalFib",
+                "LFCFiber"
+            ],
             "default": None,
+            "description": "Calibration source to use",
+            "option": "set",
+            "optionality": "required",
+            "type": "str",
+            "ui_name": "Calibration source",
+            "units": None
+        },
+        "inst_cfg_fffiberpos": {
+            "allowed": [
+                "Blank",
+                "6 mm f/5",
+                "7.5 mm f/4",
+                "10 mm f/3",
+                "13.2 mm f/2.3",
+                "Open"
+            ],
+            "default": "Open",
+            "description": "Flat field aperture choice.",
+            "option": "set",
+            "optionality": "optional",
+            "type": "str",
+            "ui_name": "Flat field aperture choice.",
+            "units": None
+        },
+        "det_exp_time": {
+            "allowed": [
+                0.1,
+                3600
+            ],
+            "default": None,
+            "description": "Exposure time in seconds",
+            "option": "range",
             "optionality": "required",
             "type": "float",
+            "ui_name": "Exposure Time",
             "units": "seconds"
         },
-        "inst_cfg_expmeter_active": {
-            "ui_name": "Use Exposure Meter",
-            "description": "Use the exposure meter to end the exposure?",
-            "option": "boolean",
+        "det_exp_number": {
+            "allowed": [
+                1,
+                100
+            ],
             "default": None,
-            "optionality": "optional",
-            "type": "boolean",
+            "description": "Number of exposures to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "int",
+            "ui_name": "Number of exposures to take",
             "units": None
         },
-        "inst_cfg_expmeter_flux": {
-            "ui_name": "Flux Level",
-            "description": "The flux level on exposure meter at which to end exposure.",
-            "option": "range",
-            "allowed": [1, 1e8],
-            "default": 1e6,
+        "target_info_object": {
+            "default": "",
+            "description": "Value for the object keyword",
+            "option": "open",
             "optionality": "optional",
-            "type": "float",
+            "type": "string",
+            "ui_name": "Value for the object keyword",
+            "units": None
+        },
+        "inst_cfg_sss_science": {
+            "default": None,
+            "description": "Should the source select shutter for science be open?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Source Shutter Open",
+            "units": None
+        },
+        "inst_cfg_sss_sky": {
+            "default": None,
+            "description": "Should the source select shutter for sky be open?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Sky Shutter Open",
+            "units": None
+        },
+        "inst_cfg_simulcal_ts": {
+            "default": None,
+            "description": "Should the timed shutter for simultaneous calibration fiber be opened during exposure?",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Simultaneous Calibration Fiber Timed Shutter Open",
             "units": None
         },
     }
 }
+
+kpf_darks = {
+    "metadata": {
+        "instrument": "KPF",
+        "name": "kpf_dark",
+        "script": "kpf_dark",
+        "script_version": "0.1.0",
+        "template_type": "calibration",
+        "ui_name": "KPF Dark Sequence",
+        "version": "0.1.0",
+        "sequence_number": 0
+    },
+    "parameters": {
+        "det_exp_time": {
+            "allowed": [
+                0.1,
+                3600
+            ],
+            "default": None,
+            "description": "Exposure time in seconds",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Exposure time",
+            "units": "seconds"
+        },
+        "det_exp_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of exposures to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "int",
+            "ui_name": "Number of Exposures",
+            "units": None
+        },
+        "target_info_object": {
+            "default": "",
+            "description": "Value for the object keyword",
+            "option": "open",
+            "optionality": "optional",
+            "type": "string",
+            "ui_name": "Object Keyword",
+            "units": None
+        },
+    }
+}
+
+kpf_target = {
+    "metadata": {
+        "instrument": "KPF",
+        "name": "kpf_target",
+        "template_type": "target",
+        "ui_name": "KPF Target",
+        "version": "0.1.0"
+    },
+    "parameters": {
+        "target_info_name": {
+            "default": None,
+            "description": "observer provided name",
+            "optionality": "required",
+            "type": "string",
+            "ui_name": "Target Name",
+            "units": None
+        },
+        "target_info_comment": {
+            "ui_name": "Target Comment",
+            "option": "optional",
+            "default": "",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "target_info_2mass_id": {
+            "default": None,
+            "description": "The 2MASS ID of the target",
+            "optionality": "required",
+            "type": "string",
+            "ui_name": "2MASS ID",
+            "units": None
+        },
+        "target_info_gaia_id": {
+            "default": None,
+            "description": "The GAIA DR3 ID of the target",
+            "optionality": "required",
+            "type": "string",
+            "ui_name": "GAIA DR3 ID",
+            "units": None
+        },
+        "target_info_gmag": {
+            "allowed": [
+                -30,
+                30
+            ],
+            "default": None,
+            "description": "Gaia G magnitude of target",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Gaia G",
+            "units": "magnitude"
+        },
+        "target_info_jmag": {
+            "allowed": [
+                -30,
+                30
+            ],
+            "default": None,
+            "description": "2MASS J magnitude of target",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "2MASS J",
+            "units": "magnitude"
+        },
+        "target_coord_parallax": {
+            "allowed": [
+                0,
+                1000000.0
+            ],
+            "default": None,
+            "description": "Parallax in milliarcseconds; needed for DRP not pointing telescope",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Parallax",
+            "units": "mas"
+        },
+        "target_coord_rv": {
+            "allowed": [
+                -1000000.0,
+                1000000.0
+            ],
+            "default": None,
+            "description": "Radial velocity in km/s; needed for DRP",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Radial velocity",
+            "units": "km/s"
+        },
+        "target_info_teff": {
+            "allowed": [
+                0,
+                1000000.0
+            ],
+            "default": None,
+            "description": "Teff of target in K",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Effective Temperature",
+            "units": "K"
+        },
+        "target_coord_ra": {
+            "ui_name": "Right Ascension",
+            "option": "regex",
+            "allowed": [
+                "^\\d{2}:\\d{2}:\\d{2}$",
+                "^\\d{2}:\\d{2}:\\d{2}.\\d{1}$",
+                "^\\d{2}:\\d{2}:\\d{2}.\\d{2}$"
+            ],
+            "default": None,
+            "optionality": "required",
+            "type": "string",
+            "units": "Hours:Minutes:Seconds"
+        },
+        "target_coord_dec": {
+            "ui_name": "Declination",
+            "option": "regex",
+            "allowed": [
+                "^\\d{2}:\\d{2}:\\d{2}$",
+                "^\\d{2}:\\d{2}:\\d{2}.\\d{1}$",
+                "^\\d{2}:\\d{2}:\\d{2}.\\d{2}$",
+                "^-\\d{2}:\\d{2}:\\d{2}$",
+                "^-\\d{2}:\\d{2}:\\d{2}.\\d{1}$",
+                "^-\\d{2}:\\d{2}:\\d{2}.\\d{2}$"
+            ],
+            "default": None,
+            "optionality": "required",
+            "type": "string",
+            "units": "Degrees:Minutes:Seconds"
+        },
+        "target_coord_pm_ra": {
+            "ui_name": "Proper Motion (RA)",
+            "option": "range",
+            "allowed": [
+                0,
+                5000
+            ],
+            "default": 0,
+            "optionality": "optional",
+            "type": "string",
+            "units": "arcseconds/yr"
+        },
+        "target_coord_pm_dec": {
+            "ui_name": "Proper Motion (DEC)",
+            "option": "range",
+            "allowed": [
+                0,
+                100
+            ],
+            "default": 0,
+            "optionality": "optional",
+            "type": "string",
+            "units": "arcseconds/yr"
+        },
+        "target_coord_frame": {
+            "ui_name": "Frame",
+            "option": "set",
+            "allowed": [
+                "mount",
+                "FK5"
+            ],
+            "default": "FK5",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "target_coord_epoch": {
+            "ui_name": "Epoch",
+            "option": "range",
+            "allowed": [
+                1900,
+                2100
+            ],
+            "default": "FK5",
+            "optionality": "optional",
+            "type": "float",
+            "units": "year"
+        },
+        "rot_cfg_pa": {
+            "ui_name": "Position Angle",
+            "option": "range",
+            "allowed": [
+                0,
+                360
+            ],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "Degrees"
+        },
+        "seq_constraint_obstime": {
+            "ui_name": "Scheduled Time of Observation",
+            "option": "regex",
+            "allowed": [
+                None,
+                "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+            ],
+            "default": None,
+            "optionality": "optional",
+            "type": "string",
+            "units": "YR-MM-DD hh:mm:ss"
+        }
+    }
+}
+
+

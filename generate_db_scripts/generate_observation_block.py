@@ -22,7 +22,7 @@ def generate_obs(config, inst, inst_list, template_list):
     coll = papahana_util.config_collection('obCollect', conf=config)
 
     ob_blocks = []
-    coll.drop()
+    # coll.drop()
 
     template_list = utils.parse_template_list(inst, inst_list, template_list)
 
@@ -87,15 +87,20 @@ def generate_observation_block(template_list, coll, filled, inst):
     meta = generate_metadata(inst)
     sem_id = meta['sem_id']
     n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
+
+    if inst == 'kpf':
+        target = target_utils.generate_kpf_target()
+    else:
+        target = random.choice([target_utils.generate_sidereal_target(),
+                                 target_utils.generate_nonsidereal_target()])
     schema = {
         '_ob_id': f"{meta['sem_id']}_{str(n_ob).zfill(4)}",
         'metadata': meta,
-        'target': random.choice([target_utils.generate_sidereal_target(),
-                                 target_utils.generate_nonsidereal_target()]),
+        'target': target,
         'acquisition': generate_acquisition(filled),
         'observations': generate_science(filled, template_list),
         'associations': random_utils.randArrStr(NLEN, MAX_ARRAY_LEN),
-        'status': randStatus(),
+        'status': randStatus(inst),
         'common_parameters': filled.filled_common_parameters(),
         'comment': random_utils.optionalRandComment()
     }
@@ -112,7 +117,7 @@ def set_filled_template_module(inst):
         return ssc
 
 
-def randStatus():
+def randStatus(inst):
     executions = []
     for x in range(0, random_utils.randInt(0,6)):
         executions.append(generate_random_executions())
@@ -121,10 +126,15 @@ def randStatus():
               'priority': random_utils.randInt(0,100),
               'current_seq': random_utils.randInt(0, 6),
               'current_step': random_utils.randInt(0, 4),
-              'current_exp_det1': random_utils.randInt(0, 4),
-              'current_exp_det2': random_utils.randInt(0, 4),
               'executions': executions,
               'deleted': False}
+
+    if inst.lower() == 'kpf':
+        schema['current_exp_det'] = random_utils.randInt(0, 4)
+    else:
+        schema['current_exp_det1'] = random_utils.randInt(0, 4)
+        schema['current_exp_det2'] = random_utils.randInt(0, 4)
+
     return schema
 
 

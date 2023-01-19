@@ -84,10 +84,11 @@ def make_status_realistic(ob, config):
 
         coll.update_one({'_id': oid},
                         {'$set': {'status.current_step': current_step}})
-        coll.update_one({'_id': oid},
-                        {'$set': {'status.current_exp_det1': current_exp_det1}})
-        coll.update_one({'_id': oid},
-                        {'$set': {'status.current_exp_det2': current_exp_det2}})
+
+        # coll.update_one({'_id': oid},
+        #                 {'$set': {'status.current_exp_det1': current_exp_det1}})
+        # coll.update_one({'_id': oid},
+        #                 {'$set': {'status.current_exp_det2': current_exp_det2}})
 
 
 def parse_templates_version(template_list):

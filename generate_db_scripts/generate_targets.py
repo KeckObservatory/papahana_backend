@@ -59,6 +59,38 @@ def generate_nonsidereal_target():
     return schema
 
 
+def generate_kpf_target():
+    schema = {
+        "metadata": {
+            "instrument": "KPF",
+            "name": "kpf_target",
+            "template_type": "target",
+            "ui_name": "KPF Target",
+            "version": "0.1.0"
+        },
+        "parameters": {
+            "target_info_name": "My KPF Target",
+            "target_info_comment": "A planet with life!",
+            "target_info_2mass_id": "2mass",
+            "target_info_gaia_id": "gaia",
+            "target_info_gmag": 101,
+            "target_info_jmag": 11.2,
+            "target_coord_parallax": 30000.0,
+            "target_coord_rv": 10.3,
+            "target_info_teff": 334.4,
+            "target_coord_ra": generate_ra(),
+            "target_coord_dec": generate_dec(),
+            "target_coord_pm_ra": 0.1,
+            "target_coord_pm_dec": 1.2,
+            "target_coord_frame": "FK5",
+            "target_coord_epoch": 2000.0,
+            "rot_cfg_pa": 360.0,
+            "seq_constraint_obstime": None
+        }
+    }
+
+    return schema
+
 # def generate_mos_target():
 #     schema = generate_sidereal_target()
 #     schema['parameters']['inst_cfg_mask_name'] = "Science Mask 101"

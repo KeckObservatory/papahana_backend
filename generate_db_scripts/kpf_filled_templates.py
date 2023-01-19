@@ -1,35 +1,35 @@
 import generate_utils as utils
 import generate_random_utils as random_utils
 
-def filled_acq_templates():
-    acq_templates = [
-        {
-            "metadata": {
-                "name": "kpf_acq_bright",
-                "ui_name": "KPF Bright Acquisition",
-                "instrument": "KPF",
-                "template_type": "acquisition",
-                "version": "0.1.1",
-                "script": "kpf_acq_bright",
-                "script_version": "0.1.0",
-                "sequence_number": 0
-            },
-        },
-        {
-            "metadata": {
-                "name": "kpf_acq_faint",
-                "ui_name": "KPF Faint Acquisition",
-                "instrument": "KPF",
-                "template_type": "acquisition",
-                "version": "0.1.1",
-                "script": "kpf_sci_acq_script",
-                "script_version": "0.1.0",
-                "sequence_number": 0
-            },
-        }
-    ]
-
-    return acq_templates
+# def filled_acq_templates():
+#     acq_templates = [
+#         {
+#             "metadata": {
+#                 "name": "kpf_acq_bright",
+#                 "ui_name": "KPF Bright Acquisition",
+#                 "instrument": "KPF",
+#                 "template_type": "acquisition",
+#                 "version": "0.1.1",
+#                 "script": "kpf_acq_bright",
+#                 "script_version": "0.1.0",
+#                 "sequence_number": 0
+#             },
+#         },
+#         {
+#             "metadata": {
+#                 "name": "kpf_acq_faint",
+#                 "ui_name": "KPF Faint Acquisition",
+#                 "instrument": "KPF",
+#                 "template_type": "acquisition",
+#                 "version": "0.1.1",
+#                 "script": "kpf_sci_acq_script",
+#                 "script_version": "0.1.0",
+#                 "sequence_number": 0
+#             },
+#         }
+#     ]
+#
+#     return acq_templates
 
 
 def filled_common_parameters():
@@ -42,29 +42,76 @@ def filled_common_parameters():
             "version": "0.1.1"
         },
         "instrument_parameters": {
-            "inst_cfg_simulcal_source": "science",
-            "inst_cfg_simulcal_autofilter": random_utils.rand_bool(),
-            "inst_cfg_simulcal_nd1": 'ND0.1',
-            "inst_cfg_simulcal_nd2": 'ND0.1',
-            "inst_cfg_sss_sky": random_utils.rand_bool(),
-            "inst_cfg_sss_sci": random_utils.rand_bool(),
-            "inst_cfg_sss_socal_sci": random_utils.rand_bool(),
-            "inst_cfg_sss_socal_cal": random_utils.rand_bool()
+            "inst_cfg_runagitator": True
+        },
+        "detector_parameters": {
+            "det1_cfg_trigger": True,
+            "det2_cfg_trigger": True,
+            "det3_cfg_trigger": True
         },
         "guider_parameters": {
-            "guider1_cfg_mode": "manual",
-            "guider1_cfg_framerate": random_utils.randInt(1, 400),
-            "guider1_cfg_camgain": "high",
-            "guider1_cfg_exptime": random_utils.randFloat(),
-            "guider1_cfg_loopgain": random_utils.randFloat(),
-            "guider1_cfg_xwindow": 24,
-            "guider1_cfg_ywindow": 24,
-            "guider1_cfg_raoffset": 20.0*random_utils.randFloat(),
-            "guider1_cfg_decoffset": 20.0*random_utils.randFloat(),
         },
-        "detector parameters": {},
-        "tcs_parameters": {}
+        "tcs_parameters": {
+        }
     }
+
+def filled_cal_templates():
+    cal_templates = [
+        {
+            "metadata": {
+                "instrument": "KPF",
+                "name": "kpf_arcs",
+                "script": "kpf_arcs",
+                "script_version": "0.1.0",
+                "template_type": "calibration",
+                "ui_name": "KPF Arc Lamps",
+                "version": "0.1.0",
+                "sequence_number": 0
+            },
+            "parameters": {
+                "inst_cfg_nd1": "OD 0.1",
+                "inst_cfg_nd2": "OD 0.3",
+                "inst_cfg_calsource": "BrdbandFiber",
+                "inst_cfg_fffiberpos": "Blank",
+                "det_exp_time": random_utils.randFloat(3600),
+                "det_exp_number": random_utils.randInt(1, 100),
+                "target_info_object": 'arc',
+                "inst_cfg_sss_science": True,
+                "inst_cfg_sss_sky": True,
+                "inst_cfg_simulcal_ts": True
+            }
+        }
+    ]
+
+    return cal_templates
+
+def filled_acq_templates():
+    # templates_version = utils.parse_templates_version(template_list)
+    acq_templates = [
+        {
+            "metadata": {
+                "instrument": "KPF",
+                "name": "kpf_acq",
+                "script": "kpf_acq",
+                "script_version": "0.1.0",
+                "template_type": "acquisition",
+                "ui_name": "KPF acquisition",
+                "version": "0.1.0",
+                "sequence_number": 0
+
+            },
+            "parameters": {
+                "guider_cfg_gain": "high",
+                "guider_cfg_fps": random_utils.randFloat(400.0),
+                "guider_cfg_loopgain": random_utils.randFloat(1),
+                "guider_mode": "manual",
+                "tcs_coord_po": "KPF"
+            }
+        }
+    ]
+    return acq_templates
+
+    return schema
 
 
 def filled_sci_templates(template_list):
@@ -73,24 +120,26 @@ def filled_sci_templates(template_list):
     sci_templates = [
         {
             "metadata": {
-                "name": "kpf_sci_stare",
-                "ui_name": "kpf stare observation",
                 "instrument": "KPF",
-                "template_type": "science",
-                "version": templates_version["kpf_sci_stare"],
-                "script": "kpf_sci_stare",
+                "name": "kpf_sci",
+                "script": "kpf_sci",
                 "script_version": "0.1.0",
-                "sequence_number": 1
+                "template_type": "science",
+                "ui_name": "KPF science",
+                "version": "0.1.0"
             },
             "parameters": {
-                "target_info_spectraltype": "B",
-                "inst_cfg_nexp": random_utils.randInt(1, 100),
-                "inst_cfg_exptime": random_utils.randInt(1, 3600),
-                "inst_cfg_trigger_cahk": random_utils.rand_bool(),
-                "inst_cfg_trigger_green": random_utils.rand_bool(),
-                "inst_cfg_trigger_red": random_utils.rand_bool(),
-                "inst_cfg_expmeter_active": random_utils.rand_bool(),
-                "inst_cfg_expmeter_flux": 10000*random_utils.randFloat(),
+                "inst_cfg_nd1": "OD 0.1",
+                "inst_cfg_nd2": "OD 0.1",
+                "inst_cfg_calsource": "EtalonFiber",
+                "inst_cfg_em_band": 1,
+                "inst_cfg_em_exptime":  random_utils.randFloat(1800.0),
+                "inst_cfg_em_flux": random_utils.randFloat(1000000000.0),
+                "inst_cfg_em_mode": "manual",
+                "det_exp_time": random_utils.randFloat(3600.0),
+                "det_exp_number": random_utils.randInt(1, 100),
+                "target_info_object": 'autocal-flat-sci',
+                "inst_cfg_ts_simulcal": True
             }
         }
     ]
@@ -109,34 +158,10 @@ def generate_inst_package(template_list):
             "observing_modes": ["spectroscopy"]
         },
         "optical_parameters": {
-            "field_of_view": [1200, 1200],
-            "slit_length": 4
-        },
-        "guider1": {
-            "name": "Guider",
-            "fov": [120, 120],
-            "pixel_scale": 0.17,
-            "pa_offset": 'null',
-            "read_noise": 'null',
-            "gain": 'null',
-            "zero_points": 'null',
-            "sensitivity": 'null',
-            "filters": 'null'
         },
         "configurable_elements": [
-            "inst_cfg_simulcal_source",
-            "inst_cfg_simulcal_autofilter",
-            "inst_cfg_simulcal_nd1",
-            "inst_cfg_simulcal_nd2",
-            "inst_cfg_sss_sky",
-            "inst_cfg_sss_sci",
-            "inst_cfg_sss_socal_sci",
-            "inst_cfg_sss_socal_cal"
         ],
-        "pointing_origins": [
-            "SKY",
-            "REF",
-            "SPEC"
+        "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
         ],
         "template_list": utils.parse_templates_version(template_list),
         "event_table": 'null',

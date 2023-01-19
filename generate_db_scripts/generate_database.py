@@ -40,6 +40,8 @@ if __name__=='__main__':
 
     # Create ob_blocks collection
     print("...generating OBs")
+    coll = papahana_util.config_collection('obCollect', conf=config)
+    coll.drop()
     ob_blocks = []
     for inst in INST_LIST:
         ob_blocks += ob_utils.generate_obs(
@@ -67,8 +69,10 @@ if __name__=='__main__':
     # ip = generate_inst_package(template_list)
     for inst in INST_LIST:
         inst_lower = inst.lower()
+        # inst_specific_templates = utils.parse_template_list(
+        #     inst, INST_LIST, template_list, allow_mos=False)
         inst_specific_templates = utils.parse_template_list(
-            inst, INST_LIST, template_list, allow_mos=False)
+            inst, INST_LIST, template_list)
         if inst_lower == 'kcwi':
             ip = kcwi_filled.generate_inst_package(inst_specific_templates)
         elif inst_lower == 'kpf':
