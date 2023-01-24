@@ -1,6 +1,6 @@
 import argparse
 
-from kpf_templates import kpf_common_parameters, kpf_science,  kpf_acq, kpf_arc, kpf_darks
+from kpf_templates import kpf_common_parameters, kpf_science,  kpf_acq, kpf_arc, kpf_darks, kpf_target
 from kcwi_templates import kcwi_ifu_acq_offsetStar_template, kcwi_ifu_acq_direct_template, kcwi_ifu_sci_stare_template, kcwi_ifu_sci_dither_template, kcwi_common_parameters
 from ssc_templates import ssc_acq_direct, ssc_common_parameters, ssc_sci_image, ssc_sci_dither
 
@@ -230,7 +230,7 @@ def generate_templates(config):
         nonsidereal_target,
         kcwi_common_parameters
     ]
-    templates_kpf = [kpf_common_parameters, kpf_science, kpf_acq, kpf_arc, kpf_darks]
+    templates_kpf = [kpf_common_parameters, kpf_science, kpf_acq, kpf_arc, kpf_darks, kpf_target]
     templates_ssc = [ssc_acq_direct, ssc_common_parameters,
                      ssc_sci_image, ssc_sci_dither]
 

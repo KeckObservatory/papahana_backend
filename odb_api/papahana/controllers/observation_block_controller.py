@@ -7,6 +7,7 @@ import pandas
 from papahana.controllers import controller_helper as utils
 from papahana.controllers import observation_block_utils as ob_utils
 from papahana.controllers import authorization_utils as auth_utils
+from papahana.controllers import validation_utils as validation
 
 from papahana.models.observation_block import ObservationBlock
 from papahana.models.sem_id_schema import SemIdSchema
@@ -65,6 +66,9 @@ def ob_post(body):
 
     result = ob_utils.insert_new_ob(body)
 
+    # quietly check ob for errors
+    # check_validation(ob_id)
+
     return str(result)
 
 
@@ -93,6 +97,9 @@ def ob_put(body, ob_id):
         body['_ob_id'] = _ob_id
 
     result = utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
+
+    # quietly check ob for errors
+    check_validation(ob_id)
 
     return {'_id': ob_id,  'matched': result.matched_count,
             'modified': result.modified_count, 'new_id': result.upserted_id}
@@ -470,6 +477,38 @@ def ob_sequence_id_put(body, ob_id, sequence_number):
     new_vals = {obs_type: observations}
     utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
+    # quietly check ob for errors
+    check_validation(ob_id)
+
+
+def validate_ob(ob_id):
+    """validate_ob
+
+    Validates an Observation Block against the instrument package templates. # noqa: E501
+
+    :param ob_id: observation block ObjectId
+    :type ob_id: str
+
+    :rtype: Object
+    """
+    ob = ob_get(ob_id, tag_str=False)
+    vobj = validation.ValidateOB(ob)
+
+    if not vobj.is_valid():
+        err_dict = vobj.get_errors()
+        return {'valid': 0, 'errors': err_dict}
+
+    return {'valid': 1, 'errors': {}}
+
+
+def check_validation(ob_id):
+    validation = validate_ob(ob_id)
+    if not validate_ob(ob_id):
+        # update the state back to 0 -- not ready
+        body = {'status.state': 0}
+        result = utils.update_doc(utils.query_by_id(ob_id), body, 'obCollect')
+
+    return validation
 
 #TODO COME BACK -- nothing below here updated 20220322
 
@@ -618,6 +657,8 @@ def ob_sequence_post(body, ob_id, obs_type):
 
     utils.update_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
 
+    return validate_ob(ob_id)
+
 
 def ob_sequence_put(body, ob_id, obs_type):
     """
@@ -640,6 +681,8 @@ def ob_sequence_put(body, ob_id, obs_type):
     else:
         new_vals = {obs_type: body}
         utils.update_add_doc(utils.query_by_id(ob_id), new_vals, 'obCollect')
+
+    return validate_ob(ob_id)
 
 
 def ob_time_constraint_get(ob_id):
@@ -685,6 +728,11 @@ def ob_time_constraint_put(body, ob_id):
 
     utils.update_doc(utils.query_by_id(ob_id), {"time_constraints": body},
                      'obCollect')
+
+    validation = validate_ob(ob_id)
+    if validation['valid'] == 0:
+        return validation
+
 
 
 def ob_upgrade(ob_id, sem_id=None):

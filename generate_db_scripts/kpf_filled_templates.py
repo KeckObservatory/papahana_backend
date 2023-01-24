@@ -55,6 +55,8 @@ def filled_common_parameters():
         }
     }
 
+    return schema
+
 def filled_cal_templates():
     cal_templates = [
         {

@@ -73,7 +73,7 @@ def generate_kpf_target():
             "target_info_comment": "A planet with life!",
             "target_info_2mass_id": "2mass",
             "target_info_gaia_id": "gaia",
-            "target_info_gmag": 101,
+            "target_info_gmag": 24.4,
             "target_info_jmag": 11.2,
             "target_coord_parallax": 30000.0,
             "target_coord_rv": 10.3,
@@ -84,7 +84,7 @@ def generate_kpf_target():
             "target_coord_pm_dec": 1.2,
             "target_coord_frame": "FK5",
             "target_coord_epoch": 2000.0,
-            "rot_cfg_pa": 360.0,
+            "rot_cfg_pa": 359.0,
             "seq_constraint_obstime": None
         }
     }

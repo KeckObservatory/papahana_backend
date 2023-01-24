@@ -199,7 +199,7 @@ paths:
 
 # -------------------------------------------------------------------------------
 # Generic Tag Section
-# -------------------------------------------------------------------------------c
+# -------------------------------------------------------------------------------
   /tags/all:
    get:
       tags:
@@ -971,6 +971,32 @@ paths:
 # -------------------------------------------------------------------------------
 # Observation Block Section
 # -------------------------------------------------------------------------------
+  /validate/ob:
+    get:
+      tags:
+        - Observation Block
+      description: Validates an Observation Block against the instrument package templates.
+      operationId: validate_ob
+      parameters:
+        - $ref: '#/components/parameters/ob_id'
+      responses:
+        "200":
+          description: On success returns True,  otherwise a json object error report.
+          content:
+            application/json:
+              schema:
+#                type: boolean
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
+
+
   /obsBlocks:
     get:
       tags:
@@ -2193,7 +2219,7 @@ components:
     state:
       name: state
       in: query
-      description: return OBs of a certain state,  the possible states are defined in ‘Defined Types’.
+      description: return OBs of a certain state,  the possible states are defined in ‘Defined Types’.  State values (0=partial, 1=ready, 2=ongoing, 3=complete, 4=aborted)
       required: false
       style: form
       explode: false
@@ -2203,7 +2229,7 @@ components:
     status_field:
       name: status_field
       in: path
-      description: The completion status field to update
+      description: The completion status field to update. State values (0=partial, 1=ready, 2=ongoing, 3=complete, 4=aborted)
       required: true
       style: simple
       explode: true
@@ -2219,7 +2245,7 @@ components:
     status_field_optional:
       name: status_field
       in: query
-      description: The completion status field to update
+      description: The completion status field to update. State values (0=partial, 1=ready, 2=ongoing, 3=complete, 4=aborted)
       required: false
       style: form
       explode: false
