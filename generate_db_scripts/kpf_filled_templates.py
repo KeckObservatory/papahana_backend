@@ -1,37 +1,6 @@
 import generate_utils as utils
 import generate_random_utils as random_utils
 
-# def filled_acq_templates():
-#     acq_templates = [
-#         {
-#             "metadata": {
-#                 "name": "kpf_acq_bright",
-#                 "ui_name": "KPF Bright Acquisition",
-#                 "instrument": "KPF",
-#                 "template_type": "acquisition",
-#                 "version": "0.1.1",
-#                 "script": "kpf_acq_bright",
-#                 "script_version": "0.1.0",
-#                 "sequence_number": 0
-#             },
-#         },
-#         {
-#             "metadata": {
-#                 "name": "kpf_acq_faint",
-#                 "ui_name": "KPF Faint Acquisition",
-#                 "instrument": "KPF",
-#                 "template_type": "acquisition",
-#                 "version": "0.1.1",
-#                 "script": "kpf_sci_acq_script",
-#                 "script_version": "0.1.0",
-#                 "sequence_number": 0
-#             },
-#         }
-#     ]
-#
-#     return acq_templates
-
-
 def filled_common_parameters():
     schema = {
         "metadata": {
@@ -56,6 +25,7 @@ def filled_common_parameters():
     }
 
     return schema
+
 
 def filled_cal_templates():
     cal_templates = [

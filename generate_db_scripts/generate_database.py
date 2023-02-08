@@ -45,7 +45,7 @@ if __name__=='__main__':
     ob_blocks = []
     for inst in INST_LIST:
         ob_blocks += ob_utils.generate_obs(
-            config, inst.lower(), INST_LIST, template_list)
+            config, inst.upper(), INST_LIST, template_list)
 
     # create tags collection
     coll = papahana_util.config_collection('tagsCollect', conf=config)
@@ -87,8 +87,10 @@ if __name__=='__main__':
 
     # Create script collection
     coll = papahana_util.config_collection('scriptCollect', conf=config)
+    coll_inst = papahana_util.config_collection('ipCollect', conf=config)
+    coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
     coll.drop()
-    generate_scripts_collection(coll, inst)
+    generate_scripts_collection(coll, coll_inst, coll_tmp, 'KPF')
 
     if args.generate_observers:
         obs_db = config['obs_db']

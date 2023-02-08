@@ -16,7 +16,7 @@ NLEN = 5
 
 
 def generate_obs(config, inst, inst_list, template_list):
-
+    inst = inst.upper()
     filled = set_filled_template_module(inst)
 
     coll = papahana_util.config_collection('obCollect', conf=config)
@@ -88,7 +88,7 @@ def generate_observation_block(template_list, coll, filled, inst):
     sem_id = meta['sem_id']
     n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
 
-    if inst == 'kpf':
+    if inst.upper() == 'KPF':
         target = target_utils.generate_kpf_target()
     else:
         target = random.choice([target_utils.generate_sidereal_target(),
@@ -109,11 +109,11 @@ def generate_observation_block(template_list, coll, filled, inst):
 
 
 def set_filled_template_module(inst):
-    if inst == 'kcwi':
+    if inst == 'KCWI':
         return kcwi
-    elif inst == 'kpf':
+    elif inst == 'KPF':
         return kpf
-    elif inst == 'ssc':
+    elif inst == 'SSC':
         return ssc
 
 
@@ -129,7 +129,7 @@ def randStatus(inst):
               'executions': executions,
               'deleted': False}
 
-    if inst.lower() == 'kpf':
+    if inst.upper() == 'KPF':
         schema['current_exp_det'] = random_utils.randInt(0, 4)
     else:
         schema['current_exp_det1'] = random_utils.randInt(0, 4)

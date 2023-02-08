@@ -15,12 +15,25 @@ def parse_args():
     """
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--mode", "-m", type=str,
-                        default=None, required=True,
+    parser.add_argument("--mode", "-m", type=str, default=None, required=True,
                         help="The configuration to read")
 
-    parser.add_argument("--generate_observers", "-o", type=bool,
-                        default=False,
+    parser.add_argument("--drop", "-d", type=int, default=0,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_observers", "-o", type=int, default=0,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_templates", type=int, default=1,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_scripts", type=int, default=1,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_recipes", type=int, default=1,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_ip", type=int, default=1,
                         help="The configuration to read")
 
     return parser.parse_args()

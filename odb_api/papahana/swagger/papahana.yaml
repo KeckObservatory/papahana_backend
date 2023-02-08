@@ -6,7 +6,7 @@ info:
     email: lfuhrman@keck.hawaii.edu
   license:
     name: BSD 3-Clause
-    url: https://opensource.org/licenses/BSD-3-Clause
+    url:  http://www3.keck.hawaii.edu/api/ddoi/
   version: "0.1.0"
 servers:
 - url: http://localhost:8080/

@@ -76,7 +76,7 @@ def generate_kpf_target():
             "target_info_gmag": 24.4,
             "target_info_jmag": 11.2,
             "target_coord_parallax": 30000.0,
-            "target_coord_rv": 10.3,
+            "target_info_rv": 10.3,
             "target_info_teff": 334.4,
             "target_coord_ra": generate_ra(),
             "target_coord_dec": generate_dec(),
