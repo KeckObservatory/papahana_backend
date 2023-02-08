@@ -40,6 +40,38 @@ def instrument_packages_parameter(instrument, ip_version=None):
     return ip['configurable_elements']
 
 
+def instrument_packages_recipes(instrument, ip_version=None, recipe_name=None):
+    """instrument_packages_recipes
+
+    Retrieves all the specified instrument package recipes. The recipe name
+    is optional.  If the name is not specified all templates are returned.
+
+    :param instrument: instrument used to make observation
+    :type instrument: dict | bytes
+    :param ip_version: ip version description here
+    :type ip_version: str
+    :param recipe_name: recipe name description goes here
+    :type recipe_name: str
+
+    :rtype: InstrumentPackage
+    """
+    ip = instrument_packages(instrument, ip_version)
+    if not ip or 'recipe_list' not in ip:
+        return {}
+
+    # for name in ip['recipe_list']:
+    query = {"metadata.instrument": instrument.upper()}
+    fields = {'_id': 0}
+    if recipe_name:
+        query["metadata.instrument"] = recipe_name
+
+    package_list = utils.get_fields_by_query(query, fields, 'recipeCollect')
+    if not package_list:
+        return {}
+
+    return package_list
+
+
 def instrument_packages_template(instrument, ip_version=None,
                                  template_name=None, parameter_order=None):
     """

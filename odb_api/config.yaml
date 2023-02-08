@@ -15,6 +15,7 @@ production:
   observerCollect: observers
   containerCollect: containers
   scriptCollect: scripts
+  recipeCollect: ob_recipes
   templateCollect: templates
   ipCollect: instrument_packages
   deltaCollect: deltas_observation_blocks
@@ -33,6 +34,7 @@ dev:
   observerCollect: observers
   containerCollect: containers
   scriptCollect: instrument_scripts
+  recipeCollect: ob_recipes
   templateCollect: templates
   ipCollect: instrument_packages
   deltaCollect: deltas_observation_blocks
@@ -52,6 +54,7 @@ test:
   observerCollect: observers
   containerCollect: containers
   scriptCollect: instrument_scripts
+  recipeCollect: ob_recipes
   templateCollect: templates
   ipCollect: instrument_packages
   deltaCollect: deltas_observation_blocks

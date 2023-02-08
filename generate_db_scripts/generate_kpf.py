@@ -1,5 +1,6 @@
 from generate_scripts import generate_scripts_collection
 from kpf_templates import kpf_common_parameters, kpf_science,  kpf_acq, kpf_arc, kpf_darks, kpf_target
+from kpf_recipes import kpf_recipes
 
 import generate_utils as utils
 
@@ -11,7 +12,11 @@ APP_PATH = path.abspath(path.dirname(__file__))
 INST_LIST = ['KPF', 'KCWI', 'SSC']
 
 
-def generate_kpf_ip(template_list):
+def generate_kpf_ip(template_list, recipe_list):
+
+    rlist = []
+    for recipe_schema in recipe_list:
+        rlist.append(recipe_schema['metadata']['name'])
 
     schema = {
         "metadata": {
@@ -28,6 +33,7 @@ def generate_kpf_ip(template_list):
         "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
         ],
         "template_list": utils.parse_templates_version(template_list),
+        "recipe_list": rlist,
         "event_table": 'null',
         "comment": "A KPF Instrument Package"
     }
@@ -58,6 +64,16 @@ if __name__=='__main__':
 
         result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)
 
+    # Create recipe collection
+    if args.generate_recipes:
+        print("...generating recipes")
+        coll = papahana_util.config_collection('recipeCollect', conf=config)
+        coll.drop()
+
+        kpf_recipes = kpf_recipes()
+        for name, schema in kpf_recipes.items():
+            _ = coll.insert_one(schema)
+
     inst = 'KPF'
     inst_lower = 'kpf'
 
@@ -65,16 +81,22 @@ if __name__=='__main__':
     if args.generate_ip:
         print("...generating instrument package")
 
+        # add templates
         coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
         fields = {'metadata.name': 1, 'metadata.version': 1}
         template_list = list(coll_tmp.find({}, fields))
+
+        # add recipes
+        coll_recipe = papahana_util.config_collection('recipeCollect', conf=config)
+        fields = {'metadata.name': 1, '_id': 0}
+        recipe_list = list(coll_recipe.find({}, fields))
 
         coll = papahana_util.config_collection('ipCollect', conf=config)
         coll.drop()
 
         inst_specific_templates = utils.parse_template_list(
             inst, INST_LIST, template_list)
-        ip = generate_kpf_ip(inst_specific_templates)
+        ip = generate_kpf_ip(inst_specific_templates, recipe_list)
 
         result = coll.insert_one(ip)
 
@@ -88,3 +110,6 @@ if __name__=='__main__':
         coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
 
         generate_scripts_collection(coll, coll_inst, coll_tmp, 'KPF')
+
+
+

@@ -8,14 +8,12 @@ def get_ip(instrument, ip_version=None):
     """
 
     if not ip_version:
-        query = {'metadata.instrument': instrument}
+        query = {'metadata.instrument': instrument.upper()}
         ip_version = most_recent_version(query, 'ipCollect')
 
     # get the instrument package,  with references to templates (name, version)
-    query = {"metadata.instrument": instrument, "metadata.version": ip_version}
+    query = {"metadata.instrument": instrument.upper(), "metadata.version": ip_version}
     package_list = utils.get_by_query(query, 'ipCollect')
-
-    configurable_parameters = {}
 
     if package_list:
         return package_list[0]
@@ -83,7 +81,7 @@ def get_template_info(instrument, ip_version, template_name, parameter_order, fu
     """
     Get the template information
     """
-    ip = get_ip(instrument, ip_version)
+    ip = get_ip(instrument.upper(), ip_version)
 
     if not ip:
         return {}

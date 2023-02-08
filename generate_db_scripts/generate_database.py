@@ -4,6 +4,7 @@ import generate_tags as tags_utils
 import generate_containers as container_utils
 from generate_scripts import generate_scripts_collection
 from generate_observers import generate_observer_collection
+from kpf_recipes import kpf_recipes
 
 import kcwi_filled_templates as kcwi_filled
 import kpf_filled_templates as kpf_filled
@@ -33,7 +34,15 @@ if __name__=='__main__':
     print("...generating templates")
     template_list = generate_template.generate_templates(config)
 
-    # Create ob_blocks collection
+    print("...generating recipes")
+    coll = papahana_util.config_collection('recipeCollect', conf=config)
+    coll.drop()
+
+    kpf_recipes = kpf_recipes()
+    for name, schema in kpf_recipes.items():
+        _ = coll.insert_one(schema)
+
+    # Create ob_blocks collection,  zero first
     print("...zeroing deltas")
     coll = papahana_util.config_collection('deltaCollect', conf=config)
     coll.drop()

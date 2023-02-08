@@ -6,7 +6,7 @@ info:
     email: lfuhrman@keck.hawaii.edu
   license:
     name: BSD 3-Clause
-    url:  http://www3.keck.hawaii.edu/api/ddoi/
+    url: https://opensource.org/licenses/BSD-3-Clause
   version: "0.1.0"
 servers:
 - url: http://localhost:8080/
@@ -868,6 +868,34 @@ paths:
       parameters:
       - $ref: '#/components/parameters/instrument'
       - $ref: '#/components/parameters/ip_version'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentPackage'
+        "400":
+          description: Invalid status value
+        "422":
+          description: Instrument Package not found
+      x-swagger-router-controller: Instrument
+      x-openapi-router-controller: papahana.controllers.instrument_controller
+
+  /instrumentPackages/{instrument}/recipes:
+    get:
+      tags:
+      - Instrument
+      - Templates
+      description: Retrieves all the specified instrument package recipes.
+                   The recipe name is optional.  If the name is not specified
+                   all templates are returned.
+      operationId: instrument_packages_recipes
+      parameters:
+      - $ref: '#/components/parameters/instrument'
+      - $ref: '#/components/parameters/ip_version'
+      - $ref: '#/components/parameters/recipe_name'
+
       responses:
         "200":
           description: OK
@@ -1962,7 +1990,7 @@ components:
       explode: false
       schema:
         $ref: '#/components/schemas/InstrumentEnum'
-      example: KCWI
+      example: KPF
 
     instrument_optional:
       name: instrument
@@ -1973,7 +2001,7 @@ components:
       schema:
         $ref: '#/components/schemas/InstrumentEnum'
       required: false
-      example: "KCWI"
+      example: "KPF"
 
     ip_version:
       name: ip_version
@@ -2157,7 +2185,7 @@ components:
       explode: false
       schema:
         type: string
-      example: KCWI_ifu_sci_stare
+      example: kpf_acq
 
     sem_id:
       name: sem_id
@@ -2319,7 +2347,18 @@ components:
       explode: false
       schema:
         type: string
-      example: "KCWI_ifu_sci_stare"
+      example: "kpf_acq"
+
+    recipe_name:
+      name: recipe_name
+      in: query
+      description: recipe name description goes here
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+      example: "science_kpf_target"
 
     parameter_order:
       name: parameter_order
@@ -2453,7 +2492,7 @@ components:
         ob_type: science
         pi_id: 7766
         sem_id: 2021A_U046
-        instrument: KCWI
+        instrument: KPF
         comment: My OB Metadata
 
     ScienceTemplate:
@@ -2560,14 +2599,6 @@ components:
           type: string
         sequence_number:
           type: integer
-#      example:
-#        name: KCWI_ifu_acq_offsetStar
-#        ui_name: KCWI direct
-#        instrument: KCWI
-#        template_type: acquisition
-#        version: 0.1.1
-#        script: KCWI_ifu_acq_offsetStar
-#        sequence_number: 1
 
     AcquisitionParameters:
       required:
