@@ -34,7 +34,6 @@ def filled_cal_templates():
                 "instrument": "KPF",
                 "name": "kpf_arcs",
                 "script": "kpf_arcs",
-                "script_version": "0.1.0",
                 "template_type": "calibration",
                 "ui_name": "KPF Arc Lamps",
                 "version": "0.1.0",
@@ -65,7 +64,6 @@ def filled_acq_templates():
                 "instrument": "KPF",
                 "name": "kpf_acq",
                 "script": "kpf_acq",
-                "script_version": "0.1.0",
                 "template_type": "acquisition",
                 "ui_name": "KPF acquisition",
                 "version": "0.1.0",
@@ -95,7 +93,6 @@ def filled_sci_templates(template_list):
                 "instrument": "KPF",
                 "name": "kpf_sci",
                 "script": "kpf_sci",
-                "script_version": "0.1.0",
                 "template_type": "science",
                 "ui_name": "KPF science",
                 "version": "0.1.0"

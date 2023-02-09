@@ -81,6 +81,7 @@ class ValidateOB:
                 self.add_error(ptype, pname, pval,
                                f'parameter is not in template: {temp_name}.')
                 valid = False
+                continue
 
             pdscrp = tmplt_params[pname]
 

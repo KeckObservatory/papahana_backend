@@ -120,8 +120,10 @@ def confirm_sem_id_associated(func):
         if not obs_utils.is_semid_associated_args(*args, **kwargs):
             abort(401, f"Unauthorized to access Program: {sem_id}")
 
-        del kwargs['user']
-        del kwargs['token_info']
+        if 'user' in kwargs:
+            del kwargs['user']
+        if 'token_info' in kwargs:
+            del kwargs['token_info']
 
         return func(*args, **kwargs)
     return inner

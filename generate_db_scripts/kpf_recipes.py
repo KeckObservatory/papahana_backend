@@ -8,7 +8,6 @@ def kpf_recipes():
                 "name": "science_sidereal_target",
                 "ob_type": "science",
                 "ui_name": "Sidereal Science Target",
-                "version": "0.0.1",
                 "instrument": "KPF"
         },
         "recipe": [
@@ -24,7 +23,6 @@ def kpf_recipes():
                 "name": "science_non_sidereal_target",
                 "ob_type": "science",
                 "ui_name": "Non Sidereal Science Target",
-                "version": "0.0.1",
                 "instrument": "KPF"
         },
         "recipe": [
@@ -40,7 +38,6 @@ def kpf_recipes():
                 "name": "science_kpf_target",
                 "ob_type": "science",
                 "ui_name": "KPF Science Target",
-                "version": "0.0.1",
                 "instrument": "KPF"
         },
         "recipe": [
@@ -56,7 +53,6 @@ def kpf_recipes():
                 "name": "calibration_dark",
                 "ob_type": "calibration",
                 "ui_name": "Dark Calibration",
-                "version": "0.0.1",
                 "instrument": "KPF"
         },
         "recipe": [
@@ -70,7 +66,6 @@ def kpf_recipes():
                 "name": "calibration_arcs",
                 "ob_type": "calibration",
                 "ui_name": "Arc Calibration",
-                "version": "0.0.1",
                 "instrument": "KPF"
         },
         "recipe": [

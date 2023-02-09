@@ -59,7 +59,6 @@ kpf_science = {
         "instrument": "KPF",
         "name": "kpf_sci",
         "script": "kpf_sci",
-        "script_version": "0.1.0",
         "template_type": "science",
         "ui_name": "KPF science",
         "version": "0.1.0"
@@ -228,7 +227,6 @@ kpf_acq = {
         "instrument": "KPF",
         "name": "kpf_acq",
         "script": "kpf_acq",
-        "script_version": "0.1.0",
         "template_type": "acquisition",
         "ui_name": "KPF acquisition",
         "version": "0.1.0",
@@ -308,7 +306,6 @@ kpf_arc = {
         "instrument": "KPF",
         "name": "kpf_arcs",
         "script": "kpf_arcs",
-        "script_version": "0.1.0",
         "template_type": "calibration",
         "ui_name": "KPF Arc Lamps",
         "version": "0.1.0",
@@ -456,7 +453,6 @@ kpf_darks = {
         "instrument": "KPF",
         "name": "kpf_dark",
         "script": "kpf_dark",
-        "script_version": "0.1.0",
         "template_type": "calibration",
         "ui_name": "KPF Dark Sequence",
         "version": "0.1.0",
@@ -581,7 +577,7 @@ kpf_target = {
             "ui_name": "Parallax",
             "units": "mas"
         },
-        "target_coord_rv": {
+        "target_info_rv": {
             "allowed": [
                 -1000000.0,
                 1000000.0

@@ -139,7 +139,7 @@ def sem_id_targets_get(sem_id):
     :rtype: List[Target]
     """
 
-    ob_blocks = sem_id_ob_get(sem_id)
+    ob_blocks = sem_id_ob_get(sem_id=sem_id)
 
     all_targets = []
     for ob_block in ob_blocks:
@@ -328,7 +328,7 @@ def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
     """sem_id_ob_targets
         /semesterIds/{sem_id}/ob/targets
 
-    Retrieves all the target components associated with a program. 
+    Retrieves all the OBs matching the .
 
     :param sem_id: semester id
     :type sem_id: dict | bytes
@@ -371,10 +371,10 @@ def sem_id_ob_targets(sem_id, instrument=None,  min_ra=None, max_ra=None,
     query = {'metadata.sem_id': sem_id}
     result = {'target': 1}
 
-    matching_ob = sem_utils.odt_ob_query(query, result, instrument, min_ra, max_ra,
-                                     ob_priority, min_priority, max_priority,
-                                     min_duration, max_duration, state,
-                                     observable, completed, container_id)
+    matching_ob = sem_utils.odt_ob_query(
+        query, result, instrument, min_ra, max_ra, ob_priority, min_priority,
+        max_priority, min_duration, max_duration, state, observable, completed,
+        container_id)
 
     return matching_ob
 

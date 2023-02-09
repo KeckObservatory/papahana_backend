@@ -15,6 +15,9 @@ def check_apikey_auth(api_key, required_scopes):
     """
     scrambled_api_key = request.cookies.get('ODB-API-KEY')
     scrampled_uid = request.cookies.get('ODB-API-UID')
+    if not scrambled_api_key or not scrampled_uid:
+        raise OAuthProblem('API Key not found')
+
     keck_id = int(auth_utils.decrypt_encoded_str(scrampled_uid))
 
     if not scrambled_api_key or scrambled_api_key == 'NULL':

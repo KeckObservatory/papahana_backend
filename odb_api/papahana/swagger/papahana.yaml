@@ -10,6 +10,10 @@ info:
   version: "0.1.0"
 servers:
 - url: http://localhost:8080/
+  description: '** Select server to Execute Commands **'
+- url: https://www3.keck.hawaii.edu/api/ddoi/
+  description: Use to 'Execute' commands
+
 #tags:
 #- name: Instrument
 #  externalDocs:
@@ -103,11 +107,11 @@ paths:
         - $ref: '#/components/parameters/container_id_optional'
       responses:
         "200":
-          description: OK
+          description: On success gets a new OB.
           content:
             application/json:
               schema:
-                type: array
+                $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
         "401":
@@ -142,11 +146,11 @@ paths:
         - $ref: '#/components/parameters/container_id_optional'
       responses:
         "200":
-          description: OK
+          description: On success gets a new OB.
           content:
             application/json:
               schema:
-                type: array
+                $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
         "401":
@@ -182,11 +186,11 @@ paths:
         - $ref: '#/components/parameters/return_id_optional'
       responses:
         "200":
-          description: OK
+          description: On success gets a new OB.
           content:
             application/json:
               schema:
-                type: array
+                $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
         "401":
@@ -210,11 +214,11 @@ paths:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: OK
+          description: On success gets a the tags associated with the OB.
           content:
             application/json:
               schema:
-                type: array
+                $ref: '#/components/schemas/TagsSchema'
         "400":
           description: Invalid status value
         "401":
@@ -235,11 +239,11 @@ paths:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: OK
+          description: On success returns updated tags associated with the OB.
           content:
             application/json:
               schema:
-                type: array
+                $ref: '#/components/schemas/TagsSchema'
         "400":
           description: Invalid status value
         "401":
@@ -260,11 +264,11 @@ paths:
         - $ref: '#/components/parameters/ob_id'
       responses:
         "200":
-          description: OK
+          description: On success returns updated tags associated with the OB.
           content:
             application/json:
               schema:
-                type: array
+                $ref: '#/components/schemas/TagsSchema'
         "400":
           description: Invalid status value
         "401":
@@ -292,7 +296,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/SemIdSchema'
         "400":
           description: Invalid status value
         "401":
@@ -320,7 +324,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/SemIdSchema'
         "400":
           description: Invalid status value
         "401":
@@ -356,30 +360,30 @@ paths:
       x-swagger-router-controller: SemesterId
       x-openapi-router-controller: papahana.controllers.semester_id_controller
 
-  /semesterIds/{sem_id}/proposal:
-    get:
-      tags:
-        - Semester Id
-      description: Retrieves the proposal associated with the program.
-                   The Semester ID is a required parameter.
-      operationId: sem_id_proposal_get
-      parameters:
-        - $ref: '#/components/parameters/sem_id'
-      responses:
-        "200":
-          description: returns the pdf or ps file of the proposal.
-          content:
-            application/pdf:
-              schema:
-                type: string
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "422":
-          description: Observation ID (Keck ID) or Semester ID not found.
-      x-swagger-router-controller: SemesterId
-      x-openapi-router-controller: papahana.controllers.semester_id_controller
+#  /semesterIds/{sem_id}/proposal:
+#    get:
+#      tags:
+#        - Semester Id
+#      description: Retrieves the proposal associated with the program.
+#                   The Semester ID is a required parameter.
+#      operationId: sem_id_proposal_get
+#      parameters:
+#        - $ref: '#/components/parameters/sem_id'
+#      responses:
+#        "200":
+#          description: returns the pdf or ps file of the proposal.
+#          content:
+#            application/pdf:
+#              schema:
+#                type: string
+#        "400":
+#          description: Invalid status value
+#        "401":
+#          description: Unauthorized
+#        "422":
+#          description: Observation ID (Keck ID) or Semester ID not found.
+#      x-swagger-router-controller: SemesterId
+#      x-openapi-router-controller: papahana.controllers.semester_id_controller
 
   /semesterIds/{sem_id}/targets:
     get:
@@ -426,7 +430,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Container'
+                  $ref: '#/components/schemas/ContainerSchema'
         "400":
           description: Invalid status value
         "401":
@@ -465,6 +469,8 @@ paths:
             application/json:
               schema:
                 type: array
+                items:
+                  $ref: '#/components/schemas/ObsBlockMetadata'
         "400":
           description: Invalid status value
         "401":
@@ -478,7 +484,7 @@ paths:
    get:
       tags:
         - Semester Id
-      description: Retrieves all the target components associated with a program.
+      description: Retrieves all the targets within search criteria.
       operationId: sem_id_ob_targets
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -496,11 +502,13 @@ paths:
         - $ref: '#/components/parameters/container_id_optional'
       responses:
         "200":
-          description: OK
+          description: array of targets
           content:
             application/json:
               schema:
                 type: array
+                items:
+                  $ref: '#/components/schemas/Target'
         "400":
           description: Invalid status value
         "401":
@@ -532,11 +540,13 @@ paths:
         - $ref: '#/components/parameters/container_id_optional'
       responses:
         "200":
-          description: OK
+          description: array of targets
           content:
             application/json:
               schema:
                 type: array
+                items:
+                  $ref: '#/components/schemas/TemplateSchema'
         "400":
           description: Invalid status value
         "401":
@@ -558,11 +568,13 @@ paths:
         - $ref: '#/components/parameters/instrument_optional'
       responses:
         "200":
-          description: OK
+          description: array of targets
           content:
             application/json:
               schema:
                 type: array
+                items:
+                  $ref: '#/components/schemas/ObservationBlock'
         "400":
           description: Invalid status value
         "401":
@@ -576,7 +588,7 @@ paths:
    get:
       tags:
         - Semester Id
-      description: Retrieves all the science observation blocks in their entirety for
+      description: Retrieves all the science observation blocks Object Ids for
                    a given program that are observable for the night.  Excludes
                    completed observation blocks.
       operationId: sem_id_ob_sci
@@ -596,11 +608,13 @@ paths:
         - $ref: '#/components/parameters/container_id_optional'
       responses:
         "200":
-          description: OK
+          description: array of targets
           content:
             application/json:
               schema:
                 type: array
+                items:
+                  type: object
         "400":
           description: Invalid status value
         "401":
@@ -628,7 +642,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Container'
+                $ref: '#/components/schemas/ContainerSchema'
         "400":
           description: Invalid status value
         "401":
@@ -648,7 +662,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Container'
+              $ref: '#/components/schemas/ContainerSchema'
         required: true
       responses:
         "204":
@@ -668,7 +682,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Container'
+              $ref: '#/components/schemas/ContainerSchema'
         required: true
       responses:
         "200":
@@ -708,9 +722,7 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: string
+              type: string
         required: true
       responses:
         "204":
@@ -741,6 +753,7 @@ paths:
                 type: number
                 description: miliseconds
                 x-content-type: application/json
+                example: 42.4
         "400":
           description: Invalid status value
         "401":
@@ -791,7 +804,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Container'
+                $ref: '#/components/schemas/ContainerSchema'
         "400":
           description: Invalid status value
         "401":
@@ -816,7 +829,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Container'
+                $ref: '#/components/schemas/ContainerSchema'
         "400":
           description: Invalid status value
         "401":
@@ -874,7 +887,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstrumentPackage'
+                x-content-type: application/json
         "400":
           description: Invalid status value
         "422":
@@ -902,7 +915,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstrumentPackage'
+                $ref: '#/components/schemas/Recipe'
         "400":
           description: Invalid status value
         "422":
@@ -932,7 +945,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstrumentPackage'
+                $ref: '#/components/schemas/IPTemplate'
         "400":
           description: Invalid status value
         "422":
@@ -961,7 +974,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstrumentPackage'
+                $ref: '#/components/schemas/TemplateMetadata'
         "400":
           description: Invalid status value
         "422":
@@ -1085,6 +1098,7 @@ paths:
         content:
           application/json:
             schema:
+#              type: object
               $ref: '#/components/schemas/ObservationBlock'
         required: true
       responses:
@@ -1121,35 +1135,35 @@ paths:
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
-  /obsBlocks/starlist:
-    post:
-      tags:
-        - Observation Block
-      description: Creates an OB for each target in starlist.
-      operationId: ob_starlist_post
-      parameters:
-        - $ref: '#/components/parameters/ob_id'
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-        required: true
-      responses:
-        "200":
-          description: On success inserts an OB for each target in starlist.
-        "400":
-          description: Invalid status value
-        "401":
-          description: Unauthorized
-        "422":
-          description: Copy Observation Block not found with provided OB ID.
-      x-swagger-router-controller: Observation
-      x-openapi-router-controller: papahana.controllers.observation_block_controller
+#  /obsBlocks/starlist:
+#    post:
+#      tags:
+#        - Observation Block
+#      description: Creates an OB for each target in starlist.
+#      operationId: ob_starlist_post
+#      parameters:
+#        - $ref: '#/components/parameters/ob_id'
+#      requestBody:
+#        content:
+#          multipart/form-data:
+#            schema:
+#              type: object
+#              properties:
+#                file:
+#                  type: string
+#                  format: binary
+#        required: true
+#      responses:
+#        "200":
+#          description: On success inserts an OB for each target in starlist.
+#        "400":
+#          description: Invalid status value
+#        "401":
+#          description: Unauthorized
+#        "422":
+#          description: Copy Observation Block not found with provided OB ID.
+#      x-swagger-router-controller: Observation
+#      x-openapi-router-controller: papahana.controllers.observation_block_controller
 
   /obsBlocks/previousVersion:
     get:
@@ -1237,8 +1251,8 @@ paths:
     get:
       tags:
         - Observation Block
-      description: Retrieves the list of templates associated with the
-                   Observation Block.
+      description: Retrieves the list of observation sequences associated
+                   with the Observation Block.
       operationId: ob_observations_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1262,7 +1276,7 @@ paths:
     post:
       tags:
         - Observation Block
-      description: Creates the list of templates associated with the OB.
+      description: Creates the list of observation sequences associated with the OB.
       operationId: ob_sequence_post
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1291,7 +1305,7 @@ paths:
     put:
       tags:
         - Observation Block
-      description: Updates the list of templates associated with the OB.
+      description: Updates the list of observation sequences associated with the OB.
       operationId: ob_sequence_put
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1323,7 +1337,7 @@ paths:
     get:
       tags:
         - Observation Block
-      description: Retrieves the specified observation within the Observation Block.
+      description: Retrieves the specified observation sequence within the Observation Block.
       operationId: ob_observations_id_get
       parameters:
         - $ref: '#/components/parameters/ob_id'
@@ -1770,7 +1784,7 @@ paths:
       tags:
         - Observers
       description: View the list of observers associated with the sem_id
-                   (program).  The list will be the users' Keck ID
+                   (program).  The list will be the users' Keck ID.
       operationId: observer_view
       parameters:
         - $ref: '#/components/parameters/sem_id'
@@ -1924,6 +1938,11 @@ components:
       type: apiKey
       in: cookie
       name: ODB-API-KEY
+      x-apikeyInfoFunc: papahana.controllers.authorization_controller.check_apikey_auth
+    ApiIdAuth:
+      type: apiKey
+      in: cookie
+      name: ODB-API-UID
       x-apikeyInfoFunc: papahana.controllers.authorization_controller.check_apikey_auth
 
   parameters:
@@ -2393,9 +2412,22 @@ components:
 
   schemas:
     apikey:
-      type: string
+      type: object
+      properties:
+        ODB-API-KEY:
+          type: string
+        ODB-API-UID:
+          type: string
+        USER:
+          type: integer
+      example:
+        {
+          "ODB-API-KEY": "S6+PgmHOSFyjfkdlsJfCBec7ulWJk0heIVdVnHsYFyv+ZdY+nSNgWL2tQCkujk8j4Eq8i6mHzGeHmxNzPQEAOkbxPh8Pp/rMy1f4TGziqLVGonumpZ4XVoE",
+          "ODB-API-UID": "Z/QrYn3xjfkldsljkSxMs5rznijiOg+fUHhhkjw=",
+          "USER": 999999
+        }
 
-    Container:
+    ContainerSchema:
       required:
         - name
         - sem_id
@@ -2415,6 +2447,20 @@ components:
           nullable: true
           type: string
           default: ""
+      example:
+        {
+          "_id": "63e42a98f645d2029c027ecc",
+          "comment": "Calibration Stars",
+          "name": "IQ > 1.5\"",
+          "observation_blocks": [
+              "63e42a87f645d2029c0279a4",
+              "63e42a8cf645d2029c027b0f",
+              "63e42a87f645d2029c027932",
+              "63e42a88f645d2029c0279d6",
+              "63e42a83f645d2029c027847"
+          ],
+          "sem_id": "2022A_U043"
+        }
 
     ObservationBlock:
       required:
@@ -2431,7 +2477,9 @@ components:
           $ref: '#/components/schemas/CommonParameters'
         observations:
           type: array
+#          items: {}
           items:
+            type: object
             $ref: '#/components/schemas/TemplateSchema'
         associations:
           type: array
@@ -2502,9 +2550,14 @@ components:
       type: object
       properties:
         metadata:
+#          type: object
           $ref: '#/components/schemas/ObservationMetadata'
         parameters:
-          $ref: '#/components/schemas/ScienceParameters'
+#          type: object
+#          $ref: '#/components/schemas/KPFScienceParameters'
+          anyOf:
+            - $ref: '#/components/schemas/ScienceParameters'
+            - $ref: '#/components/schemas/KPFScienceParameters'
 
     CalEngTemplate:
       required:
@@ -2608,6 +2661,38 @@ components:
         tcs_coord_po:
           type: string
 
+    KPFScienceParameters:
+      required:
+        - det_exp_time
+        - det_exp_number
+      type: object
+      properties:
+        det_exp_time:
+          type: number
+        det_exp_number:
+          type: integer
+        inst_cfg_calsource:
+          type: string
+        inst_cfg_em_band:
+          type: integer
+          nullable: true
+        inst_cfg_em_exptime:
+          type: number
+        inst_cfg_em_flux:
+          type: number
+          nullable: true
+        inst_cfg_em_mode:
+          type: string
+          nullable: true
+        inst_cfg_nd1:
+          type: string
+        inst_cfg_nd2:
+          type: string
+        inst_cfg_ts_simulcal:
+          type: boolean
+        target_info_object:
+          type: string
+
     ScienceParameters:
       required:
         - det1_exp_time
@@ -2657,6 +2742,23 @@ components:
         det2_exp_number:
           type: integer
 
+    TagsSchema:
+      required:
+        - tags
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+      example:
+        {
+          "tags": [
+              "Library",
+              "Bright"
+          ]
+        }
+
     # TODO add IP template description
     InstrumentPackage:
       required:
@@ -2666,6 +2768,7 @@ components:
         - configurable_elements
         - pointing_origins
         - template_list
+        - recipe_list
       type: object
       properties:
         metadata:
@@ -2684,6 +2787,86 @@ components:
           type: array
           items:
             type: string
+        recipe_list:
+          type: array
+          items:
+            type: string
+      example:
+        {
+          "_id": "63e42a9fbd8a7c8b6172ba09",
+          "comment": "A KPF Instrument Package",
+          "configurable_elements": [ ],
+          "event_table": "null",
+          "metadata": {
+            "instrument": "KPF",
+            "name": "kpf_instrument_package",
+            "observing_modes": [
+                "spectroscopy"
+            ],
+            "ui_name": "KPF Instrument Package",
+            "version": "0.0.1"
+          },
+          "optical_parameters": { },
+          "pointing_origins": [
+              "KPF",
+              "SKY",
+              "EM_SKY",
+              "REF"
+          ],
+          "recipe_list": [
+              "science_sidereal_target",
+              "science_non_sidereal_target",
+              "science_kpf_target",
+              "calibration_dark",
+              "calibration_arcs"
+          ],
+          "template_list": {
+            "kpf_acq": "0.1.0",
+            "kpf_arcs": "0.1.0",
+            "kpf_common_parameters": "0.1.1",
+            "kpf_dark": "0.1.0",
+            "kpf_sci": "0.1.0",
+            "kpf_target": "0.1.0"
+          }
+        }
+
+    Recipe:
+      required:
+        - metadata
+        - recipe
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/RecipeMetadata'
+        recipe:
+          type: array
+          items:
+            type: string
+      example:
+        {
+          "metadata": {
+            "instrument": "KPF",
+            "name": "calibration_dark",
+            "ob_type": "calibration",
+            "ui_name": "Dark Calibration"
+          },
+          "recipe": [
+              "kpf_common_parameters",
+              "kpf_dark"
+          ]
+        }
+
+
+    IPTemplate:
+      required:
+        - metadata
+        - parameters
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/TemplateMetadata'
+        parameters:
+          type: object
 
     InstrumentPackageMetadata:
       required:
@@ -2707,9 +2890,71 @@ components:
           items:
             type: string
 
+    RecipeMetadata:
+      required:
+        - name
+        - ui_name
+        - instrument
+        - ob_type
+      type: object
+      properties:
+        name:
+          type: string
+        ui_name:
+          type: string
+        instrument:
+          type: string
+        ob_type:
+          type: string
+
+    TemplateMetadata:
+      required:
+        - name
+        - ui_name
+        - instrument
+        - template_type
+        - script
+        - script_version
+        - version
+        - sequence_number
+      type: object
+      properties:
+        name:
+          type: string
+        ui_name:
+          type: string
+        instrument:
+          type: string
+        template_type:
+          type: string
+        script:
+          type: string
+        script_version:
+          type: string
+        version:
+          type: string
+        sequence_number:
+          type: integer
+
     # TODO add observer list schema
     ObserverList:
-      description: Observer List description goes here
+      type: object
+      properties:
+        associations:
+          type: array
+          items:
+            type: string
+        keck_id:
+          type: integer
+      example:
+        {
+          "associations": [
+              "2022B_U082",
+              "2022B_U056",
+              "2022B_U158",
+          ],
+          "keck_id": 9999999
+        }
 
     Target:
       required:
@@ -2721,6 +2966,36 @@ components:
           $ref: '#/components/schemas/TargetMetadata'
         parameters:
           $ref: '#/components/schemas/TargetParameters'
+      example:
+        {
+          "metadata": {
+            "instrument": "KPF",
+            "name": "kpf_target",
+            "template_type": "target",
+            "ui_name": "KPF Target",
+            "version": "0.1.0"
+          },
+          "parameters": {
+            "rot_cfg_pa": 359.0,
+            "seq_constraint_obstime": null,
+            "target_coord_dec": "-43:59:34",
+            "target_coord_epoch": 2000.0,
+            "target_coord_frame": "FK5",
+            "target_coord_parallax": 30000.0,
+            "target_coord_pm_dec": 1.2,
+            "target_coord_pm_ra": 0.1,
+            "target_coord_ra": "04:22:03",
+            "target_info_2mass_id": "2mass",
+            "target_info_comment": "A planet with life!",
+            "target_info_gaia_id": "gaia",
+            "target_info_gmag": 24.4,
+            "target_info_jmag": 11.2,
+            "target_info_name": "My KPF Target",
+            "target_info_rv": 10.3,
+            "target_info_teff": 334.4
+          }
+        }
+
 
     TargetMetadata:
       required:
@@ -2743,10 +3018,13 @@ components:
           type: string
 #          ref: '#/components/schemas/VersionSchema'
       example:
-        name: sidereal_target
-        ui_name: Sidereal Target
-        template_type: target
-        version: 0.1.1
+        "metadata": {
+          "instrument": "KPF",
+          "name": "kpf_target",
+          "template_type": "target",
+          "ui_name": "KPF Target",
+          "version": "0.1.0"
+        }
 
     TargetParameters:
       required:
@@ -2782,6 +3060,7 @@ components:
           type: string
         seq_constraint_obstime:
           $ref: '#/components/schemas/DateSchema'
+          nullable: true
         target_info_magnitude:
           type: object
           properties:
@@ -2793,9 +3072,25 @@ components:
           nullable: true
           type: string
       example:
-        target_info_name: super bright star
-        target_coord_ra: 23:55:05
-        target_coord_dec: -02:13:50
+        "parameters": {
+          "rot_cfg_pa": 359.0,
+          "seq_constraint_obstime": null,
+          "target_coord_dec": "-43:59:34",
+          "target_coord_epoch": 2000.0,
+          "target_coord_frame": "FK5",
+          "target_coord_parallax": 30000.0,
+          "target_coord_pm_dec": 1.2,
+          "target_coord_pm_ra": 0.1,
+          "target_coord_ra": "04:22:03",
+          "target_info_2mass_id": "2mass",
+          "target_info_comment": "A planet with life!",
+          "target_info_gaia_id": "gaia",
+          "target_info_gmag": 24.4,
+          "target_info_jmag": 11.2,
+          "target_info_name": "My KPF Target",
+          "target_info_rv": 10.3,
+          "target_info_teff": 334.4
+        }
 
     StatusSubset:
       anyOf:
@@ -2807,8 +3102,6 @@ components:
         - state
         - current_seq
         - current_step
-        - current_exp_det1
-        - current_exp_det2
         - executions
         - deleted
       type: object
@@ -2894,6 +3187,7 @@ components:
         - pattern: '^[Kk][Pp][Ff]$'
         - pattern: '^[Ss][Ss][Cc]$'
         - enum:
+          - KP
           - DE
           - DF
           - EI

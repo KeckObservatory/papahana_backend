@@ -42,6 +42,7 @@ def instrument_packages_parameter(instrument, ip_version=None):
 
 def instrument_packages_recipes(instrument, ip_version=None, recipe_name=None):
     """instrument_packages_recipes
+    /instrumentPackages/{instrument}/recipes
 
     Retrieves all the specified instrument package recipes. The recipe name
     is optional.  If the name is not specified all templates are returned.
@@ -63,7 +64,7 @@ def instrument_packages_recipes(instrument, ip_version=None, recipe_name=None):
     query = {"metadata.instrument": instrument.upper()}
     fields = {'_id': 0}
     if recipe_name:
-        query["metadata.instrument"] = recipe_name
+        query["metadata.name"] = recipe_name
 
     package_list = utils.get_fields_by_query(query, fields, 'recipeCollect')
     if not package_list:
