@@ -345,6 +345,24 @@ def ob_execution_time(ob_id):
     return total_tm
 
 
+def ob_list(ob_id_list):
+    """
+    /obsBlocks/list
+
+    Retrieve an array of observation blocks from the array of IDs.
+
+    :param ob_id_array: observation block ObjectId
+    :type ob_id_array: List[str]
+
+    :rtype: float
+    """
+    ob_list = []
+    for ob_id in ob_id_list:
+        ob_list.append(ob_get(ob_id))
+
+    return ob_list
+
+
 def ob_completely_filled(ob_id):
     """
     Verify that the required parameters have been filled in.

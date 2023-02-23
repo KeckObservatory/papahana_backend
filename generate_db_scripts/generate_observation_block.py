@@ -22,7 +22,6 @@ def generate_obs(config, inst, inst_list, template_list):
     coll = papahana_util.config_collection('obCollect', conf=config)
 
     ob_blocks = []
-    # coll.drop()
 
     template_list = utils.parse_template_list(inst, inst_list, template_list)
 

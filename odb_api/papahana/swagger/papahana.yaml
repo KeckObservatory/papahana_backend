@@ -1664,6 +1664,32 @@ paths:
       x-swagger-router-controller: Observation
       x-openapi-router-controller: papahana.controllers.observation_block_controller
 
+  /obsBlocks/list:
+    get:
+      tags:
+        - Observation Block
+      description: Retrieve an array of observation blocks from the array of IDs.
+      operationId: ob_list
+      parameters:
+        - $ref: '#/components/parameters/ob_id_list'
+      responses:
+        "200":
+          description: On success returns an array of OBs.
+          content:
+            application/json:
+              schema:
+                type: number
+                x-content-type: application/json
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+        "422":
+          description: Observation Block not found with provided OB ID.
+      x-swagger-router-controller: Observation
+      x-openapi-router-controller: papahana.controllers.observation_block_controller
+
+
   # low-priority
   /obsBlocks/upgrade:
     post:
@@ -2129,6 +2155,19 @@ components:
       schema:
         type: integer
 
+    ob_id_list:
+      name: ob_id_list
+      in: query
+      description: observation block ObjectId
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+      example: 621ffc2853e6386db4116fe6, 621ffc2553e6386db4116fe8
+
     ob_id:
       name: ob_id
       in: query
@@ -2477,7 +2516,6 @@ components:
           $ref: '#/components/schemas/CommonParameters'
         observations:
           type: array
-#          items: {}
           items:
             type: object
             $ref: '#/components/schemas/TemplateSchema'
@@ -2550,11 +2588,8 @@ components:
       type: object
       properties:
         metadata:
-#          type: object
           $ref: '#/components/schemas/ObservationMetadata'
         parameters:
-#          type: object
-#          $ref: '#/components/schemas/KPFScienceParameters'
           anyOf:
             - $ref: '#/components/schemas/ScienceParameters'
             - $ref: '#/components/schemas/KPFScienceParameters'

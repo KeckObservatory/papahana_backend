@@ -1,8 +1,10 @@
 from generate_scripts import generate_scripts_collection
 from kpf_templates import kpf_common_parameters, kpf_science,  kpf_acq, kpf_arc, kpf_darks, kpf_target
 from kpf_recipes import kpf_recipes
+from papahana import util as papahana_util
 
 import generate_utils as utils
+import pymongo
 
 from papahana import util as papahana_util
 from os import path
@@ -111,5 +113,28 @@ if __name__=='__main__':
 
         generate_scripts_collection(coll, coll_inst, coll_tmp, 'KPF')
 
+    # set of collections:
+    # collections = ('containers', 'deltas_observation_blocks', 'instrument_packages',
+    #                'ob_recipes', 'observation_blocks', 'tag_info', 'templates')
+
+    collections = ('obCollect', 'obDeltaCollect', 'observerCollect',
+                   'containerCollect', 'scriptCollect', 'recipeCollect',
+                   'templateCollect', 'ipCollect', 'deltaCollect',
+                   'tagsCollect')
+    # db = config[db_name]
+    mongo_url = papahana_util.compose_set_url(config)
+    mongo = pymongo.MongoClient(mongo_url)
+    db = mongo[ob_db]
+
+    for collection in collections:
+        # if no observation_blocks colection -- create
+        collectName = config[collection]
+        collist = db.list_collection_names()
+        print(collist)
+        if collectName in collist:
+            print(collectName, collist)
+            mycol = db[collectName]
+
+        # papahana_util.create_collection(collection, ob_db, mongo_url)
 
 

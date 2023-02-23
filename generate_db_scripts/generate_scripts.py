@@ -24,14 +24,16 @@ def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
             continue
 
         meta = results['metadata']
-        if 'script_version' not in meta or 'template_type' not in meta \
+        print(f'meta {meta}')
+        if 'version' not in meta or 'template_type' not in meta \
                 or 'script' not in meta:
             continue
 
         script_name = results['metadata']['script']
-        script_version = results['metadata']['script_version']
+        version = results['metadata']['version']
         script_type = results['metadata']['template_type']
-        schema = generate_scripts(inst, script_name, script_type, script_version)
+        schema = generate_scripts(inst, script_name, script_type, version)
+        # schema = generate_scripts(inst, script_name, script_type)
         _ = coll.insert_one(schema)
 
 
@@ -56,6 +58,7 @@ def generate_scripts(inst, script_name, script_type, version):
             'instrument': inst,
             'script_type': script_type,
             'comment': f'Script for template: {script_name}, {version}'
+            # 'comment': f'Script for template: {script_name}'
         },
         'script': script
     }
