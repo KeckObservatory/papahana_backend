@@ -10,42 +10,42 @@ kpf_common_parameters = {
     },
     "instrument_parameters": {
         "inst_cfg_runagitator": {
-            "default": 'null',
+            "default": None,
             "description": "Run the agitator during exposures?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Agitator On",
-            "units": 'null'
+            "units": None
         }
     },
     "detector_parameters": {
         "det1_cfg_trigger": {
-            "default": 'null',
+            "default": None,
             "description": "Trigger the Ca H&K detector?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Ca H&K Detector Trigger",
-            "units": 'null'
+            "units": None
         },
         "det2_cfg_trigger": {
-            "default": 'null',
+            "default": None,
             "description": "Trigger the green detector?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Green Detector Trigger",
-            "units": 'null'
+            "units": None
         },
         "det3_cfg_trigger": {
-            "default": 'null',
+            "default": None,
             "description": "Use red detector?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Red Detector Trigger",
-            "units": 'null'
+            "units": None
         }
     },
     "guider_parameters": {
@@ -74,13 +74,13 @@ kpf_science = {
                 "OD 3.0",
                 "OD 4.0"
             ],
-            "default": 'null',
+            "default": None,
             "description": "Filter to use in the ND1 filter wheel",
             "option": "set",
             "optionality": "required",
             "type": "str",
             "ui_name": "ND1 Filter",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_nd2": {
             "allowed": [
@@ -91,13 +91,13 @@ kpf_science = {
                 "OD 1.0",
                 "OD 4.0"
             ],
-            "default": 'null',
+            "default": None,
             "description": "Filter to use in the ND2 filter wheel",
             "option": "set",
             "optionality": "required",
             "type": "str",
             "ui_name": "ND2 Filter",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_calsource": {
             "allowed": [
@@ -111,13 +111,13 @@ kpf_science = {
                 "SoCal-CalFib",
                 "LFCFiber"
             ],
-            "default": 'null',
+            "default": None,
             "description": "Calibration source to use",
             "option": "set",
             "optionality": "required",
             "type": "str",
             "ui_name": "Calibration source",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_em_band": {
             "allowed": [
@@ -132,14 +132,14 @@ kpf_science = {
             "optionality": "optional",
             "type": "integer",
             "ui_name": "Exposure Meter Wavelength Band",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_em_exptime": {
             "allowed": [
                 0.1,
                 1800
             ],
-            "default": 'null',
+            "default": None,
             "description": "Exposure time in seconds",
             "option": "range",
             "optionality": "required",
@@ -173,14 +173,14 @@ kpf_science = {
             "optionality": "required",
             "type": "str",
             "ui_name": "Exposure meter mode.",
-            "units": 'null'
+            "units": None
         },
         "det_exp_time": {
             "allowed": [
                 0.1,
                 3600
             ],
-            "default": 'null',
+            "default": None,
             "description": "Exposure time in seconds",
             "option": "range",
             "optionality": "required",
@@ -193,13 +193,13 @@ kpf_science = {
                 1,
                 100
             ],
-            "default": 'null',
+            "default": None,
             "description": "Number of exposures to take",
             "option": "range",
             "optionality": "required",
             "type": "integer",
             "ui_name": "Number of Exposures",
-            "units": 'null'
+            "units": None
         },
         "target_info_object": {
             "default": "",
@@ -208,16 +208,16 @@ kpf_science = {
             "optionality": "optional",
             "type": "string",
             "ui_name": "Object Keyword",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_ts_simulcal": {
-            "default": 'null',
+            "default": None,
             "description": "Should the timed shutter for simultaneous calibration fiber be opened during exposure?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Simultaneous Calibration fiber Timed Shutter Open",
-            "units": 'null'
+            "units": None
         }
     }
 }
@@ -244,7 +244,7 @@ kpf_acq = {
             "optionality": "required",
             "type": "string",
             "ui_name": "Guider camera gain (high, medium, or low).",
-            "units": 'null'
+            "units": None
         },
         "guider_cfg_fps": {
             "allowed": [
@@ -268,7 +268,7 @@ kpf_acq = {
             "optionality": "required",
             "type": "float",
             "ui_name": "Tip tilt loop gain",
-            "units": 'null'
+            "units": None
         },
         "guider_mode": {
             "allowed": [
@@ -282,7 +282,7 @@ kpf_acq = {
             "optionality": "required",
             "type": "string",
             "ui_name": "Guide camera exposure mode.",
-            "units": 'null'
+            "units": None
         },
         "tcs_coord_po": {
             "allowed": [
@@ -296,7 +296,7 @@ kpf_acq = {
             "optionality": "required",
             "type": "string",
             "ui_name": "Pointing origin",
-            "units": 'null'
+            "units": None
         }
     }
 }
@@ -321,13 +321,13 @@ kpf_arc = {
                 "OD 3.0",
                 "OD 4.0"
             ],
-            "default": 'null',
+            "default": None,
             "description": "Filter to use in the ND1 filter wheel",
             "option": "set",
             "optionality": "required",
             "type": "string",
             "ui_name": "ND1 Filter",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_nd2": {
             "allowed": [
@@ -338,13 +338,13 @@ kpf_arc = {
                 "OD 1.0",
                 "OD 4.0"
             ],
-            "default": 'null',
+            "default": None,
             "description": "Filter to use in the ND2 filter wheel",
             "option": "set",
             "optionality": "required",
             "type": "string",
             "ui_name": "ND2 Filter",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_calsource": {
             "allowed": [
@@ -358,13 +358,13 @@ kpf_arc = {
                 "SoCal-CalFib",
                 "LFCFiber"
             ],
-            "default": 'null',
+            "default": None,
             "description": "Calibration source to use",
             "option": "set",
             "optionality": "required",
             "type": "string",
             "ui_name": "Calibration source",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_fffiberpos": {
             "allowed": [
@@ -381,14 +381,14 @@ kpf_arc = {
             "optionality": "optional",
             "type": "string",
             "ui_name": "Flat field aperture choice.",
-            "units": 'null'
+            "units": None
         },
         "det_exp_time": {
             "allowed": [
                 0.1,
                 3600
             ],
-            "default": 'null',
+            "default": None,
             "description": "Exposure time in seconds",
             "option": "range",
             "optionality": "required",
@@ -401,13 +401,13 @@ kpf_arc = {
                 1,
                 100
             ],
-            "default": 'null',
+            "default": None,
             "description": "Number of exposures to take",
             "option": "range",
             "optionality": "required",
             "type": "integer",
             "ui_name": "Number of exposures to take",
-            "units": 'null'
+            "units": None
         },
         "target_info_object": {
             "default": "",
@@ -416,34 +416,34 @@ kpf_arc = {
             "optionality": "optional",
             "type": "string",
             "ui_name": "Value for the object keyword",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_sss_science": {
-            "default": 'null',
+            "default": None,
             "description": "Should the source select shutter for science be open?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Source Shutter Open",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_sss_sky": {
-            "default": 'null',
+            "default": None,
             "description": "Should the source select shutter for sky be open?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Sky Shutter Open",
-            "units": 'null'
+            "units": None
         },
         "inst_cfg_simulcal_ts": {
-            "default": 'null',
+            "default": None,
             "description": "Should the timed shutter for simultaneous calibration fiber be opened during exposure?",
             "option": "boolean",
             "optionality": "required",
             "type": "boolean",
             "ui_name": "Simultaneous Calibration Fiber Timed Shutter Open",
-            "units": 'null'
+            "units": None
         },
     }
 }
@@ -464,7 +464,7 @@ kpf_darks = {
                 0.1,
                 3600
             ],
-            "default": 'null',
+            "default": None,
             "description": "Exposure time in seconds",
             "option": "range",
             "optionality": "required",
@@ -477,13 +477,13 @@ kpf_darks = {
                 1,
                 100
             ],
-            "default": 'null',
+            "default": None,
             "description": "Number of exposures to take",
             "option": "range",
             "optionality": "required",
             "type": "integer",
             "ui_name": "Number of Exposures",
-            "units": 'null'
+            "units": None
         },
         "target_info_object": {
             "default": "",
@@ -492,7 +492,7 @@ kpf_darks = {
             "optionality": "optional",
             "type": "string",
             "ui_name": "Object Keyword",
-            "units": 'null'
+            "units": None
         },
     }
 }
@@ -507,12 +507,12 @@ kpf_target = {
     },
     "parameters": {
         "target_info_name": {
-            "default": 'null',
+            "default": None,
             "description": "observer provided name",
             "optionality": "required",
             "type": "string",
             "ui_name": "Target Name",
-            "units": 'null'
+            "units": None
         },
         "target_info_comment": {
             "ui_name": "Target Comment",
@@ -520,30 +520,30 @@ kpf_target = {
             "default": "",
             "optionality": "optional",
             "type": "string",
-            "units": 'null'
+            "units": None
         },
         "target_info_2mass_id": {
-            "default": 'null',
+            "default": None,
             "description": "The 2MASS ID of the target",
             "optionality": "required",
             "type": "string",
             "ui_name": "2MASS ID",
-            "units": 'null'
+            "units": None
         },
         "target_info_gaia_id": {
-            "default": 'null',
+            "default": None,
             "description": "The GAIA DR3 ID of the target",
             "optionality": "required",
             "type": "string",
             "ui_name": "GAIA DR3 ID",
-            "units": 'null'
+            "units": None
         },
         "target_info_gmag": {
             "allowed": [
                 -30,
                 30
             ],
-            "default": 'null',
+            "default": None,
             "description": "Gaia G magnitude of target",
             "option": "range",
             "optionality": "required",
@@ -556,7 +556,7 @@ kpf_target = {
                 -30,
                 30
             ],
-            "default": 'null',
+            "default": None,
             "description": "2MASS J magnitude of target",
             "option": "range",
             "optionality": "required",
@@ -569,7 +569,7 @@ kpf_target = {
                 0,
                 1000000.0
             ],
-            "default": 'null',
+            "default": None,
             "description": "Parallax in milliarcseconds; needed for DRP not pointing telescope",
             "option": "range",
             "optionality": "required",
@@ -582,7 +582,7 @@ kpf_target = {
                 -1000000.0,
                 1000000.0
             ],
-            "default": 'null',
+            "default": None,
             "description": "Radial velocity in km/s; needed for DRP",
             "option": "range",
             "optionality": "required",
@@ -595,7 +595,7 @@ kpf_target = {
                 0,
                 1000000.0
             ],
-            "default": 'null',
+            "default": None,
             "description": "Teff of target in K",
             "option": "range",
             "optionality": "required",
@@ -611,7 +611,7 @@ kpf_target = {
                 "^\\d{2}:\\d{2}:\\d{2}.\\d{1}$",
                 "^\\d{2}:\\d{2}:\\d{2}.\\d{2}$"
             ],
-            "default": 'null',
+            "default": None,
             "optionality": "required",
             "type": "string",
             "units": "Hours:Minutes:Seconds"
@@ -627,7 +627,7 @@ kpf_target = {
                 "^-\\d{2}:\\d{2}:\\d{2}.\\d{1}$",
                 "^-\\d{2}:\\d{2}:\\d{2}.\\d{2}$"
             ],
-            "default": 'null',
+            "default": None,
             "optionality": "required",
             "type": "string",
             "units": "Degrees:Minutes:Seconds"
@@ -666,7 +666,7 @@ kpf_target = {
             "default": "FK5",
             "optionality": "optional",
             "type": "string",
-            "units": 'null'
+            "units": None
         },
         "target_coord_epoch": {
             "ui_name": "Epoch",
@@ -696,10 +696,10 @@ kpf_target = {
             "ui_name": "Scheduled Time of Observation",
             "option": "regex",
             "allowed": [
-                'null',
+                None,
                 "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
             ],
-            "default": 'null',
+            "default": None,
             "optionality": "optional",
             "type": "string",
             "units": "YR-MM-DD hh:mm:ss"

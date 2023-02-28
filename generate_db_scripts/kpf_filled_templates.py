@@ -133,7 +133,7 @@ def generate_inst_package(template_list):
         "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
         ],
         "template_list": utils.parse_templates_version(template_list),
-        "event_table": 'null',
+        "event_table": None,
         "comment": "A KPF Instrument Package"
     }
 
