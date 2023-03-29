@@ -15,7 +15,7 @@ def generate_inst_package(template_list):
         "metadata": {
             "name": "kpf_instrument_package",
             "ui_name": "KPF Instrument Package",
-            "version": "0.0.1",
+            "version": "0.1.0",
             "instrument": "KPF",
             "observing_modes": ["spectroscopy"]
         },

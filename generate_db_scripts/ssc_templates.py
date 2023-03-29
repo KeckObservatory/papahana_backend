@@ -3,11 +3,10 @@ ssc_acq = {
         "instrument": "SSC",
         "name": "ssc_acq",
         "script": "ssc_acq",
-        "script_version": "0.0.1",
         "sequence_number": 0,
         "template_type": "acquisition",
         "ui_name": "SSC direct",
-        "version": "0.0.1"
+        "version": "0.1.0"
     },
     "parameters": {
         "tcs_coord_decoff": {
@@ -59,7 +58,7 @@ ssc_common_parameters = {
         "name": "ssc_common_parameters",
         "template_type": "common_parameters",
         "ui_name": "SSC Common Parameters",
-        "version": "0.0.1"
+        "version": "0.1.0"
     }
 }
 
@@ -69,11 +68,10 @@ ssc_sci = {
         "instrument": "SSC",
         "name": "ssc_sci",
         "script": "ssc_sci",
-        "script_version": "0.1.0",
         "sequence_number": 1,
         "template_type": "science",
         "ui_name": "SSC image",
-        "version": "0.1.1"
+        "version": "0.1.0"
     },
     "parameters": {
         "det1_exp_number": {
@@ -102,11 +100,10 @@ ssc_sci_dither = {
         "instrument": "SSC",
         "name": "ssc_sci_dither",
         "script": "ssc_sci_dither",
-        "script_version": "0.1.1",
         "sequence_number": 1,
         "template_type": "science",
         "ui_name": "SSC dither",
-        "version": "0.1.1"
+        "version": "0.1.0"
     },
     "parameters": {
         "det1_exp_number": {

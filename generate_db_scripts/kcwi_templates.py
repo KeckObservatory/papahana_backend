@@ -135,9 +135,9 @@ kcwi_ifu_sci_dither_template = {
         "ui_name": "KCWI dither",
         "instrument": "KCWI",
         "template_type": "science",
-        "version": "0.1.1",
+        "version": "0.1.0",
         "script": "kcwi_ifu_sci_stare",
-        "script_version": "0.1.1",
+        "script_version": "0.1.0",
         "sequence_number": 1
     },
     "parameters": dict(list(kcwi_ifu_sci_stare_parameters.items()) +
@@ -152,7 +152,7 @@ kcwi_ifu_sci_stare_template = {
         "ui_name": "KCWI stare",
         "instrument": "KCWI",
         "template_type": "science",
-        "version": "0.1.1",
+        "version": "0.1.0",
         "script": "kcwi_ifu_sci_stare",
         "script_version": "0.1.0",
         "sequence_number": 1
@@ -166,7 +166,7 @@ kcwi_ifu_acq_direct_template = {
         "ui_name": "KCWI direct",
         "instrument": "KCWI",
         "template_type": "acquisition",
-        "version": "0.1.1",
+        "version": "0.1.0",
         "script": "kcwi_ifu_acq_direct",
         "script_version": "0.1.0",
         "sequence_number": 0

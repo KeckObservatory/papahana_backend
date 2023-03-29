@@ -24,7 +24,7 @@ def generate_kpf_ip(template_list, recipe_list):
         "metadata": {
             "name": "kpf_instrument_package",
             "ui_name": "KPF Instrument Package",
-            "version": "0.0.1",
+            "version": "0.1.0",
             "instrument": "KPF",
             "observing_modes": ["spectroscopy"]
         },

@@ -18,7 +18,7 @@ def ssc_scripts():
       ["WAITFOR_SLEW", "Execution queue locked while slewing"],
       ["ACQUIRE", "OA acquires to PO"],
       ["WAITFOR_ACQUIRE", "Execution queue locked while acquiring"],
-      ["CONFIGURE_SCIENCE", "Sets up SSC for science"],
+      ["CONFIGURE_FOR_SCIENCE", "Sets up SSC for science"],
       ["WAITFOR_CONFIGURE_SCIENCE", "Execution queue locked while science is being configured"]
     ]
 

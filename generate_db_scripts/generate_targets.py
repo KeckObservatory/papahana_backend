@@ -30,7 +30,7 @@ def generate_sidereal_target():
             "name": "sidereal_target",
             "ui_name": "Sidereal Target",
             "template_type": "target",
-            "version": "0.1.1"
+            "version": "0.1.0"
         },
         "parameters": {
             'target_info_name': random_utils.randString(),

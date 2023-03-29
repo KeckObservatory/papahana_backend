@@ -9,7 +9,7 @@ def filled_acq_templates():
                 "ui_name": "SSC Acquisition",
                 "instrument": "SSC",
                 "template_type": "acquisition",
-                "version": "0.1.1",
+                "version": "0.1.0",
                 "script": "ssc_acq",
                 "script_version": "0.1.0",
                 "sequence_number": 0
@@ -27,7 +27,7 @@ def filled_common_parameters():
             "name": "ssc_common_parameters",
             "template_type": "common_parameters",
             "ui_name": "SSC Common Parameters",
-            "version": "0.0.1"
+            "version": "0.1.0"
         },
         "detector_parameters": {
             "det1_cfg_binning": {
@@ -88,7 +88,7 @@ def generate_inst_package(template_list):
         "metadata": {
             "name": "ssc_instrument_package",
             "ui_name": "SSC Instrument Package",
-            "version": "0.0.1",
+            "version": "0.1.0",
             "instrument": "SSC",
             "observing_modes": ["imaging"]
         },

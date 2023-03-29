@@ -8,7 +8,7 @@ def filled_common_parameters():
             "ui_name": "KPF Common Parameters",
             "instrument": "KPF",
             "template_type": "common_parameters",
-            "version": "0.1.1"
+            "version": "0.1.0"
         },
         "instrument_parameters": {
             "inst_cfg_runagitator": True
@@ -122,7 +122,7 @@ def generate_inst_package(template_list):
         "metadata": {
             "name": "kpf_instrument_package",
             "ui_name": "KPF Instrument Package",
-            "version": "0.0.1",
+            "version": "0.1.0",
             "instrument": "KPF",
             "observing_modes": ["spectroscopy"]
         },

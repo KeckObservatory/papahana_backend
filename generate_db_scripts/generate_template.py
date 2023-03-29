@@ -182,7 +182,7 @@ sidereal_target = OrderedDict([
         "name": "sidereal_target",
         "ui_name": "Sidereal Target",
         "template_type": "target",
-        "version": "0.1.1"
+        "version": "0.1.0"
     }),
     ("parameters", target_base_parameters)
 ])
@@ -193,7 +193,7 @@ nonsidereal_target = OrderedDict([
         "name": "non_sidereal_target",
         "ui_name": "Non-Sidereal Target",
         "template_type": "target",
-        "version": "0.1.1"
+        "version": "0.1.0"
     }),
     ("parameters", nonsidereal_extra_params)
 ])
