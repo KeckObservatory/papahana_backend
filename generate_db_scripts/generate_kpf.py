@@ -43,6 +43,30 @@ def generate_kpf_ip(template_list, recipe_list):
     return schema
 
 
+def gen_inst_package(config, template_list=None):
+    print("...generating instrument package")
+
+    # add templates
+    if not template_list:
+        coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
+        fields = {'metadata.name': 1, 'metadata.version': 1}
+        template_list = list(coll_tmp.find({}, fields))
+
+    # add recipes
+    coll_recipe = papahana_util.config_collection('recipeCollect', conf=config)
+    fields = {'metadata.name': 1, '_id': 0}
+    recipe_list = list(coll_recipe.find({}, fields))
+
+    coll = papahana_util.config_collection('ipCollect', conf=config)
+    coll.drop()
+
+    inst_specific_templates = utils.parse_template_list('KPF', INST_LIST, template_list)
+    ip = generate_kpf_ip(inst_specific_templates, recipe_list)
+
+    return ip
+
+
+
 if __name__=='__main__':
     args = utils.parse_args()
     mode = args.mode
@@ -130,9 +154,9 @@ if __name__=='__main__':
         # if no observation_blocks colection -- create
         collectName = config[collection]
         collist = db.list_collection_names()
-        print(collist)
+        # print(collist)
         if collectName in collist:
-            print(collectName, collist)
+            # print(collectName, collist)
             mycol = db[collectName]
 
         # papahana_util.create_collection(collection, ob_db, mongo_url)

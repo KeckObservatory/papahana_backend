@@ -1,8 +1,8 @@
-ssc_acq_direct = {
+ssc_acq = {
     "metadata": {
         "instrument": "SSC",
-        "name": "ssc_acq_direct",
-        "script": "ssc_acq_direct",
+        "name": "ssc_acq",
+        "script": "ssc_acq",
         "script_version": "0.0.1",
         "sequence_number": 0,
         "template_type": "acquisition",
@@ -64,11 +64,11 @@ ssc_common_parameters = {
 }
 
 
-ssc_sci_image = {
+ssc_sci = {
     "metadata": {
         "instrument": "SSC",
-        "name": "ssc_sci_image",
-        "script": "ssc_sci_image",
+        "name": "ssc_sci",
+        "script": "ssc_sci",
         "script_version": "0.1.0",
         "sequence_number": 1,
         "template_type": "science",

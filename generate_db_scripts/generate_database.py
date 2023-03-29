@@ -5,6 +5,7 @@ import generate_containers as container_utils
 from generate_scripts import generate_scripts_collection
 from generate_observers import generate_observer_collection
 from kpf_recipes import kpf_recipes
+from generate_kpf import gen_inst_package
 
 import kcwi_filled_templates as kcwi_filled
 import kpf_filled_templates as kpf_filled
@@ -85,7 +86,8 @@ if __name__=='__main__':
         if inst_lower == 'kcwi':
             ip = kcwi_filled.generate_inst_package(inst_specific_templates)
         elif inst_lower == 'kpf':
-            ip = kpf_filled.generate_inst_package(inst_specific_templates)
+            # ip = kpf_filled.generate_inst_package(inst_specific_templates)
+            ip = gen_inst_package(config, template_list=inst_specific_templates)
         elif inst_lower == 'ssc':
             ip = ssc_filled.generate_inst_package(inst_specific_templates)
         else:
@@ -99,6 +101,7 @@ if __name__=='__main__':
     coll_inst = papahana_util.config_collection('ipCollect', conf=config)
     coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
     coll.drop()
+    generate_scripts_collection(coll, coll_inst, coll_tmp, 'SSC')
     generate_scripts_collection(coll, coll_inst, coll_tmp, 'KPF')
 
     if args.generate_observers:

@@ -1,5 +1,6 @@
 import generate_random_utils as random_utils
 from kpf_scripts import kpf_scripts
+from ssc_scripts import ssc_scripts
 
 
 def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
@@ -27,27 +28,39 @@ def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
         print(f'meta {meta}')
         if 'version' not in meta or 'template_type' not in meta \
                 or 'script' not in meta:
+            print('skipping')
             continue
 
         script_name = results['metadata']['script']
         version = results['metadata']['version']
         script_type = results['metadata']['template_type']
+
         schema = generate_scripts(inst, script_name, script_type, version)
         # schema = generate_scripts(inst, script_name, script_type)
         _ = coll.insert_one(schema)
 
+    return coll
+
 
 def generate_scripts(inst, script_name, script_type, version):
+    print('gen', inst, script_name, script_type, version)
     if inst.lower() == 'kpf':
         scripts = kpf_scripts()
+    elif inst.lower() == 'ssc':
+        scripts = ssc_scripts()
     else:
         print('ERROR: scripts are undefined')
         return {}
 
+    # print('scrs', scripts)
     if script_name in scripts:
         script = scripts[script_name]
     else:
         script = {'TBD': 'TBD'}
+
+    print('scr', script)
+    print('scr', type(script))
+    print('-'*8)
 
     ui_name = script_name.replace('_', ' ').title()
     schema = {

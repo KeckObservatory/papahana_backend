@@ -5,12 +5,12 @@ def filled_acq_templates():
     acq_templates = [
         {
             "metadata": {
-                "name": "ssc_acq_direct",
+                "name": "ssc_acq",
                 "ui_name": "SSC Acquisition",
                 "instrument": "SSC",
                 "template_type": "acquisition",
                 "version": "0.1.1",
-                "script": "ssc_acq_direct",
+                "script": "ssc_acq",
                 "script_version": "0.1.0",
                 "sequence_number": 0
             },
@@ -64,13 +64,13 @@ def filled_sci_templates(template_list):
         {
             "metadata": {
                 "instrument": "SSC",
-                "name": "ssc_sci_image",
-                "script": "ssc_sci_image",
+                "name": "ssc_sci",
+                "script": "ssc_sci",
                 "script_version": "0.1.0",
                 "sequence_number": 1,
                 "template_type": "science",
                 "ui_name": "SSC image",
-                "version": templates_version["ssc_sci_image"]
+                "version": templates_version["ssc_sci"]
             },
             "parameters": {
                 "det1_exp_number": random_utils.randInt(1, 100),
