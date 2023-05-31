@@ -12,11 +12,12 @@ def kpf_scripts():
         ['WAITFOR_ACQUIRE', ''],
         ['CONFIGURE_SCIENCE', 'Sets CURRENT_BASE, Turns on Tip Tilt, then Sets: octagon (should not move), source select shutters, triggered detectors'],
         ['WAITFOR_CONFIGURE_SCIENCE', 'Waits for FIU mode, octagon, detector ready']
-    ],
+    ]
 
     scripts['kpf_sci'] = [
         ['EXECUTE_OBSERVATION', '']
     ]
 
+    print(type(scripts['kpf_acq']))
     return scripts
 

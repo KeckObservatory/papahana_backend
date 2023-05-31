@@ -9,7 +9,7 @@ def filled_acq_templates():
                 "ui_name": "KCWI direct",
                 "instrument": "KCWI",
                 "template_type": "acquisition",
-                "version": "0.1.1",
+                "version": "0.1.0",
                 "script": "kcwi_ifu_acq_direct",
                 "sequence_number": 0
             },
@@ -36,7 +36,7 @@ def filled_common_parameters():
             "ui_name": "KCWI Common parameters",
             "instrument": "KCWI",
             "template_type": "common_parameters",
-            "version": "0.1.1"
+            "version": "0.1.0"
         },
         "instrument_parameters": {
             "inst_cfg_slicer": "slicer1",
