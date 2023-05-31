@@ -20,9 +20,7 @@ def filled_common_parameters():
         "tcs_parameters": {
         }
     }
-
     return common_parameters 
-
 
 def filled_cal_templates():
     cal_templates = [
@@ -59,7 +57,6 @@ def filled_cal_templates():
             }
         }
     ]
-
     return cal_templates
 
 def filled_acq_templates():
@@ -82,8 +79,6 @@ def filled_acq_templates():
     ]
     return acq_templates
 
-
-
 def filled_sci_templates(template_list):
     sci_templates = [
         {
@@ -102,12 +97,9 @@ def filled_sci_templates(template_list):
             }
         }
     ]
-
     return sci_templates
 
-
 def generate_inst_package(template_list):
-
     schema = {
         "metadata": {
             "name": "nires_instrument_package",
@@ -126,5 +118,4 @@ def generate_inst_package(template_list):
         "event_table": None,
         "comment": "A NIRES Instrument Package"
     }
-
     return schema

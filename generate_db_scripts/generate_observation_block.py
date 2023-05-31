@@ -3,11 +3,7 @@ import generate_random_utils as random_utils
 import generate_targets as target_utils
 from papahana import util as papahana_util
 import pdb
-
-import kcwi_filled_templates as kcwi
-import kpf_filled_templates as kpf
-import ssc_filled_templates as ssc
-import nires_filled_templates as nires
+import importlib
 
 from bson.objectid import ObjectId
 import random
@@ -19,7 +15,7 @@ NLEN = 5
 
 def generate_obs(config, inst, inst_list, template_list):
     inst = inst.upper()
-    filled = set_filled_template_module(inst)
+    filledModule = importlib.import_module(f'{inst.lower()}_filled_templates') 
 
     coll = papahana_util.config_collection('obCollect', conf=config)
 
@@ -30,7 +26,7 @@ def generate_obs(config, inst, inst_list, template_list):
     for idx in range(random_utils.NOBS):
         try:
             doc = generate_observation_block(template_list, coll,
-                                            filled, inst=inst)
+                                            filledModule, inst=inst)
         except:
             pdb.set_trace()
             print('error')
@@ -51,13 +47,13 @@ def generate_obs(config, inst, inst_list, template_list):
     return ob_blocks
 
 
-def generate_science(filled, template_list):
+def generate_science(filledModule, template_list):
     import copy
 
     schema = []
     n_templates = random.randint(0, 5)
     for indx in range(0, n_templates):
-        filed_sci = filled.filled_sci_templates(template_list)
+        filed_sci = filledModule.filled_sci_templates(template_list)
         tmp_list = copy.deepcopy(filed_sci)
         filled_template = random.choice(tmp_list)
         filled_template['metadata']['sequence_number'] = indx+1
@@ -66,8 +62,8 @@ def generate_science(filled, template_list):
     return schema
 
 
-def generate_acquisition(filled):
-    schema = filled.filled_acq_templates()
+def generate_acquisition(filledModule):
+    schema = filledModule.filled_acq_templates()
 
     return schema[0]
 
@@ -88,7 +84,7 @@ def generate_metadata(inst):
     return schema
 
 
-def generate_observation_block(template_list, coll, filled, inst):
+def generate_observation_block(template_list, coll, filledModule, inst):
     meta = generate_metadata(inst)
     sem_id = meta['sem_id']
     n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
@@ -102,27 +98,15 @@ def generate_observation_block(template_list, coll, filled, inst):
         '_ob_id': f"{meta['sem_id']}_{str(n_ob).zfill(4)}",
         'metadata': meta,
         'target': target,
-        'acquisition': generate_acquisition(filled),
-        'observations': generate_science(filled, template_list),
+        'acquisition': generate_acquisition(filledModule),
+        'observations': generate_science(filledModule, template_list),
         'associations': random_utils.randArrStr(NLEN, MAX_ARRAY_LEN),
         'status': randStatus(inst),
-        'common_parameters': filled.filled_common_parameters(),
+        'common_parameters': filledModule.filled_common_parameters(),
         'comment': random_utils.optionalRandComment()
     }
 
     return schema
-
-
-def set_filled_template_module(inst):
-    if inst == 'KCWI':
-        return kcwi
-    elif inst == 'KPF':
-        return kpf
-    elif inst == 'NIRES':
-        return nires 
-    elif inst == 'SSC':
-        return ssc
-
 
 def randStatus(inst):
     executions = []

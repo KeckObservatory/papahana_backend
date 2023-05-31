@@ -23,7 +23,6 @@ def filled_common_parameters():
         "tcs_parameters": {
         }
     }
-
     return schema
 
 
@@ -53,11 +52,9 @@ def filled_cal_templates():
             }
         }
     ]
-
     return cal_templates
 
 def filled_acq_templates():
-    # templates_version = utils.parse_templates_version(template_list)
     acq_templates = [
         {
             "metadata": {
@@ -81,12 +78,8 @@ def filled_acq_templates():
     ]
     return acq_templates
 
-    return schema
-
 
 def filled_sci_templates(template_list):
-    templates_version = utils.parse_templates_version(template_list)
-
     sci_templates = [
         {
             "metadata": {
@@ -112,12 +105,10 @@ def filled_sci_templates(template_list):
             }
         }
     ]
-
     return sci_templates
 
 
 def generate_inst_package(template_list):
-
     schema = {
         "metadata": {
             "name": "kpf_instrument_package",
@@ -136,5 +127,4 @@ def generate_inst_package(template_list):
         "event_table": None,
         "comment": "A KPF Instrument Package"
     }
-
     return schema

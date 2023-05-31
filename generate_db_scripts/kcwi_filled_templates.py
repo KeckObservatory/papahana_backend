@@ -1,34 +1,5 @@
 import generate_utils as utils
 
-
-def filled_acq_templates():
-    acq_templates = [
-        {
-            "metadata": {
-                "name": "kcwi_ifu_acq_direct",
-                "ui_name": "KCWI direct",
-                "instrument": "KCWI",
-                "template_type": "acquisition",
-                "version": "0.1.0",
-                "script": "kcwi_ifu_acq_direct",
-                "sequence_number": 0
-            },
-            "parameters": {
-                "rot_cfg_wrap": "auto",
-                "rot_cfg_mode": "PA",
-                "tcs_coord_po": "IFU",
-                "tcs_coord_raoff": "0",
-                "tcs_coord_decoff": '1',
-                "guider1_coord_ra": "12:44:55.6",
-                "guider1_coord_dec": '55:22:19.9',
-                "guider1_coord_mode": 'operator'
-            }
-        }
-    ]
-
-    return acq_templates
-
-
 def filled_common_parameters():
     schema = {
         "metadata": {
@@ -73,13 +44,36 @@ def filled_common_parameters():
         }
 
     }
-
     return schema
 
+def filled_acq_templates():
+    acq_templates = [
+        {
+            "metadata": {
+                "name": "kcwi_ifu_acq_direct",
+                "ui_name": "KCWI direct",
+                "instrument": "KCWI",
+                "template_type": "acquisition",
+                "version": "0.1.0",
+                "script": "kcwi_ifu_acq_direct",
+                "sequence_number": 0
+            },
+            "parameters": {
+                "rot_cfg_wrap": "auto",
+                "rot_cfg_mode": "PA",
+                "tcs_coord_po": "IFU",
+                "tcs_coord_raoff": "0",
+                "tcs_coord_decoff": '1',
+                "guider1_coord_ra": "12:44:55.6",
+                "guider1_coord_dec": '55:22:19.9',
+                "guider1_coord_mode": 'operator'
+            }
+        }
+    ]
+    return acq_templates
 
 def filled_sci_templates(template_list):
     templates_version = utils.parse_templates_version(template_list)
-
     sci_templates = [
         {
             "metadata": {
@@ -127,12 +121,9 @@ def filled_sci_templates(template_list):
             }
         }
     ]
-
     return sci_templates
 
-
 def generate_inst_package(template_list):
-
     schema = {
         "metadata": {
             "name": "kcwi_instrument_package",
@@ -197,7 +188,6 @@ def generate_inst_package(template_list):
         "event_table": 'null',
         "comment": "A KCWI Instrument Package"
     }
-
     return schema
 
 
