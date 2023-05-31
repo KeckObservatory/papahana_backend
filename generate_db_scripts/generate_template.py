@@ -3,6 +3,7 @@ import argparse
 from kpf_templates import kpf_common_parameters, kpf_science,  kpf_acq, kpf_arc, kpf_darks, kpf_target
 from kcwi_templates import kcwi_ifu_acq_offsetStar_template, kcwi_ifu_acq_direct_template, kcwi_ifu_sci_stare_template, kcwi_ifu_sci_dither_template, kcwi_common_parameters
 from ssc_templates import ssc_acq, ssc_common_parameters, ssc_sci, ssc_sci_dither
+from nires_templates import nires_common_parameters, nires_arc, nires_acq, nires_science
 
 from papahana import util as papahana_util
 from copy import deepcopy
@@ -232,12 +233,14 @@ def generate_templates(config):
     ]
     templates_kpf = [kpf_common_parameters, kpf_science, kpf_acq, kpf_arc, kpf_darks, kpf_target]
     templates_ssc = [ssc_acq, ssc_common_parameters, ssc_sci]
+    templates_nires = [nires_common_parameters, nires_arc, nires_acq, nires_science]
 
     templates = []
 
     templates += templates_kpf
     templates += templates_kcwi
     templates += templates_ssc
+    templates += templates_nires
     templates += templates_targets
 
     result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)

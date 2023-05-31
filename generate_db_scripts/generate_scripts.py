@@ -1,6 +1,7 @@
 import generate_random_utils as random_utils
 from kpf_scripts import kpf_scripts
 from ssc_scripts import ssc_scripts
+from nires_scripts import nires_scripts
 
 
 def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
@@ -48,6 +49,8 @@ def generate_scripts(inst, script_name, script_type, version):
         scripts = kpf_scripts()
     elif inst.lower() == 'ssc':
         scripts = ssc_scripts()
+    elif inst.lower() == 'nires':
+        scripts = nires_scripts()
     else:
         print('ERROR: scripts are undefined')
         return {}

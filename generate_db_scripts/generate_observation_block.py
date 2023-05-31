@@ -2,10 +2,12 @@ import generate_utils as utils
 import generate_random_utils as random_utils
 import generate_targets as target_utils
 from papahana import util as papahana_util
+import pdb
 
 import kcwi_filled_templates as kcwi
 import kpf_filled_templates as kpf
 import ssc_filled_templates as ssc
+import nires_filled_templates as nires
 
 from bson.objectid import ObjectId
 import random
@@ -26,8 +28,12 @@ def generate_obs(config, inst, inst_list, template_list):
     template_list = utils.parse_template_list(inst, inst_list, template_list)
 
     for idx in range(random_utils.NOBS):
-        doc = generate_observation_block(template_list, coll,
-                                         filled, inst=inst)
+        try:
+            doc = generate_observation_block(template_list, coll,
+                                            filled, inst=inst)
+        except:
+            pdb.set_trace()
+            print('error')
 
         metadata = {"timestamp": datetime.datetime.now()}
 
@@ -112,6 +118,8 @@ def set_filled_template_module(inst):
         return kcwi
     elif inst == 'KPF':
         return kpf
+    elif inst == 'NIRES':
+        return nires 
     elif inst == 'SSC':
         return ssc
 

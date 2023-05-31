@@ -15,7 +15,7 @@ def parse_args():
     """
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--mode", "-m", type=str, default=None, required=True,
+    parser.add_argument("--mode", "-m", type=str, default='dev', required=True,
                         help="The configuration to read")
 
     parser.add_argument("--drop", "-d", type=int, default=0,

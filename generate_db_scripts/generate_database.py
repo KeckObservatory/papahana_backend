@@ -10,14 +10,16 @@ from generate_kpf import gen_inst_package
 import kcwi_filled_templates as kcwi_filled
 import kpf_filled_templates as kpf_filled
 import ssc_filled_templates as ssc_filled
+import nires_filled_templates as nires_filled
 
 import generate_template
 from papahana import util as papahana_util
 from os import path
+import pdb
 
-CONFIG = 'config.live.ini'
+CONFIG = 'config.live.yaml'
 APP_PATH = path.abspath(path.dirname(__file__))
-INST_LIST = ['KPF', 'KCWI', 'SSC']
+INST_LIST = ['KPF', 'KCWI', 'SSC', 'NIRES']
 
 if __name__=='__main__':
     args = utils.parse_args()
@@ -88,6 +90,8 @@ if __name__=='__main__':
         elif inst_lower == 'kpf':
             # ip = kpf_filled.generate_inst_package(inst_specific_templates)
             ip = gen_inst_package(config, template_list=inst_specific_templates)
+        elif inst_lower == 'nires':
+            ip = nires_filled.generate_inst_package(inst_specific_templates)
         elif inst_lower == 'ssc':
             ip = ssc_filled.generate_inst_package(inst_specific_templates)
         else:
@@ -103,6 +107,7 @@ if __name__=='__main__':
     coll.drop()
     generate_scripts_collection(coll, coll_inst, coll_tmp, 'SSC')
     generate_scripts_collection(coll, coll_inst, coll_tmp, 'KPF')
+    generate_scripts_collection(coll, coll_inst, coll_tmp, 'NIRES')
 
     if args.generate_observers:
         obs_db = config['obs_db']
