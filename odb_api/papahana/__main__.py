@@ -12,6 +12,7 @@ def create_app():
     app.add_api('papahana.yaml')
     CORS(app.app, supports_credentials=True,
          resources={r"*": {"origins": ["https://www3build.keck.hawaii.edu",
+                                       "http://vm-ddoiserverbuild.keck.hawaii.edu",
                                        "https://www3.keck.hawaii.edu"],
                            "allow_headers": "*", "expose_headers": "*"}})
 
