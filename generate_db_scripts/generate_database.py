@@ -14,7 +14,6 @@ import pdb
 
 CONFIG = 'config.live.yaml'
 APP_PATH = path.abspath(path.dirname(__file__))
-INST_LIST = ['KPF', 'KCWI', 'SSC', 'NIRES']
 
 if __name__=='__main__':
     args = utils.parse_args()
@@ -23,6 +22,7 @@ if __name__=='__main__':
         mode = papahana_util.read_mode()
 
     config = utils.read_config(mode, f"{APP_PATH}/{CONFIG}")
+    instList = config['inst_list']
     ob_db = config['ob_db']
 
     print(f"Using DataBase: {ob_db}")
@@ -36,7 +36,7 @@ if __name__=='__main__':
     coll = papahana_util.config_collection('recipeCollect', conf=config)
     coll.drop()
 
-    for inst in INST_LIST:
+    for inst in instList:
         try:
             recipeModule = importlib.import_module(f'{inst.lower()}_recipes')
         except ModuleNotFoundError as err:
@@ -55,9 +55,9 @@ if __name__=='__main__':
     coll = papahana_util.config_collection('obCollect', conf=config)
     coll.drop()
     ob_blocks = []
-    for inst in INST_LIST:
+    for inst in instList:
         ob_blocks += ob_utils.generate_obs(
-            config, inst.upper(), INST_LIST, template_list)
+            config, inst.upper(), instList, template_list)
 
     # create tags collection
     coll = papahana_util.config_collection('tagsCollect', conf=config)
@@ -78,12 +78,17 @@ if __name__=='__main__':
     coll = papahana_util.config_collection('ipCollect', conf=config)
     coll.drop()
 
-    for inst in INST_LIST:
+    for inst in instList:
         inst_specific_templates = utils.parse_template_list(
-            inst, INST_LIST, template_list)
+            inst, instList, template_list)
         
-        filledModule = importlib.import_module(f'{inst.lower()}_filled_templates')
-        ip = filledModule.generate_inst_package(template_list=inst_specific_templates, config=config, inst_list=INST_LIST)
+
+        try:
+            filledModule = importlib.import_module(f'{inst.lower()}_filled_templates')
+        except ModuleNotFoundError as err:
+            print(f'{err} for {inst}')
+            continue
+        ip = filledModule.generate_inst_package(template_list=inst_specific_templates, config=config, inst_list=instList)
 
         result = coll.insert_one(ip)
 
@@ -92,7 +97,7 @@ if __name__=='__main__':
     coll_inst = papahana_util.config_collection('ipCollect', conf=config)
     coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
     coll.drop()
-    for inst in INST_LIST:
+    for inst in instList:
         generate_scripts_collection(coll, coll_inst, coll_tmp, inst)
 
     if args.generate_observers:
