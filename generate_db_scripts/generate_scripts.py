@@ -1,8 +1,4 @@
-import generate_random_utils as random_utils
-from kpf_scripts import kpf_scripts
-from ssc_scripts import ssc_scripts
-from nires_scripts import nires_scripts
-
+import importlib
 
 def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
 
@@ -37,7 +33,6 @@ def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
         script_type = results['metadata']['template_type']
 
         schema = generate_scripts(inst, script_name, script_type, version)
-        # schema = generate_scripts(inst, script_name, script_type)
         _ = coll.insert_one(schema)
 
     return coll
@@ -45,17 +40,8 @@ def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
 
 def generate_scripts(inst, script_name, script_type, version):
     print('gen', inst, script_name, script_type, version)
-    if inst.lower() == 'kpf':
-        scripts = kpf_scripts()
-    elif inst.lower() == 'ssc':
-        scripts = ssc_scripts()
-    elif inst.lower() == 'nires':
-        scripts = nires_scripts()
-    else:
-        print('ERROR: scripts are undefined')
-        return {}
-
-    # print('scrs', scripts)
+    scriptModule = importlib.import_module(f'{inst.lower()}_scripts')
+    scripts = scriptModule.generate_scripts()
     if script_name in scripts:
         script = scripts[script_name]
     else:
@@ -74,10 +60,8 @@ def generate_scripts(inst, script_name, script_type, version):
             'instrument': inst,
             'script_type': script_type,
             'comment': f'Script for template: {script_name}, {version}'
-            # 'comment': f'Script for template: {script_name}'
         },
         'script': script
     }
 
     return schema
-

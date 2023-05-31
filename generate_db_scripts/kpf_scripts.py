@@ -1,6 +1,6 @@
 
 
-def kpf_scripts():
+def generate_scripts():
     scripts = {}
 
     scripts['kpf_acq'] = [
@@ -18,7 +18,5 @@ def kpf_scripts():
         ['EXECUTE_OBSERVATION', ''],
         ['POST_OBSERVATION_CLEANUP', '']
     ]
-
-    print(type(scripts['kpf_acq']))
     return scripts
 

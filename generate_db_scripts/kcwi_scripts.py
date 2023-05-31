@@ -1,8 +1,6 @@
-
-
 def generate_scripts():
     scripts = {}
-    scripts['ssc_acq'] = [
+    scripts['kcwi_acq'] = [
       ["BEGIN_SLEW", "Starts telescope slew"],
       ["WAITFOR_SLEW", "Execution queue locked while slewing"],
       ["ACQUIRE", "OA acquires to PO"],
@@ -11,7 +9,7 @@ def generate_scripts():
       ["WAITFOR_CONFIGURE_SCIENCE", "Execution queue locked while science is being configured"]
     ]
 
-    scripts['ssc_sci'] = [
+    scripts['kcwi_sci'] = [
       ["EXECUTE_OBSERVATION", "Point and shoot"]
     ]
     return scripts

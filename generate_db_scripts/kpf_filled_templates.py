@@ -1,5 +1,6 @@
 import generate_utils as utils
 import generate_random_utils as random_utils
+from papahana import util as papahana_util
 
 def filled_common_parameters():
     schema = {
@@ -108,7 +109,12 @@ def filled_sci_templates(template_list):
     return sci_templates
 
 
-def generate_inst_package(template_list):
+def generate_kpf_ip(template_list, recipe_list):
+
+    rlist = []
+    for recipe_schema in recipe_list:
+        rlist.append(recipe_schema['metadata']['name'])
+
     schema = {
         "metadata": {
             "name": "kpf_instrument_package",
@@ -124,7 +130,52 @@ def generate_inst_package(template_list):
         "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
         ],
         "template_list": utils.parse_templates_version(template_list),
-        "event_table": None,
+        "recipe_list": rlist,
+        "event_table": 'null',
         "comment": "A KPF Instrument Package"
     }
+
     return schema
+
+def generate_inst_package(template_list, config, inst_list):
+    print("...generating instrument package")
+
+    # add templates
+    if not template_list:
+        coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
+        fields = {'metadata.name': 1, 'metadata.version': 1}
+        template_list = list(coll_tmp.find({}, fields))
+
+    # add recipes
+    coll_recipe = papahana_util.config_collection('recipeCollect', conf=config)
+    fields = {'metadata.name': 1, '_id': 0}
+    recipe_list = list(coll_recipe.find({}, fields))
+
+    coll = papahana_util.config_collection('ipCollect', conf=config)
+    coll.drop()
+
+    inst_specific_templates = utils.parse_template_list('KPF', inst_list, template_list)
+    ip = generate_kpf_ip(inst_specific_templates, recipe_list)
+
+    return ip
+
+# def generate_inst_package(template_list):
+#     schema = {
+#         "metadata": {
+#             "name": "kpf_instrument_package",
+#             "ui_name": "KPF Instrument Package",
+#             "version": "0.1.0",
+#             "instrument": "KPF",
+#             "observing_modes": ["spectroscopy"]
+#         },
+#         "optical_parameters": {
+#         },
+#         "configurable_elements": [
+#         ],
+#         "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
+#         ],
+#         "template_list": utils.parse_templates_version(template_list),
+#         "event_table": None,
+#         "comment": "A KPF Instrument Package"
+#     }
+#     return schema

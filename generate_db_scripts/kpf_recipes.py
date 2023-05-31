@@ -1,6 +1,6 @@
 
 
-def kpf_recipes():
+def generate_recipes():
     recipes = {}
 
     recipes["science_sidereal_target"] = {

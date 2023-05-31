@@ -1,6 +1,6 @@
 
 
-def nires_scripts():
+def generate_scripts():
     scripts = {}
 
     scripts['nires_acq'] = [
@@ -18,7 +18,5 @@ def nires_scripts():
         ['EXECUTE_OBSERVATION', ''],
         ['POST_OBSERVATION_CLEANUP', '']
     ]
-
-    print(type(scripts['nires_acq']))
     return scripts
 

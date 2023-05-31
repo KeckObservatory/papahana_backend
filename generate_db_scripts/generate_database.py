@@ -4,13 +4,8 @@ import generate_tags as tags_utils
 import generate_containers as container_utils
 from generate_scripts import generate_scripts_collection
 from generate_observers import generate_observer_collection
-from kpf_recipes import kpf_recipes
-from generate_kpf import gen_inst_package
 
-import kcwi_filled_templates as kcwi_filled
-import kpf_filled_templates as kpf_filled
-import ssc_filled_templates as ssc_filled
-import nires_filled_templates as nires_filled
+import importlib
 
 import generate_template
 from papahana import util as papahana_util
@@ -41,9 +36,14 @@ if __name__=='__main__':
     coll = papahana_util.config_collection('recipeCollect', conf=config)
     coll.drop()
 
-    kpf_recipes = kpf_recipes()
-    for name, schema in kpf_recipes.items():
-        _ = coll.insert_one(schema)
+    for inst in INST_LIST:
+        try:
+            recipeModule = importlib.import_module(f'{inst.lower()}_recipes')
+        except ModuleNotFoundError as err:
+            print(f'{err} for {inst}')
+        recipes = recipeModule.generate_recipes()
+        for name, schema in recipes.items():
+            _ = coll.insert_one(schema)
 
     # Create ob_blocks collection,  zero first
     print("...zeroing deltas")
@@ -78,25 +78,12 @@ if __name__=='__main__':
     coll = papahana_util.config_collection('ipCollect', conf=config)
     coll.drop()
 
-    # ip = generate_inst_package(template_list)
     for inst in INST_LIST:
-        inst_lower = inst.lower()
-        # inst_specific_templates = utils.parse_template_list(
-        #     inst, INST_LIST, template_list, allow_mos=False)
         inst_specific_templates = utils.parse_template_list(
             inst, INST_LIST, template_list)
-        if inst_lower == 'kcwi':
-            ip = kcwi_filled.generate_inst_package(inst_specific_templates)
-        elif inst_lower == 'kpf':
-            # ip = kpf_filled.generate_inst_package(inst_specific_templates)
-            ip = gen_inst_package(config, template_list=inst_specific_templates)
-        elif inst_lower == 'nires':
-            ip = nires_filled.generate_inst_package(inst_specific_templates)
-        elif inst_lower == 'ssc':
-            ip = ssc_filled.generate_inst_package(inst_specific_templates)
-        else:
-            print(f'{inst} filled templates undefined!')
-            continue
+        
+        filledModule = importlib.import_module(f'{inst.lower()}_filled_templates')
+        ip = filledModule.generate_inst_package(template_list=inst_specific_templates, config=config, inst_list=INST_LIST)
 
         result = coll.insert_one(ip)
 
@@ -105,9 +92,8 @@ if __name__=='__main__':
     coll_inst = papahana_util.config_collection('ipCollect', conf=config)
     coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
     coll.drop()
-    generate_scripts_collection(coll, coll_inst, coll_tmp, 'SSC')
-    generate_scripts_collection(coll, coll_inst, coll_tmp, 'KPF')
-    generate_scripts_collection(coll, coll_inst, coll_tmp, 'NIRES')
+    for inst in INST_LIST:
+        generate_scripts_collection(coll, coll_inst, coll_tmp, inst)
 
     if args.generate_observers:
         obs_db = config['obs_db']
