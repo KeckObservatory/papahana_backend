@@ -40,8 +40,14 @@ def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
 
 def generate_scripts(inst, script_name, script_type, version):
     print('gen', inst, script_name, script_type, version)
-    scriptModule = importlib.import_module(f'{inst.lower()}_scripts')
-    scripts = scriptModule.generate_scripts()
+    try:
+        instModule = importlib.import_module(f'{inst.lower()}_items')
+        scripts = instModule.generate_scripts()
+    except ModuleNotFoundError as err:
+        print(f'{err} for {inst}')
+    except AttributeError as err:
+        print(f'{err} for {inst}')
+
     if script_name in scripts:
         script = scripts[script_name]
     else:

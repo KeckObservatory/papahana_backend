@@ -2,7 +2,6 @@ import generate_utils as utils
 import generate_random_utils as random_utils
 import generate_targets as target_utils
 from papahana import util as papahana_util
-import pdb
 import importlib
 
 from bson.objectid import ObjectId
@@ -15,7 +14,11 @@ NLEN = 5
 
 def generate_obs(config, inst, inst_list, template_list):
     inst = inst.upper()
-    filledModule = importlib.import_module(f'{inst.lower()}_filled_templates') 
+
+    try:
+        instModule = importlib.import_module(f'{inst.lower()}_items')
+    except ModuleNotFoundError as err:
+        print(f'{err} for {inst}')
 
     coll = papahana_util.config_collection('obCollect', conf=config)
 
@@ -26,9 +29,8 @@ def generate_obs(config, inst, inst_list, template_list):
     for idx in range(random_utils.NOBS):
         try:
             doc = generate_observation_block(template_list, coll,
-                                            filledModule, inst=inst)
+                                            instModule, inst=inst)
         except:
-            pdb.set_trace()
             print('error')
 
         metadata = {"timestamp": datetime.datetime.now()}
@@ -84,7 +86,7 @@ def generate_metadata(inst):
     return schema
 
 
-def generate_observation_block(template_list, coll, filledModule, inst):
+def generate_observation_block(template_list, coll, instModule, inst):
     meta = generate_metadata(inst)
     sem_id = meta['sem_id']
     n_ob = coll.count_documents({'metadata.sem_id': sem_id}) + 1
@@ -98,11 +100,11 @@ def generate_observation_block(template_list, coll, filledModule, inst):
         '_ob_id': f"{meta['sem_id']}_{str(n_ob).zfill(4)}",
         'metadata': meta,
         'target': target,
-        'acquisition': generate_acquisition(filledModule),
-        'observations': generate_science(filledModule, template_list),
+        'acquisition': generate_acquisition(instModule),
+        'observations': generate_science(instModule, template_list),
         'associations': random_utils.randArrStr(NLEN, MAX_ARRAY_LEN),
         'status': randStatus(inst),
-        'common_parameters': filledModule.filled_common_parameters(),
+        'common_parameters': instModule.filled_common_parameters(),
         'comment': random_utils.optionalRandComment()
     }
 

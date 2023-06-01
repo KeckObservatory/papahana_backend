@@ -10,7 +10,6 @@ import importlib
 import generate_template
 from papahana import util as papahana_util
 from os import path
-import pdb
 
 CONFIG = 'config.live.yaml'
 APP_PATH = path.abspath(path.dirname(__file__))
@@ -38,10 +37,14 @@ if __name__=='__main__':
 
     for inst in instList:
         try:
-            recipeModule = importlib.import_module(f'{inst.lower()}_recipes')
+            instModule = importlib.import_module(f'{inst.lower()}_items')
+            recipes = instModule.generate_recipes()
         except ModuleNotFoundError as err:
             print(f'{err} for {inst}')
-        recipes = recipeModule.generate_recipes()
+            continue
+        except AttributeError as err:
+            print(f'{err} for {inst}')
+            continue
         for name, schema in recipes.items():
             _ = coll.insert_one(schema)
 
@@ -82,13 +85,15 @@ if __name__=='__main__':
         inst_specific_templates = utils.parse_template_list(
             inst, instList, template_list)
         
-
         try:
-            filledModule = importlib.import_module(f'{inst.lower()}_filled_templates')
+            instModule = importlib.import_module(f'{inst.lower()}_items')
+            ip = instModule.generate_inst_package(template_list=inst_specific_templates, config=config, inst_list=instList)
         except ModuleNotFoundError as err:
             print(f'{err} for {inst}')
             continue
-        ip = filledModule.generate_inst_package(template_list=inst_specific_templates, config=config, inst_list=instList)
+        except AttributeError as err:
+            print(f'{err} for {inst}')
+            continue
 
         result = coll.insert_one(ip)
 

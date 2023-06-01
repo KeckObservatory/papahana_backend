@@ -1,6 +1,164 @@
+import generate_utils as utils
+import generate_random_utils as random_utils
+from papahana import util as papahana_util
+
+def filled_common_parameters():
+    schema = {
+        "metadata": {
+            "name": "kpf_common_parameters",
+            "ui_name": "KPF Common Parameters",
+            "instrument": "KPF",
+            "template_type": "common_parameters",
+            "version": "0.1.0"
+        },
+        "instrument_parameters": {
+            "inst_cfg_runagitator": True
+        },
+        "detector_parameters": {
+            "det1_cfg_trigger": True,
+            "det2_cfg_trigger": True,
+            "det3_cfg_trigger": True
+        },
+        "guider_parameters": {
+        },
+        "tcs_parameters": {
+        }
+    }
+    return schema
+
+def filled_cal_templates():
+    cal_templates = [
+        {
+            "metadata": {
+                "instrument": "KPF",
+                "name": "kpf_arcs",
+                "script": "kpf_arcs",
+                "template_type": "calibration",
+                "ui_name": "KPF Arc Lamps",
+                "version": "0.1.0",
+                "sequence_number": 0
+            },
+            "parameters": {
+                "inst_cfg_nd1": "OD 0.1",
+                "inst_cfg_nd2": "OD 0.3",
+                "inst_cfg_calsource": "BrdbandFiber",
+                "inst_cfg_fffiberpos": "Blank",
+                "det_exp_time": random_utils.randFloat(3600),
+                "det_exp_number": random_utils.randInt(1, 100),
+                "target_info_object": 'arc',
+                "inst_cfg_sss_science": True,
+                "inst_cfg_sss_sky": True,
+                "inst_cfg_simulcal_ts": True
+            }
+        }
+    ]
+    return cal_templates
+
+def filled_acq_templates():
+    acq_templates = [
+        {
+            "metadata": {
+                "instrument": "KPF",
+                "name": "kpf_acq",
+                "script": "kpf_acq",
+                "template_type": "acquisition",
+                "ui_name": "KPF acquisition",
+                "version": "0.1.0",
+                "sequence_number": 0
+
+            },
+            "parameters": {
+                "guider_cfg_gain": "high",
+                "guider_cfg_fps": random_utils.randFloat(400.0),
+                "guider_cfg_loopgain": random_utils.randFloat(1),
+                "guider_mode": "manual",
+                "tcs_coord_po": "KPF"
+            }
+        }
+    ]
+    return acq_templates
 
 
-kpf_common_parameters = {
+def filled_sci_templates(template_list):
+    sci_templates = [
+        {
+            "metadata": {
+                "instrument": "KPF",
+                "name": "kpf_sci",
+                "script": "kpf_sci",
+                "template_type": "science",
+                "ui_name": "KPF science",
+                "version": "0.1.0"
+            },
+            "parameters": {
+                "inst_cfg_nd1": "OD 0.1",
+                "inst_cfg_nd2": "OD 0.1",
+                "inst_cfg_calsource": "EtalonFiber",
+                "inst_cfg_em_band": 1,
+                "inst_cfg_em_exptime":  random_utils.randFloat(1800.0),
+                "inst_cfg_em_flux": random_utils.randFloat(1000000000.0),
+                "inst_cfg_em_mode": "manual",
+                "det_exp_time": random_utils.randFloat(3600.0),
+                "det_exp_number": random_utils.randInt(1, 100),
+                "target_info_object": 'autocal-flat-sci',
+                "inst_cfg_ts_simulcal": True
+            }
+        }
+    ]
+    return sci_templates
+
+
+def generate_kpf_ip(template_list, recipe_list):
+
+    rlist = []
+    for recipe_schema in recipe_list:
+        rlist.append(recipe_schema['metadata']['name'])
+
+    schema = {
+        "metadata": {
+            "name": "kpf_instrument_package",
+            "ui_name": "KPF Instrument Package",
+            "version": "0.1.0",
+            "instrument": "KPF",
+            "observing_modes": ["spectroscopy"]
+        },
+        "optical_parameters": {
+        },
+        "configurable_elements": [
+        ],
+        "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
+        ],
+        "template_list": utils.parse_templates_version(template_list),
+        "recipe_list": rlist,
+        "event_table": 'null',
+        "comment": "A KPF Instrument Package"
+    }
+
+    return schema
+
+def generate_inst_package(template_list, config, inst_list):
+    print("...generating instrument package")
+
+    # add templates
+    if not template_list:
+        coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
+        fields = {'metadata.name': 1, 'metadata.version': 1}
+        template_list = list(coll_tmp.find({}, fields))
+
+    # add recipes
+    coll_recipe = papahana_util.config_collection('recipeCollect', conf=config)
+    fields = {'metadata.name': 1, '_id': 0}
+    recipe_list = list(coll_recipe.find({}, fields))
+
+    coll = papahana_util.config_collection('ipCollect', conf=config)
+    coll.drop()
+
+    inst_specific_templates = utils.parse_template_list('KPF', inst_list, template_list)
+    ip = generate_kpf_ip(inst_specific_templates, recipe_list)
+
+    return ip
+
+kpf_common_parameters_template = {
     "metadata": {
         "name": "kpf_common_parameters",
         "ui_name": "KPF Common Parameters",
@@ -54,7 +212,7 @@ kpf_common_parameters = {
     }
 }
 
-kpf_science = {
+kpf_science_template = {
     "metadata": {
         "instrument": "KPF",
         "name": "kpf_sci",
@@ -222,7 +380,7 @@ kpf_science = {
     }
 }
 
-kpf_acq = {
+kpf_acq_template = {
     "metadata": {
         "instrument": "KPF",
         "name": "kpf_acq",
@@ -301,7 +459,7 @@ kpf_acq = {
     }
 }
 
-kpf_arc = {
+kpf_arc_template = {
     "metadata": {
         "instrument": "KPF",
         "name": "kpf_arcs",
@@ -448,7 +606,7 @@ kpf_arc = {
     }
 }
 
-kpf_darks = {
+kpf_darks_template = {
     "metadata": {
         "instrument": "KPF",
         "name": "kpf_dark",
@@ -497,7 +655,7 @@ kpf_darks = {
     }
 }
 
-kpf_target = {
+kpf_target_template = {
     "metadata": {
         "instrument": "KPF",
         "name": "kpf_target",
@@ -708,3 +866,102 @@ kpf_target = {
 }
 
 
+
+
+
+def generate_scripts():
+    scripts = {}
+
+    scripts['kpf_acq'] = [
+        ['BEGIN_SLEW', 'Starts telescope slew'],
+        ['CONFIGURE_FOR_ACQUISITION', 'Sets: octagon, (does slew cal), FIU mode, target parameters, guide camera parameters'],
+        ['WAITFOR_CONFIGURE_ACQUISITION', 'Waits for FIU mode'],
+        ['WAITFOR_SLEW', ''],
+        ['ACQUIRE', 'OA acquires to PO'],
+        ['WAITFOR_ACQUIRE', ''],
+    ]
+
+    scripts['kpf_sci'] = [
+        ['CONFIGURE_SCIENCE', 'Sets CURRENT_BASE, Turns on Tip Tilt, then Sets: octagon (should not move), source select shutters, triggered detectors'],
+        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits for FIU mode, octagon, detector ready'],
+        ['EXECUTE_OBSERVATION', ''],
+        ['POST_OBSERVATION_CLEANUP', '']
+    ]
+    return scripts
+
+
+def generate_recipes():
+    recipes = {}
+
+    recipes["science_sidereal_target"] = {
+        "metadata": {
+                "name": "science_sidereal_target",
+                "ob_type": "science",
+                "ui_name": "Sidereal Science Target",
+                "instrument": "KPF"
+        },
+        "recipe": [
+            "kpf_common_parameters",
+            "kpf_acq",
+            "kpf_sci",
+            "sideriel_target"
+        ]
+    }
+
+    recipes["science_non_sidereal_target"] = {
+        "metadata": {
+                "name": "science_non_sidereal_target",
+                "ob_type": "science",
+                "ui_name": "Non Sidereal Science Target",
+                "instrument": "KPF"
+        },
+        "recipe": [
+            "kpf_common_parameters",
+            "kpf_acq",
+            "kpf_sci",
+            "non_sideriel_target"
+        ]
+    }
+
+    recipes["science_kpf_target"] = {
+        "metadata": {
+                "name": "science_kpf_target",
+                "ob_type": "science",
+                "ui_name": "KPF Science Target",
+                "instrument": "KPF"
+        },
+        "recipe": [
+            "kpf_common_parameters",
+            "kpf_acq",
+            "kpf_sci",
+            "kpf_target"
+        ]
+    }
+
+    recipes["calibration_dark"] = {
+        "metadata": {
+                "name": "calibration_dark",
+                "ob_type": "calibration",
+                "ui_name": "Dark Calibration",
+                "instrument": "KPF"
+        },
+        "recipe": [
+            "kpf_common_parameters",
+            "kpf_dark"
+        ]
+    }
+
+    recipes["calibration_arcs"] = {
+        "metadata": {
+                "name": "calibration_arcs",
+                "ob_type": "calibration",
+                "ui_name": "Arc Calibration",
+                "instrument": "KPF"
+        },
+        "recipe": [
+            "kpf_common_parameters",
+            "kpf_arcs"
+        ]
+    }
+
+    return recipes

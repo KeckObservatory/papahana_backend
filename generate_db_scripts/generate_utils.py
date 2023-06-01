@@ -118,6 +118,7 @@ def non_inst_templates(inst_list, template_list):
     for template in template_list:
         inst_found = 0
         template_name = template['metadata']['name']
+
         for inst in inst_list:
             if inst.lower() in template_name:
                 inst_found = 1
