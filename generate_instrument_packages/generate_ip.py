@@ -8,46 +8,7 @@ CONFIG = 'config.live.yaml'
 APP_PATH = path.abspath(path.dirname(__file__))
 
 
-def parse_args():
-    """
-    Parse the command line arguments.
-
-    :return: <obj> commandline arguments
-    """
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("--mode", "-m", type=str, default='dev', required=True,
-                        help="The configuration to read")
-
-    parser.add_argument("--inst", type=str, required=True,
-                        help="The instrument to generate a package for")
-
-    parser.add_argument("--replace", type=int, default=1,
-                        help="The configuration to read")
-
-    parser.add_argument("--generate_templates", "-t", type=int, default=1,
-                        help="The configuration to read")
-
-    parser.add_argument("--generate_scripts", "-s", type=int, default=1,
-                        help="The configuration to read")
-
-    parser.add_argument("--generate_recipes", "-r", type=int, default=1,
-                        help="The configuration to read")
-
-    parser.add_argument("--generate_ip", "-i", type=int, default=1,
-                        help="The configuration to read")
-
-    return parser.parse_args()
-
-
-def read_config(mode, config):
-    with open(config) as file:
-        config = yaml.load(file, Loader=yaml.FullLoader)[mode]
-
-    return config
-
-
-if __name__=='__main__':
+def main():
     args = parse_args()
     mode = args.mode
     if not args.mode:
@@ -98,3 +59,46 @@ if __name__=='__main__':
         coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
 
         inst_obj.generate_inst_scripts(coll, coll_inst, coll_tmp, inst)
+
+
+def parse_args():
+    """
+    Parse the command line arguments.
+
+    :return: <obj> commandline arguments
+    """
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--mode", "-m", type=str, default='dev', required=True,
+                        help="The configuration to read")
+
+    parser.add_argument("--inst", type=str, required=True,
+                        help="The instrument to generate a package for")
+
+    parser.add_argument("--replace", type=int, default=1,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_templates", "-t", type=int, default=1,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_scripts", "-s", type=int, default=1,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_recipes", "-r", type=int, default=1,
+                        help="The configuration to read")
+
+    parser.add_argument("--generate_ip", "-i", type=int, default=1,
+                        help="The configuration to read")
+
+    return parser.parse_args()
+
+
+def read_config(mode, config):
+    with open(config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)[mode]
+
+    return config
+
+
+if __name__ == '__main__':
+    main()
