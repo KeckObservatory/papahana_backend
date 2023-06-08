@@ -1,0 +1,91 @@
+mode:
+  config: production
+
+testing:
+  admin:
+
+apikey:
+  secret_key:
+  timeout:
+
+
+
+production:
+  ob_db: observing_database
+  inst_list: 
+     - KPF
+     - KCWI
+     - SSC
+     - NIRES
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: scripts
+  recipeCollect: ob_recipes
+  templateCollect: templates
+  ipCollect: instrument_packages
+  deltaCollect: deltas_observation_blocks
+  mongo_port:
+  api_port:
+  ip0:
+  ip1:
+  ip2:
+  replica_name: odb
+  admin:
+
+dev:
+  ob_db: observing_dev
+  inst_list: 
+     - KPF
+     - KCWI
+     - SSC
+     - NIRES
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: instrument_scripts
+  recipeCollect: ob_recipes
+  templateCollect: templates
+  tagsCollect: tags
+  ipCollect: instrument_packages
+  deltaCollect: deltas_observation_blocks
+  mongo_port: 27017
+  api_port:
+  ip0: localhost
+  ip1:
+  ip2:
+  replica_name: odb
+  admin:
+
+
+test:
+  ob_db: test_observing_database
+  inst_list: 
+     - KPF
+     - KCWI
+     - SSC
+     - NIRES
+  obs_db: keck_observers
+  obCollect: observation_blocks
+  observerCollect: observers
+  containerCollect: containers
+  scriptCollect: instrument_scripts
+  recipeCollect: ob_recipes
+  templateCollect: templates
+  ipCollect: instrument_packages
+  deltaCollect: deltas_observation_blocks
+  mongo_port:
+  api_port:
+  ip0:
+  ip1:
+  ip2:
+  replica_name: odb
+  admin:
+
+apis:
+  proposalApi:
+
+auth_server:
+  login:
