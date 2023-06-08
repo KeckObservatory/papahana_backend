@@ -85,7 +85,7 @@ class InstPackBase:
         """
         raise NotImplementedError(f"{sys._getframe().f_code.co_name} has not been implemented!")
 
-    def get_all_templates(self):
+    def get_all_inst_templates(self):
         """
         Get all the templates.
 
@@ -108,6 +108,13 @@ class InstPackBase:
         fields = {'metadata.name': 1, 'metadata.version': 1}
         query = {'metadata.instrument': self.inst}
         results = list(coll_tmp.find(query, fields))
+
+        # add the targets
+        query = {'metadata.template_type': 'target', 'metadata.instrument': 'all'}
+        coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
+        results += list(coll_tmp.find(query, fields))
+
+
         return results
 
     def get_inst_package(self, config, template_list):
@@ -281,13 +288,13 @@ class InstPackBase:
         coll = papahana_util.config_collection('templateCollect', conf=config)
 
         if replace != 1:
-            templates = self.get_all_templates()
+            templates = self.get_all_inst_templates()
 
             _ = coll.insert_many(templates, ordered=False, bypass_document_validation=True)
 
             return
 
-        tmp_list = self.get_all_templates()
+        tmp_list = self.get_all_inst_templates()
         for tmp in tmp_list:
             ver = tmp['metadata']['version']
             name = tmp['metadata']['name']

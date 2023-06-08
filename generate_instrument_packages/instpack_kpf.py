@@ -2,7 +2,6 @@
 from instpack_base import InstPackBase
 import configuration_kpf as kpf_cfg
 
-
 class InstPack_KPF(InstPackBase):
     def __init__(self, inst):
         super(InstPack_KPF, self).__init__('KPF')
