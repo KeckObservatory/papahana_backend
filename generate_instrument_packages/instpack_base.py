@@ -7,10 +7,22 @@ class InstPackBase:
         self.inst = inst.upper()
 
     def generate_ip(self, template_list, recipe_list):
+        """
+        Implement the creation of the Instrument Package Schema / Dictionary
+
+        @param template_list: list of template names for the package
+        @type template_list: <list>
+        @param recipe_list: list of recipe names for the package
+        @type recipe_list: <list>
+
+        @return: The instrument package schema
+        @rtype: <dict>
+        """
         raise NotImplementedError(f"{sys._getframe().f_code.co_name} has not been implemented!")
 
     def get_scripts(self):
         """
+        Get the scripts defined in the instrument configuration.
 
         @return: A dictionary (key=script name) of scripts.  Scripts are lists
                 of two element lists.
@@ -20,10 +32,17 @@ class InstPackBase:
         raise NotImplementedError(f"{sys._getframe().f_code.co_name} has not been implemented!")
 
     def get_recipes(self):
+        """
+        Get the recipes defined in the instrument configuration.
+
+        @return: The dictionary containing the recipes.
+        @rtype: <dict>
+        """
         raise NotImplementedError(f"{sys._getframe().f_code.co_name} has not been implemented!")
 
     def acq_templates(self):
         """
+        Get the acquisition templates defined in the instrument configuration.
 
         @return: list of dictionaries containing all acquisition templates
         @rtype: <list/dict>
@@ -32,6 +51,7 @@ class InstPackBase:
 
     def sci_templates(self):
         """
+        Get the science templates defined in the instrument configuration.
 
         @return: list of dictionaries containing all science templates
         @rtype: <list/dict>
@@ -40,6 +60,7 @@ class InstPackBase:
 
     def common_parameters_template(self):
         """
+        Get the common parameters templates defined in the instrument configuration.
 
         @return: list of dictionaries containing all science templates
         @rtype: <list/dict>
@@ -48,6 +69,7 @@ class InstPackBase:
 
     def cal_templates(self):
         """
+        Get the calibration templates defined in the instrument configuration.
 
         @return: list of dictionaries containing all calibration templates
         @rtype: <list/dict>
@@ -56,6 +78,7 @@ class InstPackBase:
 
     def misc_templates(self):
         """
+        Get the extra templates defined in the instrument configuration.
 
         @return: list of dictionaries containing all extra templates
         @rtype: <list/dict>
@@ -64,6 +87,7 @@ class InstPackBase:
 
     def get_all_templates(self):
         """
+        Get all the templates.
 
         @return: list of dictionaries containing all templates
         @rtype: <list/dict>
@@ -75,6 +99,7 @@ class InstPackBase:
 
     def get_template_list(self, config):
         """
+        Get a list of the names of all the templates.
 
         @return: list of template names
         @rtype: <list>
@@ -86,6 +111,17 @@ class InstPackBase:
         return results
 
     def get_inst_package(self, config, template_list):
+        """
+        Create the instrument package as a dictionary.
+
+        @param config: The configuration file
+        @type config: <file handler>
+        @param template_list:
+        @type template_list: <list>
+
+        @return: The instrument package.
+        @rtype: <dict>
+        """
         print("...generating instrument package")
 
         # add templates
@@ -102,9 +138,20 @@ class InstPackBase:
 
         return ip
 
-
     def generate_scripts(self, script_name, script_type, version):
+        """
+        Generate the scripts,  adding the metadata to the scripts sent from SAs.
 
+        @param script_name: the individual name of a script
+        @type script_name: <str>
+        @param script_type: The type of script,  ie sci, cal
+        @type script_type: <str>
+        @param version: The version of the script,  #.#.#
+        @type version: <str>
+
+        @return: The script schema ready to be inserted into the DB
+        @rtype: <dict>
+        """
         scripts = self.get_scripts()
 
         if script_name in scripts:
@@ -127,7 +174,22 @@ class InstPackBase:
 
         return schema
 
-    def generate_scripts_collection(self, coll, coll_inst, coll_tmp, inst):
+    def generate_inst_scripts(self, coll, coll_inst, coll_tmp, inst):
+        """
+        Insert the scripts into the database.
+
+        @param coll: the pymongo collection for scripts
+        @type coll: <pymongo collection>
+        @param coll_inst: the pymongo collection for instruments
+        @type coll_inst: <pymongo collection>
+        @param coll_tmp: the pymongo collection for templates
+        @type coll_tmp: <pymongo collection>
+        @param inst: the instrument
+        @type inst: <str>
+
+        @return: None
+        @rtype:
+        """
 
         query = {'metadata.instrument': inst}
         fields = {'_id': 0, 'template_list': 1}
@@ -161,9 +223,21 @@ class InstPackBase:
             schema = self.generate_scripts(script_name, script_type, version)
             _ = coll.insert_one(schema)
 
-        return coll
+        return
 
     def generate_recipes(self, config, replace=1):
+        """
+        Generate the recipes and insert them into the database.
+
+        @param config: The configuration file
+        @type config: <file handler>
+        @param replace: boolean to define if the recipes should be added or
+                        replace current recipes.
+        @type replace: <int>
+
+        @return: None
+        @rtype:
+        """
         print("...generating recipes")
         coll = papahana_util.config_collection('recipeCollect', conf=config)
 
@@ -191,6 +265,18 @@ class InstPackBase:
         return
 
     def generate_templates(self, config, replace=1):
+        """
+        Generate the templates and insert them into the database.
+
+        @param config: The configuration file
+        @type config: <file handler>
+        @param replace: boolean to define if the recipes should be added or
+                        replace current recipes.
+        @type replace: <int>
+
+        @return: None
+        @rtype:
+        """
         print("...generating templates")
         coll = papahana_util.config_collection('templateCollect', conf=config)
 
@@ -219,3 +305,4 @@ class InstPackBase:
             _ = coll.replace_one(query, tmp)
 
         return
+

@@ -97,4 +97,4 @@ if __name__=='__main__':
         coll_inst = papahana_util.config_collection('ipCollect', conf=config)
         coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
 
-        inst_obj.generate_scripts_collection(coll, coll_inst, coll_tmp, inst)
+        inst_obj.generate_inst_scripts(coll, coll_inst, coll_tmp, inst)
