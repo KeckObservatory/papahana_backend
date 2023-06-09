@@ -21,7 +21,7 @@ def main():
 
     inst_mod = importlib.import_module(f'instpack_{inst.lower()}')
     inst_cls = getattr(inst_mod, f"InstPack_{inst}")
-    inst_obj = inst_cls('KPF')
+    inst_obj = inst_cls(inst)
 
     # generate templates
     if args.generate_templates:
