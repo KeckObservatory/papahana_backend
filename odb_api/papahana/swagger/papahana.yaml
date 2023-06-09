@@ -3228,8 +3228,10 @@ components:
         - pattern: '^[Hh][Ii][Rr][Ee][Ss]$'
         - pattern: '^[Ll][Rr][Ii][Ss]$'
         - pattern: '^[Mm][Oo][Ss][Ff][Ii][Rr][Ee]$'
-        - pattern: '^[Nn][Ii][Re][Ss]$'
-        - pattern: '^[Nn][Ii][Re][Cc]2$'
+        - pattern: '^[Nn][Ii][Rr][Ee][Ss]$'
+        - pattern: '^[Nn][Ii][Rr][Cc]2$'
+#        - pattern: '^[Nn][Ii][Re][Ss]$'
+#        - pattern: '^[Nn][Ii][Re][Cc]2$'
         - pattern: '^[Kk][Pp][Ff]$'
         - pattern: '^[Ss][Ss][Cc]$'
         - enum:
