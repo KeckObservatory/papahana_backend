@@ -243,10 +243,10 @@ nires_dither_science_template = {
 nires_drift_scan_science_template = {
     "metadata": {
         "instrument": "NIRES",
-        "name": "nires_driftscan_sci",
-        "script": "nires_driftscan_sci",
+        "name": "nires_drift_scan_sci",
+        "script": "nires_drift_scan_sci",
         "template_type": "science",
-        "ui_name": "NIRES stare science",
+        "ui_name": "NIRES drift scan science",
         "version": "0.1.0"
     },
     "parameters": {
