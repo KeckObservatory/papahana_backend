@@ -1,6 +1,7 @@
 
 from instpack_base import InstPackBase
 import configuration_kpf as kpf_cfg
+import generate_utils as utils
 
 class InstPack_KPF(InstPackBase):
     def __init__(self, inst):
@@ -26,7 +27,7 @@ class InstPack_KPF(InstPackBase):
             ],
             "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
             ],
-            "template_list": template_list,
+            "template_list": utils.parse_templates_version(template_list),
             "recipe_list": rlist,
             "event_table": 'null',
             "comment": "A KPF Instrument Package"

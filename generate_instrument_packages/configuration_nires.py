@@ -135,7 +135,6 @@ nires_stare_science_template = {
 }
 
 nires_dither_science_template = {
-
     "metadata": {
         "instrument": "NIRES",
         "name": "nires_dither_sci",
