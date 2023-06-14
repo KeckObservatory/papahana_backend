@@ -318,6 +318,7 @@ nires_drift_scan_science_template = {
         },
     }
 }
+
 nires_acq_template = {
     "metadata": {
         "instrument": "NIRES",
