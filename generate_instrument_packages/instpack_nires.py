@@ -6,14 +6,15 @@ class InstPack_NIRES(InstPackBase):
     def __init__(self, inst):
         super(InstPack_NIRES, self).__init__('NIRES')
 
-    def generate_inst_package(template_list, config, inst_list):
+    @staticmethod
+    def generate_ip(template_list, config=None, inst_list=None):
         schema = {
             "metadata": {
                 "name": "nires_instrument_package",
                 "ui_name": "NIRES Instrument Package",
                 "version": "0.1.0",
                 "instrument": "NIRES",
-                "observing_modes": ["spectroscopy"]
+                "observing_modes": ["imaging", "spectroscopy"]
             },
             "optical_parameters": {
             },
@@ -32,7 +33,9 @@ class InstPack_NIRES(InstPackBase):
         return [nires_cfg.nires_acq_template]
 
     def sci_templates(self):
-        return [nires_cfg.nires_science_template]
+        return [nires_cfg.nires_dither_science_template,
+                nires_cfg.nires_stare_science_template, 
+                nires_cfg.nires_drift_scan_science_template]
 
     def common_parameters_template(self):
         return [nires_cfg.nires_common_parameters_template]
@@ -46,3 +49,10 @@ class InstPack_NIRES(InstPackBase):
         scripts['nires_acq'] = nires_cfg.nires_acq
         scripts['nires_sci'] = nires_cfg.nires_sci
         return scripts
+
+
+    def get_recipes(self):
+        return [] 
+
+    def misc_templates(self):
+        return [] 

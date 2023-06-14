@@ -1,9 +1,9 @@
-
+from common_template import dither_schema
 """
 ------------------------------- Scripts ----------------------------------------
 """
 
-nires_acq = [
+nires_acq_script = [
         ['BEGIN_SLEW', 'Starts telescope slew'],
         ['CONFIGURE_FOR_ACQUISITION', 'target parameters, guide camera parameters'],
         ['WAITFOR_CONFIGURE_ACQUISITION', ''],
@@ -12,7 +12,7 @@ nires_acq = [
         ['WAITFOR_ACQUIRE', ''],
     ]
 
-nires_sci = [
+nires_sci_script = [
         ['CONFIGURE_SCIENCE', ''],
         ['WAITFOR_CONFIGURE_SCIENCE', 'Waits detector ready'],
         ['EXECUTE_OBSERVATION', ''],
@@ -46,16 +46,25 @@ nires_common_parameters_template = {
     }
 }
 
-nires_science_template = {
+nires_stare_science_template = {
     "metadata": {
         "instrument": "NIRES",
-        "name": "nires_sci",
-        "script": "nires_sci",
+        "name": "nires_stare_sci",
+        "script": "nires_stare_sci",
         "template_type": "science",
-        "ui_name": "NIRES science",
+        "ui_name": "NIRES stare science",
         "version": "0.1.0"
     },
     "parameters": {
+        "target_info_object": {
+            "default": "",
+            "description": "Value for the object keyword",
+            "option": "open",
+            "optionality": "optional",
+            "type": "string",
+            "ui_name": "Object Keyword",
+            "units": None
+        },
         "det_exp_time": {
             "allowed": [
                 0.1,
@@ -75,13 +84,67 @@ nires_science_template = {
                 100
             ],
             "default": None,
-            "description": "Number of exposures to take",
+            "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
             "type": "integer",
-            "ui_name": "Number of Exposures",
+            "ui_name": "Number of Coadd Exposures",
             "units": None
         },
+        "det_exp_read_pairs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of read pairs",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Read Pairs",
+            "units": None
+        },
+        "det_samp_mode": {
+            "ui_name": "Sampling Mode",
+            "option": "list",
+            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "default": "MCDS",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "det_coord_north_off": {
+            "ui_name": "North offset",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "arcseconds"
+        },
+        "det_coord_east_off": {
+            "ui_name": "East offset",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "arcseconds"
+        },
+    }
+}
+
+nires_dither_science_template = {
+
+    "metadata": {
+        "instrument": "NIRES",
+        "name": "nires_dither_sci",
+        "script": "nires_dither_sci",
+        "template_type": "science",
+        "ui_name": "NIRES dither science",
+        "version": "0.1.0"
+    },
+    "parameters": {
         "target_info_object": {
             "default": "",
             "description": "Value for the object keyword",
@@ -91,9 +154,171 @@ nires_science_template = {
             "ui_name": "Object Keyword",
             "units": None
         },
-    }
+        "det_type_mode": {
+            "ui_name": "Spectrograph or Imager",
+            "option": "list",
+            "allowed": ["Spectrograph", "Imager", "Both"],
+            "default": "Spectorgraph",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
+        "det_exp_time": {
+            "allowed": [
+                0.1,
+                3600
+            ],
+            "default": None,
+            "description": "Exposure time in seconds",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Exposure time",
+            "units": "seconds"
+        },
+        "det_exp_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of coadd exposures to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Coadd Exposures",
+            "units": None
+        },
+        "det_exp_read_pairs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of read pairs",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Read Pairs",
+            "units": None
+        },
+        "det_samp_mode": {
+            "ui_name": "Sampling Mode",
+            "option": "list",
+            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "default": "MCDS",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "det_coord_north_off": {
+            "ui_name": "North offset",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "arcseconds"
+        },
+        "det_coord_east_off": {
+            "ui_name": "East offset",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "arcseconds"
+        },
+        "sequence_ndither": {
+            "ui_name": "Number of dither positions",
+            "option": "range",
+            "allowed": [0, 100],
+            "default": None,
+            "optionality": "required",
+            "type": "integer",
+        },
+        "sequence_ditarray": dither_schema
+        }
 }
 
+nires_drift_scan_science_template = {
+    "metadata": {
+        "instrument": "NIRES",
+        "name": "nires_driftscan_sci",
+        "script": "nires_driftscan_sci",
+        "template_type": "science",
+        "ui_name": "NIRES stare science",
+        "version": "0.1.0"
+    },
+    "parameters": {
+        "target_info_object": {
+            "default": "",
+            "description": "Value for the object keyword",
+            "option": "open",
+            "optionality": "optional",
+            "type": "string",
+            "ui_name": "Object Keyword",
+            "units": None
+        },
+        "det_exp_time": {
+            "allowed": [
+                0.1,
+                3600
+            ],
+            "default": None,
+            "description": "Exposure time in seconds",
+            "option": "range",
+            "optionality": "required",
+            "type": "float",
+            "ui_name": "Exposure time",
+            "units": "seconds"
+        },
+        "det_exp_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of coadd exposures to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Coadd Exposures",
+            "units": None
+        },
+        "det_exp_read_pairs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of read pairs",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Read Pairs",
+            "units": None
+        },
+        "det_samp_mode": {
+            "ui_name": "Sampling Mode",
+            "option": "list",
+            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "default": "MCDS",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "det_drift_length": {
+            "ui_name": "Length to drift over",
+            "option": "range",
+            "allowed": [0.0, 100.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "arcseconds"
+        },
+    }
+}
 nires_acq_template = {
     "metadata": {
         "instrument": "NIRES",
@@ -105,19 +330,6 @@ nires_acq_template = {
         "sequence_number": 0
     },
     "parameters": {
-        "guider_cfg_gain": {
-            "allowed": [
-                "high",
-                "medium",
-                "low"
-            ],
-            "description": "Only used if guide mode is manual",
-            "option": "set",
-            "optionality": "required",
-            "type": "string",
-            "ui_name": "Guider camera gain (high, medium, or low).",
-            "units": None
-        },
         "tcs_coord_po": {
             "allowed": [
                 "NIRES",
@@ -133,8 +345,90 @@ nires_acq_template = {
             "type": "string",
             "ui_name": "Pointing origin",
             "units": None
-        }
-    }
+        },
+        "tcs_coord_raoff": {
+            "ui_name": "The offset from coordinates to get to the target",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "arcseconds"
+        },
+        "tcs_coord_decoff": {
+            "ui_name": "The offset from coordinates to get to the target",
+            "option": "range",
+            "allowed": [0.0, 2000.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "arcseconds"
+        },
+        "rot_cfg_wrap": {
+            "ui_name": "Rotator Wrap Position",
+            "option": "set",
+            "allowed": ['south', 'north', 'auto'],
+            "default": 'auto',
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "rot_cfg_mode": {
+            "ui_name": "Rotator Mode",
+            "option": "set",
+            "allowed": ["PA", "stationary", "vertical_angle"],
+            "default": "PA",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "rot_coord_angle": {
+            "ui_name": "The rotator angle",
+            "option": "range",
+            "allowed": [0.0, 360.0],
+            "default": 0,
+            "optionality": "optional",
+            "type": "float",
+            "units": "degrees"
+        },
+        "guider1_coord_ra": {
+            "ui_name": "Guide Star Right Ascension",
+            "option": "regex",
+            "allowed": 'HH:MM:SS.SS',
+            "default": None,
+            "optionality": "optional",
+            "type": "string",
+            "units": "Hours:Minutes:Seconds"
+        },
+        "guider1_coord_dec": {
+            "ui_name": "Guide Star Declination",
+            "option": "regex",
+            "allowed": "DD:MM:SS.S",
+            "default": None,
+            "optionality": "optional",
+            "type": "string",
+            "units": "Degrees:Minutes:Seconds"
+        },
+        "guider1_cfg_mode": {
+
+            "ui_name": "Guide Star Selection Mode",
+            "option": "list",
+            "allowed": ["auto", "operator", "user"],
+            "default": "operator",
+            "optionality": "optional",
+            "type": "string",
+            "units": None
+        },
+        "bright_acquisition": {
+            "default": None,
+            "description": "Is acq bright? If false, take a sky image",
+            "option": "boolean",
+            "optionality": "optional",
+            "type": "boolean",
+            "ui_name": "Bright Acquisition",
+            "units": None
+        },
+    },
 }
 
 nires_arc_template = {
