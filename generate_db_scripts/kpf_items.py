@@ -128,7 +128,7 @@ def generate_kpf_ip(template_list, recipe_list):
         ],
         "pointing_origins": ["KPF", "SKY", "EM_SKY", "REF"
         ],
-        "template_list": utils.parse_templates_version(template_list),
+        "template_list": utils.parse_templates_metadata(template_list),
         "recipe_list": rlist,
         "event_table": 'null',
         "comment": "A KPF Instrument Package"

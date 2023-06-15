@@ -22,7 +22,7 @@ class InstPack_NIRES(InstPackBase):
             ],
             "pointing_origins": ["NIRES", "SLIT_IMAG", "REF_SLIT", "REF", "IMAG", "MIRA"
             ],
-            "template_list": utils.parse_templates_version(template_list),
+            "template_list": utils.parse_templates_metadata(template_list),
             "recipe_list": None,
             "event_table": None,
             "comment": "A NIRES Instrument Package"

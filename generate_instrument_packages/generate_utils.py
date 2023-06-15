@@ -1,7 +1,6 @@
-def parse_templates_version(template_list):
+def parse_templates_metadata(template_list):
     schema = {}
     for template in template_list:
-        version = template["metadata"]["version"]
-        schema[template["metadata"]["name"]] = version
+        schema[template["metadata"]["name"]] = template["metadata"] 
 
     return schema

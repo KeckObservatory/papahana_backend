@@ -63,7 +63,7 @@ def generate_inst_package(template_list, config, inst_list):
             "REF",
             "Imaging"
         ],
-        "template_list": utils.parse_templates_version(template_list),
+        "template_list": utils.parse_templates_metadata(template_list),
         # "common_parameters": ObjectId("61203d3a86574cd1da879135")
         "event_table": 'null',
         "comment": "A KCWI Instrument Package"
@@ -143,7 +143,7 @@ def filled_acq_templates():
     return acq_templates
 
 def filled_sci_templates(template_list):
-    templates_version = utils.parse_templates_version(template_list)
+    templates_version = utils.parse_templates_metadata(template_list)
     sci_templates = [
         {
             "metadata": {
