@@ -105,7 +105,7 @@ class InstPackBase:
         @rtype: <list>
         """
         coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
-        fields = {'metadata.name': 1, 'metadata.version': 1, 'metadata.ui_name': 1}
+        fields = {'metadata.name': 1, 'metadata.version': 1}
         query = {'metadata.instrument': self.inst}
         results = list(coll_tmp.find(query, fields))
 

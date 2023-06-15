@@ -465,7 +465,7 @@ def generate_inst_package(template_list, config, inst_list):
         ],
         "pointing_origins": ["NIRES", "SLIT_IMAG", "REF_SLIT", "REF", "IMAG", "MIRA"
         ],
-        "template_list": utils.parse_templates_metadata(template_list),
+        "template_list": utils.parse_templates_version(template_list),
         "event_table": None,
         "comment": "A NIRES Instrument Package"
     }

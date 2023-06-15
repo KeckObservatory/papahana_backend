@@ -5,7 +5,7 @@ filled_acq_templates = [{}]
 filled_common_parameters_templates = {}
 
 def filled_sci_templates(template_list):
-    templates_version = utils.parse_templates_metadata(template_list)
+    templates_version = utils.parse_templates_version(template_list)
 
 filled_common_parameters = {}
 
@@ -41,7 +41,7 @@ def generate_inst_package(template_list):
             "REF",
             "SPEC"
         ],
-        "template_list": utils.parse_templates_metadata(template_list),
+        "template_list": utils.parse_templates_version(template_list),
         "common_parameters": ObjectId
         "event_table": 'null',
         "comment": "A KPF Instrument Package"

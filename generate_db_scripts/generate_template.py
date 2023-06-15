@@ -229,7 +229,7 @@ def generate_templates(config):
     templates.append(nonsidereal_target)
     result = coll.insert_many(templates, ordered=False, bypass_document_validation=True)
 
-    fields = {'metadata.name': 1, 'metadata.version': 1, 'metadata.ui_name': 1}
+    fields = {'metadata.name': 1, 'metadata.version': 1}
     doc = list(coll.find({}, fields))
 
     return doc

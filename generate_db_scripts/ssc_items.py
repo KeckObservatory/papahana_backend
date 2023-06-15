@@ -57,7 +57,7 @@ def filled_common_parameters():
 
 
 def filled_sci_templates(template_list):
-    templates_version = utils.parse_templates_metadata(template_list)
+    templates_version = utils.parse_templates_version(template_list)
 
 
     sci_templates = [
@@ -97,7 +97,7 @@ def generate_inst_package(template_list, config, inst_list):
             "pixel_scale": 0.105
         },
         "pointing_origins": ["REF"],
-        "template_list": utils.parse_templates_metadata(template_list),
+        "template_list": utils.parse_templates_version(template_list),
         "event_table": 'null',
         "comment": "A SSC Instrument Package"
     }

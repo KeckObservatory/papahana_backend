@@ -104,13 +104,13 @@ def make_status_realistic(ob, config):
         #                 {'$set': {'status.current_exp_det2': current_exp_det2}})
 
 
-def parse_templates_metadata(template_list):
+def parse_templates_version(template_list):
     schema = {}
     for template in template_list:
-        schema[template["metadata"]["name"]] = template["metadata"] 
+        version = template["metadata"]["version"]
+        schema[template["metadata"]["name"]] = version
 
     return schema
-
 
 
 def non_inst_templates(inst_list, template_list):
