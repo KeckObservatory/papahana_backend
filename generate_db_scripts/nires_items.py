@@ -371,8 +371,8 @@ def filled_sci_templates(template_list):
     {
         "metadata": {
             "instrument": "NIRES",
-            "name": "nires_driftscan_sci",
-            "script": "nires_driftscan_sci",
+            "name": "nires_drift_scan_sci",
+            "script": "nires_drift_scan_sci",
             "template_type": "science",
             "ui_name": "NIRES stare science",
             "version": "0.1.0"
