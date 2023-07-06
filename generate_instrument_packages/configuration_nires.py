@@ -106,7 +106,7 @@ nires_stare_science_template = {
         },
         "det_samp_mode": {
             "ui_name": "Sampling Mode",
-            "option": "list",
+            "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
             "optionality": "optional",
@@ -155,7 +155,7 @@ nires_dither_science_template = {
         },
         "det_type_mode": {
             "ui_name": "Spectrograph or Imager",
-            "option": "list",
+            "option": "set",
             "allowed": ["Spectrograph", "Imager", "Both"],
             "default": "Spectorgraph",
             "optionality": "required",
@@ -203,7 +203,7 @@ nires_dither_science_template = {
         },
         "det_samp_mode": {
             "ui_name": "Sampling Mode",
-            "option": "list",
+            "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
             "optionality": "optional",
@@ -300,7 +300,7 @@ nires_drift_scan_science_template = {
         },
         "det_samp_mode": {
             "ui_name": "Sampling Mode",
-            "option": "list",
+            "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
             "optionality": "optional",
@@ -412,7 +412,7 @@ nires_acq_template = {
         "guider1_cfg_mode": {
 
             "ui_name": "Guide Star Selection Mode",
-            "option": "list",
+            "option": "set",
             "allowed": ["auto", "operator", "user"],
             "default": "operator",
             "optionality": "optional",

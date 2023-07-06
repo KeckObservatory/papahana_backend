@@ -22,6 +22,7 @@ target_base_parameters = OrderedDict([
     ("target_coord_ra", {
         "ui_name": "Right Ascension",
         "option": "regex",
+        "description": "In sexigesimal (00:00:00) or decimal degrees.",
         "allowed": ['^\d{2}:\d{2}:\d{2}$',
                     '^\d{2}:\d{2}:\d{2}.\d{1}$',
                     '^\d{2}:\d{2}:\d{2}.\d{2}$'],
@@ -33,6 +34,7 @@ target_base_parameters = OrderedDict([
     ("target_coord_dec", {
         "ui_name": "Declination",
         "option": "regex",
+        "description": "In sexigesimal (00:00:00) or decimal degrees.",
         "allowed": ['^\d{2}:\d{2}:\d{2}$',
                     '^\d{2}:\d{2}:\d{2}.\d{1}$',
                     '^\d{2}:\d{2}:\d{2}.\d{2}$',
