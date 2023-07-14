@@ -28,10 +28,10 @@ def filled_cal_templates():
         {
             "metadata": {
                 "instrument": "NIRES",
-                "name": "nires_arcs",
-                "script": "nires_arcs",
+                "name": "nires_cals",
+                "script": "nires_cals",
                 "template_type": "calibration",
-                "ui_name": "NIRES Arc Lamps",
+                "ui_name": "NIRES Calibration",
                 "version": "0.1.0",
                 "sequence_number": 0
             },
