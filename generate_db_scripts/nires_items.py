@@ -1,6 +1,8 @@
-import generate_utils as utils
 from common_template import dither_schema
+import generate_utils as utils
 import generate_random_utils as random_utils
+import generate_targets as ge
+import numpy as np
 
 def filled_common_parameters():
 
@@ -72,105 +74,16 @@ def filled_acq_templates():
             "sequence_number": 0
         },
         "parameters": {
-            "tcs_coord_po": {
-                "allowed": [
-                    "NIRES",
-                    "SLIT_IMAG",
-                    "REF_SLIT",
-                    "IMAG",
-                    "MIRA",
-                    "REF"
-                ],
-                "description": "Pointing origin",
-                "option": "set",
-                "optionality": "required",
-                "type": "string",
-                "ui_name": "Pointing origin",
-                "units": None
-            },
-            "tcs_coord_raoff": {
-                "ui_name": "The offset from coordinates to get to the target",
-                "option": "range",
-                "allowed": [0.0, 2000.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "arcseconds"
-            },
-            "tcs_coord_decoff": {
-                "ui_name": "The offset from coordinates to get to the target",
-                "option": "range",
-                "allowed": [0.0, 2000.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "arcseconds"
-            },
-            "rot_cfg_wrap": {
-                "ui_name": "Rotator Wrap Position",
-                "option": "set",
-                "allowed": ['south', 'north', 'auto'],
-                "default": 'auto',
-                "optionality": "optional",
-                "type": "string",
-                "units": None
-            },
-            "rot_cfg_mode": {
-                "ui_name": "Rotator Mode",
-                "option": "set",
-                "allowed": ["PA", "stationary", "vertical_angle"],
-                "default": "PA",
-                "optionality": "optional",
-                "type": "string",
-                "units": None
-            },
-            "rot_coord_angle": {
-                "ui_name": "The rotator angle",
-                "option": "range",
-                "allowed": [0.0, 360.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "degrees"
-            },
-            "guider1_coord_ra": {
-                "ui_name": "Guide Star Right Ascension",
-                "option": "regex",
-                "allowed": 'HH:MM:SS.SS',
-                "default": None,
-                "optionality": "optional",
-                "type": "string",
-                "units": "Hours:Minutes:Seconds"
-            },
-            "guider1_coord_dec": {
-                "ui_name": "Guide Star Declination",
-                "option": "regex",
-                "allowed": "DD:MM:SS.S",
-                "default": None,
-                "optionality": "optional",
-                "type": "string",
-                "units": "Degrees:Minutes:Seconds"
-            },
-            "guider1_cfg_mode": {
-
-                "ui_name": "Guide Star Selection Mode",
-                "option": "set",
-                "allowed": ["auto", "operator", "user"],
-                "default": "operator",
-                "optionality": "optional",
-                "type": "string",
-                "units": None
-            },
-            "bright_acquisition": {
-                "default": None,
-                "description": "Is acq bright? If false, take a sky image",
-                "option": "boolean",
-                "optionality": "optional",
-                "type": "boolean",
-                "ui_name": "Bright Acquisition",
-                "units": None
-            },
-        },
+            "tcs_coord_po": np.random.choice( [ "NIRES", "SLIT_IMAG", "REF_SLIT", "IMAG", "MIRA", "REF" ]),
+            "tcs_coord_raoff": random_utils.randInt(0, 100),
+            "tcs_coord_decoff": random_utils.randInt(0, 100),
+            "rot_cfg_wrap": np.random.choice(['south', 'north', 'auto']),
+            "rot_cfg_mode": np.random.choice(['PA', 'stationary', 'vertical_angle']),
+            "rot_coord_angle": random_utils.randInt(0, 360),
+            "guider1_coord_ra": ge.generate_ra(),
+            "guider1_coord_dec": ge.generate_dec(),
+            "guider1_cfg_mode": np.random.choice(['auto', 'operator', 'user'])
+        }
     }
     ]
     return acq_templates
@@ -186,103 +99,15 @@ def filled_sci_templates(template_list):
             "version": "0.1.0"
         },
         "parameters": {
-            "target_info_object": {
-                "default": "",
-                "description": "Value for the object keyword",
-                "option": "open",
-                "optionality": "optional",
-                "type": "string",
-                "ui_name": "Object Keyword",
-                "units": None
-            },
-            "det_exp_time": {
-                "allowed": [
-                    0.1,
-                    3600
-                ],
-                "default": None,
-                "description": "Exposure time in seconds",
-                "option": "range",
-                "optionality": "required",
-                "type": "float",
-                "ui_name": "Exposure time",
-                "units": "seconds"
-            },
-            "det_exp_number": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Number of coadd exposures to take",
-                "option": "range",
-                "optionality": "required",
-                "type": "integer",
-                "ui_name": "Number of Coadd Exposures",
-                "units": None
-            },
-            "det_exp_read_pairs": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Number of read pairs",
-                "option": "range",
-                "optionality": "required",
-                "type": "integer",
-                "ui_name": "Number of Read Pairs",
-                "units": None
-            },
-            "det_samp_mode": {
-                "ui_name": "Sampling Mode",
-                "option": "set",
-                "allowed": ["MCDS", "PCDS", "UTR", "Single"],
-                "default": "MCDS",
-                "optionality": "optional",
-                "type": "string",
-                "units": None
-            },
-            "det_num_fs": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Applicable for Fowler sample mode only",
-                "option": "range",
-                "optionality": "optional",
-                "type": "integer",
-                "ui_name": "Number of MCDS (Fowler) Samples",
-                "units": None
-            },
-            "det_coord_north_off": {
-                "ui_name": "North offset",
-                "option": "range",
-                "allowed": [0.0, 2000.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "arcseconds"
-            },
-            "det_coord_east_off": {
-                "ui_name": "East offset",
-                "option": "range",
-                "allowed": [0.0, 2000.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "arcseconds"
-            },
-            "det_exp_test": {
-                "default": False,
-                "description": "True prevents exposures from being taken",
-                "option": "boolean",
-                "optionality": "required",
-                "type": "boolean",
-                "ui_name": "Test Mode",
-                "units": None
-            }
+            "target_info_object": random_utils.randString(8),
+            "det_exp_time": random_utils.randFloat(3600),
+            "det_exp_number": random_utils.randInt(0, 100),
+            "det_num_fs": random_utils.randInt(0, 100),
+            "det_exp_read_pairs": random_utils.randInt(0, 100),
+            "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
+            "det_num_fs": random_utils.randInt(0, 100),
+            "det_coord_north_off": random_utils.randFloat(2000),
+            "det_coord_east_off": random_utils.randFloat(2000)
         }
     },
     {
@@ -295,121 +120,15 @@ def filled_sci_templates(template_list):
             "version": "0.1.0"
         },
         "parameters": {
-            "target_info_object": {
-                "default": "",
-                "description": "Value for the object keyword",
-                "option": "open",
-                "optionality": "optional",
-                "type": "string",
-                "ui_name": "Object Keyword",
-                "units": None
-            },
-            "det_type_mode": {
-                "ui_name": "Spectrograph or Imager",
-                "option": "set",
-                "allowed": ["Spectrograph", "Imager", "Both"],
-                "default": "Spectorgraph",
-                "optionality": "required",
-                "type": "string",
-                "units": None
-            },
-            "det_exp_time": {
-                "allowed": [
-                    0.1,
-                    3600
-                ],
-                "default": None,
-                "description": "Exposure time in seconds",
-                "option": "range",
-                "optionality": "required",
-                "type": "float",
-                "ui_name": "Exposure time",
-                "units": "seconds"
-            },
-            "det_num_fs": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Applicable for Fowler sample mode only",
-                "option": "range",
-                "optionality": "optional",
-                "type": "integer",
-                "ui_name": "Number of MCDS (Fowler) Samples",
-                "units": None
-            },
-            "det_exp_number": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Number of coadd exposures to take",
-                "option": "range",
-                "optionality": "required",
-                "type": "integer",
-                "ui_name": "Number of Coadd Exposures",
-                "units": None
-            },
-            "det_exp_read_pairs": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Number of read pairs",
-                "option": "range",
-                "optionality": "required",
-                "type": "integer",
-                "ui_name": "Number of Read Pairs",
-                "units": None
-            },
-            "det_samp_mode": {
-                "ui_name": "Sampling Mode",
-                "option": "set",
-                "allowed": ["MCDS", "PCDS", "UTR", "Single"],
-                "default": "MCDS",
-                "optionality": "optional",
-                "type": "string",
-                "units": None
-            },
-            "det_coord_north_off": {
-                "ui_name": "North offset",
-                "option": "range",
-                "allowed": [0.0, 2000.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "arcseconds"
-            },
-            "det_coord_east_off": {
-                "ui_name": "East offset",
-                "option": "range",
-                "allowed": [0.0, 2000.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "arcseconds"
-            },
-            "sequence_ndither": {
-                "ui_name": "Number of dither positions",
-                "option": "range",
-                "allowed": [0, 100],
-                "default": None,
-                "optionality": "required",
-                "type": "integer",
-            },
-            "sequence_ditarray": dither_schema,
-            "det_exp_test": {
-                "default": False,
-                "description": "True prevents exposures from being taken",
-                "option": "boolean",
-                "optionality": "required",
-                "type": "boolean",
-                "ui_name": "Test Mode",
-                "units": None
-            }
+            "target_info_object": random_utils.randString(8),
+            "det_exp_time": random_utils.randFloat(3600),
+            "det_exp_number": random_utils.randInt(0, 100),
+            "det_exp_read_pairs": random_utils.randInt(0, 100),
+            "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
+            "det_num_fs": random_utils.randInt(0, 100),
+            "det_coord_north_off": random_utils.randFloat(2000),
+            "det_coord_east_off": random_utils.randFloat(2000),
+            "det_type_mode": np.random.choice(["Spectrograph", "Imager", "Both"]),
         }
     },
     {
@@ -422,82 +141,17 @@ def filled_sci_templates(template_list):
             "version": "0.1.0"
         },
         "parameters": {
-            "target_info_object": {
-                "default": "",
-                "description": "Value for the object keyword",
-                "option": "open",
-                "optionality": "optional",
-                "type": "string",
-                "ui_name": "Object Keyword",
-                "units": None
-            },
-            "det_exp_time": {
-                "allowed": [
-                    0.1,
-                    3600
-                ],
-                "default": None,
-                "description": "Exposure time in seconds",
-                "option": "range",
-                "optionality": "required",
-                "type": "float",
-                "ui_name": "Exposure time",
-                "units": "seconds"
-            },
-            "det_exp_number": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Number of coadd exposures to take",
-                "option": "range",
-                "optionality": "required",
-                "type": "integer",
-                "ui_name": "Number of Coadd Exposures",
-                "units": None
-            },
-            "det_exp_read_pairs": {
-                "allowed": [
-                    1,
-                    100
-                ],
-                "default": None,
-                "description": "Number of read pairs",
-                "option": "range",
-                "optionality": "required",
-                "type": "integer",
-                "ui_name": "Number of Read Pairs",
-                "units": None
-            },
-            "det_samp_mode": {
-                "ui_name": "Sampling Mode",
-                "option": "set",
-                "allowed": ["MCDS", "PCDS", "UTR", "Single"],
-                "default": "MCDS",
-                "optionality": "optional",
-                "type": "string",
-                "units": None
-            },
-            "det_drift_length": {
-                "ui_name": "Length to drift over",
-                "option": "range",
-                "allowed": [0.0, 100.0],
-                "default": 0,
-                "optionality": "optional",
-                "type": "float",
-                "units": "arcseconds"
-            },
-            "det_exp_test": {
-                "default": False,
-                "description": "True prevents exposures from being taken",
-                "option": "boolean",
-                "optionality": "required",
-                "type": "boolean",
-                "ui_name": "Test Mode",
-                "units": None
+            "target_info_object": random_utils.randString(8),
+            "det_exp_time": random_utils.randFloat(3600),
+            "det_exp_number": random_utils.randInt(0, 100),
+            "det_exp_read_pairs": random_utils.randInt(0, 100),
+            "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
+            "det_num_fs": random_utils.randInt(0, 100),
+            "det_coord_north_off": random_utils.randFloat(2000),
+            "det_coord_east_off": random_utils.randFloat(2000),
+            "det_type_mode": np.random.choice(["Spectrograph", "Imager", "Both"]),
+            "det_drift_length": random_utils.randFloat(100)
             }
-        }
     }
 
     ]
@@ -609,6 +263,19 @@ nires_stare_science_template = {
             "type": "string",
             "units": None
         },
+        "det_num_fs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Applicable for Fowler sample mode only",
+            "option": "range",
+            "optionality": "optional",
+            "type": "integer",
+            "ui_name": "Number of MCDS (Fowler) Samples",
+            "units": None
+        },
         "det_coord_north_off": {
             "ui_name": "North offset",
             "option": "range",
@@ -627,7 +294,25 @@ nires_stare_science_template = {
             "type": "float",
             "units": "arcseconds"
         },
-    }
+        "det_type_mode": {
+            "ui_name": "Spectrograph, Imager, or Both",
+            "option": "set",
+            "allowed": ["Spectrograph", "Imager", "Both"],
+            "default": "Spectorgraph",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
+        "det_exp_test": {
+            "default": False,
+            "description": "True prevents exposures from being taken",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Test Mode",
+            "units": None
+        }
+    },
 }
 
 nires_dither_science_template = {
@@ -650,7 +335,7 @@ nires_dither_science_template = {
             "units": None
         },
         "det_type_mode": {
-            "ui_name": "Spectrograph or Imager",
+            "ui_name": "Spectrograph, Imager, or Both",
             "option": "set",
             "allowed": ["Spectrograph", "Imager", "Both"],
             "default": "Spectorgraph",
@@ -670,6 +355,19 @@ nires_dither_science_template = {
             "type": "float",
             "ui_name": "Exposure time",
             "units": "seconds"
+        },
+        "det_num_fs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Applicable for Fowler sample mode only",
+            "option": "range",
+            "optionality": "optional",
+            "type": "integer",
+            "ui_name": "Number of MCDS (Fowler) Samples",
+            "units": None
         },
         "det_exp_number": {
             "allowed": [
@@ -732,8 +430,17 @@ nires_dither_science_template = {
             "optionality": "required",
             "type": "integer",
         },
-        "sequence_ditarray": dither_schema
+        "sequence_ditarray": dither_schema,
+        "det_exp_test": {
+            "default": False,
+            "description": "True prevents exposures from being taken",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Test Mode",
+            "units": None
         }
+    },
 }
 
 nires_drift_scan_science_template = {
@@ -803,6 +510,19 @@ nires_drift_scan_science_template = {
             "type": "string",
             "units": None
         },
+        "det_num_fs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Applicable for Fowler sample mode only",
+            "option": "range",
+            "optionality": "optional",
+            "type": "integer",
+            "ui_name": "Number of MCDS (Fowler) Samples",
+            "units": None
+        },
         "det_drift_length": {
             "ui_name": "Length to drift over",
             "option": "range",
@@ -811,6 +531,24 @@ nires_drift_scan_science_template = {
             "optionality": "optional",
             "type": "float",
             "units": "arcseconds"
+        },
+        "det_exp_test": {
+            "default": False,
+            "description": "True prevents exposures from being taken",
+            "option": "boolean",
+            "optionality": "required",
+            "type": "boolean",
+            "ui_name": "Test Mode",
+            "units": None
+        },
+        "det_type_mode": {
+            "ui_name": "Spectrograph, Imager, or Both",
+            "option": "set",
+            "allowed": ["Spectrograph", "Imager", "Both"],
+            "default": "Spectorgraph",
+            "optionality": "required",
+            "type": "string",
+            "units": None
         },
     }
 }

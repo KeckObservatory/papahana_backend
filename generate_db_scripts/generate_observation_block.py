@@ -30,8 +30,8 @@ def generate_obs(config, inst, inst_list, template_list):
         try:
             doc = generate_observation_block(template_list, coll,
                                             instModule, inst=inst)
-        except:
-            print('error')
+        except Exception as err:
+            print('error', err)
 
         metadata = {"timestamp": datetime.datetime.now()}
 
