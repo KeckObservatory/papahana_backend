@@ -921,14 +921,23 @@ nires_acq_template = {
 nires_calibration_template = {
     "metadata": {
         "instrument": "NIRES",
-        "name": "nires_arcs",
-        "script": "nires_arcs",
+        "name": "nires_calibration",
+        "script": "nires_calibration",
         "template_type": "calibration",
-        "ui_name": "NIRES Arc Lamps",
+        "ui_name": "NIRES Calibration",
         "version": "0.1.0",
         "sequence_number": 0
     },
     "parameters": {
+        "det_cal_type": {
+            "ui_name": "Calibration Type",
+            "option": "set",
+            "allowed": ["Arcs", "Darks", "Flats", "Flats On Flats Off"],
+            "default": "Darks",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
         "det_exp_time": {
             "allowed": [
                 0.1,
@@ -948,11 +957,46 @@ nires_calibration_template = {
                 100
             ],
             "default": None,
-            "description": "Number of exposures to take",
+            "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
             "type": "integer",
-            "ui_name": "Number of exposures to take",
+            "ui_name": "Number of Coadd Exposures",
+            "units": None
+        },
+        "det_exp_read_pairs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Number of read pairs",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Read Pairs",
+            "units": None
+        },
+        "det_num_fs": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": None,
+            "description": "Applicable for Fowler sample mode only",
+            "option": "range",
+            "optionality": "optional",
+            "type": "integer",
+            "ui_name": "Number of MCDS (Fowler) Samples",
+            "units": None
+        },
+        "det_samp_mode": {
+            "ui_name": "Sampling Mode",
+            "option": "set",
+            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "default": "MCDS",
+            "optionality": "optional",
+            "type": "string",
             "units": None
         },
         "target_info_object": {
@@ -966,6 +1010,7 @@ nires_calibration_template = {
         },
     }
 }
+
 
 def generate_scripts():
     scripts = {}
