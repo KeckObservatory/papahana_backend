@@ -488,6 +488,15 @@ def filled_sci_templates(template_list):
                 "type": "float",
                 "units": "arcseconds"
             },
+            "det_exp_test": {
+                "default": False,
+                "description": "True prevents exposures from being taken",
+                "option": "boolean",
+                "optionality": "required",
+                "type": "boolean",
+                "ui_name": "Test Mode",
+                "units": None
+            }
         }
     }
 
