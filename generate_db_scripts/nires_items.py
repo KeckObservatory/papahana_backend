@@ -690,7 +690,7 @@ nires_calibration_template = {
                 0.1,
                 3600
             ],
-            "default": None,
+            "default": 120,
             "description": "Exposure time in seconds",
             "option": "range",
             "optionality": "required",
@@ -703,7 +703,7 @@ nires_calibration_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -716,7 +716,7 @@ nires_calibration_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
             "description": "Number of read pairs",
             "option": "range",
             "optionality": "required",
@@ -729,7 +729,7 @@ nires_calibration_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
             "description": "Applicable for Fowler sample mode only",
             "option": "range",
             "optionality": "optional",
