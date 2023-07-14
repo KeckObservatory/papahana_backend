@@ -243,6 +243,19 @@ def filled_sci_templates(template_list):
                 "type": "string",
                 "units": None
             },
+            "det_num_fs": {
+                "allowed": [
+                    1,
+                    100
+                ],
+                "default": None,
+                "description": "Applicable for Fowler sample mode only",
+                "option": "range",
+                "optionality": "optional",
+                "type": "integer",
+                "ui_name": "Number of MCDS (Fowler) Samples",
+                "units": None
+            },
             "det_coord_north_off": {
                 "ui_name": "North offset",
                 "option": "range",
@@ -261,6 +274,15 @@ def filled_sci_templates(template_list):
                 "type": "float",
                 "units": "arcseconds"
             },
+            "det_exp_test": {
+                "default": False,
+                "description": "True prevents exposures from being taken",
+                "option": "boolean",
+                "optionality": "required",
+                "type": "boolean",
+                "ui_name": "Test Mode",
+                "units": None
+            }
         }
     },
     {
@@ -303,6 +325,19 @@ def filled_sci_templates(template_list):
                 "type": "float",
                 "ui_name": "Exposure time",
                 "units": "seconds"
+            },
+            "det_num_fs": {
+                "allowed": [
+                    1,
+                    100
+                ],
+                "default": None,
+                "description": "Applicable for Fowler sample mode only",
+                "option": "range",
+                "optionality": "optional",
+                "type": "integer",
+                "ui_name": "Number of MCDS (Fowler) Samples",
+                "units": None
             },
             "det_exp_number": {
                 "allowed": [
@@ -365,8 +400,17 @@ def filled_sci_templates(template_list):
                 "optionality": "required",
                 "type": "integer",
             },
-            "sequence_ditarray": dither_schema
+            "sequence_ditarray": dither_schema,
+            "det_exp_test": {
+                "default": False,
+                "description": "True prevents exposures from being taken",
+                "option": "boolean",
+                "optionality": "required",
+                "type": "boolean",
+                "ui_name": "Test Mode",
+                "units": None
             }
+        }
     },
     {
         "metadata": {
@@ -874,7 +918,7 @@ nires_acq_template = {
     },
 }
 
-nires_arc_template = {
+nires_calibration_template = {
     "metadata": {
         "instrument": "NIRES",
         "name": "nires_arcs",

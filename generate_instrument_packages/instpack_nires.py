@@ -41,7 +41,7 @@ class InstPack_NIRES(InstPackBase):
         return [nires_cfg.nires_common_parameters_template]
 
     def cal_templates(self):
-        cal_tmps = [nires_cfg.nires_arc_template]
+        cal_tmps = [nires_cfg.nires_calibration_template]
         return cal_tmps
 
     def get_scripts(self):
