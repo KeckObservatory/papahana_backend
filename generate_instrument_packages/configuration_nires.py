@@ -176,7 +176,7 @@ nires_dither_science_template = {
             "units": None
         },
         "det_type_mode": {
-            "ui_name": "Spectrograph or Imager",
+            "ui_name": "Spectrograph, Imager, or Both",
             "option": "set",
             "allowed": ["Spectrograph", "Imager", "Both"],
             "default": "Spectorgraph",

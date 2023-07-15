@@ -400,7 +400,7 @@ nires_dither_science_template = {
             "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
-            "optionality": "optional",
+            "optionality": "required",
             "type": "string",
             "units": None
         },
@@ -506,7 +506,7 @@ nires_drift_scan_science_template = {
             "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
-            "optionality": "optional",
+            "optionality": "required",
             "type": "string",
             "units": None
         },
@@ -742,7 +742,7 @@ nires_calibration_template = {
             "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
-            "optionality": "optional",
+            "optionality": "required",
             "type": "string",
             "units": None
         },
