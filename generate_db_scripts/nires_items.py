@@ -771,11 +771,17 @@ def generate_scripts():
         ['WAITFOR_ACQUIRE', ''],
     ]
 
-    scripts['nires_sci'] = [
+    scripts['nires_drift_scan_sci'] = [
         ['CONFIGURE_SCIENCE', ''],
-        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits detector ready'],
-        ['EXECUTE_OBSERVATION', ''],
-        ['POST_OBSERVATION_CLEANUP', '']
+        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits until detector is ready'],
+    ]
+    scripts['nires_dither_sci'] = [
+        ['CONFIGURE_SCIENCE', ''],
+        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits untill detector is ready'],
+    ]
+    scripts['nires_stare_sci'] = [
+        ['CONFIGURE_SCIENCE', ''],
+        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits untill detector is ready'],
     ]
     return scripts
 

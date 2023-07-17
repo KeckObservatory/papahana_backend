@@ -22,10 +22,10 @@ def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
             continue
 
         meta = results['metadata']
-        print(f'meta {meta}')
+        # print(f'meta {meta}')
         if 'version' not in meta or 'template_type' not in meta \
                 or 'script' not in meta:
-            print('skipping')
+            # print('skipping')
             continue
 
         script_name = results['metadata']['script']
@@ -39,7 +39,7 @@ def generate_scripts_collection(coll, coll_inst, coll_tmp, inst):
 
 
 def generate_scripts(inst, script_name, script_type, version):
-    print('gen', inst, script_name, script_type, version)
+    # print('gen', inst, script_name, script_type, version)
     try:
         instModule = importlib.import_module(f'{inst.lower()}_items')
         scripts = instModule.generate_scripts()
@@ -53,9 +53,9 @@ def generate_scripts(inst, script_name, script_type, version):
     else:
         script = {'TBD': 'TBD'}
 
-    print('scr', script)
-    print('scr', type(script))
-    print('-'*8)
+    # print('scr', script)
+    # print('scr', type(script))
+    # print('-'*8)
 
     ui_name = script_name.replace('_', ' ').title()
     schema = {
