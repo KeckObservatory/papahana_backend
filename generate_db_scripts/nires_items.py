@@ -298,7 +298,7 @@ nires_stare_science_template = {
             "ui_name": "Spectrograph, Imager, or Both",
             "option": "set",
             "allowed": ["Spectrograph", "Imager", "Both"],
-            "default": "Spectorgraph",
+            "default": "Spectrograph",
             "optionality": "required",
             "type": "string",
             "units": None
@@ -338,7 +338,7 @@ nires_dither_science_template = {
             "ui_name": "Spectrograph, Imager, or Both",
             "option": "set",
             "allowed": ["Spectrograph", "Imager", "Both"],
-            "default": "Spectorgraph",
+            "default": "Spectrograph",
             "optionality": "required",
             "type": "string",
             "units": None
@@ -545,7 +545,7 @@ nires_drift_scan_science_template = {
             "ui_name": "Spectrograph, Imager, or Both",
             "option": "set",
             "allowed": ["Spectrograph", "Imager", "Both"],
-            "default": "Spectorgraph",
+            "default": "Spectrograph",
             "optionality": "required",
             "type": "string",
             "units": None
