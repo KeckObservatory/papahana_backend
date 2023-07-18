@@ -764,7 +764,7 @@ def generate_scripts():
 
     scripts['nires_acq'] = [
         ['BEGIN_SLEW', 'Starts telescope slew'],
-        ['CONFIGURE_FOR_ACQUISITION', 'target parameters, guide camera parameters'],
+        ['CONFIGURE_ACQUISITION', 'target parameters, guide camera parameters'],
         ['WAITFOR_CONFIGURE_ACQUISITION', ''],
         ['WAITFOR_SLEW', ''],
         ['ACQUIRE', 'OA acquires to PO'],
