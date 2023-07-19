@@ -233,7 +233,20 @@ nires_stare_science_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -374,7 +387,20 @@ nires_dither_science_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -480,7 +506,20 @@ nires_drift_scan_science_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -699,6 +738,19 @@ nires_calibration_template = {
             "units": "seconds"
         },
         "det_exp_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
             "allowed": [
                 1,
                 100
