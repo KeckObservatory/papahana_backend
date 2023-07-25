@@ -5,18 +5,23 @@ from common_template import dither_schema
 
 nires_acq_script = [
         ['BEGIN_SLEW', 'Starts telescope slew'],
-        ['CONFIGURE_FOR_ACQUISITION', 'target parameters, guide camera parameters'],
+        ['CONFIGURE_ACQUISITION', 'target parameters, guide camera parameters'],
         ['WAITFOR_CONFIGURE_ACQUISITION', ''],
         ['WAITFOR_SLEW', ''],
         ['ACQUIRE', 'OA acquires to PO'],
         ['WAITFOR_ACQUIRE', ''],
     ]
-
-nires_sci_script = [
+nires_drift_scan_sci = [
         ['CONFIGURE_SCIENCE', ''],
-        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits detector ready'],
-        ['EXECUTE_OBSERVATION', ''],
-        ['POST_OBSERVATION_CLEANUP', '']
+        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits until detector is ready'],
+    ]
+nires_dither_sci = [
+        ['CONFIGURE_SCIENCE', ''],
+        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits untill detector is ready'],
+    ]
+nires_stare_sci = [
+        ['CONFIGURE_SCIENCE', ''],
+        ['WAITFOR_CONFIGURE_SCIENCE', 'Waits untill detector is ready'],
     ]
 
 """
@@ -83,7 +88,20 @@ nires_stare_science_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -144,6 +162,15 @@ nires_stare_science_template = {
             "type": "float",
             "units": "arcseconds"
         },
+        "det_type_mode": {
+            "ui_name": "Spectrograph, Imager, or Both",
+            "option": "set",
+            "allowed": ["Spectrograph", "Imager", "Both"],
+            "default": "Spectrograph",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
         "det_exp_test": {
             "default": False,
             "description": "True prevents exposures from being taken",
@@ -153,7 +180,7 @@ nires_stare_science_template = {
             "ui_name": "Test Mode",
             "units": None
         }
-    }
+    },
 }
 
 nires_dither_science_template = {
@@ -215,7 +242,20 @@ nires_dither_science_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -241,7 +281,7 @@ nires_dither_science_template = {
             "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
-            "optionality": "optional",
+            "optionality": "required",
             "type": "string",
             "units": None
         },
@@ -281,7 +321,7 @@ nires_dither_science_template = {
             "ui_name": "Test Mode",
             "units": None
         }
-    }
+    },
 }
 
 nires_drift_scan_science_template = {
@@ -321,7 +361,20 @@ nires_drift_scan_science_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -347,7 +400,7 @@ nires_drift_scan_science_template = {
             "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
-            "optionality": "optional",
+            "optionality": "required",
             "type": "string",
             "units": None
         },
@@ -381,7 +434,16 @@ nires_drift_scan_science_template = {
             "type": "boolean",
             "ui_name": "Test Mode",
             "units": None
-        }
+        },
+        "det_type_mode": {
+            "ui_name": "Spectrograph, Imager, or Both",
+            "option": "set",
+            "allowed": ["Spectrograph", "Imager", "Both"],
+            "default": "Spectrograph",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
     }
 }
 
@@ -522,7 +584,7 @@ nires_calibration_template = {
                 0.1,
                 3600
             ],
-            "default": None,
+            "default": 120,
             "description": "Exposure time in seconds",
             "option": "range",
             "optionality": "required",
@@ -535,7 +597,20 @@ nires_calibration_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
+            "description": "Number of frames to take",
+            "option": "range",
+            "optionality": "required",
+            "type": "integer",
+            "ui_name": "Number of Frames",
+            "units": None
+        },
+        "det_coadd_number": {
+            "allowed": [
+                1,
+                100
+            ],
+            "default": 1,
             "description": "Number of coadd exposures to take",
             "option": "range",
             "optionality": "required",
@@ -548,7 +623,7 @@ nires_calibration_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
             "description": "Number of read pairs",
             "option": "range",
             "optionality": "required",
@@ -561,7 +636,7 @@ nires_calibration_template = {
                 1,
                 100
             ],
-            "default": None,
+            "default": 1,
             "description": "Applicable for Fowler sample mode only",
             "option": "range",
             "optionality": "optional",
@@ -574,7 +649,7 @@ nires_calibration_template = {
             "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
-            "optionality": "optional",
+            "optionality": "required",
             "type": "string",
             "units": None
         },
