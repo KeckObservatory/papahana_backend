@@ -108,11 +108,7 @@ def filled_sci_templates(template_list):
     return sci_templates
 
 
-def generate_kpf_ip(template_list, recipe_list):
-
-    rlist = []
-    for recipe_schema in recipe_list:
-        rlist.append(recipe_schema['metadata']['name'])
+def generate_kpf_ip(template_list, rlist):
 
     schema = {
         "metadata": {
@@ -136,7 +132,7 @@ def generate_kpf_ip(template_list, recipe_list):
 
     return schema
 
-def generate_inst_package(template_list, config, inst_list):
+def generate_inst_package(template_list, rlist, config, inst_list):
     print("...generating instrument package")
 
     # add templates

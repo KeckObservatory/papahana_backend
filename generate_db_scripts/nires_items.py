@@ -157,7 +157,9 @@ def filled_sci_templates(template_list):
     ]
     return sci_templates
 
-def generate_inst_package(template_list, config, inst_list):
+def generate_inst_package(template_list, rlist):
+
+
     schema = {
         "metadata": {
             "name": "nires_instrument_package",
@@ -173,6 +175,7 @@ def generate_inst_package(template_list, config, inst_list):
         "pointing_origins": ["NIRES", "SLIT_IMAG", "REF_SLIT", "REF", "IMAG", "MIRA"
         ],
         "template_list": utils.parse_templates_version(template_list),
+        "recipe_list": rlist,
         "event_table": None,
         "comment": "A NIRES Instrument Package"
     }

@@ -82,7 +82,7 @@ def filled_sci_templates(template_list):
     return sci_templates
 
 
-def generate_inst_package(template_list, config, inst_list):
+def generate_inst_package(template_list, rlist):
 
     schema = {
         "metadata": {
@@ -282,6 +282,10 @@ ssc_sci_dither_template = {
         }
     }
 }
+
+def generate_recipes():
+    recipes = {}
+    return recipes
 
 def generate_scripts():
     scripts = {}

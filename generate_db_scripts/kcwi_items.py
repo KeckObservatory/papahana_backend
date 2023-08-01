@@ -3,7 +3,7 @@ from copy import deepcopy
 from common_template import dither_schema
 
 
-def generate_inst_package(template_list, config, inst_list):
+def generate_inst_package(template_list, rlist):
     schema = {
         "metadata": {
             "name": "kcwi_instrument_package",
@@ -338,7 +338,6 @@ kcwi_ifu_sci_dither_template = {
 
 }
 
-
 kcwi_ifu_sci_stare_template = {
     "metadata": {
         "name": "kcwi_ifu_sci_stare",
@@ -522,6 +521,9 @@ kcwi_common_parameters_template = {
     "tcs_parameters": {}
 }
 
+def generate_recipes():
+    recipes = {}
+    return recipes
 
 def generate_scripts():
     scripts = {}

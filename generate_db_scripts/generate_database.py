@@ -4,6 +4,7 @@ import generate_tags as tags_utils
 import generate_containers as container_utils
 from generate_scripts import generate_scripts_collection
 from generate_observers import generate_observer_collection
+import pdb
 
 import importlib
 
@@ -87,7 +88,9 @@ if __name__=='__main__':
         
         try:
             instModule = importlib.import_module(f'{inst.lower()}_items')
-            ip = instModule.generate_inst_package(template_list=inst_specific_templates, config=config, inst_list=instList)
+            recipes = instModule.generate_recipes()
+            rlist = [ x['metadata']['name'] for key, x in recipes.items()] 
+            ip = instModule.generate_inst_package(template_list=inst_specific_templates, rlist=rlist)
         except ModuleNotFoundError as err:
             print(f'{err} for {inst}')
             continue
@@ -98,12 +101,12 @@ if __name__=='__main__':
         result = coll.insert_one(ip)
 
     # Create script collection
-    coll = papahana_util.config_collection('scriptCollect', conf=config)
+    coll_script = papahana_util.config_collection('scriptCollect', conf=config)
     coll_inst = papahana_util.config_collection('ipCollect', conf=config)
     coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
-    coll.drop()
+    coll_script.drop()
     for inst in instList:
-        generate_scripts_collection(coll, coll_inst, coll_tmp, inst)
+        generate_scripts_collection(coll_script, coll_inst, coll_tmp, inst)
 
     if args.generate_observers:
         obs_db = config['obs_db']
