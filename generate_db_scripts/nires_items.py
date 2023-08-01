@@ -800,16 +800,15 @@ nires_calibration_template = {
         },
         "target_info_object": {
             "default": "",
-            "description": "Value for the object keyword",
+            "description": "Notes",
             "option": "open",
             "optionality": "optional",
             "type": "string",
-            "ui_name": "Value for the object keyword",
+            "ui_name": "Notes",
             "units": None
         },
     }
 }
-
 
 def generate_scripts():
     scripts = {}
@@ -837,3 +836,224 @@ def generate_scripts():
     ]
     return scripts
 
+def generate_recipes():
+    recipes = {}
+
+
+    recipes["calibration_dark"] = {
+        "metadata": {
+                "name": "calibration_dark",
+                "ob_type": "calibration",
+                "ui_name": "Darks Calibration",
+                "instrument": "NIRES"
+        },
+        "recipe": [
+            "nires_calibration"
+        ],
+        "ob_data": {
+            "metadata": {
+                "comment": "",
+                "instrument": "NIRES",
+                "name": "NIRES Calibration Darks",
+                "ob_type": "Calibration",
+                "tags": [ "calibration", "darks"],
+                "version": "0.1.0"
+            },
+            "observations": [
+                {
+                    "metadata": {
+                        "instrument": "NIRES",
+                        "name": "nires_calibration",
+                        "script": "nires_calibration",
+                        "sequence_number": 1,
+                        "template_type": "calibration",
+                        "ui_name": "NIRES Calibration",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "det_cal_type": "Darks",
+                        "det_coadd_number": 1,
+                        "det_exp_number": 1,
+                        "det_exp_read_pairs": 1,
+                        "det_exp_time": 100,
+                        "det_num_fs": 1,
+                        "det_samp_mode": "MCDS"
+                    }
+                }
+            ],
+            "status": {
+                "current_exp_det1": 0,
+                "current_exp_det2": 0,
+                "current_seq": 0,
+                "current_step": 0,
+                "deleted": False,
+                "executions": [],
+                "state": 0
+            }
+}
+
+    }
+
+    recipes["calibration_arcs"] = {
+        "metadata": {
+                "name": "calibration_arcs",
+                "ob_type": "calibration",
+                "ui_name": "Arcs Calibration",
+                "instrument": "NIRES"
+        },
+        "recipe": [
+            "nires_calibration"
+        ],
+        "ob_data":  {
+            "metadata": {
+                "comment": "",
+                "instrument": "NIRES",
+                "name": "NIRES Calibration Arcs",
+                "ob_type": "Calibration",
+                "tags": ["calibration", "arcs"],
+                "version": "0.1.0"
+            },
+            "observations": [
+                {
+                "metadata": {
+                    "instrument": "NIRES",
+                    "name": "nires_calibration",
+                    "script": "nires_calibration",
+                    "sequence_number": 1,
+                    "template_type": "calibration",
+                    "ui_name": "NIRES Calibration",
+                    "version": "0.1.0"
+                },
+                "parameters": {
+                    "det_cal_type": "Arcs",
+                    "det_coadd_number": 1,
+                    "det_exp_number": 1,
+                    "det_exp_read_pairs": 1,
+                    "det_exp_time": 120,
+                    "det_num_fs": 1,
+                    "det_samp_mode": "MCDS"
+                }
+                }
+            ],
+            "status": {
+                "current_exp_det1": 0,
+                "current_exp_det2": 0,
+                "current_seq": 0,
+                "current_step": 0,
+                "deleted": False,
+                "executions": [],
+                "state": 0
+            }
+            }
+    }
+
+    recipes["calibration_flats"] = {
+        "metadata": {
+                "name": "calibration_arcs",
+                "ob_type": "calibration",
+                "ui_name": "Flats Calibration",
+                "instrument": "NIRES"
+        },
+        "recipe": [
+            "nires_calibration"
+        ],
+        "ob_data": {
+            "metadata": {
+                "comment": "",
+                "instrument": "NIRES",
+                "name": "NIRES Calibration Flats",
+                "ob_type": "Calibration",
+                "tags": [ "calibration", "flats" ],
+                "version": "0.1.0"
+            },
+            "observations": [
+                {
+                    "metadata": {
+                        "instrument": "NIRES",
+                        "name": "nires_calibration",
+                        "script": "nires_calibration",
+                        "sequence_number": 1,
+                        "template_type": "calibration",
+                        "ui_name": "NIRES Calibration",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "det_cal_type": "Flats",
+                        "det_coadd_number": 1,
+                        "det_exp_number": 1,
+                        "det_exp_read_pairs": 1,
+                        "det_exp_time": 100,
+                        "det_num_fs": 1,
+                        "det_samp_mode": "MCDS"
+                    }
+                }
+            ],
+            "status": {
+                "current_exp_det1": 0,
+                "current_exp_det2": 0,
+                "current_seq": 0,
+                "current_step": 0,
+                "deleted": False,
+                "executions": [],
+                "state": 0
+            }
+        }
+
+    }
+
+    recipes["calibration_flatsonof"] = {
+        "metadata": {
+                "name": "calibration_arcs",
+                "ob_type": "calibration",
+                "ui_name": "Flats On and Off Calibration",
+                "instrument": "NIRES"
+        },
+        "recipe": [
+            "nires_calibration"
+        ],
+        "ob_data": {
+            "metadata": {
+                "comment": "",
+                "instrument": "NIRES",
+                "name": "NIRES Calibrations Flats on/off",
+                "ob_type": "Calibration",
+                "tags": [ "calibration", "flats on/off" ],
+                "version": "0.1.0"
+            },
+            "observations": [
+                {
+                    "metadata": {
+                        "instrument": "NIRES",
+                        "name": "nires_calibration",
+                        "script": "nires_calibration",
+                        "sequence_number": 1,
+                        "template_type": "calibration",
+                        "ui_name": "NIRES Calibration",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "det_cal_type": "Flats On Flats Off",
+                        "det_coadd_number": 1,
+                        "det_exp_number": 1,
+                        "det_exp_read_pairs": 1,
+                        "det_exp_time": 100,
+                        "det_num_fs": 1,
+                        "det_samp_mode": "MCDS"
+                    }
+                }
+            ],
+            "status": {
+                "current_exp_det1": 0,
+                "current_exp_det2": 0,
+                "current_seq": 0,
+                "current_step": 0,
+                "deleted": False,
+                "executions": [],
+                "state": 0
+            }
+        }
+
+
+    }
+
+    return recipes
