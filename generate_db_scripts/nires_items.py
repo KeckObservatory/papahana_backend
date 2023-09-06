@@ -451,15 +451,24 @@ nires_dither_science_template = {
             "type": "float",
             "units": "arcseconds"
         },
-        "sequence_ndither": {
-            "ui_name": "Number of dither positions",
+        "sequence_dither_type": {
+            "ui_name": "Dither Type",
+            "option": "set",
+            "allowed": ["ABBA"],
+            "default": "ABBA",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
+        "sequence_dither_offset": {
+            "ui_name": "Dither Offset",
             "option": "range",
             "allowed": [0, 100],
             "default": None,
             "optionality": "required",
-            "type": "integer",
+            "units": "arcseconds",
+            "type": "float"
         },
-        "sequence_ditarray": dither_schema,
         "det_exp_test": {
             "default": False,
             "description": "True prevents exposures from being taken",
