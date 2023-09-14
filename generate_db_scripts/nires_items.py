@@ -794,7 +794,7 @@ nires_calibration_template = {
                 100
             ],
             "default": 1,
-            "description": "Applicable for Fowler sample mode only",
+            "description": "Applicable for Fowler sampling mode for spectrograph.",
             "option": "range",
             "optionality": "optional",
             "type": "integer",
@@ -803,6 +803,7 @@ nires_calibration_template = {
         },
         "det_samp_mode": {
             "ui_name": "Sampling Mode",
+            "description": "Note: imager mode always uses MCDS.",
             "option": "set",
             "allowed": ["MCDS", "PCDS", "UTR", "Single"],
             "default": "MCDS",
