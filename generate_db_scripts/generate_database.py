@@ -28,9 +28,9 @@ if __name__=='__main__':
     # print(f"Using DataBase: {ob_db}")
     # papahana_util.drop_db(ob_db, conf=config)
 
-    # # generate templates
-    # print("...generating templates")
-    # template_list = generate_template.generate_templates(config)
+    # generate templates
+    print("...generating templates")
+    template_list = generate_template.generate_templates(config)
 
     # print("...generating recipes")
     # coll = papahana_util.config_collection('recipeCollect', conf=config)
@@ -100,14 +100,14 @@ if __name__=='__main__':
 
     #     result = coll.insert_one(ip)
 
-    # Create script collection
-    print('...creating scripts')
-    coll_script = papahana_util.config_collection('scriptCollect', conf=config)
-    coll_inst = papahana_util.config_collection('ipCollect', conf=config)
-    coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
-    coll_script.drop()
-    for inst in instList:
-        generate_scripts_collection(coll_script, coll_inst, coll_tmp, inst)
+    # # Create script collection
+    # print('...creating scripts')
+    # coll_script = papahana_util.config_collection('scriptCollect', conf=config)
+    # coll_inst = papahana_util.config_collection('ipCollect', conf=config)
+    # coll_tmp = papahana_util.config_collection('templateCollect', conf=config)
+    # coll_script.drop()
+    # for inst in instList:
+    #     generate_scripts_collection(coll_script, coll_inst, coll_tmp, inst)
 
     # if args.generate_observers:
     #     obs_db = config['obs_db']

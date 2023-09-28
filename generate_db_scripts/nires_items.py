@@ -811,6 +811,15 @@ nires_calibration_template = {
             "type": "string",
             "units": None
         },
+        "det_type_mode": {
+            "ui_name": "Spectrograph, Imager, or Both",
+            "option": "set",
+            "allowed": ["Spectrograph", "Imager", "Both"],
+            "default": "Spectrograph",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
         "target_info_object": {
             "default": "",
             "description": "Notes",
@@ -820,6 +829,7 @@ nires_calibration_template = {
             "ui_name": "Notes",
             "units": None
         },
+
     }
 }
 
