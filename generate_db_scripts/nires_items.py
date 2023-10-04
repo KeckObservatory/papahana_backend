@@ -454,7 +454,7 @@ nires_dither_science_template = {
         "sequence_dither_type": {
             "ui_name": "Dither Type",
             "option": "set",
-            "allowed": ["ABBA", "AB", "sp2", "sp3", "sp5", "sp7"],
+            "allowed": ["ABBA", "AB", "sp2", "sp3", "sp5", "sp7", "box4", "box5", "box8", "box9", "bxy4", "bxy5", "bxy8", "bxy9"],
             "default": "ABBA",
             "optionality": "required",
             "type": "string",
