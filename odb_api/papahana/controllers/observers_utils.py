@@ -3,6 +3,19 @@ from flask import g
 from papahana.util import config_collection
 from papahana.controllers import controller_helper as utils
 
+def chk_observer_sandbox_association(keck_id, sem_id):
+
+    sandbox_sem_id = f'{keck_id}_D000':
+    coll = config_collection('observerCollect', db_name='obs_db')
+    results = coll.find_one({'keck_id': keck_id})
+    if not sandbox_sem_id in results['associations']:
+        _ = coll.update_one({"keck_id": keck_id},
+                            {"$addToSet": {"associations": sem_id}})
+
+    if sem_id == sandbox_sem_id:
+        return True
+    return False
+        
 
 def add_association(keck_id, sem_id_list):
     coll = config_collection('observerCollect', db_name='obs_db')
@@ -49,6 +62,10 @@ def is_semid_associated(sem_id):
 
         except (KeyError, IndexError):
             return False
+
+    # check if sandbox association exists, if not then add it
+    if chk_observer_sandbox_association(keck_id, sem_id):
+        return True
 
     # check the schedule
     if chk_add_assoc(keck_id, sem_id, utils.get_sched_sem_ids):
