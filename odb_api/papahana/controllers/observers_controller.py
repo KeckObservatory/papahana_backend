@@ -107,7 +107,6 @@ def observer_semid():
         sem_ids = utils.get_fields_by_query(query, fields, 'obCollect')
 
         if sem_ids:
-            results['associations'] = []
             for sem_id in sem_ids:
                 results['associations'].append(sem_id['metadata']['sem_id'])
 
