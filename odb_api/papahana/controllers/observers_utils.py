@@ -10,7 +10,7 @@ def chk_observer_sandbox_association(keck_id, sem_id):
     results = coll.find_one({'keck_id': keck_id})
     if not sandbox_sem_id in results['associations']:
         _ = coll.update_one({"keck_id": keck_id},
-                            {"$addToSet": {"associations": sem_id}})
+                            {"$addToSet": {"associations": sandbox_sem_id}})
 
     if sem_id == sandbox_sem_id:
         return True
