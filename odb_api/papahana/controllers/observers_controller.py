@@ -121,6 +121,11 @@ def observer_semid():
     proposal_sem_ids = utils.get_proposal_ids(keck_id)
     results['associations'] += obs_utils.add_association(keck_id, proposal_sem_ids)
 
+    # add sandbox association
+    sandbox_sem_id = f'{keck_id}B_D000'
+    if not sandbox_sem_id in results['associations']:
+        results['associations'].append(sandbox_sem_id)
+
     results['associations'] = list(set(results['associations']))
 
     # don't return admin status with the results

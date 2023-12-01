@@ -5,7 +5,7 @@ from papahana.controllers import controller_helper as utils
 
 def chk_observer_sandbox_association(keck_id, sem_id):
 
-    sandbox_sem_id = f'{keck_id}_D000'
+    sandbox_sem_id = f'{keck_id}B_D000'
     coll = config_collection('observerCollect', db_name='obs_db')
     results = coll.find_one({'keck_id': keck_id})
     if not sandbox_sem_id in results['associations']:
