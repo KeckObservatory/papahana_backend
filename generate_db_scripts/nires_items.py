@@ -871,6 +871,39 @@ def generate_scripts():
 def generate_recipes():
     recipes = {}
 
+    recipes["blank_science_ob"] = {
+        "metadata": {
+                "name": "blank_science_ob",
+                "ob_type": "science",
+                "ui_name": "Blank Science OB",
+                "instrument": "NIRES"
+        },
+        "recipe": [
+            "nires_science"
+        ],
+        "ob_data": {
+            "metadata": {
+                "comment": "",
+                "instrument": "NIRES",
+                "name": "NIRES Science OB",
+                "ob_type": "science",
+                "tags": [ "science"],
+                "version": "0.1.0"
+            },
+            "observations": [ ],
+            "status": {
+                "current_exp_det1": 0,
+                "current_exp_det2": 0,
+                "current_seq": 0,
+                "current_step": 0,
+                "deleted": False,
+                "executions": [],
+                "state": 0
+            }
+}
+
+    }
+
 
     recipes["calibration_dark"] = {
         "metadata": {
