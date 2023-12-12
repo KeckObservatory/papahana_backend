@@ -328,8 +328,8 @@ nires_stare_science_template = {
             "ui_name": "Test Mode",
             "units": None
         },
-        "det_obj_type": {
-            "ui_name": "Object Type",
+        "det_obs_type": {
+            "ui_name": "Observation Type",
             "option": "set",
             "allowed": ["object", "telluric"],
             "default": "object",
@@ -487,8 +487,8 @@ nires_dither_science_template = {
             "ui_name": "Test Mode",
             "units": None
         },
-        "det_obj_type": {
-            "ui_name": "Object Type",
+        "det_obs_type": {
+            "ui_name": "Observation Type",
             "option": "set",
             "allowed": ["object", "telluric"],
             "default": "object",
@@ -619,8 +619,8 @@ nires_drift_scan_science_template = {
             "type": "string",
             "units": None
         },
-        "det_obj_type": {
-            "ui_name": "Object Type",
+        "det_obs_type": {
+            "ui_name": "Observation Type",
             "option": "set",
             "allowed": ["object", "telluric"],
             "default": "object",
