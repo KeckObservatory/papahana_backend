@@ -327,7 +327,16 @@ nires_stare_science_template = {
             "type": "boolean",
             "ui_name": "Test Mode",
             "units": None
-        }
+        },
+        "det_obj_type": {
+            "ui_name": "Object Type",
+            "option": "set",
+            "allowed": ["object", "telluric"],
+            "default": "object",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
     },
 }
 
@@ -477,7 +486,16 @@ nires_dither_science_template = {
             "type": "boolean",
             "ui_name": "Test Mode",
             "units": None
-        }
+        },
+        "det_obj_type": {
+            "ui_name": "Object Type",
+            "option": "set",
+            "allowed": ["object", "telluric"],
+            "default": "object",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
     },
 }
 
@@ -597,6 +615,15 @@ nires_drift_scan_science_template = {
             "option": "set",
             "allowed": ["Spectrograph", "Imager", "Both"],
             "default": "Spectrograph",
+            "optionality": "required",
+            "type": "string",
+            "units": None
+        },
+        "det_obj_type": {
+            "ui_name": "Object Type",
+            "option": "set",
+            "allowed": ["object", "telluric"],
+            "default": "object",
             "optionality": "required",
             "type": "string",
             "units": None
@@ -887,7 +914,7 @@ def generate_recipes():
                 "instrument": "NIRES",
                 "name": "NIRES Science OB",
                 "ob_type": "science",
-                "tags": [ "science"],
+                "tags": [ "science", "nires"],
                 "version": "0.1.0"
             },
             "observations": [ ],
