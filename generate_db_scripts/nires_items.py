@@ -105,8 +105,6 @@ def filled_sci_templates(template_list):
             "det_num_fs": random_utils.randInt(0, 100),
             "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
             "det_num_fs": random_utils.randInt(0, 100),
-            "det_coord_north_off": random_utils.randFloat(2000),
-            "det_coord_east_off": random_utils.randFloat(2000)
         }
     },
     {
@@ -124,8 +122,6 @@ def filled_sci_templates(template_list):
             "det_exp_number": random_utils.randInt(0, 100),
             "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
             "det_num_fs": random_utils.randInt(0, 100),
-            "det_coord_north_off": random_utils.randFloat(2000),
-            "det_coord_east_off": random_utils.randFloat(2000),
             "det_type_mode": np.random.choice(["Spectrograph", "Imager", "Both"]),
         }
     },
@@ -144,8 +140,6 @@ def filled_sci_templates(template_list):
             "det_exp_number": random_utils.randInt(0, 100),
             "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
             "det_num_fs": random_utils.randInt(0, 100),
-            "det_coord_north_off": random_utils.randFloat(2000),
-            "det_coord_east_off": random_utils.randFloat(2000),
             "det_type_mode": np.random.choice(["Spectrograph", "Imager", "Both"]),
             "det_drift_length": random_utils.randFloat(100)
             }
@@ -276,24 +270,6 @@ nires_stare_science_template = {
             "ui_name": "Number of MCDS (Fowler) Samples",
             "units": None
         },
-        "det_coord_north_off": {
-            "ui_name": "North offset",
-            "option": "range",
-            "allowed": [0.0, 2000.0],
-            "default": 0,
-            "optionality": "optional",
-            "type": "float",
-            "units": "arcseconds"
-        },
-        "det_coord_east_off": {
-            "ui_name": "East offset",
-            "option": "range",
-            "allowed": [0.0, 2000.0],
-            "default": 0,
-            "optionality": "optional",
-            "type": "float",
-            "units": "arcseconds"
-        },
         "det_type_mode": {
             "ui_name": "Spectrograph, Imager, or Both",
             "option": "set",
@@ -412,24 +388,6 @@ nires_dither_science_template = {
             "optionality": "required",
             "type": "string",
             "units": None
-        },
-        "det_coord_north_off": {
-            "ui_name": "North offset",
-            "option": "range",
-            "allowed": [0.0, 2000.0],
-            "default": 0,
-            "optionality": "optional",
-            "type": "float",
-            "units": "arcseconds"
-        },
-        "det_coord_east_off": {
-            "ui_name": "East offset",
-            "option": "range",
-            "allowed": [0.0, 2000.0],
-            "default": 0,
-            "optionality": "optional",
-            "type": "float",
-            "units": "arcseconds"
         },
         "sequence_dither_type": {
             "ui_name": "Dither Type",
