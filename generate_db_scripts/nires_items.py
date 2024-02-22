@@ -103,7 +103,6 @@ def filled_sci_templates(template_list):
             "det_exp_time": random_utils.randFloat(3600),
             "det_exp_number": random_utils.randInt(0, 100),
             "det_num_fs": random_utils.randInt(0, 100),
-            "det_exp_read_pairs": random_utils.randInt(0, 100),
             "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
             "det_num_fs": random_utils.randInt(0, 100),
             "det_coord_north_off": random_utils.randFloat(2000),
@@ -123,7 +122,6 @@ def filled_sci_templates(template_list):
             "target_info_object": random_utils.randString(8),
             "det_exp_time": random_utils.randFloat(3600),
             "det_exp_number": random_utils.randInt(0, 100),
-            "det_exp_read_pairs": random_utils.randInt(0, 100),
             "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
             "det_num_fs": random_utils.randInt(0, 100),
             "det_coord_north_off": random_utils.randFloat(2000),
@@ -144,7 +142,6 @@ def filled_sci_templates(template_list):
             "target_info_object": random_utils.randString(8),
             "det_exp_time": random_utils.randFloat(3600),
             "det_exp_number": random_utils.randInt(0, 100),
-            "det_exp_read_pairs": random_utils.randInt(0, 100),
             "det_samp_mode": np.random.choice(["MCDS", "PCDS", "UTR", "Single"]),
             "det_num_fs": random_utils.randInt(0, 100),
             "det_coord_north_off": random_utils.randFloat(2000),
@@ -220,7 +217,7 @@ nires_stare_science_template = {
         },
         "det_exp_time": {
             "allowed": [
-                0.1,
+                2, 
                 3600
             ],
             "default": None,
@@ -234,7 +231,7 @@ nires_stare_science_template = {
         "det_exp_number": {
             "allowed": [
                 1,
-                100
+                1000
             ],
             "default": 1,
             "description": "Number of frames to take",
@@ -247,7 +244,7 @@ nires_stare_science_template = {
         "det_coadd_number": {
             "allowed": [
                 1,
-                100
+                50 
             ],
             "default": 1,
             "description": "Number of coadd exposures to take",
@@ -257,23 +254,10 @@ nires_stare_science_template = {
             "ui_name": "Number of Coadd Exposures",
             "units": None
         },
-        "det_exp_read_pairs": {
-            "allowed": [
-                1,
-                100
-            ],
-            "default": None,
-            "description": "Number of read pairs",
-            "option": "range",
-            "optionality": "required",
-            "type": "integer",
-            "ui_name": "Number of Read Pairs",
-            "units": None
-        },
         "det_samp_mode": {
             "ui_name": "Sampling Mode",
             "option": "set",
-            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "allowed": ["MCDS"],
             "default": "MCDS",
             "optionality": "optional",
             "type": "string",
@@ -282,7 +266,7 @@ nires_stare_science_template = {
         "det_num_fs": {
             "allowed": [
                 1,
-                100
+                64 
             ],
             "default": None,
             "description": "Applicable for Fowler sample mode only",
@@ -331,8 +315,8 @@ nires_stare_science_template = {
         "det_obs_type": {
             "ui_name": "Observation Type",
             "option": "set",
-            "allowed": ["object", "telluric"],
-            "default": "object",
+            "allowed": ["Object", "telluric"],
+            "default": "Object",
             "optionality": "required",
             "type": "string",
             "units": None
@@ -370,7 +354,7 @@ nires_dither_science_template = {
         },
         "det_exp_time": {
             "allowed": [
-                0.1,
+                2,
                 3600
             ],
             "default": None,
@@ -384,7 +368,7 @@ nires_dither_science_template = {
         "det_num_fs": {
             "allowed": [
                 1,
-                100
+                64 
             ],
             "default": None,
             "description": "Applicable for Fowler sample mode only",
@@ -397,7 +381,7 @@ nires_dither_science_template = {
         "det_exp_number": {
             "allowed": [
                 1,
-                100
+                1000
             ],
             "default": 1,
             "description": "Number of frames to take",
@@ -420,23 +404,10 @@ nires_dither_science_template = {
             "ui_name": "Number of Coadd Exposures",
             "units": None
         },
-        "det_exp_read_pairs": {
-            "allowed": [
-                1,
-                100
-            ],
-            "default": None,
-            "description": "Number of read pairs",
-            "option": "range",
-            "optionality": "required",
-            "type": "integer",
-            "ui_name": "Number of Read Pairs",
-            "units": None
-        },
         "det_samp_mode": {
             "ui_name": "Sampling Mode",
             "option": "set",
-            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "allowed": ["MCDS"],
             "default": "MCDS",
             "optionality": "required",
             "type": "string",
@@ -490,8 +461,8 @@ nires_dither_science_template = {
         "det_obs_type": {
             "ui_name": "Observation Type",
             "option": "set",
-            "allowed": ["object", "telluric"],
-            "default": "object",
+            "allowed": ["Object", "telluric"],
+            "default": "Object",
             "optionality": "required",
             "type": "string",
             "units": None
@@ -534,7 +505,7 @@ nires_drift_scan_science_template = {
         "det_exp_number": {
             "allowed": [
                 1,
-                100
+                1000
             ],
             "default": 1,
             "description": "Number of frames to take",
@@ -557,23 +528,10 @@ nires_drift_scan_science_template = {
             "ui_name": "Number of Coadd Exposures",
             "units": None
         },
-        "det_exp_read_pairs": {
-            "allowed": [
-                1,
-                100
-            ],
-            "default": None,
-            "description": "Number of read pairs",
-            "option": "range",
-            "optionality": "required",
-            "type": "integer",
-            "ui_name": "Number of Read Pairs",
-            "units": None
-        },
         "det_samp_mode": {
             "ui_name": "Sampling Mode",
             "option": "set",
-            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "allowed": ["MCDS"],
             "default": "MCDS",
             "optionality": "required",
             "type": "string",
@@ -582,7 +540,7 @@ nires_drift_scan_science_template = {
         "det_num_fs": {
             "allowed": [
                 1,
-                100
+                64 
             ],
             "default": None,
             "description": "Applicable for Fowler sample mode only",
@@ -622,8 +580,8 @@ nires_drift_scan_science_template = {
         "det_obs_type": {
             "ui_name": "Observation Type",
             "option": "set",
-            "allowed": ["object", "telluric"],
-            "default": "object",
+            "allowed": ["Object", "telluric"],
+            "default": "Object",
             "optionality": "required",
             "type": "string",
             "units": None
@@ -779,7 +737,7 @@ nires_calibration_template = {
         "det_exp_number": {
             "allowed": [
                 1,
-                100
+                1000
             ],
             "default": 1,
             "description": "Number of frames to take",
@@ -802,19 +760,6 @@ nires_calibration_template = {
             "ui_name": "Number of Coadd Exposures",
             "units": None
         },
-        "det_exp_read_pairs": {
-            "allowed": [
-                1,
-                100
-            ],
-            "default": 1,
-            "description": "Number of read pairs",
-            "option": "range",
-            "optionality": "required",
-            "type": "integer",
-            "ui_name": "Number of Read Pairs",
-            "units": None
-        },
         "det_num_fs": {
             "allowed": [
                 1,
@@ -832,7 +777,7 @@ nires_calibration_template = {
             "ui_name": "Sampling Mode",
             "description": "Note: imager mode always uses MCDS.",
             "option": "set",
-            "allowed": ["MCDS", "PCDS", "UTR", "Single"],
+            "allowed": ["MCDS"],
             "default": "MCDS",
             "optionality": "required",
             "type": "string",
@@ -966,7 +911,6 @@ def generate_recipes():
                         "det_cal_type": "Darks",
                         "det_coadd_number": 1,
                         "det_exp_number": 1,
-                        "det_exp_read_pairs": 1,
                         "det_exp_time": 100,
                         "det_num_fs": 1,
                         "det_samp_mode": "MCDS"
@@ -1020,7 +964,6 @@ def generate_recipes():
                     "det_cal_type": "Arcs",
                     "det_coadd_number": 1,
                     "det_exp_number": 1,
-                    "det_exp_read_pairs": 1,
                     "det_exp_time": 120,
                     "det_num_fs": 1,
                     "det_samp_mode": "MCDS"
@@ -1073,7 +1016,6 @@ def generate_recipes():
                         "det_cal_type": "Flats",
                         "det_coadd_number": 1,
                         "det_exp_number": 1,
-                        "det_exp_read_pairs": 1,
                         "det_exp_time": 100,
                         "det_num_fs": 1,
                         "det_samp_mode": "MCDS"
@@ -1127,7 +1069,6 @@ def generate_recipes():
                         "det_cal_type": "Flats On Flats Off",
                         "det_coadd_number": 1,
                         "det_exp_number": 1,
-                        "det_exp_read_pairs": 1,
                         "det_exp_time": 100,
                         "det_num_fs": 1,
                         "det_samp_mode": "MCDS"
