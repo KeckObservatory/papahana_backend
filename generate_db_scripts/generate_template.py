@@ -103,7 +103,7 @@ target_base_parameters = OrderedDict([
             {'target_info_mag': {
                 "ui_name": "Magnitude",
                 "option": "range",
-                "allowed": ['-27.0', '50.0'],
+                "allowed": [-27.0, 50.0],
                 "default": None,
                 "optionality": "required",
                 "type": "float",

@@ -821,6 +821,22 @@ def generate_recipes():
                 "version": "0.1.0"
             },
             "observations": [ ],
+            "acquisition": {
+                "metadata": {
+                "instrument": "NIRES",
+                "name": "nires_acq",
+                "script": "nires_acq",
+                "sequence_number": 0,
+                "template_type": "acquisition",
+                "ui_name": "NIRES acquisition",
+                "version": "0.1.0"
+                },
+                "parameters": {
+                "guider1_cfg_mode": "operator",
+                "rot_cfg_mode": "PA",
+                "rot_cfg_wrap": "auto"
+                }
+            },
             "status": {
                 "current_exp_det1": 0,
                 "current_exp_det2": 0,
