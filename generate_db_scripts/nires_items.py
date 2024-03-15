@@ -887,7 +887,8 @@ def generate_recipes():
                         "det_exp_number": 1,
                         "det_exp_time": 100,
                         "det_num_fs": 1,
-                        "det_samp_mode": "MCDS"
+                        "det_samp_mode": "MCDS",
+                        "det_type_mode": "Spectrograph",
                     }
                 }
             ],
@@ -940,7 +941,8 @@ def generate_recipes():
                     "det_exp_number": 1,
                     "det_exp_time": 120,
                     "det_num_fs": 1,
-                    "det_samp_mode": "MCDS"
+                    "det_samp_mode": "MCDS",
+                    "det_type_mode": "Spectrograph",
                 }
                 }
             ],
@@ -992,7 +994,8 @@ def generate_recipes():
                         "det_exp_number": 1,
                         "det_exp_time": 100,
                         "det_num_fs": 1,
-                        "det_samp_mode": "MCDS"
+                        "det_samp_mode": "MCDS",
+                        "det_type_mode": "Spectrograph",
                     }
                 }
             ],
@@ -1045,7 +1048,8 @@ def generate_recipes():
                         "det_exp_number": 1,
                         "det_exp_time": 100,
                         "det_num_fs": 1,
-                        "det_samp_mode": "MCDS"
+                        "det_samp_mode": "MCDS",
+                        "det_type_mode": "Spectrograph",
                     }
                 }
             ],
