@@ -895,7 +895,8 @@ def generate_recipes():
             "ob_type": "Science",
             "priority": 0,
             "tags": ["science", "nires"],
-            "version": "0.1.0"
+            "version": "0.1.0",
+            "ui_name": "AABA Science OB",
         },
         "observations": [
             {
@@ -989,6 +990,7 @@ def generate_recipes():
             "comment": "",
             "instrument": "NIRES",
             "name": "AABA Telluric Recipe",
+            "ui_name": "AABA Telluric OB",
             "ob_type": "Science",
             "priority": 0,
             "tags": ["nires", "science"],
