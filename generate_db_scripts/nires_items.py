@@ -857,15 +857,15 @@ def generate_recipes():
 
     }
 
-    recipes["ABBA_dither"] = {
+    recipes["AABA_dither"] = {
         "metadata": {
-            "name": "blank_abba_science_ob",
+            "name": "blank_aaba_science_ob",
             "ob_type": "science",
-            "ui_name": "Blank ABBA Science OB",
+            "ui_name": "Blank AABA Science OB",
             "instrument": "NIRES"
         },
         "recipe": [
-            "nires_abba_science"
+            "nires_aaba_science"
         ],
         "ob_data": {
             "acquisition": {
@@ -906,7 +906,7 @@ def generate_recipes():
                 "priority": 0,
                 "tags": ["science", "nires"],
                 "version": "0.1.0",
-                "ui_name": "ABBA Science OB",
+                "ui_name": "AABA Science OB",
             },
             "observations": [
                 {
@@ -949,18 +949,6 @@ def generate_recipes():
                     "version": "0.1.0"
                 },
                 "parameters": {
-                    "rot_cfg_pa": 0,
-                    "target_coord_dec": "02:35:31.8",
-                    "target_coord_epoch": 2000,
-                    "target_coord_frame": "FK5",
-                    "target_coord_ra": "10:47:24.2",
-                    "target_info_name": "HIP 52774",
-                    "target_magnitude": [
-                        {
-                            "target_info_band": "V",
-                            "target_info_mag": 12.28
-                        }
-                    ]
                 }
             }
         }
@@ -968,13 +956,13 @@ def generate_recipes():
 
     recipes["ABBA_telluric"] = {
         "metadata": {
-            "name": "blank_abba_telluric_ob",
+            "name": "blank_aaba_telluric_ob",
             "ob_type": "science",
-            "ui_name": "Blank ABBA Telluric OB",
+            "ui_name": "Blank AABA Telluric OB",
             "instrument": "NIRES"
         },
         "recipe": [
-            "nires_abba_science"
+            "nires_aaba_science"
         ],
         "ob_data": {
         "acquisition": {
@@ -1010,14 +998,36 @@ def generate_recipes():
         "metadata": {
             "comment": "",
             "instrument": "NIRES",
-            "name": "ABBA Telluric Recipe",
-            "ui_name": "ABBA Telluric OB",
+            "name": "AABA Telluric Recipe",
+            "ui_name": "AABA Telluric OB",
             "ob_type": "Science",
             "priority": 0,
             "tags": ["nires", "science"],
             "version": "0.1.0"
         },
         "observations": [
+            {
+                "metadata": {
+                    "instrument": "NIRES",
+                    "name": "nires_dither_sci",
+                    "script": "nires_dither_sci",
+                    "sequence_number": 1,
+                    "template_type": "science",
+                    "ui_name": "NIRES dither science",
+                    "version": "0.1.0"
+                },
+                "parameters": {
+                    "det_coadd_number": 1,
+                    "det_exp_number": 1,
+                    "det_exp_time": 10,
+                    "det_num_fs": 1,
+                    "det_obs_type": "telluric",
+                    "det_samp_mode": "MCDS",
+                    "det_type_mode": "Spectrograph",
+                    "sequence_dither_offset": 10,
+                    "sequence_dither_type": "ABBA"
+                }
+            }
         ],
         "status": {
             "current_exp_det1": 0,
@@ -1036,18 +1046,6 @@ def generate_recipes():
                 "version": "0.1.0"
             },
             "parameters": {
-                "rot_cfg_pa": 0,
-                "target_coord_dec": "01:50:45.5",
-                "target_coord_epoch": 2000,
-                "target_coord_frame": "FK5",
-                "target_coord_ra": "10:00:03.68",
-                "target_info_name": "HIP 49020",
-                "target_magnitude": [
-                    {
-                        "target_info_band": "V",
-                        "target_info_mag": 10.35
-                    }
-                ]
             }
         }
     }
@@ -1073,6 +1071,26 @@ def generate_recipes():
                 "version": "0.1.0"
             },
             "observations": [
+                {
+                    "metadata": {
+                        "instrument": "NIRES",
+                        "name": "nires_calibration",
+                        "script": "nires_calibration",
+                        "sequence_number": 1,
+                        "template_type": "calibration",
+                        "ui_name": "NIRES Calibration",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "det_cal_type": "Darks",
+                        "det_coadd_number": 1,
+                        "det_exp_number": 1,
+                        "det_exp_time": 100,
+                        "det_num_fs": 1,
+                        "det_samp_mode": "MCDS",
+                        "det_type_mode": "Spectrograph",
+                    }
+                }
             ],
             "status": {
                 "current_exp_det1": 0,
