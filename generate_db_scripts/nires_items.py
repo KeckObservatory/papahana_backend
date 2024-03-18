@@ -857,15 +857,15 @@ def generate_recipes():
 
     }
 
-    recipes["AABA_dither"] = {
+    recipes["ABBA_dither"] = {
         "metadata": {
-            "name": "blank_aaba_science_ob",
+            "name": "blank_abba_science_ob",
             "ob_type": "science",
-            "ui_name": "Blank AABA Science OB",
+            "ui_name": "Blank ABBA Science OB",
             "instrument": "NIRES"
         },
         "recipe": [
-            "nires_aaba_science"
+            "nires_abba_science"
         ],
         "ob_data": {
             "acquisition": {
@@ -906,7 +906,7 @@ def generate_recipes():
                 "priority": 0,
                 "tags": ["science", "nires"],
                 "version": "0.1.0",
-                "ui_name": "AABA Science OB",
+                "ui_name": "ABBA Science OB",
             },
             "observations": [
                 {
@@ -966,15 +966,15 @@ def generate_recipes():
         }
     }
 
-    recipes["AABA_telluric"] = {
+    recipes["ABBA_telluric"] = {
         "metadata": {
-            "name": "blank_aaba_telluric_ob",
+            "name": "blank_abba_telluric_ob",
             "ob_type": "science",
-            "ui_name": "Blank AABA Telluric OB",
+            "ui_name": "Blank ABBA Telluric OB",
             "instrument": "NIRES"
         },
         "recipe": [
-            "nires_aaba_science"
+            "nires_abba_science"
         ],
         "ob_data": {
         "acquisition": {
@@ -1010,36 +1010,14 @@ def generate_recipes():
         "metadata": {
             "comment": "",
             "instrument": "NIRES",
-            "name": "AABA Telluric Recipe",
-            "ui_name": "AABA Telluric OB",
+            "name": "ABBA Telluric Recipe",
+            "ui_name": "ABBA Telluric OB",
             "ob_type": "Science",
             "priority": 0,
             "tags": ["nires", "science"],
             "version": "0.1.0"
         },
         "observations": [
-            {
-                "metadata": {
-                    "instrument": "NIRES",
-                    "name": "nires_dither_sci",
-                    "script": "nires_dither_sci",
-                    "sequence_number": 1,
-                    "template_type": "science",
-                    "ui_name": "NIRES dither science",
-                    "version": "0.1.0"
-                },
-                "parameters": {
-                    "det_coadd_number": 1,
-                    "det_exp_number": 1,
-                    "det_exp_time": 10,
-                    "det_num_fs": 1,
-                    "det_obs_type": "telluric",
-                    "det_samp_mode": "MCDS",
-                    "det_type_mode": "Spectrograph",
-                    "sequence_dither_offset": 10,
-                    "sequence_dither_type": "ABBA"
-                }
-            }
         ],
         "status": {
             "current_exp_det1": 0,
@@ -1095,26 +1073,6 @@ def generate_recipes():
                 "version": "0.1.0"
             },
             "observations": [
-                {
-                    "metadata": {
-                        "instrument": "NIRES",
-                        "name": "nires_calibration",
-                        "script": "nires_calibration",
-                        "sequence_number": 1,
-                        "template_type": "calibration",
-                        "ui_name": "NIRES Calibration",
-                        "version": "0.1.0"
-                    },
-                    "parameters": {
-                        "det_cal_type": "Darks",
-                        "det_coadd_number": 1,
-                        "det_exp_number": 1,
-                        "det_exp_time": 100,
-                        "det_num_fs": 1,
-                        "det_samp_mode": "MCDS",
-                        "det_type_mode": "Spectrograph",
-                    }
-                }
             ],
             "status": {
                 "current_exp_det1": 0,
