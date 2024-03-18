@@ -941,16 +941,6 @@ def generate_recipes():
                 "executions": [],
                 "state": 0
             },
-            "target": {
-                "metadata": {
-                    "name": "sidereal_target",
-                    "template_type": "target",
-                    "ui_name": "Sidereal Target",
-                    "version": "0.1.0"
-                },
-                "parameters": {
-                }
-            }
         }
     }
 
@@ -1038,16 +1028,6 @@ def generate_recipes():
             "executions": [],
             "state": 0
         },
-        "target": {
-            "metadata": {
-                "name": "sidereal_target",
-                "template_type": "target",
-                "ui_name": "Sidereal Target",
-                "version": "0.1.0"
-            },
-            "parameters": {
-            }
-        }
     }
     }
 
