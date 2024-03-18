@@ -4,6 +4,7 @@ import generate_random_utils as random_utils
 import generate_targets as ge
 import numpy as np
 
+
 def filled_common_parameters():
 
     nires_common_parameters_template = {
@@ -23,7 +24,8 @@ def filled_common_parameters():
         "tcs_parameters": {
         }
     }
-    return nires_common_parameters_template 
+    return nires_common_parameters_template
+
 
 def filled_cal_templates():
     cal_templates = [
@@ -62,8 +64,9 @@ def filled_cal_templates():
     ]
     return cal_templates
 
+
 def filled_acq_templates():
-    acq_templates = [ {
+    acq_templates = [{
         "metadata": {
             "instrument": "NIRES",
             "name": "nires_acq",
@@ -74,7 +77,7 @@ def filled_acq_templates():
             "sequence_number": 0
         },
         "parameters": {
-            "tcs_coord_po": np.random.choice( [ "NIRES", "SLIT_IMAG", "REF_SLIT", "IMAG", "MIRA", "REF" ]),
+            "tcs_coord_po": np.random.choice(["NIRES", "SLIT_IMAG", "REF_SLIT", "IMAG", "MIRA", "REF"]),
             "tcs_coord_raoff": random_utils.randInt(0, 100),
             "tcs_coord_decoff": random_utils.randInt(0, 100),
             "rot_cfg_wrap": np.random.choice(['south', 'north', 'auto']),
@@ -88,8 +91,9 @@ def filled_acq_templates():
     ]
     return acq_templates
 
+
 def filled_sci_templates(template_list):
-    sci_templates = [ {
+    sci_templates = [{
         "metadata": {
             "instrument": "NIRES",
             "name": "nires_stare_sci",
@@ -107,7 +111,7 @@ def filled_sci_templates(template_list):
             "det_num_fs": random_utils.randInt(0, 100),
         }
     },
-    {
+        {
         "metadata": {
             "instrument": "NIRES",
             "name": "nires_dither_sci",
@@ -125,7 +129,7 @@ def filled_sci_templates(template_list):
             "det_type_mode": np.random.choice(["Spectrograph", "Imager", "Both"]),
         }
     },
-    {
+        {
         "metadata": {
             "instrument": "NIRES",
             "name": "nires_drift_scan_sci",
@@ -142,14 +146,14 @@ def filled_sci_templates(template_list):
             "det_num_fs": random_utils.randInt(0, 100),
             "det_type_mode": np.random.choice(["Spectrograph", "Imager", "Both"]),
             "det_drift_length": random_utils.randFloat(100)
-            }
+        }
     }
 
     ]
     return sci_templates
 
-def generate_inst_package(template_list, rlist):
 
+def generate_inst_package(template_list, rlist):
 
     schema = {
         "metadata": {
@@ -164,13 +168,14 @@ def generate_inst_package(template_list, rlist):
         "configurable_elements": [
         ],
         "pointing_origins": ["NIRES", "SLIT_IMAG", "REF_SLIT", "REF", "IMAG", "MIRA"
-        ],
+                             ],
         "template_list": utils.parse_templates_version(template_list),
         "recipe_list": rlist,
         "event_table": None,
         "comment": "A NIRES Instrument Package"
     }
     return schema
+
 
 nires_common_parameters_template = {
     "metadata": {
@@ -211,7 +216,7 @@ nires_stare_science_template = {
         },
         "det_exp_time": {
             "allowed": [
-                2, 
+                2,
                 3600
             ],
             "default": None,
@@ -238,7 +243,7 @@ nires_stare_science_template = {
         "det_coadd_number": {
             "allowed": [
                 1,
-                50 
+                50
             ],
             "default": 1,
             "description": "Number of coadd exposures to take",
@@ -260,7 +265,7 @@ nires_stare_science_template = {
         "det_num_fs": {
             "allowed": [
                 1,
-                64 
+                64
             ],
             "default": None,
             "description": "Applicable for Fowler sample mode only",
@@ -344,7 +349,7 @@ nires_dither_science_template = {
         "det_num_fs": {
             "allowed": [
                 1,
-                64 
+                64
             ],
             "default": None,
             "description": "Applicable for Fowler sample mode only",
@@ -498,7 +503,7 @@ nires_drift_scan_science_template = {
         "det_num_fs": {
             "allowed": [
                 1,
-                64 
+                64
             ],
             "default": None,
             "description": "Applicable for Fowler sample mode only",
@@ -763,6 +768,7 @@ nires_calibration_template = {
     }
 }
 
+
 def generate_scripts():
     scripts = {}
 
@@ -798,15 +804,16 @@ def generate_scripts():
     ]
     return scripts
 
+
 def generate_recipes():
     recipes = {}
 
     recipes["blank_science_ob"] = {
         "metadata": {
-                "name": "blank_science_ob",
-                "ob_type": "science",
-                "ui_name": "Blank Science OB",
-                "instrument": "NIRES"
+            "name": "blank_science_ob",
+            "ob_type": "science",
+            "ui_name": "Blank Science OB",
+            "instrument": "NIRES"
         },
         "recipe": [
             "nires_science"
@@ -817,24 +824,24 @@ def generate_recipes():
                 "instrument": "NIRES",
                 "name": "NIRES Science OB",
                 "ob_type": "science",
-                "tags": [ "science", "nires"],
+                "tags": ["science", "nires"],
                 "version": "0.1.0"
             },
-            "observations": [ ],
+            "observations": [],
             "acquisition": {
                 "metadata": {
-                "instrument": "NIRES",
-                "name": "nires_acq",
-                "script": "nires_acq",
-                "sequence_number": 0,
-                "template_type": "acquisition",
-                "ui_name": "NIRES acquisition",
-                "version": "0.1.0"
+                    "instrument": "NIRES",
+                    "name": "nires_acq",
+                    "script": "nires_acq",
+                    "sequence_number": 0,
+                    "template_type": "acquisition",
+                    "ui_name": "NIRES acquisition",
+                    "version": "0.1.0"
                 },
                 "parameters": {
-                "guider1_cfg_mode": "operator",
-                "rot_cfg_mode": "PA",
-                "rot_cfg_wrap": "auto"
+                    "guider1_cfg_mode": "operator",
+                    "rot_cfg_mode": "PA",
+                    "rot_cfg_wrap": "auto"
                 }
             },
             "status": {
@@ -846,17 +853,210 @@ def generate_recipes():
                 "executions": [],
                 "state": 0
             }
-}
+        }
 
     }
 
+    recipes["AABA_dither"] = {
+        "acquisition": {
+            "metadata": {
+                "instrument": "NIRES",
+                "name": "nires_acq",
+                "script": "nires_acq",
+                "sequence_number": 0,
+                "template_type": "acquisition",
+                "ui_name": "NIRES acquisition",
+                "version": "0.1.0"
+            },
+            "parameters": {
+                "bright_acquisition": True,
+                "guider1_cfg_mode": "operator",
+                "rot_cfg_mode": "PA",
+                "rot_cfg_wrap": "auto",
+                "tcs_coord_po": "NIRES"
+            }
+        },
+        "common_parameters": {
+            "detector_parameters": {},
+            "instrument_parameters": {},
+            "metadata": {
+                "instrument": "NIRES",
+                "name": "nires_common_parameters",
+                "template_type": "common_parameters",
+                "ui_name": "NIRES Common Parameters",
+                "version": "0.1.0"
+            },
+            "tcs_parameters": {}
+        },
+        "metadata": {
+            "comment": "",
+            "instrument": "NIRES",
+            "name": "ABBA Science Recipe",
+            "ob_type": "Science",
+            "priority": 0,
+            "tags": ["science", "nires"],
+            "version": "0.1.0"
+        },
+        "observations": [
+            {
+                "metadata": {
+                    "instrument": "NIRES",
+                    "name": "nires_dither_sci",
+                    "script": "nires_dither_sci",
+                    "sequence_number": 1,
+                    "template_type": "science",
+                    "ui_name": "NIRES dither science",
+                    "version": "0.1.0"
+                },
+                "parameters": {
+                    "det_coadd_number": 1,
+                    "det_exp_number": 1,
+                    "det_exp_time": 30,
+                    "det_num_fs": 4,
+                    "det_obs_type": "Object",
+                    "det_samp_mode": "MCDS",
+                    "det_type_mode": "Spectrograph",
+                    "sequence_dither_offset": 6,
+                    "sequence_dither_type": "ABBA"
+                }
+            }
+        ],
+        "status": {
+            "current_exp_det1": 0,
+            "current_exp_det2": 0,
+            "current_seq": 0,
+            "current_step": 0,
+            "deleted": False,
+            "executions": [],
+            "state": 0
+        },
+        "target": {
+            "metadata": {
+                "name": "sidereal_target",
+                "template_type": "target",
+                "ui_name": "Sidereal Target",
+                "version": "0.1.0"
+            },
+            "parameters": {
+                "rot_cfg_pa": 0,
+                "target_coord_dec": "02:35:31.8",
+                "target_coord_epoch": 2000,
+                "target_coord_frame": "FK5",
+                "target_coord_ra": "10:47:24.2",
+                "target_info_name": "HIP 52774",
+                "target_magnitude": [
+                    {
+                        "target_info_band": "V",
+                        "target_info_mag": 12.28
+                    }
+                ]
+            }
+        }
+    }
+
+    recipes["AABA_telluric"] = {
+        "acquisition": {
+            "metadata": {
+                "instrument": "NIRES",
+                "name": "nires_acq",
+                "script": "nires_acq",
+                "sequence_number": 0,
+                "template_type": "acquisition",
+                "ui_name": "NIRES acquisition",
+                "version": "0.1.0"
+            },
+            "parameters": {
+                "bright_acquisition": True,
+                "guider1_cfg_mode": "operator",
+                "rot_cfg_mode": "PA",
+                "rot_cfg_wrap": "auto",
+                "tcs_coord_po": "NIRES"
+            }
+        },
+        "common_parameters": {
+            "detector_parameters": {},
+            "instrument_parameters": {},
+            "metadata": {
+                "instrument": "NIRES",
+                "name": "nires_common_parameters",
+                "template_type": "common_parameters",
+                "ui_name": "NIRES Common Parameters",
+                "version": "0.1.0"
+            },
+            "tcs_parameters": {}
+        },
+        "metadata": {
+            "comment": "",
+            "instrument": "NIRES",
+            "name": "AABA Telluric Recipe",
+            "ob_type": "Science",
+            "priority": 0,
+            "tags": ["nires", "science"],
+            "version": "0.1.0"
+        },
+        "observations": [
+            {
+                "metadata": {
+                    "instrument": "NIRES",
+                    "name": "nires_dither_sci",
+                    "script": "nires_dither_sci",
+                    "sequence_number": 1,
+                    "template_type": "science",
+                    "ui_name": "NIRES dither science",
+                    "version": "0.1.0"
+                },
+                "parameters": {
+                    "det_coadd_number": 1,
+                    "det_exp_number": 1,
+                    "det_exp_time": 10,
+                    "det_num_fs": 1,
+                    "det_obs_type": "telluric",
+                    "det_samp_mode": "MCDS",
+                    "det_type_mode": "Spectrograph",
+                    "sequence_dither_offset": 10,
+                    "sequence_dither_type": "ABBA"
+                }
+            }
+        ],
+        "status": {
+            "current_exp_det1": 0,
+            "current_exp_det2": 0,
+            "current_seq": 0,
+            "current_step": 0,
+            "deleted": False,
+            "executions": [],
+            "state": 0
+        },
+        "target": {
+            "metadata": {
+                "name": "sidereal_target",
+                "template_type": "target",
+                "ui_name": "Sidereal Target",
+                "version": "0.1.0"
+            },
+            "parameters": {
+                "rot_cfg_pa": 0,
+                "target_coord_dec": "01:50:45.5",
+                "target_coord_epoch": 2000,
+                "target_coord_frame": "FK5",
+                "target_coord_ra": "10:00:03.68",
+                "target_info_name": "HIP 49020",
+                "target_magnitude": [
+                    {
+                        "target_info_band": "V",
+                        "target_info_mag": 10.35
+                    }
+                ]
+            }
+        }
+    }
 
     recipes["calibration_dark"] = {
         "metadata": {
-                "name": "calibration_dark",
-                "ob_type": "calibration",
-                "ui_name": "Darks Calibration",
-                "instrument": "NIRES"
+            "name": "calibration_dark",
+            "ob_type": "calibration",
+            "ui_name": "Darks Calibration",
+            "instrument": "NIRES"
         },
         "recipe": [
             "nires_calibration"
@@ -867,7 +1067,7 @@ def generate_recipes():
                 "instrument": "NIRES",
                 "name": "NIRES Calibration Darks",
                 "ob_type": "Calibration",
-                "tags": [ "calibration", "darks"],
+                "tags": ["calibration", "darks"],
                 "version": "0.1.0"
             },
             "observations": [
@@ -901,16 +1101,16 @@ def generate_recipes():
                 "executions": [],
                 "state": 0
             }
-}
+        }
 
     }
 
     recipes["calibration_arcs"] = {
         "metadata": {
-                "name": "calibration_arcs",
-                "ob_type": "calibration",
-                "ui_name": "Arcs Calibration",
-                "instrument": "NIRES"
+            "name": "calibration_arcs",
+            "ob_type": "calibration",
+            "ui_name": "Arcs Calibration",
+            "instrument": "NIRES"
         },
         "recipe": [
             "nires_calibration"
@@ -926,24 +1126,24 @@ def generate_recipes():
             },
             "observations": [
                 {
-                "metadata": {
-                    "instrument": "NIRES",
-                    "name": "nires_calibration",
-                    "script": "nires_calibration",
-                    "sequence_number": 1,
-                    "template_type": "calibration",
-                    "ui_name": "NIRES Calibration",
-                    "version": "0.1.0"
-                },
-                "parameters": {
-                    "det_cal_type": "Arcs",
-                    "det_coadd_number": 1,
-                    "det_exp_number": 1,
-                    "det_exp_time": 120,
-                    "det_num_fs": 1,
-                    "det_samp_mode": "MCDS",
-                    "det_type_mode": "Spectrograph",
-                }
+                    "metadata": {
+                        "instrument": "NIRES",
+                        "name": "nires_calibration",
+                        "script": "nires_calibration",
+                        "sequence_number": 1,
+                        "template_type": "calibration",
+                        "ui_name": "NIRES Calibration",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "det_cal_type": "Arcs",
+                        "det_coadd_number": 1,
+                        "det_exp_number": 1,
+                        "det_exp_time": 120,
+                        "det_num_fs": 1,
+                        "det_samp_mode": "MCDS",
+                        "det_type_mode": "Spectrograph",
+                    }
                 }
             ],
             "status": {
@@ -955,15 +1155,15 @@ def generate_recipes():
                 "executions": [],
                 "state": 0
             }
-            }
+        }
     }
 
     recipes["calibration_flats"] = {
         "metadata": {
-                "name": "calibration_arcs",
-                "ob_type": "calibration",
-                "ui_name": "Flats Calibration",
-                "instrument": "NIRES"
+            "name": "calibration_arcs",
+            "ob_type": "calibration",
+            "ui_name": "Flats Calibration",
+            "instrument": "NIRES"
         },
         "recipe": [
             "nires_calibration"
@@ -974,7 +1174,7 @@ def generate_recipes():
                 "instrument": "NIRES",
                 "name": "NIRES Calibration Flats",
                 "ob_type": "Calibration",
-                "tags": [ "calibration", "flats" ],
+                "tags": ["calibration", "flats"],
                 "version": "0.1.0"
             },
             "observations": [
@@ -1014,10 +1214,10 @@ def generate_recipes():
 
     recipes["calibration_flatsonof"] = {
         "metadata": {
-                "name": "calibration_arcs",
-                "ob_type": "calibration",
-                "ui_name": "Flats On and Off Calibration",
-                "instrument": "NIRES"
+            "name": "calibration_arcs",
+            "ob_type": "calibration",
+            "ui_name": "Flats On and Off Calibration",
+            "instrument": "NIRES"
         },
         "recipe": [
             "nires_calibration"
@@ -1028,7 +1228,7 @@ def generate_recipes():
                 "instrument": "NIRES",
                 "name": "NIRES Calibrations Flats on/off",
                 "ob_type": "Calibration",
-                "tags": [ "calibration", "flats on/off" ],
+                "tags": ["calibration", "flats on/off"],
                 "version": "0.1.0"
             },
             "observations": [
