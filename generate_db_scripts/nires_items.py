@@ -929,23 +929,6 @@ def generate_recipes():
                 "executions": [],
                 "state": 0
             },
-            "target": {
-                "metadata": {
-                    "name": "sidereal_target",
-                    "template_type": "target",
-                    "ui_name": "Sidereal Target",
-                    "version": "0.1.0"
-                },
-                "parameters": {
-                    "rot_cfg_pa": 0,
-                    "target_coord_dec": "00:00:00.0",
-                    "target_coord_ra": "00:00:00.0",
-                    "target_coord_epoch": 2000,
-                    "target_coord_frame": "FK5",
-                    "target_info_name": "",
-                    "target_magnitude": [
-                    ]}
-            }
         }
     }
 
@@ -1021,23 +1004,6 @@ def generate_recipes():
                 "executions": [],
                 "state": 0
             },
-            "target": {
-                "metadata": {
-                    "name": "sidereal_target",
-                    "template_type": "target",
-                    "ui_name": "sidereal target",
-                    "version": "0.1.0"
-                },
-                "parameters": {
-                    "rot_cfg_pa": 0,
-                    "target_coord_dec": "00:00:00.0",
-                    "target_coord_ra": "00:00:00.0",
-                    "target_coord_epoch": 2000,
-                    "target_coord_frame": "FK5",
-                    "target_info_name": "",
-                    "target_magnitude": [
-                    ]}
-            }
         }
     }
 
