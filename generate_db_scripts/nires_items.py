@@ -941,6 +941,23 @@ def generate_recipes():
                 "executions": [],
                 "state": 0
             },
+            "target": {
+                "metadata": {
+                    "name": "sidereal_target",
+                    "template_type": "target",
+                    "ui_name": "Sidereal Target",
+                    "version": "0.1.0"
+                },
+                "parameters": {
+                    "rot_cfg_pa": 0,
+                    "target_coord_dec": "",
+                    "target_coord_epoch": 2000,
+                    "target_coord_frame": "FK5",
+                    "target_coord_ra": "",
+                    "target_info_name": "",
+                    "target_magnitude": [
+                    ]}
+            }
         }
     }
 
@@ -955,80 +972,97 @@ def generate_recipes():
             "nires_abba_science"
         ],
         "ob_data": {
-        "acquisition": {
-            "metadata": {
-                "instrument": "NIRES",
-                "name": "nires_acq",
-                "script": "nires_acq",
-                "sequence_number": 0,
-                "template_type": "acquisition",
-                "ui_name": "NIRES acquisition",
-                "version": "0.1.0"
-            },
-            "parameters": {
-                "bright_acquisition": True,
-                "guider1_cfg_mode": "operator",
-                "rot_cfg_mode": "PA",
-                "rot_cfg_wrap": "auto",
-                "tcs_coord_po": "NIRES"
-            }
-        },
-        "common_parameters": {
-            "detector_parameters": {},
-            "instrument_parameters": {},
-            "metadata": {
-                "instrument": "NIRES",
-                "name": "nires_common_parameters",
-                "template_type": "common_parameters",
-                "ui_name": "NIRES Common Parameters",
-                "version": "0.1.0"
-            },
-            "tcs_parameters": {}
-        },
-        "metadata": {
-            "comment": "",
-            "instrument": "NIRES",
-            "name": "ABBA Telluric Recipe",
-            "ui_name": "ABBA Telluric OB",
-            "ob_type": "Science",
-            "priority": 0,
-            "tags": ["nires", "science"],
-            "version": "0.1.0"
-        },
-        "observations": [
-            {
+            "acquisition": {
                 "metadata": {
                     "instrument": "NIRES",
-                    "name": "nires_dither_sci",
-                    "script": "nires_dither_sci",
-                    "sequence_number": 1,
-                    "template_type": "science",
-                    "ui_name": "NIRES dither science",
+                    "name": "nires_acq",
+                    "script": "nires_acq",
+                    "sequence_number": 0,
+                    "template_type": "acquisition",
+                    "ui_name": "NIRES acquisition",
                     "version": "0.1.0"
                 },
                 "parameters": {
-                    "det_coadd_number": 1,
-                    "det_exp_number": 1,
-                    "det_exp_time": 10,
-                    "det_num_fs": 1,
-                    "det_obs_type": "telluric",
-                    "det_samp_mode": "MCDS",
-                    "det_type_mode": "Spectrograph",
-                    "sequence_dither_offset": 10,
-                    "sequence_dither_type": "ABBA"
+                    "bright_acquisition": True,
+                    "guider1_cfg_mode": "operator",
+                    "rot_cfg_mode": "PA",
+                    "rot_cfg_wrap": "auto",
+                    "tcs_coord_po": "NIRES"
                 }
+            },
+            "common_parameters": {
+                "detector_parameters": {},
+                "instrument_parameters": {},
+                "metadata": {
+                    "instrument": "NIRES",
+                    "name": "nires_common_parameters",
+                    "template_type": "common_parameters",
+                    "ui_name": "NIRES Common Parameters",
+                    "version": "0.1.0"
+                },
+                "tcs_parameters": {}
+            },
+            "metadata": {
+                "comment": "",
+                "instrument": "NIRES",
+                "name": "ABBA Telluric Recipe",
+                "ui_name": "ABBA Telluric OB",
+                "ob_type": "Science",
+                "priority": 0,
+                "tags": ["nires", "science"],
+                "version": "0.1.0"
+            },
+            "observations": [
+                {
+                    "metadata": {
+                        "instrument": "NIRES",
+                        "name": "nires_dither_sci",
+                        "script": "nires_dither_sci",
+                        "sequence_number": 1,
+                        "template_type": "science",
+                        "ui_name": "NIRES dither science",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "det_coadd_number": 1,
+                        "det_exp_number": 1,
+                        "det_exp_time": 10,
+                        "det_num_fs": 1,
+                        "det_obs_type": "telluric",
+                        "det_samp_mode": "MCDS",
+                        "det_type_mode": "Spectrograph",
+                        "sequence_dither_offset": 10,
+                        "sequence_dither_type": "ABBA"
+                    }
+                }
+            ],
+            "status": {
+                "current_exp_det1": 0,
+                "current_exp_det2": 0,
+                "current_seq": 0,
+                "current_step": 0,
+                "deleted": False,
+                "executions": [],
+                "state": 0
+            },
+            "target": {
+                "metadata": {
+                    "name": "sidereal_target",
+                    "template_type": "target",
+                    "ui_name": "sidereal target",
+                    "version": "0.1.0"
+                },
+                "parameters": {
+                    "rot_cfg_pa": 0,
+                    "target_coord_dec": "",
+                    "target_coord_epoch": 2000,
+                    "target_coord_frame": "FK5",
+                    "target_coord_ra": "",
+                    "target_info_name": "",
+                    "target_magnitude": [
+                    ]}
             }
-        ],
-        "status": {
-            "current_exp_det1": 0,
-            "current_exp_det2": 0,
-            "current_seq": 0,
-            "current_step": 0,
-            "deleted": False,
-            "executions": [],
-            "state": 0
-        },
-    }
+        }
     }
 
     recipes["calibration_dark"] = {
