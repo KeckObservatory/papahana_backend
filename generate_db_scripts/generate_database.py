@@ -32,22 +32,22 @@ if __name__=='__main__':
     print("...generating templates")
     template_list = generate_template.generate_templates(config)
 
-    # print("...generating recipes")
-    # coll = papahana_util.config_collection('recipeCollect', conf=config)
-    # coll.drop()
+    print("...generating recipes")
+    coll = papahana_util.config_collection('recipeCollect', conf=config)
+    coll.drop()
 
-    # for inst in instList:
-    #     try:
-    #         instModule = importlib.import_module(f'{inst.lower()}_items')
-    #         recipes = instModule.generate_recipes()
-    #     except ModuleNotFoundError as err:
-    #         print(f'{err} for {inst}')
-    #         continue
-    #     except AttributeError as err:
-    #         print(f'{err} for {inst}')
-    #         continue
-    #     for name, schema in recipes.items():
-    #         _ = coll.insert_one(schema)
+    for inst in instList:
+        try:
+            instModule = importlib.import_module(f'{inst.lower()}_items')
+            recipes = instModule.generate_recipes()
+        except ModuleNotFoundError as err:
+            print(f'{err} for {inst}')
+            continue
+        except AttributeError as err:
+            print(f'{err} for {inst}')
+            continue
+        for name, schema in recipes.items():
+            _ = coll.insert_one(schema)
 
     # # Create ob_blocks collection,  zero first
     # print("...zeroing deltas")
@@ -77,28 +77,28 @@ if __name__=='__main__':
     # coll.drop()
     # container_list = container_utils.generate_containers(config, coll, ob_blocks)
 
-    # # Create Instrument package
-    # print("...generating instrument package")
-    # coll = papahana_util.config_collection('ipCollect', conf=config)
-    # coll.drop()
+    # Create Instrument package
+    print("...generating instrument package")
+    coll = papahana_util.config_collection('ipCollect', conf=config)
+    coll.drop()
 
-    # for inst in instList:
-    #     inst_specific_templates = utils.parse_template_list(
-    #         inst, instList, template_list)
+    for inst in instList:
+        inst_specific_templates = utils.parse_template_list(
+            inst, instList, template_list)
         
-    #     try:
-    #         instModule = importlib.import_module(f'{inst.lower()}_items')
-    #         recipes = instModule.generate_recipes()
-    #         rlist = [ x['metadata']['name'] for key, x in recipes.items()] 
-    #         ip = instModule.generate_inst_package(template_list=inst_specific_templates, rlist=rlist)
-    #     except ModuleNotFoundError as err:
-    #         print(f'{err} for {inst}')
-    #         continue
-    #     except AttributeError as err:
-    #         print(f'{err} for {inst}')
-    #         continue
+        try:
+            instModule = importlib.import_module(f'{inst.lower()}_items')
+            recipes = instModule.generate_recipes()
+            rlist = [ x['metadata']['name'] for key, x in recipes.items()] 
+            ip = instModule.generate_inst_package(template_list=inst_specific_templates, rlist=rlist)
+        except ModuleNotFoundError as err:
+            print(f'{err} for {inst}')
+            continue
+        except AttributeError as err:
+            print(f'{err} for {inst}')
+            continue
 
-    #     result = coll.insert_one(ip)
+        result = coll.insert_one(ip)
 
     # # Create script collection
     # print('...creating scripts')
