@@ -857,15 +857,15 @@ def generate_recipes():
 
     }
 
-    recipes["AABA_dither"] = {
+    recipes["ABBA_dither"] = {
         "metadata": {
-            "name": "blank_aaba_science_ob",
+            "name": "blank_abba_science_ob",
             "ob_type": "science",
-            "ui_name": "Blank AABA Science OB",
+            "ui_name": "Blank ABBA Science OB",
             "instrument": "NIRES"
         },
         "recipe": [
-            "nires_aaba_science"
+            "nires_abba_science"
         ],
         "ob_data": {
             "acquisition": {
@@ -906,7 +906,7 @@ def generate_recipes():
                 "priority": 0,
                 "tags": ["science", "nires"],
                 "version": "0.1.0",
-                "ui_name": "AABA Science OB",
+                "ui_name": "ABBA Science OB",
             },
             "observations": [
                 {
@@ -956,13 +956,13 @@ def generate_recipes():
 
     recipes["ABBA_telluric"] = {
         "metadata": {
-            "name": "blank_aaba_telluric_ob",
+            "name": "blank_abba_telluric_ob",
             "ob_type": "science",
-            "ui_name": "Blank AABA Telluric OB",
+            "ui_name": "Blank ABBA Telluric OB",
             "instrument": "NIRES"
         },
         "recipe": [
-            "nires_aaba_science"
+            "nires_abba_science"
         ],
         "ob_data": {
         "acquisition": {
@@ -998,8 +998,8 @@ def generate_recipes():
         "metadata": {
             "comment": "",
             "instrument": "NIRES",
-            "name": "AABA Telluric Recipe",
-            "ui_name": "AABA Telluric OB",
+            "name": "ABBA Telluric Recipe",
+            "ui_name": "ABBA Telluric OB",
             "ob_type": "Science",
             "priority": 0,
             "tags": ["nires", "science"],
