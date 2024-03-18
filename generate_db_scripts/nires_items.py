@@ -858,104 +858,125 @@ def generate_recipes():
     }
 
     recipes["AABA_dither"] = {
-        "acquisition": {
-            "metadata": {
-                "instrument": "NIRES",
-                "name": "nires_acq",
-                "script": "nires_acq",
-                "sequence_number": 0,
-                "template_type": "acquisition",
-                "ui_name": "NIRES acquisition",
-                "version": "0.1.0"
-            },
-            "parameters": {
-                "bright_acquisition": True,
-                "guider1_cfg_mode": "operator",
-                "rot_cfg_mode": "PA",
-                "rot_cfg_wrap": "auto",
-                "tcs_coord_po": "NIRES"
-            }
-        },
-        "common_parameters": {
-            "detector_parameters": {},
-            "instrument_parameters": {},
-            "metadata": {
-                "instrument": "NIRES",
-                "name": "nires_common_parameters",
-                "template_type": "common_parameters",
-                "ui_name": "NIRES Common Parameters",
-                "version": "0.1.0"
-            },
-            "tcs_parameters": {}
-        },
         "metadata": {
-            "comment": "",
-            "instrument": "NIRES",
-            "name": "ABBA Science Recipe",
-            "ob_type": "Science",
-            "priority": 0,
-            "tags": ["science", "nires"],
-            "version": "0.1.0",
-            "ui_name": "AABA Science OB",
+            "name": "blank_aaba_science_ob",
+            "ob_type": "science",
+            "ui_name": "Blank AABA Science OB",
+            "instrument": "NIRES"
         },
-        "observations": [
-            {
+        "recipe": [
+            "nires_aaba_science"
+        ],
+        "ob_data": {
+            "acquisition": {
                 "metadata": {
                     "instrument": "NIRES",
-                    "name": "nires_dither_sci",
-                    "script": "nires_dither_sci",
-                    "sequence_number": 1,
-                    "template_type": "science",
-                    "ui_name": "NIRES dither science",
+                    "name": "nires_acq",
+                    "script": "nires_acq",
+                    "sequence_number": 0,
+                    "template_type": "acquisition",
+                    "ui_name": "NIRES acquisition",
                     "version": "0.1.0"
                 },
                 "parameters": {
-                    "det_coadd_number": 1,
-                    "det_exp_number": 1,
-                    "det_exp_time": 30,
-                    "det_num_fs": 4,
-                    "det_obs_type": "Object",
-                    "det_samp_mode": "MCDS",
-                    "det_type_mode": "Spectrograph",
-                    "sequence_dither_offset": 6,
-                    "sequence_dither_type": "ABBA"
+                    "bright_acquisition": True,
+                    "guider1_cfg_mode": "operator",
+                    "rot_cfg_mode": "PA",
+                    "rot_cfg_wrap": "auto",
+                    "tcs_coord_po": "NIRES"
                 }
-            }
-        ],
-        "status": {
-            "current_exp_det1": 0,
-            "current_exp_det2": 0,
-            "current_seq": 0,
-            "current_step": 0,
-            "deleted": False,
-            "executions": [],
-            "state": 0
-        },
-        "target": {
-            "metadata": {
-                "name": "sidereal_target",
-                "template_type": "target",
-                "ui_name": "Sidereal Target",
-                "version": "0.1.0"
             },
-            "parameters": {
-                "rot_cfg_pa": 0,
-                "target_coord_dec": "02:35:31.8",
-                "target_coord_epoch": 2000,
-                "target_coord_frame": "FK5",
-                "target_coord_ra": "10:47:24.2",
-                "target_info_name": "HIP 52774",
-                "target_magnitude": [
-                    {
-                        "target_info_band": "V",
-                        "target_info_mag": 12.28
+            "common_parameters": {
+                "detector_parameters": {},
+                "instrument_parameters": {},
+                "metadata": {
+                    "instrument": "NIRES",
+                    "name": "nires_common_parameters",
+                    "template_type": "common_parameters",
+                    "ui_name": "NIRES Common Parameters",
+                    "version": "0.1.0"
+                },
+                "tcs_parameters": {}
+            },
+            "metadata": {
+                "comment": "",
+                "instrument": "NIRES",
+                "name": "ABBA Science Recipe",
+                "ob_type": "Science",
+                "priority": 0,
+                "tags": ["science", "nires"],
+                "version": "0.1.0",
+                "ui_name": "AABA Science OB",
+            },
+            "observations": [
+                {
+                    "metadata": {
+                        "instrument": "NIRES",
+                        "name": "nires_dither_sci",
+                        "script": "nires_dither_sci",
+                        "sequence_number": 1,
+                        "template_type": "science",
+                        "ui_name": "NIRES dither science",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "det_coadd_number": 1,
+                        "det_exp_number": 1,
+                        "det_exp_time": 30,
+                        "det_num_fs": 4,
+                        "det_obs_type": "Object",
+                        "det_samp_mode": "MCDS",
+                        "det_type_mode": "Spectrograph",
+                        "sequence_dither_offset": 6,
+                        "sequence_dither_type": "ABBA"
                     }
-                ]
+                }
+            ],
+            "status": {
+                "current_exp_det1": 0,
+                "current_exp_det2": 0,
+                "current_seq": 0,
+                "current_step": 0,
+                "deleted": False,
+                "executions": [],
+                "state": 0
+            },
+            "target": {
+                "metadata": {
+                    "name": "sidereal_target",
+                    "template_type": "target",
+                    "ui_name": "Sidereal Target",
+                    "version": "0.1.0"
+                },
+                "parameters": {
+                    "rot_cfg_pa": 0,
+                    "target_coord_dec": "02:35:31.8",
+                    "target_coord_epoch": 2000,
+                    "target_coord_frame": "FK5",
+                    "target_coord_ra": "10:47:24.2",
+                    "target_info_name": "HIP 52774",
+                    "target_magnitude": [
+                        {
+                            "target_info_band": "V",
+                            "target_info_mag": 12.28
+                        }
+                    ]
+                }
             }
         }
     }
 
     recipes["AABA_telluric"] = {
+        "metadata": {
+            "name": "blank_aaba_science_ob",
+            "ob_type": "science",
+            "ui_name": "Blank AABA Science OB",
+            "instrument": "NIRES"
+        },
+        "recipe": [
+            "nires_aaba_science"
+        ],
+        "ob_data": {
         "acquisition": {
             "metadata": {
                 "instrument": "NIRES",
@@ -1051,6 +1072,7 @@ def generate_recipes():
                 ]
             }
         }
+    }
     }
 
     recipes["calibration_dark"] = {
