@@ -886,18 +886,6 @@ def generate_recipes():
                     "tcs_coord_po": "NIRES"
                 }
             },
-            "common_parameters": {
-                "detector_parameters": {},
-                "instrument_parameters": {},
-                "metadata": {
-                    "instrument": "NIRES",
-                    "name": "nires_common_parameters",
-                    "template_type": "common_parameters",
-                    "ui_name": "NIRES Common Parameters",
-                    "version": "0.1.0"
-                },
-                "tcs_parameters": {}
-            },
             "metadata": {
                 "comment": "",
                 "instrument": "NIRES",
@@ -950,10 +938,10 @@ def generate_recipes():
                 },
                 "parameters": {
                     "rot_cfg_pa": 0,
-                    "target_coord_dec": "",
+                    "target_coord_dec": "00:00:00.0",
+                    "target_coord_ra": "00:00:00.0",
                     "target_coord_epoch": 2000,
                     "target_coord_frame": "FK5",
-                    "target_coord_ra": "",
                     "target_info_name": "",
                     "target_magnitude": [
                     ]}
@@ -989,18 +977,6 @@ def generate_recipes():
                     "rot_cfg_wrap": "auto",
                     "tcs_coord_po": "NIRES"
                 }
-            },
-            "common_parameters": {
-                "detector_parameters": {},
-                "instrument_parameters": {},
-                "metadata": {
-                    "instrument": "NIRES",
-                    "name": "nires_common_parameters",
-                    "template_type": "common_parameters",
-                    "ui_name": "NIRES Common Parameters",
-                    "version": "0.1.0"
-                },
-                "tcs_parameters": {}
             },
             "metadata": {
                 "comment": "",
@@ -1054,10 +1030,10 @@ def generate_recipes():
                 },
                 "parameters": {
                     "rot_cfg_pa": 0,
-                    "target_coord_dec": "",
+                    "target_coord_dec": "00:00:00.0",
+                    "target_coord_ra": "00:00:00.0",
                     "target_coord_epoch": 2000,
                     "target_coord_frame": "FK5",
-                    "target_coord_ra": "",
                     "target_info_name": "",
                     "target_magnitude": [
                     ]}
