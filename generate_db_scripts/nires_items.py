@@ -968,9 +968,9 @@ def generate_recipes():
 
     recipes["AABA_telluric"] = {
         "metadata": {
-            "name": "blank_aaba_science_ob",
+            "name": "blank_aaba_telluric_ob",
             "ob_type": "science",
-            "ui_name": "Blank AABA Science OB",
+            "ui_name": "Blank AABA Telluric OB",
             "instrument": "NIRES"
         },
         "recipe": [
